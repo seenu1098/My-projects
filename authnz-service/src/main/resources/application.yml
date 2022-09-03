@@ -1,0 +1,224 @@
+spring:
+  profiles:
+    active: default, dev
+ 
+  liquibase:
+    enabled: false 
+
+  application:
+    name: authnz-service
+
+
+logging:
+  pattern:
+    console: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    file: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    
+  level.org:
+    org.springframework.web: INFO
+    org.springframework.amqp: INFO
+    com.yorosis: INFO
+
+server.servlet.context-path: /authnz-service
+
+
+server:
+  port: 2020
+
+google:
+  recaptcha:
+    secret:
+      key: 6Lfz7KIZAAAAAGynlJZ-zrR-4MVC3D0sot0HTy_Z
+      
+    secretV2:
+      key: 6Lf20dkZAAAAAIEAi5v__wIYPpx3LWnTCEK_0sfC 
+     
+    verify:
+      url: https://www.google.com/recaptcha/api/siteverify
+
+
+---
+spring:
+  profiles: default
+  
+  data: 
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: true
+    ddl-auto: update
+    open-in-view: false
+    default_schema: yoroflow
+
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator 
+    algorithm: PBEWithMD5AndDES
+
+
+yorocache:
+  url: localhost:6379
+  enabled: false
+  
+queue:
+  enabled: true
+         
+---
+spring:
+  profiles: dev 
+  data:
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 2
+      maximum-pool-size: 3
+      pool-name: yoroflow
+      auto-commit: false
+     
+    url: jdbc:postgresql://india-db.yorosis.com:5544/liveapps?currentSchema=yoroflow
+    username: liveappsuser
+    password: oZXu10d09$@$LK90U6b]Z$Uv
+
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: yoroapps
+        format_sql : true
+        dialect: com.vladmihalcea.book.hpjp.hibernate.type.json.PostgreSQL10JsonDialect
+
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    
+yorocache:
+  url: localhost:6379
+  enabled: false
+                
+---
+spring:
+  profiles: prod 
+  data:
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: ${CONNECTION_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${CONNECTION_POOL_MAX_SIZE:5}
+      pool-name: workflow-service-pool
+      auto-commit: false
+    
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: false
+    hibernate:
+      generate-ddl: false
+      ddl-auto: validate
+      show_sql: true
+    properties:
+      hibernate:
+        format_sql : true
+        
+  rabbitmq:
+    host: ${QUEUE_SERVICE_NAME}
+    port: 5672
+    username: ${QUEUE_USER}
+    password: ${QUEUE_PASSWORD}
+    
+queue:
+  enabled: true
+
+yorocache:
+  url: cache-service:6379
+  enabled: ${CACHE_ENABLED:true}
+
+jasypt:
+  encryptor:
+    password: ${ENCRYPTION_KEY}
+
+server:
+  port: 8080
+
+---
+spring:
+  profiles: us-dev 
+  data:
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 2
+      maximum-pool-size: 5 
+      pool-name: yoroflow
+      auto-commit: false
+      
+    url: jdbc:postgresql://india-db.yorosis.com:5544/liveapps?currentSchema=yoroflow
+    username: liveappsuser
+    password: oZXu10d09$@$LK90U6b]Z$Uv
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: yoroapps
+        format_sql : true
+        dialect: com.vladmihalcea.book.hpjp.hibernate.type.json.PostgreSQL10JsonDialect
+
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator 
+    algorithm: PBEWithMD5AndDES  
+     
+---
+spring:
+  profiles: test 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 5
+      pool-name: yoroflow
+      auto-commit: false
+      
+    url: jdbc:h2:mem:cchn;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS YOROAPPS
+    username: sa
+    password: sa
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    hibernate:
+      generate-ddl: true
+      ddl-auto: create-drop
+      show_sql: true
+    properties:
+      hibernate:
+        default_schema: yoroapps
