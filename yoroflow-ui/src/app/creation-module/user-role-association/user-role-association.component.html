@@ -1,0 +1,96 @@
+<mat-card id="event-automation" class="mx-3 mt-3">
+    <form #userForm="ngForm" [formGroup]="form">
+        <div class="row w-100 mx-0">
+            <h2 i18n="Associate Users to Roles">Associate Users to Roles</h2>
+        </div>
+        <div class="row w-100 mx-0">
+            <div class="col-md-3 col-sm-12">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label for="groups" i18n="Select Roles*">
+                        Select Roles*
+                    </mat-label>
+                    <mat-select id="groupId" (selectionChange)="getRoleId($event)" formControlName="roleId"
+                        name="roleId" id="groupId" aria-label="roleId">
+                        <mat-option id="roleId" [value]="role.id" *ngFor="let role of rolesList;let i=index">
+                            {{role.rolesNames}}</mat-option>
+                    </mat-select>
+                    <mat-error i18n="Role Name is Required">
+                        Role Name is Required
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row w-100 mx-0 mt-5 mb-5 justify-content-center" *ngIf="show_selected == false">
+            <mat-card>
+                <mat-card-content>
+                    <h4 class="fs_12 font-weight-bold" i18n="NO ROLES SELECTED.PLEASE SELECT A ROLE TO CHOOSE USERS...">
+                        NO
+                        ROLES SELECTED.PLEASE SELECT A ROLE TO CHOOSE USERS...</h4>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <div class="row w-100 mx-0 justify-content-center" *ngIf="show_selected === true">
+            <div class="col-md-11 col-sm-11">
+                <mat-card class="main_card_user px-0">
+                    <div class="row w-100">
+                        <div class="col-md-8">
+                            <h3 class="pl-3"><b i18n="Selected Users">Selected Users</b></h3>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row w-100 mx-0 justify-content-end">
+                                <button mat-raised-button class="mr-3" color="primary" (click)="save(userForm)"
+                                    [disabled]="show === false" id="btnsave" i18n="Save">Save</button>
+                                <button mat-raised-button class="mr-3" color="accent" type="button"
+                                    (click)="reset(userForm)" id="btnreset" i18n="Cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedUsers?.length !== 0">
+                        <div class="col-md-11 col-sm-11 justify-content-center">
+                            <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                <mat-chip-list #chipList aria-label="Fruit selection">
+                                    <mat-chip *ngFor="let users of selectedUsers; let i=index" [selectable]="selectable"
+                                        [removable]="removable" (removed)="remove(users,i)">
+                                        {{users?.firstName}} {{users?.lastName}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedUsers?.length === 0">
+                        <span> <b i18n="No Selected Users">No Selected Users</b></span>
+                    </div>
+                </mat-card>
+                <mat-card class="w-100 mt-3">
+                    <h3 class="pl-3"><b i18n="Available Users">Available Users</b></h3>
+                    <div class="row w-100 mx-0 ">
+                        <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                            <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                formControlName="searchUser">
+                        </mat-form-field>
+                    </div>
+                    <div class="row w-100 mx-0 ">
+                        <ng-container *ngFor="let user of myArray; let i=index">
+                            <div class="col-md-4 col-sm-12 px-2" *ngIf="user.filter">
+                                <mat-card class=" inner_card_user" (click)="add(user,i)" appMaterialElevation>
+                                    <div class="row w-100 mx-0">
+                                        <div class="col-md-2 align-self-center">
+                                            <p class="user_letter" [style.background]="user.color">
+                                                {{setUserProfilename(user)}}</p>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <h5 class="mb-0 text-uppercase font-weight-bold">{{user?.firstName}}
+                                                {{user?.lastName}}</h5>
+                                            <h5 class="mb-0" style="word-break:break-all">{{user?.emailId}}</h5>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </ng-container>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </form>
+</mat-card>

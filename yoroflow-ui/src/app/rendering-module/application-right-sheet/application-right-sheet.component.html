@@ -1,0 +1,6 @@
+<div fxLayout="row" fxLayoutAlign="end end">
+    <mat-icon (click)="close()" id="clear" style="cursor: pointer;">clear</mat-icon>
+</div>
+<dynamic-page [id]="data.pageIdentifier" [version]="data.version" [loadFormInfo]="data"
+    (submit)="getFormAndsubmitEvent($event)">
+</dynamic-page>

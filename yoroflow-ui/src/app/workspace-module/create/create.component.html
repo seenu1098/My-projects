@@ -1,0 +1,247 @@
+<div class="mb-5 row w-100 mx-0 px-3">
+    <mat-card class="w-100">
+        <div class="row mx-0 w-100 mb-3">
+            <div class="col-md-6 col-sm-12 pl-0">
+                <mat-card-title>{{'Workspaces' | translate}}</mat-card-title>
+            </div>
+            <div class="col-md-6">
+                <button class="float-right" mat-raised-button color="primary" (click)="addWorkspace()">&#X2B;
+                    {{'New Workspace' | translate}}</button>
+            </div>
+        </div>
+        <form [formGroup]="WorkspaceForm">
+            <mat-tab-group class="w-100">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="fw-bolder">{{'Workspace' | translate}}</span>
+                    </ng-template>
+                    <div class="row w-100 mb-3" *ngFor="let list of workspaceListVO; let i = index;">
+                        <div [class]="list.selectedWorkspace?'active-workspace':'workspace-box'"
+                            [style.border-left-3px]="list.workspaceAvatar ? list.workspaceAvatar : '#D3D3D3'"
+                            id="workspace">
+                            <div class="row w-100 ml-2 mt-2">
+                                <div class="col-md-8">
+                                    <div class="row mx-0">
+                                        <p (click)="editAvatar(list)" class="user_letter fs_14" [id]="'name_'+i"
+                                            [style.background]="list.workspaceAvatar ? list.workspaceAvatar : '#D3D3D3'">
+                                            {{setUserProfilename(list?.workspaceName)}} </p>
+                                        <mat-icon class="ml-1 mt-1" style="color:rgb(238, 138, 8)"
+                                            *ngIf="list?.securedWorkspaceFlag === false">
+                                            lock_open
+                                        </mat-icon>
+                                        <mat-icon class="ml-1 mt-1" style="color:#65d37e"
+                                            *ngIf="list?.securedWorkspaceFlag === true">lock
+                                        </mat-icon>
+                                        <h3 class="mt-1 ml-1  font-weight-bold fs_14" *ngIf="edit[i] === false">
+                                            {{list?.workspaceName}}
+                                        </h3>
+                                        <mat-icon class="edit-desc-css mt-2 " [id]="'edit_'+i"
+                                            matTooltip="{{'Edit Workspace Name' | translate}}"
+                                            *ngIf="edit[i] === false && (list.update===true || list.managedWorkspace===true)"
+                                            (click)="editTitle($event, list, i)">drive_file_rename_outline
+                                        </mat-icon>
+                                        <div style="width: 80%;">
+                                            <div class="input-group" *ngIf="edit[i] === true">
+                                                <input type="text" class="form-control" [value]="
+                                                list.workspaceName" #titleInput [id]="'title'+i">
+                                                <div class="input-group-append">
+                                                    <button class="py-0 px-0  btn  btn-success done_btn" type="button"
+                                                        [id]="'btn'+i"
+                                                        (click)="changeTitle(list, $event, i,titleInput.value)">
+                                                        <mat-icon class="fs_14 h_14">done</mat-icon>
+                                                    </button>
+                                                    <button class="px-0 py-0 btn btn-danger close_btn"
+                                                        matTooltip="Cancel" type="button" (click)="cancel(i)">
+                                                        <mat-icon class="fs_14 h_14">close</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <mat-form-field appearance="outline" style="width: 80%;"
+                                            *ngIf="edit[i] === true">
+                                            <input matInput [(value)]="list.workspaceName" (focusout)="focusOut(i)"
+                                                (ngModelChange)="inputChange($event,list)">
+                                            <mat-icon matSuffix>done</mat-icon>
+                                        </mat-form-field> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row w-100 mx-0 justify-content-end">
+                                        <mat-button [id]="'current-workspace_'+i"
+                                            class="filter_option align-self-center justify-content-end float-right mr-2 mb-1 mrsm1"
+                                            [class.active]="list?.selectedWorkspace"
+                                            (click)="switchThisWorkspace($event, list, list?.workspaceId)">
+                                            {{list?.selectedWorkspace ? ('Current Workspace' | translate) : ('Switch
+                                            Workspace' |
+                                            translate)}}
+                                        </mat-button>
+                                        <!-- [disabled]="list?.workspaceSecurityVO?.assignTeamList.length>0" -->
+                                        <mat-slide-toggle [checked]="list?.defaultWorkspace" [id]="'default_'+i"
+                                            [disabled]="list?.defaultWorkspace===true"
+                                            (change)="setDefaultWorkspace($event, list)" class="mt-1">
+                                            {{'Default' | translate}}
+                                        </mat-slide-toggle>
+                                        <button mat-icon-button type="button" [id]="'more-vert_'+i"
+                                            [disabled]="list?.managedWorkspace === true || list.update===false"
+                                            *ngIf="list?.managedWorkspace === true || list.update===false">
+                                            <mat-icon> more_vert</mat-icon>
+                                        </button>
+                                        <button mat-icon-button type="button" class="mat-icon-color"
+                                            [id]="'more-vert_'+i"
+                                            *ngIf="list?.managedWorkspace === false && list.update===true">
+                                            <mat-icon [matMenuTriggerFor]="dropdownMenuFour"
+                                                #menuTrigger="matMenuTrigger" (click)="$event.stopPropagation()">
+                                                more_vert</mat-icon>
+
+                                            <mat-menu #dropdownMenuFour="matMenu">
+                                                <div fxLayout="column" fxLayoutGap="10px">
+                                                    <button mat-button id="changeColumnColor"
+                                                        (click)="setArchive(list?.workspaceId, list)">
+                                                        <mat-icon>archive</mat-icon>
+                                                        <span i18n="Archive"> {{'Archive' | translate}}</span>
+                                                    </button>
+                                                </div>
+                                                <div fxLayout="column" fxLayoutGap="10px">
+                                                    <button mat-button id="changeColumnColor"
+                                                        (click)="deleteWorkspace(list?.workspaceId, list)">
+                                                        <mat-icon>delete</mat-icon>
+                                                        <span i18n="Delete"> {{'Delete' | translate}}</span>
+                                                    </button>
+                                                </div>
+                                            </mat-menu>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row w-100 ml-2 mt-2">
+                                <div class="col-md-2 mt-1 ml-2" style="color: grey;">
+                                    <h5 class="text-uppercase font-weight-bold border-right">{{'Owner' | translate}}
+
+
+                                        <div class="row w-100 mt-3 ml-2"
+                                            *ngIf="list?.workspaceSecurityVO?.assignOwnerList">
+                                            <div
+                                                *ngFor="let user of list?.workspaceSecurityVO?.assignOwnerList;let i = index;">
+                                                <!-- style="width: 30px; height: 30px; line-height: 30px; border-radius: 50%;text-align: center; padding: 0px;cursor: pointer;" -->
+                                                <div *ngIf="i<=3"
+                                                    (click)="openTaskOwnerDialog(list?.workspaceId, i, list?.workspaceSecurityVO?.assignOwnerList, list)"
+                                                    class="hover-class round_firstletter"
+                                                    [style.margin-left]="i>0?'-4px':''" [matTooltip]="user.name"
+                                                    [style.background]="assigneeUserColorArray[i]">
+                                                    <span
+                                                        class="round_firstletter_size">{{getUserFirstAndLastNamePrefix(user.name)}}</span>
+                                                    <!-- style="font-size: 12px; color: white;font-weight: 100;" -->
+                                                </div>
+                                                <div *ngIf="i===4">
+                                                    <!-- style=" width: 30px; height: 30px; line-height: 30px; border-radius: 50%;  background-color: rgb(192, 192, 192); text-align: center; padding: 0px;cursor: pointer; margin-left:-8px;" -->
+                                                    <div class="hover-class round_add_count ">
+                                                        <span
+                                                            class="round_firstletter_count">+{{getRemainingAssigneeUserCount(user?.name)}}</span>
+                                                        <!-- style="font-size: 12px; color: grey;font-weight: 100;" -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </h5>
+                                </div>
+
+                                <div class="col-md-2 mt-1 ml-2" style="color: grey;">
+                                    <h5 class="text-uppercase font-weight-bold border-right">{{'Shared with teams' |
+                                        translate}}
+                                        <div class="row w-100 mt-3 ml-1"
+                                            *ngIf="list?.workspaceSecurityVO?.assignTeamList">
+                                            <div
+                                                *ngFor="let user of list?.workspaceSecurityVO?.assignTeamList;let i = index;">
+                                                <div *ngIf="i<=3"
+                                                    (click)="openTeamsDialog(i,list?.workspaceId, list?.workspaceSecurityVO?.assignTeamList, list?.workspaceSecurityVO?.assignOwnerList, list?.defaultWorkspace, list)"
+                                                    class="hover-class round_firstletter"
+                                                    [style.margin-left]="i>0?'-4px':''" [matTooltip]="user?.name"
+                                                    [style.background]="assigneeUserColorArray[i]">
+
+                                                    <span
+                                                        class="round_firstletter_size">{{getUserFirstAndLastNamePrefix(user?.name)}}</span>
+                                                </div>
+                                                <div *ngIf="i===4"
+                                                    (click)="openTeamsDialog(i,list?.workspaceId, list?.workspaceSecurityVO?.assignTeamList, list?.workspaceSecurityVO?.assignOwnerList, list?.defaultWorkspace)">
+
+                                                    <div class="hover-class  round_add_count">
+                                                        <span
+                                                            class="round_firstletter_count">+{{getRemainingAssigneeUserCount(user?.name)}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row w-100 mx-0 "
+                                            *ngIf="list?.workspaceSecurityVO?.assignTeamList.length===0 && list?.managedWorkspace === false && list?.securedWorkspaceFlag === true">
+
+                                            <div class="flag-container-css"
+                                                (click)="openTeamsDialog(i,list?.workspaceId, list?.workspaceSecurityVO?.assignTeamList, list?.workspaceSecurityVO?.assignOwnerList, list?.defaultWorkspace)">
+                                                <mat-icon appearance="filled" class="flag-css"> person
+                                                </mat-icon>
+                                                <mat-icon class="circle-css">add_circle</mat-icon>
+                                            </div>
+
+                                        </div>
+                                        <div class="row w-100 mx-0 "
+                                            *ngIf="list?.managedWorkspace === true || list?.securedWorkspaceFlag === false">
+
+                                            <div style="display: flex;">
+                                                <h4 style="font-size: 12px;" class=" font-weight-bold text-black">
+                                                    {{'Shared With All Teams'| translate }}</h4>
+                                                <mat-icon class="edit-desc-css  " (click)="editTeams(list)">
+                                                    drive_file_rename_outline
+                                                </mat-icon>
+                                            </div>
+
+                                        </div>
+                                    </h5>
+                                </div>
+
+                                <div class="col-md-3 mt-1 ml-2" style="color: grey;">
+                                    <h5 class="text-uppercase font-weight-bold border-right">
+                                        {{'Total Taskboards' | translate}}
+                                        <h1 style="margin-left: 5%;margin-top: 5%;color:black;font-size: 30px;">
+                                            {{list?.taskboard?.taskboardCount}}
+                                        </h1>
+
+                                    </h5>
+                                </div>
+
+                                <div class="col-md-3 mt-1 ml-2" style="color: grey;">
+                                    <h5 class="text-uppercase font-weight-bold border-right">{{'Total Workflows' |
+                                        translate}}
+                                        <h1 style="margin-left: 5%;margin-top: 5%;color:black;font-size: 30px;">
+                                            {{list?.workflow?.workflowCount}}
+                                        </h1>
+
+                                    </h5>
+
+                                </div>
+
+                                <div class="col-md-1 mt-1 ml-2" style="color: grey;">
+                                    <h5 class="text-uppercase font-weight-bold">{{'Total Docs' | translate}}</h5>
+                                    <h1 style="margin-left: 5%;margin-top: 5%;color:black;font-size: 30px;">
+                                        {{list?.yoroDocs?.yoroDocsCount}}
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </mat-tab>
+                <!-- <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="fw-bolder">Archived</span>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <span class="fw-bolder">Deleted</span>
+                    </ng-template>
+                </mat-tab> -->
+            </mat-tab-group>
+        </form>
+    </mat-card>
+</div>

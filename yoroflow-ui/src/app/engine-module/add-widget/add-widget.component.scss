@@ -1,0 +1,34 @@
+.active{
+    cursor: pointer;
+    background-color: #7f52c7;
+    color: white;
+  }
+  .menu-btn{
+      text-align: left;
+  }
+  .card{
+      height: 225px;
+      width: 200px;
+      border: 1px solid lightgray;
+      border-radius: 10px;
+      cursor: pointer;
+  }
+
+  .status-card{
+    height: 225px;
+    width: 200px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+  .border-bottom{
+      border-bottom: 0.5px solid lightgray;
+  }
+
+  .activeMode{
+    background-color: #e2daf5;
+    color:#7657ca;
+    font-weight: bold;
+  }
+  

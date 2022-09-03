@@ -1,0 +1,3 @@
+<app-application-launcher appId="Yoroflow-App" *ngIf="userService.loggedIn()" (applicationEmitter)="getTaskId($event)"
+    (pinEmitter)="pinClicked($event)" (notificationObjectEmitter)="getNotification($event)">
+</app-application-launcher>

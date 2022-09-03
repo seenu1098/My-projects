@@ -1,0 +1,51 @@
+<ng-container *ngIf="data.type !=='running'">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <h1 i18n="Add Sprint">Add Sprint</h1>
+        <mat-icon class="close-icon-css" matDialogClose id="close_sprint_dialog">close</mat-icon>
+    </div>
+    <form [formGroup]="form" #userForm="ngForm">
+        <mat-dialog-content>
+            Which sprint you want to add selected tasks?
+            <div fxLayout="row" style="margin-top: 10px;" fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="createSprint()" class="button-css"
+                    i18n="Create new sprint" id="create_sprint">Create new sprint</button>
+                <hr class="horizontal-line-css">
+                <span class="text-css" i18n="OR">OR</span>
+                <hr class="horizontal-line-css">
+                <mat-form-field appearance="outline">
+                    <mat-label i18n="Existing Sprint">Existing Sprint</mat-label>
+                    <mat-select formControlName="sprint" id="sprint">
+                        <ng-container *ngFor="let sprint of data?.taskboardVo?.sprintsVoList; let i = index;">
+                            <ng-container *ngIf="sprint?.sprintStatus !== 'c'">
+                                <mat-option [value]="sprint.sprintId" [id]="'sprint_'+i">
+                                    {{sprint.sprintName}} ({{sprint.sprintStartDate |
+                                    date:'MMM/dd'}}-{{sprint.sprintEndDate
+                                    |
+                                    date:'MMM/dd'}})
+                                    <span class="sprint-status-css fs_12 ml-2"
+                                        [style.background]="getSprintStatusColor(sprint?.sprintStatus)">{{getSprintStatusName(sprint?.sprintStatus)}}</span>
+                                </mat-option>
+                            </ng-container>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error>Sprint is required</mat-error>
+                </mat-form-field>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" (click)="save(userForm)" i18n="Add To Sprint" id="save">Add To
+                Sprint</button>
+            <button mat-raised-button color="accent" matDialogClose i18n="Cancel" id="close">Cancel</button>
+        </mat-dialog-actions>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="data.type==='running'">
+    <mat-dialog-content i18n="Selected sprint is already started, do you still want to add task to this sprint?">
+        Selected sprint has already started, do you still want to add task to this sprint?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="closeCheckDialog(true)" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="closeCheckDialog(false)" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>

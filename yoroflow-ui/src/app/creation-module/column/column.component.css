@@ -1,0 +1,62 @@
+/* .mat-form-field {
+    width: 90%;
+    font-size: 15px;
+    margin: 2%;
+} */
+.mat-error {
+    font-size: 10px; 
+}
+
+mat-form-field {
+    /* width: 90%; */
+    font-size: 13px;
+    margin: 2%;
+    margin-top:15px;
+}
+
+.border_right_lgray{
+    border-right: 1px solid lightgray;
+}
+
+.category-label-css {
+    font-size: 15px;
+    font-weight: 600;
+    color: grey;
+    padding: 20px 0px;
+}
+
+.category-button-css {
+    height: 40px;
+    width: 98%;
+    text-align: left;
+    margin-top: 10px;
+}
+
+::ng-deep #columnSideTab .mat-tab-label, ::ng-deep #columnSideTab .mat-tab-label-active{
+    min-width: 0px !important;
+    padding: 3px !important;
+    margin: 3px !important;
+    width:50px;
+}
+
+#workflow_formfield_popup ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+    padding: 12px 5px 7px 5px !important;
+    border: 5px !important;
+    }
+     #workflow_formfield_popup
+     ::ng-deep
+    .mat-form-field-flex
+     > .mat-form-field-infix
+    .mat-form-field-appearance-outline
+    .mat-form-field-suffix {
+    top: 0.45em;
+    }
+    #workflow_formfield_popup ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+    margin-top: 4px;
+    }
+    #workflow_formfield_popup ::ng-deep .mat-form-field-hide-placeholder .mat-form-field-label-wrapper {
+    top: -17px;
+    }
+    #workflow_formfield_popup ::ng-deep .mat-select-arrow {
+    margin-top: 11px !important;
+     } 

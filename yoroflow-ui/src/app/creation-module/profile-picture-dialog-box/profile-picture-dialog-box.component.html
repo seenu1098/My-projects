@@ -1,0 +1,82 @@
+<mat-card *ngIf="isMobile">
+    <ng-container *ngIf="data.type === 'profile-picture'">
+        <div class="container">
+            <div fxLayout="column" fxLayoutGap="10px" style="margin-top: 5%;">
+
+                <div fxLayout="column" fxLayoutGap="10px">
+                    <button mat-raised-button color="primary" type="button" id="import"
+                        style="height: 40px;padding: 3px 21px; width: 100%;" (click)="fileInput.click()">
+                        <span i18n="Choose Picture">Choose Picture</span>
+                        <input type="file" #fileInput (change)="fileChangeEvent($event)" style="display:none;"
+                            id="profilePicture" />
+                    </button>
+                    <button mat-raised-button color="accent" type="button" id="btnremoveProfilePicture" name="btnrset"
+                        class="resetbutton" (click)="removeProfilePicture()" *ngIf="data.usage === 'edit'"
+                        i18n="Remove">Remove</button>
+                </div>
+                <ng-container *ngIf="userProfilePicture">
+                    <div fxLayout="column" fxLayoutGap="20px">
+                        <div>
+                            <h5 i18n="Crop Image">Crop Image</h5>
+                            <image-cropper class="crop" [imageChangedEvent]="imageChangedEvent"
+                                [maintainAspectRatio]="true" [aspectRatio]="4 / 4" [resizeToWidth]="256" format="png"
+                                (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                                (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                            </image-cropper>
+                        </div>
+                        <div class="text-center col-md-4">
+                            <h5 i18n="Preview">Preview</h5>
+                            <img id="logo" [src]="croppedImage" class="logo" />
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" id="btnSave" (click)="saveCropedImage()"
+                [disabled]="showLoadedImage" i18n="Save">Save</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="cancel()" i18n="Cancel">Cancel</button>
+        </mat-dialog-actions>
+    </ng-container>
+</mat-card>
+
+<mat-card *ngIf="!isMobile">
+    <ng-container *ngIf="data.type === 'profile-picture'">
+        <div class="container">
+
+            <div class="row w-100 mx-0">
+                <button class="mr-3" mat-raised-button color="primary" type="button" id="import"
+                    style="height: 40px;padding: 3px 21px;" (click)="fileInput.click()">
+                    <span i18n="Choose Picture">Choose Picture</span>
+                    <input type="file" #fileInput (change)="fileChangeEvent($event)" style="display:none;"
+                        id="profilePicture" />
+                </button>
+                <button mat-raised-button color="accent" type="button" id="btnremoveProfilePicture" name="btnrset"
+                    class="resetbutton" (click)="removeProfilePicture()" *ngIf="data.usage === 'edit'"
+                    i18n="Remove">Remove</button>
+            </div>
+            <ng-container *ngIf="userProfilePicture">
+                <div class="row w-100 mx-0 mt-3">
+                    <div class="col-md-6">
+                        <h4 i18n="Crop Image">Crop Image</h4>
+                        <image-cropper class="crop" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+                            [aspectRatio]="4 / 4" [resizeToWidth]="256" format="png"
+                            (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                            (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                        </image-cropper>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 i18n="Preview">Preview</h4>
+                        <img id="logo" [src]="croppedImage" class="logo img-fluid" />
+                    </div>
+                </div>
+            </ng-container>
+
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" id="btnSave" (click)="saveCropedImage()"
+                [disabled]="showLoadedImage" i18n="Save">Save</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="cancel()" i18n="Cancel">Cancel</button>
+        </mat-dialog-actions>
+    </ng-container>
+</mat-card>

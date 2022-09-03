@@ -1,0 +1,20 @@
+<div fxLayout="column" fxLayoutAlign="space-around center"class="mt-5">
+    <mat-card *ngIf="type === 'page' || type === 'menu'">
+        <mat-card-title>No Application </mat-card-title>
+        <mat-card-content>There is no application created yet. Create Application to create<span *ngIf="type === 'menu'">&nbsp;menu</span><span *ngIf="type === 'page'">&nbsp;page</span></mat-card-content>
+        <mat-card-actions>
+            <div fxLayout="row" fxLayoutAlign="end end">
+                <button mat-raised-button id="createApp" color="accent" routerLink="/app/create">Create Application</button>
+            </div>
+        </mat-card-actions>
+    </mat-card>
+    <mat-card *ngIf="type === 'authorize'">
+            <mat-card-title>You are not authorized to access this page</mat-card-title>
+            <mat-card-content>Please contact administrator to get permission for access this page</mat-card-content>
+            <!-- <mat-card-actions>
+                <div fxLayout="row" fxLayoutAlign="end end">
+                    <button mat-raised-button color="accent" routerLink="/app/create">Create Application</button>
+                </div>
+            </mat-card-actions> -->
+        </mat-card>
+</div>

@@ -1,0 +1,39 @@
+<thy-layout *ngIf="show" [style.height.px]="scrollHeight">
+  <thy-header>
+    <ng-template #headerContent>
+      <thy-button-group thySize="sm" thyType="outline-default">
+        <button thyButton *ngFor="let view of views" [class.active]="view.value === viewType"
+          (click)="viewType = view.value">
+          {{ view.name | translate}}
+        </button>
+      </thy-button-group>
+      &nbsp; &nbsp; &nbsp;
+      <thy-button-group thySize="sm" thyType="outline-default">
+        <button thyButton *ngFor="let view of LinkType" [class.active]="view.value === link"
+          (click)="loadItem(view.value)">
+          {{ view.name | translate}}
+        </button>
+      </thy-button-group>
+      &nbsp; &nbsp; &nbsp;
+      <thy-button thyType="primary" thySize="sm" (click)="downloadAsPDF()"> {{'Download' | translate}}</thy-button>
+    </ng-template>
+  </thy-header>
+  <thy-content>
+    <ng-container>
+      <ngx-gantt #gantt id="gantt" [items]="items" [viewType]="viewType" [async]="true"
+        [childrenResolve]="childrenResolve" [draggable]="true" [linkable]="true" (barClick)="barClick($event)"
+        (lineClick)="lineClick($event)" (addTaskEmit)="addNewTask($event)" (dragEnded)="dragEnded($event)"
+        (linkDragEnded)="linkDragEnded($event)">
+        <ngx-gantt-table>
+          <ngx-gantt-column name="Title" width="180px">
+            <ng-template #cell let-item="item"> {{ item.title | translate}} </ng-template>
+          </ngx-gantt-column>
+        </ngx-gantt-table>
+
+        <ng-template #bar let-item="item">
+          <span style="color: #fff">&nbsp;&nbsp;{{ item.title | translate}} </span>
+        </ng-template>
+      </ngx-gantt>
+    </ng-container>
+  </thy-content>
+</thy-layout>

@@ -1,0 +1,135 @@
+<div style="height: 14px;width: 100%;">
+    <mat-progress-bar id="progressBar" *ngIf="showProgessBar" mode="indeterminate" color="primary"></mat-progress-bar>
+</div>
+<div fxLayoutAlign="end end" *ngIf="pageRendered">
+    <mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+</div>
+
+<mat-spinner [diameter]="40" style="margin-left: 48%;margin-top: 25%;" *ngIf="!pageRendered"></mat-spinner>
+<div style="width: 100%;" *ngIf="yoroflowVO.status === 'LAUNCH'">
+    <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version" [yoroflowInfo]="yoroflowVO"
+        (submit)="submit($event)" (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+        (progressBar)="showProgressbar($event)" *ngIf="show"></dynamic-page>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-between end" *ngIf="pageRendered && yoroflowVO.status !== 'LAUNCH'"
+    style="margin-top: 1%;">
+    <div>
+        <ng-container *ngIf="yoroflowVO.approvalStatus !== undefined && yoroflowVO.approvalStatus !== null">
+            <span style="font-size: medium; font-weight: bold;"> {{yoroflowVO.approvalStatus}} </span>
+        </ng-container>
+    </div>
+    <ng-container
+        *ngIf="taskNotesVOList.length>0  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+        <span [matBadge]="taskNotesVOList.length" matBadgeOverlap="true" (click)="openComments()"
+            style="font-weight: bold;">Workflow Comments</span>
+    </ng-container>
+    <ng-container
+        *ngIf="taskNotesVOList.length ===0  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+        <span style="font-size: medium;" (click)="openComments()" style="font-weight: bold;">Workflow Comments</span>
+    </ng-container>
+</div>
+<div fxLayout="column"
+    *ngIf="yoroflowVO.status !== 'LAUNCH' && (mobileQuery.matches || ipadResolution.matches || ipadProResolution.matches)">
+    <div style="width: 100%;">
+        <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version" [yoroflowInfo]="yoroflowVO"
+            (submit)="submit($event)" (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+            (progressBar)="showProgressbar($event)" *ngIf="show"></dynamic-page>
+    </div>
+    <ng-container *ngIf="pageRendered && yoroflowVO.status !== 'LAUNCH'">
+        <div style="margin: 1%;" class="comments-container">
+            <span style="font-size: medium;">Workflow Comments</span>
+            <form [formGroup]="form" #userForm="ngForm">
+                <div fxLayout="column">
+                    <mat-form-field>
+                        <mat-label>Add your comments here..</mat-label>
+                        <textarea matInput id="comment" placeholder="Add a comment..." formControlName="comment"
+                            (keyup.enter)="keyEnter($event)" [readonly]="showButton"></textarea>
+                        <mat-error>Add a comment to save</mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="end end">
+                        <button mat-raised-button id="btnsave" color="primary" (click)="addComment()"
+                            style="width: 20%;" [disabled]="showButton">Save</button>
+                    </div>
+                </div>
+            </form>
+            <ng-container *ngIf="taskNotesVOList.length >0 ">
+                <div>
+                    <div *ngFor="let note of taskNotesVOList">
+
+                        <div fxLayout="row" fxLayoutAlign="end end">
+                            <div class="message-container" fxLayout="column">
+                                <div style="font-size: 15px;" fxLayout="row" fxLayoutGap="10px"
+                                    fxLayoutAlign="space-between center">
+                                    <div style="font-size: small;">
+                                        {{note.userName}}
+                                    </div>
+
+                                    <div style="font-size: smaller;">
+                                        {{getBrowsertime(note.creationTime) | date :'MMM d, y, h:mm a'}}
+                                    </div>
+                                </div>
+                                <div style="font-size: small;">{{note.notes}}</div>
+                            </div>
+                            <div class="chat-history-circle" style="margin-bottom: 15px;">{{userProfile(note.userName)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>
+<mat-sidenav-container
+    *ngIf="yoroflowVO.status !== 'LAUNCH'  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+    <mat-sidenav #sidenav mode="side" position="end" style="overflow: hidden;">
+        <div>
+
+            <form [formGroup]="form" #userForm="ngForm">
+                <div fxLayout="column">
+                    <mat-form-field>
+                        <mat-label>Add your comments here..</mat-label>
+                        <textarea matInput id="comment" placeholder="Add a comment..." formControlName="comment"
+                            (keyup.enter)="keyEnter($event)" [readonly]="showButton"></textarea>
+                        <mat-error>Add a comment to save</mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="end end">
+                        <button mat-raised-button id="btnsave" color="primary" (click)="addComment()"
+                            style="width: 20%;" [disabled]="showButton">Save</button>
+                    </div>
+                </div>
+            </form>
+            <ng-container *ngIf="taskNotesVOList.length >0 ">
+                <div class="workflow-container scrollbar-css">
+                    <div *ngFor="let note of taskNotesVOList">
+                        <div fxLayout="row" fxLayoutAlign="end end">
+                            <div class="message-container" fxLayout="column">
+                                <div style="font-size: 15px;" fxLayout="row" fxLayoutGap="10px"
+                                    fxLayoutAlign="space-between center">
+                                    <div style="font-size: small;">
+                                        {{note.userName}}
+                                    </div>
+
+                                    <div style="font-size: smaller;">
+                                        {{getBrowsertime(note.creationTime) | date :'MMM d, y, h:mm a'}}
+                                    </div>
+                                </div>
+                                <div style="font-size: small;">{{note.notes}}</div>
+                            </div>
+                            <div class="chat-history-circle" style="margin-bottom: 15px;">{{userProfile(note.userName)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div [style.width.%]="100">
+            <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version" [yoroflowInfo]="yoroflowVO"
+                (submit)="submit($event)" (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+                (progressBar)="showProgressbar($event)" *ngIf="show"></dynamic-page>
+
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

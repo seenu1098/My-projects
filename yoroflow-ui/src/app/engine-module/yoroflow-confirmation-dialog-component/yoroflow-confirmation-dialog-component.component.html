@@ -1,0 +1,218 @@
+<ng-container *ngIf="data.type==='notes'">
+    <mat-dialog-content>
+        Are you sure want to delete?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteNotes()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type==='files'">
+    <mat-dialog-content>
+        Are you sure want to delete this {{data.name}} file?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteFiles()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data==='selectForm'">
+    <mat-card>
+        <form [formGroup]="formIdForm" (ngSubmit)="selectedPageId()">
+            <mat-form-field>
+                <mat-label>Select Form Id</mat-label>
+                <mat-select formControlName="formId">
+                    <mat-option *ngFor="let pageList of pageIdList" [value]="pageList.pageId">
+                        {{pageList.pageId}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+                <button mat-raised-button id="select" color="primary">Select</button>
+                <button mat-raised-button color="accent" type="button" id="cancel" (click)="onNoClick()">Cancel</button>
+            </div>
+        </form>
+    </mat-card>
+</ng-container>
+<ng-container *ngIf="data==='custom-form'">
+    <mat-card>
+        <form [formGroup]="formIdForm" (ngSubmit)="selectedPageId()">
+            <mat-form-field>
+                <mat-label>Select Custom Form</mat-label>
+                <mat-select id="formId" formControlName="formId">
+                    <mat-option *ngFor="let pageList of pageIdList" [value]="pageList.pageName">
+                        {{pageList.pageName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+                <button mat-raised-button id="select" color="primary">Select</button>
+                <button mat-raised-button color="accent" type="button" id="cancel" (click)="onNoClick()">Cancel</button>
+            </div>
+        </form>
+    </mat-card>
+</ng-container>
+
+<ng-container *ngIf="data==='selectTable'">
+    <mat-card>
+        <form [formGroup]="tableIdForm" (ngSubmit)="selectedTable()">
+            <mat-form-field>
+                <mat-label>Select Table Name</mat-label>
+                <mat-select id="tableName" formControlName="tableName">
+                    <mat-option [value]="list.tableIdentifier" (click)="setTableId(list.tableObjectId)"
+                        *ngFor="let list of tableList">
+                        {{list.tableName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+                <button mat-raised-button id="select" color="primary">Select</button>
+                <button mat-raised-button color="accent" type="button" id="cancel" (click)="onNoClick()">Cancel</button>
+            </div>
+        </form>
+    </mat-card>
+</ng-container>
+
+<ng-container *ngIf="data.type==='variableTypeChange'">
+    <mat-card>
+        <mat-card-title>
+            Select Data Type
+        </mat-card-title>
+        <form [formGroup]="assignmentTypeForm" (ngSubmit)="constantValue()">
+            <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field>
+                    <mat-label>Data Type</mat-label>
+                    <mat-select id="dataType" formControlName="dataType">
+                        <mat-option value="number">number</mat-option>
+                        <mat-option value="text">text</mat-option>
+                        <mat-option value="date">date</mat-option>
+                    </mat-select>
+                    <mat-error>Data Type is required</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+                <button mat-raised-button id="select" color="primary">Select</button>
+                <button mat-raised-button color="accent" type="button" id="cancel"
+                    (click)="onNoClickTask()">Cancel</button>
+            </div>
+        </form>
+    </mat-card>
+</ng-container>
+
+<ng-container *ngIf="data==='bothConnections'">
+    <mat-dialog-content>
+        This node has Connection.
+        Do you want to delete this Node?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteConnection()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='startOrEndConnections'">
+    <mat-dialog-content>
+        Do you want to delete this Node?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteConnection()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='deleteLink'">
+    <mat-dialog-content>
+        Do you want to delete this Link?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteConnection()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data==='linkProperty' || this.data === 'cancelWorkflow'">
+    <form [formGroup]="assignmentTypeForm">
+        <mat-form-field>
+            <mat-label>Task Type</mat-label>
+            <mat-select id="taskType" formControlName="taskType">
+                <ng-container *ngIf="data==='linkProperty'">
+                    <mat-option value="Matches">Matches</mat-option>
+                    <mat-option value="Not Matches">Not Matches</mat-option>
+                </ng-container>
+                <ng-container *ngIf="data==='cancelWorkflow'">
+                    <mat-option value="Yes">Connection When Cancel</mat-option>
+                    <mat-option value="No">Connection For Task</mat-option>
+                </ng-container>
+            </mat-select>
+            <mat-error>Task Type is required</mat-error>
+        </mat-form-field>
+        <br>
+        <div fxLayout="row" fxLayoutGap="10px">
+            <button mat-raised-button id="btnSave" color="primary" (click)="saveLink()">Save</button>
+            <button mat-raised-button id="cancel" color="accent" (click)="onNoClick()">Cancel</button>
+        </div>
+
+    </form>
+</ng-container>
+
+<ng-container *ngIf="data==='approveTaskProperty'">
+    <form [formGroup]="assignmentTypeForm">
+        <mat-form-field>
+            <mat-label>Task Type</mat-label>
+            <mat-select formControlName="taskType">
+                <mat-option value="Approve Task">Approve Task</mat-option>
+                <mat-option value="Reject Task">Reject Task</mat-option>
+                <mat-option value="Send Back">Send Back</mat-option>
+            </mat-select>
+            <mat-error>Task Type is required</mat-error>
+        </mat-form-field>
+        <br>
+        <div fxLayout="row" fxLayoutGap="10px">
+            <button mat-raised-button id="btnSave" color="primary" (click)="saveLink()">Save</button>
+            <button mat-raised-button id="cancel" color="accent" (click)="onNoClick()">Cancel</button>
+        </div>
+
+    </form>
+</ng-container>
+
+<!-- <ng-container *ngIf="data.type==='task-property'">
+    <mat-dialog-content>
+        Do you have a form?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" (click)="openPage()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container> -->
+
+<ng-container *ngIf="data.type==='reassign'">
+    <mat-dialog-content>
+        {{data.json.response}}
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnOk" (click)="closeDialog()">Ok</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='cancelTask'">
+    <mat-dialog-content>
+        Do you want to cancel this Task?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="cancelTask()">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.data==='saveAttribute'">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <h2 class="fs_12 mb-0">{{'Please provide the below values to continue' | translate}}
+        </h2>
+        <mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+    </div>
+    <app-user-custom-attributes fromData="forCheck" (isDialogClose)="dialogClose($event)" from="login">
+    </app-user-custom-attributes>
+</ng-container>
+<ng-container *ngIf="data.type==='accountDetails'">
+    <mat-dialog-content>
+        Your account details has been saved successfully. Please validate your email to create account.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="closeDialog()">OK</button>
+    </mat-dialog-actions>
+</ng-container>

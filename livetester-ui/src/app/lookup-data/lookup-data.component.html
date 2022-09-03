@@ -1,0 +1,80 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+  <div fxFlex="100%">
+    <mat-card class="card-style">
+      <div class="accordion-form-section">
+        <form [formGroup]="lookupType" #userForm="ngForm">
+          <mat-card style="margin-top: 1%">
+            <mat-card-title>Lookup Data</mat-card-title>
+            <div fxLayoutAlign="space-between center" style="margin-top:1%">
+              <p style="width: 60%">
+                <mat-form-field>
+                  <mat-label>Lookup Data Code</mat-label>
+                  <mat-select [(value)]="selected" id="lookupDataList">
+                    <mat-option id="lookupDataOption" [value]="lookupData.id" (onSelectionChange)="loadLookupDataInfo($event, userForm)"
+                      *ngFor="let lookupData of response">
+                      {{lookupData.code }} - {{lookupData.description}} ({{lookupData.type}})</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </p>
+              <div fxLayoutAlign="end center">
+                <button *ngIf="deleteButtonVisible" mat-raised-button color="primary" (click)="editLookupData()"
+                  style="margin-right:5%" id="editBtn">Edit</button>
+                <button *ngIf="deleteButtonVisible" mat-raised-button color="warn" (click)="deleteLookupData(userForm)"
+                  id="deleteBtn">Delete</button>
+              </div>
+            </div>
+          </mat-card>
+
+          <mat-card style="margin-top: 1%">
+            <input type="hidden" name="lookupDataId" formControlName="id" />
+            <p style="width: 40%;">
+              <mat-form-field>
+                <mat-label>Lookup Data Code</mat-label>
+                <input matInput type="text" formControlName="code" readonly="{{readonly}}" id="code">
+                <mat-error class="text-danger" id="codeRequired"
+                  *ngIf="lookupType.get('code').errors?.required
+                                    &&(userForm.submitted || lookupType.get('code').touched || lookupType.get('code').dirty)">
+                  Claim Type Code is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p style="width: 40%;">
+              <mat-form-field>
+                <mat-label>Lookup Type</mat-label>
+                <mat-select formControlName="type" id="type">
+                  <mat-option value="Submitters" id="Submitters">Submitters</mat-option>
+                  <mat-option value="Receiver" id="Receiver">Receiver</mat-option>
+                  <!-- <mat-option value="Form Type" id="Form Type">Form Type</mat-option> -->
+                  <mat-option value="Frequency" id="Frequency">Frequency</mat-option>
+                  <mat-option value="Source" id="Source">Source</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="typeRequired"
+                  *ngIf="lookupType.get('type').errors?.required
+                                  &&(userForm.submitted || lookupType.get('type').touched || lookupType.get('type').dirty)">
+                  Lookup Type is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p style="width: 40%;">
+              <mat-form-field>
+                <mat-label>Description</mat-label>
+                <textarea matInput cols="30" rows="4" formControlName="description" id="description"></textarea>
+                <mat-error class="text-danger" id="descriptionRequired"
+                  *ngIf="lookupType.get('description').errors?.required
+                                  &&(userForm.submitted || lookupType.get('description').touched || lookupType.get('description').dirty)">
+                  Description is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+
+          </mat-card>
+          <div fxLayoutAlign="end start" style="margin-top:1%">
+            <button mat-raised-button color="primary" style="margin-right: 1%" (click)="save(userForm)"
+              id="btnSave">Save</button>
+            <button mat-raised-button color="accent" type="reset" (click)="clear('reset')" id="btnreset">Reset</button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+  </div>
+</div>

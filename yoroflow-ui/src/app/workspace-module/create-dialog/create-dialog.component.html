@@ -1,0 +1,158 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <div class="row w-100 mx-0">
+        <div class="col-md-8">
+            <h3 style="font-weight: bold;text-transform: uppercase;">{{'Workspace' | translate}}</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="row w-100 mx-0 justify-content-end">
+                <button mat-button type="button" i18n="Cancel" (click)="cancelTask()" class="mat-icon-color"
+                    matTooltip="{{'Close' | translate}}" id="close_btn">
+                    <mat-icon>close</mat-icon>
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <mat-stepper [linear]="false" #stepper id="work_space">
+        <mat-step>
+            <ng-template matStepLabel>{{'Add' | translate}}</ng-template>
+            <mat-card>
+                <h3 style="font-weight: bold;">{{'Add Workspace Name' | translate}}</h3>
+                <div class="row">
+                    <div class="col-md-5 px-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{'Workspace Name' | translate}}</mat-label>
+                            <input matInput placeholder="Workspace Name *" formControlName="workspaceName"
+                                (focusout)="generateName()" id="workspace_name">
+                            <mat-error *ngIf="form.get('workspaceName').errors?.required" id="name_required">
+                                {{'Workspace Name is required.' | translate}}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('workspaceName').errors?.alreadyExist" id="already_exist">
+                                {{'Workspace Name already exists.' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3 px-2">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{'Workspace Id' | translate}}</mat-label>
+                            <input matInput placeholder="Workspace Id *" formControlName="workspaceUniqueId"
+                                id="workspace_id" (focusout)="generateNamekey()">
+                            <mat-error *ngIf="form.get('workspaceUniqueId').errors?.required" id="name_required_id">
+                                {{'Workspace Id is required.' | translate}}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('workspaceUniqueId').errors?.minlength" id="name_required_id">
+                                {{'Workspace Id should be 3 charecters.' | translate}}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('workspaceUniqueId').errors?.maxlength" id="name_required_id">
+                                {{'Workspace Id should be 3 charecters.' | translate}}
+                            </mat-error>
+                            <mat-error *ngIf="form.get('workspaceUniqueId').errors?.alreadyExist" id="already_exist_id">
+                                {{'Workspace Id already exists.' | translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3  pt-3">
+                        <button mat-raised-button color="primary" type="button" class=" float-right" id="next"
+                            [disabled]="form.get('workspaceName').errors?.required || !allowNextStep
+                            || form.get('workspaceUniqueId').errors || form.get('workspaceUniqueId').value === ''"
+                            matStepperNext>{{'Next' |
+                            translate}}</button>
+                    </div>
+                </div>
+            </mat-card>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>{{'Customize' | translate}}</ng-template>
+            <mat-card>
+                <h3 style="font-weight: bold;">{{"Customize Workspace's Avatar" | translate}}</h3>
+                <div class="row">
+                    <div class="col-md-1 px-2">
+                        <div class="circle-class-workspace"
+                            [style.background]="selectedAvatarColor ? selectedAvatarColor :  'grey'">A
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row w-100 mx-0">
+                            <div class="col-md-11">
+                                <div class="row w-100 mx-0">
+                                    <div class="mt-2">
+                                        <mat-icon (click)="changeAvatarColor('grey')">block</mat-icon>
+                                    </div>
+                                    <div class="circle-class-avatar" *ngFor="let color of avatarColors"
+                                        [style.background]="color" (click)="changeAvatarColor(color)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pt-3">
+                        <div class="row w-100 mx-0">
+                            <button mat-raised-button color="accent" type="button" class="mr-2 float-right"
+                                matStepperPrevious id="back">{{'Back' | translate}}</button>
+                            <button mat-raised-button color="primary" type="button" class="float-right" matStepperNext
+                                id="next">{{'Next' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </mat-card>
+        </mat-step>
+
+        <mat-step>
+            <ng-template matStepLabel>{{'Team' | translate}}</ng-template>
+            <mat-card>
+                <div class="row w-100 mx-0">
+                    <div class="col-md-3">
+                        <div class="float-right">
+                            <h3 style="font-weight: bold;">{{'Allow All Teams' | translate}}</h3>
+                            <mat-slide-toggle formControlName="allowAll" (change)="allowAllTeamChange($event)"
+                                id="allow_all">
+                                {{'Allow All' | translate}}
+                            </mat-slide-toggle>
+                        </div>
+                    </div>
+                    <div class="col-md-1" *ngIf="form.get('allowAll').value === false">
+                        <p class="mt-3 float-right">{{'(or)' | translate}}</p>
+                    </div>
+                    <div class="col-md-4 float-right ml-4" *ngIf="form.get('allowAll').value === false">
+                        <h3 style="font-weight: bold;">{{'Allow Teams to your Workspace' | translate}} </h3>
+                        <div class="flag-container-css" (click)="openTeamsDialog()" *ngIf="teamList.length === 0">
+                            <mat-icon appearance="filled" class="flag-css" id="person_icon"> person
+                            </mat-icon>
+                            <mat-icon class="circle-css">add_circle</mat-icon>
+                        </div>
+                        <div class="row w-100 mx-0" *ngIf="teamList.length > 0">
+                            <div *ngFor="let user of teamList;let i = index;">
+
+                                <div *ngIf="i<=3" (click)="openTeamsDialog()"
+                                    style="width: 30px; height: 30px; line-height: 30px; border-radius: 50%;text-align: center; padding: 0px;cursor: pointer;"
+                                    class="hover-class" [style.margin-left]="i>0?'-8px':''" [matTooltip]="user?.name"
+                                    [style.background]="assigneeUserColorArray[i]">
+                                    <span
+                                        style="font-size: 12px; color: white;font-weight: 100;">{{getUserFirstAndLastNamePrefix(user?.name)}}</span>
+                                </div>
+                                <ng-container *ngIf="i===4" (click)="openTeamsDialog()">
+                                    <div style=" width: 30px; height: 30px; line-height: 30px; border-radius: 50%;  background-color: rgb(192, 192, 192); text-align: center; padding: 0px;cursor: pointer; margin-left:-8px;"
+                                        class="hover-class">
+                                        <span
+                                            style="font-size: 12px; color: grey;font-weight: 100;">+{{getRemainingAssigneeUserCount(user?.name)}}</span>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- <div class="row w-100 mx-0"> -->
+                        <button mat-raised-button color="primary" type="button" class="float-right" (click)="create()"
+                            id="create">{{'Create' | translate}}</button>
+                        <button mat-raised-button color="accent" type="button" class="mr-2 float-right"
+                            matStepperPrevious id="back">{{'Back' | translate}}</button>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </mat-card>
+        </mat-step>
+    </mat-stepper>
+</form>

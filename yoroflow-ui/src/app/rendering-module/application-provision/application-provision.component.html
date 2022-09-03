@@ -1,0 +1,119 @@
+<mat-card class="bg-whitesmoke" [style.height]="screenHeight1">
+
+    <form [formGroup]="form" #userForm="ngForm">
+        <mat-card class="mt-2">
+            <mat-card-title class="" i18n="@@Create Application">Create Application</mat-card-title>
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="@@Application Name *">Application Name *</mat-label>
+                        <input matInput type="text" id="applicationName" formControlName="applicationName"
+                            (focusout)="createAppIdByAppName()" #message maxlength="100">
+                        <mat-hint align="start"><strong i18n="Characters remaining">Characters remaining</strong>
+                        </mat-hint>
+                        <mat-hint align="end">{{message.value.length}} / 100</mat-hint>
+                        <mat-error *ngIf="form.get('applicationName').errors?.required" i18n="Application Name is
+                            required">Application Name is
+                            required</mat-error>
+                        <mat-error *ngIf="form.get('applicationName').errors?.alreadyExist"
+                            i18n="Application Name already exist">
+                            Application Name
+                            already exist</mat-error>
+
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="Application Identifier *">Application Identifier *</mat-label>
+                        <input matInput type="text" id="subdomainName" formControlName="applicationId"
+                            (focusout)="createApplicationIdentifier('applicationId','update')"
+                            readonly="{{appIdentifierReadOnlyValue}}">
+                        <mat-error *ngIf="form.get('applicationId').errors?.required" i18n="Application Identifier
+                            is required">Application Identifier
+                            is required</mat-error>
+                        <mat-error *ngIf="form.get('applicationId').errors?.alreadyExist" i18n="Application
+                            Identifier already exist">Application
+                            Identifier already exist</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label i18n="Time Zone *">Time Zone *</mat-label>
+                        <mat-select id="timezone" formControlName="timezone">
+                            <mat-option value="EST" id="EST" i18n="Eastern Standard Time">Eastern Standard Time
+                            </mat-option>
+                            <mat-option value="CST" id="CST" i18n="Central Standard Time">Central Standard Time
+                            </mat-option>
+                            <mat-option value="PST" id="PST" i18n="Pacific Standard Time">Pacific Standard Time
+                            </mat-option>
+                            <mat-option value="AKST" id="AKST" i18n="Alaska Standard Time">Alaska Standard Time
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('timezone').errors?.required" i18n="Time Zone is required">Time Zone
+                            is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label i18n="Default Language *">Default Language *</mat-label>
+                        <mat-select id="defaultLanguage" formControlName="defaultLanguage">
+                            <mat-option value="en">English</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('defaultLanguage').errors?.required" i18n="Default Language is
+                            required">Default Language is
+                            required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <mat-form-field class="w-100" appearance="outline">
+                            <mat-label i18n="Description *">Description *</mat-label>
+                            <textarea matInput id="description" formControlName="description" rows="3" cols="5"
+                                #textArea maxlength="200"></textarea>
+                            <mat-hint align="start"><strong i18n="Characters remaining">Characters remaining</strong>
+                            </mat-hint>
+                            <mat-hint align="end">{{textArea.value.length}} / 200</mat-hint>
+                            <mat-error *ngIf="form.get('description').errors?.required" i18n="Description is required">
+                                Description is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <mat-form-field class="w-100" appearance="outline">
+                            <mat-label i18n="Select Organization Theme">Select Organization Theme </mat-label>
+                            <mat-select id="themeName" formControlName="themeName">
+                                <mat-option [value]="theme.themeName" *ngFor="let theme of themesList"
+                                    (onSelectionChange)="setThemeId(theme.themeId,$event)">{{theme.themeName}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.get('themeName').errors?.required"
+                                i18n="Select Organization Theme is required">Theme is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3 col-sm-12 pt-2">
+                        <app-upload-logo #uploadLogo [action]="uploadAction" (uploaded)="getUploaded($event)"
+                            buttonName="Upload Application Logo" class="mt-1"></app-upload-logo>
+
+                        <app-load-logo [base64Image]="loadLogo.previewUrl" *ngIf="loadLogo.previewUrl">
+                        </app-load-logo>
+                    </div>
+                </div>
+                <div class="row justify-content-end mt-3">
+                    <button mat-raised-button id="security" color="primary" type="button" class="mr-3 floar-right"
+                        (click)="openApplicationPermissions()" [disabled]="securityOptionEnable" i18n="Security">
+                        Security
+                    </button>
+                    <button [appDebounce]="3000" mat-raised-button id="submit" color="primary"
+                        (click)="submit(userForm)" class="mr-3 floar-right" [disabled]="!userForm.dirty"
+                        i18n="Submit">Submit</button>&nbsp;
+                    <button mat-raised-button id="reset" type="reset" (click)="reset(userForm)" class="mr-3 floar-right"
+                        color="accent" i18n="Reset">Reset</button>
+                </div>
+            </div>
+        </mat-card>
+    </form>
+</mat-card>

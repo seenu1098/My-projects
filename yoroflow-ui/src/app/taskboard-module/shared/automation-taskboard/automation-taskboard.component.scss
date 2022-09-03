@@ -1,0 +1,178 @@
+.line-style {
+    border-top: 0.5px solid rgb(211, 211, 211);
+    width: 80%;
+    margin: 12px 0px 0px 5px;
+}
+
+.taskboardList-style {
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 24px;
+    border-radius: 3px;
+    color: grey;
+    cursor: pointer;
+    padding: 2px 6px 0px 6px;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid rgba(88, 88, 88, 0.178);
+}
+td,
+th {
+    height: 10px;
+    padding: 5px;
+    text-align: left;
+    border: 1px solid rgba(88, 88, 88, 0.178);
+}
+
+.input-border {
+    border: 1px solid rgba(88, 88, 88, 0.178);
+    border-radius: 5px;
+}
+
+#form ::ng-deep .mat-select-arrow {
+    margin-top: 2px !important;
+}
+
+.f_12 {
+    font-size: 12px !important;
+    margin-bottom: 0px !important;
+    margin-top: 5px;
+}
+
+.border-css {
+    border: none;
+}
+
+button.mat-menu-item {
+    width: 100%;
+    padding-top: 0px !important;
+    height: 35px !important;
+    line-height: 35px !important;
+}
+
+.f_20 {
+    font-size: 20px !important;
+    margin-bottom: 7px;
+}
+
+.f_21 {
+    font-size: 20px !important;
+    margin-top: 3px;
+}
+
+#icon-button {
+    border-radius: 0;
+    color: rgb(0, 128, 0);
+    background-color: #98fc98;
+    text-align: center;
+}
+
+.hr_style {
+    width: 45%;
+    height: 0.5px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.hr_style_pagefield {
+    width: 66%;
+    height: 0.5px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+::ng-deep .column-menu {
+    width: 350px !important;
+}
+
+.date-picker {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    padding: 4px;
+}
+
+/**** Start falling dots ****/
+.dot-falling {
+    position: relative;
+    left: -9999px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    box-shadow: 9999px 0 0 0 #9880ff;
+    animation: dotFalling 1s infinite linear;
+    animation-delay: .1s;
+  }
+  
+  .dot-falling::before, .dot-falling::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+  
+  .dot-falling::before {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFallingBefore 1s infinite linear;
+    animation-delay: 0s;
+  }
+  
+  .dot-falling::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFallingAfter 1s infinite linear;
+    animation-delay: .2s;
+  }
+  
+  @keyframes dotFalling {
+    0% {
+      box-shadow: 9999px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+    25%,
+    50%,
+    75% {
+      box-shadow: 9999px 0 0 0 #9880ff;
+    }
+    100% {
+      box-shadow: 9999px 15px 0 0 rgba(152, 128, 255, 0);
+    }
+  }
+  
+  @keyframes dotFallingBefore {
+    0% {
+      box-shadow: 9984px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+    25%,
+    50%,
+    75% {
+      box-shadow: 9984px 0 0 0 #9880ff;
+    }
+    100% {
+      box-shadow: 9984px 15px 0 0 rgba(152, 128, 255, 0);
+    }
+  }
+  
+  @keyframes dotFallingAfter {
+    0% {
+      box-shadow: 10014px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+    25%,
+    50%,
+    75% {
+      box-shadow: 10014px 0 0 0 #9880ff;
+    }
+    100% {
+      box-shadow: 10014px 15px 0 0 rgba(152, 128, 255, 0);
+    }
+  }
+/*** end falling dots ***/  

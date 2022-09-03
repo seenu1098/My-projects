@@ -1,0 +1,778 @@
+<mat-card>
+    <mat-card-title>Shopping Configuration </mat-card-title>
+    <form [formGroup]="form" #userForm="ngForm">
+        <ng-container *ngIf="data[0].controlType === 'shoppingcart'">
+            <div formGroupName="field">
+                <div formGroupName="control">
+                    <mat-expansion-panel style="background-color: rgb(240, 251, 255);"
+                        [expanded]="openShoopingNameConfig === true" (opened)="shoppingCartNamePanelOpen()"
+                        (closed)="openShoopingNameConfig = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Shopping cart name and steps
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <mat-vertical-stepper linear #stepper style="width: 90%;">
+                            <mat-step class="mat-elevation-z8" editable="true">
+                                <ng-template matStepLabel>What is your shopping cart name</ng-template>
+                                <mat-form-field style="width: 30%;">
+                                    <input matInput id="shoppingCartLabel" placeholder="Shopping Cart Name *"
+                                        formControlName="shoppingCartLabel" (focusout)="generateShoppingCartName()">
+                                        <mat-error *ngIf="form.get('field').get('control').get('shoppingCartLabel').errors?.required">Shopping Cart Name is required</mat-error>
+                                        <mat-error *ngIf="form.get('field').get('control').get('shoppingCartLabel').errors?.duplicate
+                                        || isUnique">Shopping Cart Name should be unique</mat-error>
+                                </mat-form-field>
+                                <div>
+                                    <button mat-raised-button color="primary" type="button" id="shoppingCartNameButton"
+                                        [disabled]="form.get('field').get('control').get('shoppingCartLabel').errors?.required
+                                        || form.get('field').get('control').get('shoppingCartLabel').errors?.duplicate || checkUnique"
+                                        style="margin-top: 2%;" matStepperNext>Next</button>
+                                </div>
+                            </mat-step>
+                            <mat-step editable="true">
+                                <ng-template matStepLabel>Select currency type</ng-template>
+                                <mat-form-field style="width: 25%;">
+                                    <mat-label>Currency Type *</mat-label>
+                                    <mat-select id="currencyType" formControlName="currencyType">
+                                        <mat-option id="usd" value="USD">USD</mat-option>
+                                        <mat-option id="inr" value="INR">INR</mat-option>
+                                    </mat-select>
+                                    <mat-error> Currency type is Required</mat-error>
+                                </mat-form-field>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                matStepperPrevious>Previous</button> -->
+                                    <button mat-raised-button color="primary" type="button" [disabled]="
+                                form.get('field').get('control').get('currencyType').errors?.required"
+                                id="currencyTypeButton"   style="margin-top: 3%;" matStepperNext>Next</button>
+                                </div>
+                            </mat-step>
+                            <mat-step editable="true">
+                                <ng-template matStepLabel>Is it a taxable payment</ng-template>
+                                <div fxLayout="row" fxLayoutGap="10px" style="width: 88%">
+                                <div class="mat-slide-toggle-content" style="width: 45%;">
+                                    <mat-slide-toggle style="margin-left: 3%;margin-top: 2%;" color="accent"
+                                        formControlName="isTaxable" id ="taxable">
+                                        Is taxable payment
+                                    </mat-slide-toggle>
+                                </div>
+                                <ng-container *ngIf="form.get('field').get('control').get('isTaxable').value === true">
+                                    <mat-form-field style="width: 25%;">
+                                    <mat-label>Tax Percentage</mat-label>
+                                    <input matInput id="taxPercentage" type="number" formControlName="taxPercentage"
+                                        min="0" oninput="this.value = Math.abs(this.value)">
+                                    </mat-form-field>
+                                </ng-container>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                matStepperPrevious>Previous</button> -->
+                                    <button mat-raised-button color="primary" type="button" style="margin-top: 3%;"
+                                    id="taxButton"   matStepperNext>Next</button>
+                                </div>
+                            </mat-step>
+                            <mat-step editable="true">
+                                <ng-template matStepLabel>How many steps involved</ng-template>
+                                <mat-form-field style="width: 30%;">
+                                    <mat-label>Number Of Steps *</mat-label>
+                                    <input matInput id="stepsInvolved" type="number" formControlName="stepsInvolved"
+                                        min="1" oninput="this.value = Math.abs(this.value)"
+                                        (focusout)="getSteparray(form.get('field').get('control').get('stepsInvolved').value, false)">
+                                    <mat-error> Number Of Steps is Required</mat-error>
+                                </mat-form-field>
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                matStepperPrevious>Previous</button> -->
+                                    <button mat-raised-button color="primary" type="button" [disabled]="
+                                form.get('field').get('control').get('stepsInvolved').errors?.required"
+                                id="numberOfStepsButton" (click)="goToStepNames()" style="margin-top: 3%;">Next</button>
+                                </div>
+                            </mat-step>
+                        </mat-vertical-stepper>
+                    </mat-expansion-panel>
+                    <ng-container *ngIf="enableStepNameStepper === true">
+                        <mat-expansion-panel style="background-color: rgb(250, 242, 231);"
+                            [expanded]="enableStepNameStepperPanel === true" (opened)="shoppingCartStepsPanelOpen()"
+                            (closed)="enableStepNameStepperPanel = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Step names
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            {{getStepNamesArray().length}}
+                            <mat-vertical-stepper linear #stepper formArrayName="nameOfSteps">
+                                <ng-container>
+                                    <mat-step [formGroupName]="i"
+                                        *ngFor="let step of getStepNamesArray().controls; let i = index">
+                                        <ng-template matStepLabel>Give step {{step.get('stepIndex').value + 1}} name
+                                        </ng-template>
+                                        <mat-form-field style="width: 25%;">
+                                            <input matInput [id]="i + 'stepLabel'" formControlName="stepLabel"
+                                                [placeholder]="'Step ' + (step.get('stepIndex').value + 1) + ' name'"
+                                                (focusout)="addStepName(step.get('stepName'), step.get('stepLabel'), step.get('stepIndex'), i)">
+                                        </mat-form-field>
+                                        <div fxLayout="row" fxLayoutGap="10px">
+                                            <!-- <button mat-raised-button *ngIf="i!==0" color="primary" style="margin-top: 2%;"
+                                        matStepperPrevious>Previous</button> -->
+                                            <button mat-raised-button color="primary" type="button" [disabled]="
+                                        step.get('stepLabel').errors?.required" (click)="goToStepDetails(i)"
+                                        [id]="i + 'stepLabelButton'"  matStepperNext style="margin-top: 2%;">Next</button>
+                                        </div>
+                                    </mat-step>
+                                </ng-container>
+                            </mat-vertical-stepper>
+                        </mat-expansion-panel>
+                    </ng-container>
+                    <ng-container *ngIf="enableStepDetailsStepper === true">
+                        <mat-expansion-panel style="background-color: rgb(253, 251, 236);"
+                            [expanded]="enableStepDetailsStepperPanel === true"
+                            (opened)="shoppingCartStepDetailsPanelOpen()"
+                            (closed)="enableStepDetailsStepperPanel = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Configure steps
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <mat-vertical-stepper linear #stepper formArrayName="stepDetails">
+                                <mat-step [formGroupName]="k"
+                                    *ngFor="let step of getStepDetailsArray().controls; let k = index">
+                                    <ng-template matStepLabel>Configure step: {{step.get('stepLabel').value}}
+                                    </ng-template>
+                                    <mat-vertical-stepper linear #stepDetailsStepper>
+                                        <div formGroupName="controlType">
+                                            <mat-step editable="true">
+                                                <ng-template matStepLabel>Select control type</ng-template>
+                                                <div fxLayout="row" fxLayoutGap="10px" style="width: 80%">
+                                                <mat-form-field style="width: 35%;">
+                                                    <mat-label>Control Type *</mat-label>
+                                                    <mat-select [id]="k + 'controlType'" formControlName="controlType">
+                                                        <mat-option [id]="k + 'text'" value="text">Text Based
+                                                        </mat-option>
+                                                        <mat-option [id]="k + 'textArea'" value="textArea">Text Area
+                                                            Based</mat-option>
+                                                        <mat-option [id]="k + 'select'" value="select">Select Based
+                                                        </mat-option>
+                                                        <mat-option [id]="k + 'card'" value="card">Card Based
+                                                        </mat-option>
+                                                        <mat-option [id]="k + 'image'" value="image">Image Grid Based
+                                                        </mat-option>
+                                                        <!-- <mat-option [id]="k + 'fileupload'" value="fileupload">Image Based
+                                                        </mat-option> -->
+                                                    </mat-select>
+                                                    <mat-error> Control Type is Required</mat-error>
+                                                </mat-form-field>
+                                                <!-- <div *ngIf="step.get('controlType').get('controlType').value === 'image' || step.get('controlType').get('controlType').value === 'card'
+                                                || step.get('controlType').get('controlType').value === 'fileupload'" class="mat-slide-toggle-content" style="width: 40%;">
+                                                    <mat-slide-toggle style="margin-left: 3%;margin-top: 2%;" color="accent"
+                                                        formControlName="allowToAddMultipleCard">
+                                                        Allow Multiple 
+                                                    </mat-slide-toggle>
+                                                </div> -->
+                                                <div *ngIf="step.get('controlType').get('controlType').value === 'text' || step.get('controlType').get('controlType').value === 'textArea'
+                                               || step.get('controlType').get('controlType').value === 'card'" class="mat-slide-toggle-content" style="width: 40%;">
+                                                    <mat-slide-toggle style="margin-left: 3%;margin-top: 2%;" color="accent"
+                                                        formControlName="isRequired" [id]="k + 'controlTypeRequired'" >
+                                                        Is Required 
+                                                    </mat-slide-toggle>
+                                                </div>
+                                                </div>
+                                                <div>
+                                                    <button mat-raised-button color="primary" matStepperNext type="button"
+                                                    [id]="k + 'controlTypeButton'"  [disabled]="step.get('controlType').get('controlType').errors?.required"
+                                                        style="margin-top: 2%;">Next</button>
+                                                </div>
+                                            </mat-step>
+                                            <mat-step editable="true">
+                                                <ng-template matStepLabel>Give name for control type</ng-template>
+                                                <mat-form-field style="width: 25%;">
+                                                    <input matInput [id]="k + 'controlTypeLabel'"
+                                                        placeholder="Control Type Name *"
+                                                        formControlName="controlTypeLabel"
+                                                        (focusout)="generateControlTypeName(step.get('controlType').get('controlTypeLabel'), step.get('controlType').get('controlTypeName'))">
+                                                    <mat-error>Control Type Name is required</mat-error>
+                                                </mat-form-field>
+                                                <div fxLayout="row" fxLayoutGap="10px">
+                                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                matStepperPrevious>Previous</button> -->
+                                                    <button mat-raised-button color="primary" matStepperNext type="button"
+                                                        [disabled]="step.get('controlType').get('controlTypeLabel').errors?.required"
+                                                        [id]="k + 'controlTypenameButton'"  style="margin-top: 2%;">Next</button>
+                                                </div>
+                                            </mat-step>
+                                        </div>
+                                        <ng-container *ngIf="step.get('stepIndex').value === 0 && step.get('controlType').get('controlType').value !== 'text' &&
+                                        step.get('controlType').get('controlType').value !== 'textArea' &&  step.get('controlType').get('controlType').value !== 'card'">
+                                            <mat-step editable="true">
+                                                <ng-template matStepLabel>Minimum Selections</ng-template>
+                                                <mat-form-field style="width: 15%;">
+                                                    <mat-label>Minimum Selections *</mat-label>
+                                                    <input matInput [id]="k + 'minimumSelection'" type="number"
+                                                        formControlName="minimumSelection" min="0"
+                                                        oninput="this.value = Math.abs(this.value)"
+                                                        (focusout)="checkMaximumValidation(step.get('minimumSelection'), step.get('maximumSelection'))">
+                                                    <mat-error> Minimum Selections is Required</mat-error>
+                                                </mat-form-field>
+                                                <div fxLayout="row" fxLayoutGap="10px">
+                                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                matStepperPrevious>Previous</button> -->
+                                                    <button mat-raised-button color="primary" matStepperNext type="button"
+                                                    [id]="k + 'minimumSelectionsButton'"  style="margin-top: 2%;">Next</button>
+                                                </div>
+                                            </mat-step>
+                                            <mat-step editable="true">
+                                                <ng-template matStepLabel>Maximum Selections</ng-template>
+                                                <mat-form-field style="width: 15%;">
+                                                    <mat-label>Maximum Selections *</mat-label>
+                                                    <input matInput [id]="k + 'maximumSelection'" type="number"
+                                                        formControlName="maximumSelection" min="0"
+                                                        oninput="this.value = Math.abs(this.value)"
+                                                        (focusout)="checkMaximumValidation(step.get('minimumSelection'), step.get('maximumSelection'))">
+                                                    <mat-error *ngIf="step.get('maximumSelection').errors?.maxError">
+                                                        Maximum selections should be greater than Minimum selections
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <div fxLayout="row" fxLayoutGap="10px">
+                                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                matStepperPrevious>Previous</button> -->
+                                                    <button mat-raised-button color="primary" matStepperNext type="button"
+                                                    [id]="k + 'maximumSelectionsButton'"  style="margin-top: 2%;">Next</button>
+                                                </div>
+                                            </mat-step>
+                                        </ng-container>
+                                        <mat-step editable="true">
+                                            <ng-template matStepLabel>Configure Values</ng-template>
+                                            <mat-vertical-stepper linear #stepValuesStepper formArrayName="stepValues">
+                                                <mat-step [formGroupName]="i"
+                                                    *ngFor="let rule of step['controls'].stepValues['controls']; let i = index">
+                                                    <ng-template matStepLabel>Add Value: {{i + 1}}</ng-template>
+                                                    <!-- <mat-expansion-panel style="background-color: rgb(246, 231, 250);" [expanded]="i===i" >
+                                                    <mat-expansion-panel-header>
+                                                        <mat-panel-title>
+                                                            Step Values
+                                                        </mat-panel-title>
+                                                    </mat-expansion-panel-header> -->
+                                                    <mat-vertical-stepper linear #stepValueStepper>
+                                                        <ng-container
+                                                            *ngIf="step.get('controlType').get('controlType').value !== 'fileupload'">
+                                                        <ng-container
+                                                            *ngIf="step.get('controlType').get('controlType').value !== 'image'">
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Enter Value</ng-template>
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <input matInput [id]="i + 'value' + k"
+                                                                        placeholder="Value *" formControlName="value"
+                                                                        (focusout)="generateKey(rule.get('value'), rule.get('key'))">
+                                                                    <mat-error>Value is required</mat-error>
+                                                                </mat-form-field>
+                                                                <div>
+                                                                    <button mat-raised-button color="primary"
+                                                                        matStepperNext type="button" [id]="i + 'valueButton' + k"
+                                                                        [disabled]="rule.get('value').value === ''"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                        </ng-container>
+                                                        <ng-container
+                                                            *ngIf="step.get('controlType').get('controlType').value === 'card'">
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Give Description</ng-template>
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <input matInput [id]="i + 'description' + k"
+                                                                        placeholder="Description"
+                                                                        formControlName="description">
+                                                                    <!-- <mat-error>Description is required</mat-error> -->
+                                                                </mat-form-field>
+                                                                <div>
+                                                                    <button mat-raised-button color="primary"
+                                                                        matStepperNext type="button" [id]="i + 'descriptionButton' + k"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                        </ng-container>
+                                                        <ng-container
+                                                            *ngIf="step.get('controlType').get('controlType').value === 'image'">
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Give Description</ng-template>
+                                                                <mat-form-field style="width: 25%;">
+                                                                    <input matInput [id]="i + 'valueDes' + k"
+                                                                        placeholder="Description *"
+                                                                        formControlName="value">
+                                                                    <mat-error>Description is required</mat-error>
+                                                                </mat-form-field>
+                                                                <div>
+                                                                    <button mat-raised-button color="primary"
+                                                                        matStepperNext type="button" [id]="i + 'valueDescriptionButton' + k"
+                                                                        [disabled]="rule.get('value').value === ''"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Add Image</ng-template>
+                                                                <div fxLayout="column" fxLayoutGap="10px">
+                                                                    <button mat-raised-button style="width: 35%;"
+                                                                        [id]="i + 'imageSelectButton' + k" color="primary"
+                                                                        type="button" (click)="fileInput.click()">
+                                                                        <span *ngIf="rule.get('key').value === ''">Click
+                                                                            here to add image</span>
+                                                                        <span *ngIf="rule.get('key').value !== ''">Click
+                                                                            here to change image</span>
+
+                                                                        <input #fileInput type="file" [id]="i + 'file' + k"
+                                                                            (change)="onFileInput($event, rule.get('key'), rule.get('value'), rule.get('imageKey'))"
+                                                                            style="display:none;" accept="image/*" />
+                                                                    </button>
+                                                                    <ng-container *ngIf="rule.get('key').value !== ''">
+                                                                        <!-- <ng-container *ngFor="let url of urls; let u = index">
+                                                                    <ng-container *ngIf="url.key === rule.get('value').value"> -->
+                                                                        <img [id]="i + 'imgValue' + k"
+                                                                            [src]="rule.get('key').value" height=150
+                                                                            width=200>
+                                                                        <!-- </ng-container>
+                                                             </ng-container> -->
+                                                                    </ng-container>
+                                                                </div>
+                                                                <div>
+                                                                    <button mat-raised-button color="primary"
+                                                                        matStepperNext type="button" [id]="i + 'valueImageButton' + k"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                        </ng-container>
+                                                        </ng-container>
+                                                        <mat-step editable="true">
+                                                            <ng-template matStepLabel>Is it has pricing details
+                                                            </ng-template>
+                                                            <div class="mat-slide-toggle-content" style="width: 35%;">
+                                                                <mat-slide-toggle
+                                                                    style="margin-left: 3%;margin-top: 2%;"
+                                                                    color="accent" formControlName="hasPricingDetails"
+                                                                    [id]="i + 'pricingDetails' + k">
+                                                                    Has Pricing Details
+                                                                </mat-slide-toggle>
+                                                            </div>
+                                                            <div fxLayout="row" fxLayoutGap="10px">
+                                                                <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                        matStepperPrevious>Previous</button> -->
+                                                                <button mat-raised-button color="primary" matStepperNext type="button"
+                                                                [id]="i + 'pricingTypeButton' + k" style="margin-top: 2%;">Next</button>
+                                                            </div>
+                                                        </mat-step>
+                                                        <ng-container
+                                                            *ngIf="rule.get('hasPricingDetails').value === true">
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Enter Pricing</ng-template>
+                                                                <mat-form-field style="width: 10%;">
+                                                                    <mat-label>Pricing *</mat-label>
+                                                                    <input matInput [id]="i+'pricing' + k" type="number"
+                                                                        formControlName="pricing" min="0"
+                                                                        oninput="this.value = Math.abs(this.value)">
+                                                                    <mat-error> Pricing is Required</mat-error>
+                                                                </mat-form-field>
+                                                                <div fxLayout="row" fxLayoutGap="10px">
+                                                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                                matStepperPrevious>Previous</button> -->
+                                                                    <button mat-raised-button color="primary" type="button"
+                                                                        matStepperNext [id]="i + 'pricingButton' + k"
+                                                                        [disabled]="rule.get('pricing').errors?.required"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                            <!-- <mat-step editable="true">
+                                                            <ng-template matStepLabel>Choose Pricing Type</ng-template>
+                                                            <mat-form-field style="width: 15%;">
+                                                                <mat-label>Pricing Type *</mat-label>
+                                                                <mat-select [id]="i + 'pricingType'"
+                                                                    formControlName="pricingType">
+                                                                    <mat-option [id]="i + 'usd'" value="USD">USD</mat-option>
+                                                                    <mat-option [id]="i + 'inr'" value="INR">INR</mat-option>
+                                                                </mat-select>
+                                                                <mat-error> Pricing Type is Required</mat-error>
+                                                            </mat-form-field>
+                                                            <div fxLayout="row" fxLayoutGap="10px">
+                                                                <button mat-raised-button color="primary" matStepperNext
+                                                                [disabled]="rule.get('pricingType').value === ''" style="margin-top: 2%;">Next</button>
+                                                            </div>
+                                                        </mat-step> -->
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Give Quantity</ng-template>
+                                                                <mat-form-field style="width: 10%;">
+                                                                    <mat-label>Quantity</mat-label>
+                                                                    <input matInput [id]="i+'quantity' + k" type="number"
+                                                                        formControlName="quantity" min="0"
+                                                                        oninput="this.value = Math.abs(this.value)">
+                                                                </mat-form-field>
+                                                                <div fxLayout="row" fxLayoutGap="10px">
+                                                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                                matStepperPrevious>Previous</button> -->
+                                                                    <button mat-raised-button color="primary" type="button"
+                                                                        matStepperNext [id]="i + 'quantityButton' + k"
+                                                                        [disabled]="rule.get('quantity').errors?.required"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                        </ng-container>
+                                                        <!-- step.get('controlType').get('controlType').value !== 'text' &&
+                                                        step.get('controlType').get('controlType').value !== 'textArea' &&  -->
+                                                        <ng-container *ngIf="getStepNamesArray().length > 1">
+                                                            <mat-step editable="true">
+                                                                <ng-template matStepLabel>Is it has next step
+                                                                </ng-template>
+                                                                <div class="mat-slide-toggle-content"
+                                                                    style="width: 35%;">
+                                                                    <mat-slide-toggle
+                                                                        style="margin-left: 3%;margin-top: 2%;"
+                                                                        color="accent" formControlName="hasNextStep"
+                                                                        [id]="i + 'nextStep' + k">
+                                                                        Has Next Step
+                                                                    </mat-slide-toggle>
+                                                                </div>
+                                                                <div fxLayout="row" fxLayoutGap="10px">
+                                                                    <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                                matStepperPrevious>Previous</button> -->
+                                                                    <button mat-raised-button color="primary" type="button"
+                                                                        matStepperNext[id]="i + 'nextStepButton' + k"
+                                                                        [disabled]="rule.get('hasNextStep').value === false"
+                                                                        style="margin-top: 2%;">Next</button>
+                                                                </div>
+                                                            </mat-step>
+                                                            <ng-container
+                                                                *ngIf="rule.get('hasNextStep').value === true">
+                                                                <mat-step editable="true">
+                                                                    <ng-template matStepLabel>Choose next step name
+                                                                    </ng-template>
+                                                                   <div fxLayout="row" fxLayoutGap="10px" style="width: 80%">
+                                                                    <mat-form-field style="width: 40%;">
+                                                                        <mat-label>Select Next Step *</mat-label>
+                                                                        <mat-select [id]="i + 'nextStepName' + k"
+                                                                            formControlName="nextStepName">
+                                                                            <ng-container
+                                                                                *ngFor="let value of selectionStepNameList">
+                                                                                <mat-option [id]="i + value.key + k" [value]="value.key"
+                                                                                    (onSelectionChange)="addStepIndex($event, value, rule.get('nextStepIndex'))">
+                                                                                    {{value.value}}</mat-option>
+                                                                            </ng-container>
+                                                                        </mat-select>
+                                                                        <mat-error> Next Step Name is Required
+                                                                        </mat-error>
+                                                                    </mat-form-field>
+                                                                    <div *ngIf="!checkTextAndTextArea(rule.get('nextStepIndex'))" style="width: 40%;">
+                                                                         <mat-slide-toggle style="margin-left: 3%;margin-top: 2%;" color="accent"
+                                                                             formControlName="isRequired" [id]="i + 'valueRequired' + k">
+                                                                             Is Required 
+                                                                         </mat-slide-toggle>
+                                                                     </div>
+                                                                    </div>
+                                                                    <div fxLayout="row" fxLayoutGap="10px">
+                                                                        <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                                matStepperPrevious>Previous</button> -->
+                                                                        <button mat-raised-button color="primary" type="button"
+                                                                            matStepperNext [disabled]="!checkTextAndTextArea(rule.get('nextStepIndex'))"
+                                                                            [id]="i + 'nextStepNameButton' + k" style="margin-top: 2%;">Next</button>
+                                                                    </div>
+                                                                </mat-step>
+                                                                <ng-container *ngIf="checkTextAndTextArea(rule.get('nextStepIndex'))">
+                                                                    <mat-step editable="true">
+                                                                        <ng-template matStepLabel>Minimum Selections for
+                                                                            step:
+                                                                            {{getSelectedStepName(rule.get('nextStepName'))}}
+                                                                        </ng-template>
+                                                                        <mat-form-field style="width: 15%;">
+                                                                            <mat-label>Minimum Selections</mat-label>
+                                                                            <input matInput
+                                                                                [id]="i + 'nextStepMinimumSelection' + k"
+                                                                                type="number"
+                                                                                formControlName="nextStepMinimumSelection"
+                                                                                min="0"
+                                                                                oninput="this.value = Math.abs(this.value)"
+                                                                                (focusout)="checkMaximumValidation(rule.get('nextStepMinimumSelection'), rule.get('nextStepMaximumSelection'))">
+                                                                        </mat-form-field>
+                                                                        <div fxLayout="row" fxLayoutGap="10px">
+                                                                            <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                                matStepperPrevious>Previous</button> -->
+                                                                            <button mat-raised-button color="primary" type="button"
+                                                                                matStepperNext[id]="i + 'nextStepMinimumValidationButton' + k"
+                                                                                style="margin-top: 2%;">Next</button>
+                                                                        </div>
+                                                                    </mat-step>
+                                                                    <mat-step editable="true">
+                                                                        <ng-template matStepLabel>Maximum Selections for
+                                                                            step:
+                                                                            {{getSelectedStepName(rule.get('nextStepName'))}}
+                                                                        </ng-template>
+                                                                        <mat-form-field style="width: 15%;">
+                                                                            <mat-label>Maximum Selections *</mat-label>
+                                                                            <input matInput
+                                                                                [id]="i + 'nextStepMaximumSelection' + k"
+                                                                                type="number"
+                                                                                formControlName="nextStepMaximumSelection"
+                                                                                min="0"
+                                                                                oninput="this.value = Math.abs(this.value)"
+                                                                                (focusout)="checkMaximumValidation(rule.get('nextStepMinimumSelection'), rule.get('nextStepMaximumSelection'))">
+                                                                            <mat-error
+                                                                                *ngIf="rule.get('nextStepMaximumSelection').errors?.maxError">
+                                                                                Maximum selections should be greater
+                                                                                than Minimum selections</mat-error>
+                                                                        </mat-form-field>
+                                                                        <div fxLayout="row" fxLayoutGap="10px">
+                                                                            <!-- <button mat-raised-button color="primary" style="margin-top: 2%;"
+                                                            matStepperPrevious>Previous</button> -->
+                                                                        </div>
+                                                                    </mat-step>
+                                                                </ng-container>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </mat-vertical-stepper>
+                                                    <div fxLayout="row" fxLayoutGap="10px">
+                                                        <button mat-raised-button color="primary" *ngIf="step.get('controlType').get('controlType').value !== 'text' &&
+                                                    step.get('controlType').get('controlType').value !== 'textArea' && step.get('controlType').get('controlType').value !== 'fileupload'"
+                                                            matStepperNext (click)="addStepValues(k, 'next')" type="button" [id]="i + 'stepValuesButton' + k"
+                                                            [disabled]="getStepValuesArray(k).invalid || getStepValuesArray(k).length !== (i + 1)"
+                                                            style="margin-top: 2%;">Add Value</button>
+                                                            <button mat-raised-button type="button" [id]="i + 'deleteStepValues' + k" (click)="removeStepValues(i, k)"
+                                            color="accent" style="margin-top: 2%;">Remove Value</button>
+                                                    </div>
+                                                    <!-- </mat-expansion-panel> -->
+                                                </mat-step>
+                                            </mat-vertical-stepper>
+                                        </mat-step>
+                                    </mat-vertical-stepper>
+                                    <div>
+                                        <button mat-raised-button type="button" *ngIf="k !== (getStepDetailsArray().length - 1)" [id]="k + 'stepDetailsButton'"
+                                            color="primary" matStepperNext style="margin-top: 2%;">Next Step</button>
+                                    </div>
+                                </mat-step>
+                            </mat-vertical-stepper>
+                        </mat-expansion-panel>
+                    </ng-container>
+                    <!-- <div fxLayout="row" fxLayoutGap="10px"> -->
+                    <!-- <div fxLayout="row" fxLayoutGap="10px" style="width: 35%;">
+                            <div>
+                                <mat-label>Shopping cart name: </mat-label>
+                            </div>
+                            <div>
+                                <mat-label>{{form.get('field.control.shoppingCartLabel').value}}</mat-label>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutGap="10px" style="width: 35%;">
+                            <div>
+                                <mat-label>Number of steps: </mat-label>
+                            </div>
+                            <div>
+                                <mat-label>{{form.get('field.control.stepsInvolved').value}}</mat-label>
+                            </div>
+                        </div> -->
+                    <!-- <mat-form-field style="width: 50%;">
+                    <input matInput id="shoppingCartLabel" placeholder="Shopping Cart Name *"
+                        formControlName="shoppingCartLabel" disabled (focusout)="generateShoppingCartName()">
+                    <mat-error>Shopping Cart Name is required</mat-error>
+                </mat-form-field> -->
+                    <!-- <mat-form-field style="width: 15%;">
+                <mat-label>Number Of Steps *</mat-label>
+                <input matInput id="stepsInvolved" type="number" formControlName="stepsInvolved" min="1"
+                    oninput="this.value = Math.abs(this.value)" (focusout)="getSteparray(form.get('field').get('control').get('stepsInvolved').value, false)">
+                    <mat-error> Number Of Steps is Required</mat-error>
+                </mat-form-field> -->
+                    <!-- </div> -->
+                    <!-- <div>
+            <mat-form-field style="width: 25%;">
+                <mat-label>Select Step *</mat-label>
+                <mat-select id="selectStep" formControlName="selectedStep">
+                    <mat-option (onSelectionChange)="configureStep(value, $event)" [value]="value.key"
+                                    *ngFor="let value of stepsList">
+                                    {{value.value}}</mat-option>
+                </mat-select>
+                <mat-error> Select Step is Required</mat-error>
+            </mat-form-field>
+        </div> -->
+                    <div>
+                        <!-- <button mat-raised-button id="step" (click)="getStepControls(step)" color="primary"
+                >{{step}}</button>&nbsp; -->
+                        <!-- <ng-container *ngFor="let step of stepListNumber">
+                            <button mat-raised-button id="step" [disabled]="stepNumber === step - 1"
+                                (click)="getStepControls(step)" color="primary">{{step}}</button>&nbsp;
+                        </ng-container>
+                        <button mat-raised-button id="step" *ngIf="stepExceed" (click)="goNextsteps(lastStepNumber)"
+                            color="primary">>></button>&nbsp; -->
+                    </div>
+                    <!-- <ng-container *ngIf="showStepDetails">
+                        <mat-card style="background-color: rgb(236, 235, 235);">
+                            <div formArrayName="stepDetails"
+                                *ngFor="let option of getStepDetailsArray().controls; let k = index">
+                                <ng-container *ngIf="k === stepNumber">
+                                    <div [formGroupName]="stepNumber">
+                                        <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 3%;">
+                                            <mat-form-field style="width: 25%;">
+                                                <input matInput id="stepLabel" placeholder="Step Name *"
+                                                    formControlName="stepLabel"
+                                                    (focusout)="generateControlTypeName(option.get('stepLabel'), option.get('stepName'))">
+                                                <mat-error>Step Name is required</mat-error>
+                                            </mat-form-field>
+                                            <div fxLayout="row" fxLayoutGap="10px" style="width: 60%;"
+                                                formGroupName="controlType">
+                                                <mat-form-field style="width: 45%;">
+                                                    <mat-label>Control Type *</mat-label>
+                                                    <mat-select id="controlType" formControlName="controlType">
+                                                        <mat-option id="text" value="text">Text Based</mat-option>
+                                                        <mat-option id="select" value="select">Select Based</mat-option>
+                                                        <mat-option id="textArea" value="textArea">Text Area Based
+                                                        </mat-option>
+                                                        <mat-option id="image" value="image">Image Based</mat-option>
+                                                    </mat-select>
+                                                    <mat-error> Control Type is Required</mat-error>
+                                                </mat-form-field>
+                                                <mat-form-field style="width: 55%;">
+                                                    <input matInput id="controlTypeLabel"
+                                                        placeholder="Control Type Name *"
+                                                        formControlName="controlTypeLabel"
+                                                        (focusout)="generateControlTypeName(option.get('controlType').get('controlTypeLabel'), option.get('controlType').get('controlTypeName'))">
+                                                    <mat-error>Control Type Name is required</mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 3%;">
+                                            <ng-container *ngIf="stepNumber === 0">
+                                                <mat-form-field style="width: 15%;">
+                                                    <mat-label>Minimum Selections *</mat-label>
+                                                    <input matInput id="minimumSelection" type="number"
+                                                        formControlName="minimumSelection" min="0"
+                                                        oninput="this.value = Math.abs(this.value)">
+                                                    <mat-error> Minimum Selections is Required</mat-error>
+                                                </mat-form-field>
+                                                <mat-form-field style="width: 15%;">
+                                                    <mat-label>Maximum Selections *</mat-label>
+                                                    <input matInput id="maximumSelection" type="number"
+                                                        formControlName="maximumSelection" min="0"
+                                                        oninput="this.value = Math.abs(this.value)">
+                                                    <mat-error> Maximum Selections is Required</mat-error>
+                                                </mat-form-field>
+                                            </ng-container>
+                                        </div>
+
+                                        <div formArrayName="stepValues"
+                                            *ngFor="let rule of option['controls'].stepValues['controls']; let i= index">
+                                            <div [formGroupName]="i">
+                                                <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                    <mat-card-title style="margin-top: 2%;">Values#{{i+1}}
+                                                    </mat-card-title>
+                                                    <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px">
+                                                        <button mat-mini-fab [id]="i+'add'" type="button"
+                                                            color="primary" (click)="addStepValues(stepNumber)"
+                                                            class="btn btn-space">
+                                                            <mat-icon>add</mat-icon>
+                                                        </button>
+                                                        <button style="padding-left: -10px " mat-mini-fab
+                                                            color="primary" [id]="i+'remove'"
+                                                            (click)="removeStepValues(i, stepNumber)">
+                                                            <mat-icon>remove</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 2%;">
+                                                    <mat-form-field style="width: 30%;">
+                                                        <mat-label>Value *</mat-label>
+                                                        <mat-select [id]="i + 'value'" formControlName="value">
+                                                            <mat-option [id]="i + 'text'" value="text">Text Based
+                                                            </mat-option>
+                                                            <mat-option [id]="i + 'select'" value="select">Select Based
+                                                            </mat-option>
+                                                            <mat-option [id]="i + 'textArea'" value="textArea">Text Area
+                                                                Based</mat-option>
+                                                            <mat-option [id]="i + 'image'" value="image">Image Based
+                                                            </mat-option>
+                                                        </mat-select>
+                                                        <mat-error> Value is Required</mat-error>
+                                                    </mat-form-field>
+                                                    <mat-form-field style="width: 15%;">
+                                                        <mat-label>Pricing *</mat-label>
+                                                        <input matInput [id]="i+'pricing'" type="number"
+                                                            formControlName="pricing" min="0"
+                                                            oninput="this.value = Math.abs(this.value)">
+                                                        <mat-error> Pricing is Required</mat-error>
+                                                    </mat-form-field>
+                                                    <mat-form-field style="width: 15%;">
+                                                        <mat-label>Pricing Type *</mat-label>
+                                                        <mat-select [id]="i + 'pricingType'"
+                                                            formControlName="pricingType">
+                                                            <mat-option [id]="i + 'usd'" value="usd">USD</mat-option>
+                                                            <mat-option [id]="i + 'inr'" value="inr">INR</mat-option>
+                                                        </mat-select>
+                                                        <mat-error> Pricing Type is Required</mat-error>
+                                                    </mat-form-field>
+                                                    <mat-form-field style="width: 15%;">
+                                                        <mat-label>Quantity *</mat-label>
+                                                        <input matInput [id]="i+'quantity'" type="number"
+                                                            formControlName="quantity" min="0"
+                                                            oninput="this.value = Math.abs(this.value)">
+                                                        <mat-error>Quantity is Required</mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div>
+                                                    <div class="mat-slide-toggle-content" style="width: 15%;">
+                                                        <mat-slide-toggle id="hasNextStep"
+                                                            style="margin-left: 3%;margin-top: 2%;" color="accent"
+                                                            formControlName="hasNextStep">
+                                                            Has Next Step
+                                                        </mat-slide-toggle>
+                                                    </div>
+                                                    <ng-container *ngIf="rule.get('hasNextStep').value === true">
+                                                        <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 3%;">
+                                                            <mat-form-field style="width: 20%;">
+                                                                <mat-label>Select Next Step *</mat-label>
+                                                                <mat-select id="nextStepName"
+                                                                    formControlName="nextStepName">
+                                                                    <ng-container *ngFor="let value of stepsList">
+                                                                        <mat-option [value]="value.key"
+                                                                            *ngIf="value.number - 1 > stepNumber">
+                                                                            {{value.value}}</mat-option>
+                                                                    </ng-container>
+                                                                </mat-select>
+                                                                <mat-error> Next Step Name is Required</mat-error>
+                                                            </mat-form-field>
+                                                            <mat-form-field style="width: 15%;">
+                                                                <mat-label>Minimum Selections *</mat-label>
+                                                                <input matInput id="nextStepMinimumSelection"
+                                                                    type="number"
+                                                                    formControlName="nextStepMinimumSelection" min="0"
+                                                                    oninput="this.value = Math.abs(this.value)">
+                                                                <mat-error> Minimum Selections is Required</mat-error>
+                                                            </mat-form-field>
+                                                            <mat-form-field style="width: 15%;">
+                                                                <mat-label>Maximum Selections *</mat-label>
+                                                                <input matInput id="nextStepMaximumSelection"
+                                                                    type="number"
+                                                                    formControlName="nextStepMaximumSelection" min="0"
+                                                                    oninput="this.value = Math.abs(this.value)">
+                                                                <mat-error> Maximum Selections is Required</mat-error>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </ng-container> -->
+                </div>
+            </div>
+        </ng-container>
+        <div fxLayoutAlign="center center" style="margin-right: 2%; margin-top: 2%;">
+            <mat-error *ngIf="!userForm.valid && userForm.submitted">
+                Cart is invalid.
+            </mat-error>
+        </div>
+        <div fxLayoutAlign="center center" style="margin: 1%">
+
+            <ng-container *ngIf="showCreateButton ">
+                <button mat-raised-button id="btnSave" (click)="submit(userForm)" color="primary"
+                [disabled] = "enabledSumbit">Create</button>&nbsp;
+            </ng-container>
+            <ng-container *ngIf="!showCreateButton ">
+                <button mat-raised-button id="btnSave" (click)="submit(userForm)" color="primary"
+                    [disabled]="!userForm.dirty">Update</button>&nbsp;
+            </ng-container>
+            <button mat-raised-button id="btnCancel" type="button" (click)="cancel()" color="accent">Cancel</button>
+        </div>
+    </form>
+</mat-card>

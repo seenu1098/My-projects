@@ -1,0 +1,64 @@
+/** Colors **/
+// $primary-darker: #112e51;
+// $primary-dark: #103b6f;
+// $primary: #0071bc;
+$primary:#7986cb;
+$primary-darker:#7986cb;
+$primary-dark:#7986cb;
+$primary-alt: #02bfe7;
+$primary-light: #eaf6ff;
+$error: #e31c3d;
+$warn: #f9c642;
+$accent: #4aa564;
+$purple: #51407b;
+$orange: #de6e16;
+$teal: #049b9b;
+$pink: #b53c70;
+$brown: #b0533c;
+$deep-purple:#d1c4e9;
+
+/** Shades **/
+$black: #212121;
+$white: #fff;
+
+$dark-gray: #323a45;
+$gray: #5b616b;
+$gray-light: #aeb0b5;
+$gray-lighter: #d6d7d9;
+$gray-lightest: #f1f1f1;
+$gray-lightest-alt: #f8f8f8;
+$transparent: transparent;
+
+@mixin colorHoverDarken() {
+    &.primary-alt {
+        @include hoverDarken($primary-alt);
+    }
+    &.primary {
+        @include hoverDarken($primary);
+    }
+    &.warn {
+        @include hoverDarken($warn);
+    }
+    &.accent {
+        @include hoverDarken($accent);
+    }
+    &.orange {
+        @include hoverDarken($orange);
+    }
+    &.error {
+        @include hoverDarken($error);
+    }
+    &.purple {
+        @include hoverDarken($purple);
+    }
+    &.gray-lighter {
+        @include hoverDarken($gray-lighter);
+    }
+}
+
+@mixin hoverDarken($color) {
+    &:hover,
+    &:focus {
+        background-color: darken($color, 10%);
+    }
+}

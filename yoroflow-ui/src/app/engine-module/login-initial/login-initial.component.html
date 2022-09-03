@@ -1,0 +1,76 @@
+<!-- 
+
+
+<div fxLayout="row" fxFill style="overflow:hidden" [style.height]="height">
+  <div fxLayout="column" [fxFlex]="imageFlex" *ngIf="!mobileQuery.matches"
+    style="overflow:hidden;border-right: 0.5px solid grey">
+
+    <body class="body">
+      <div class="backGround"></div>
+    </body>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="center center" [fxFlex]="mobileQuery.matches? 100 :loginFlex"
+    style="overflow-y:scroll;border-left: 0.5px solid grey;border-top-left-radius: 5px;background:#f5f5f5">
+    <div fxLayout="row" fxFlexAlign="center" style="height:90px">
+      <img src="assets/yoroflow-logo-web.png" class="image" />
+    </div>
+    <div fxLayout="row" fxFlexAlign="center" style="height:50px">
+      <a style="font-size: 21px;color:#404041;">ENTER YOUR DOMAIN NAME</a>
+    </div>
+    <div fxLayout="row" fxFlexAlign="center" style="width: 82%;">
+      <form [formGroup]="domainForm" #userForm="ngForm">
+        <mat-form-field style="width: 100%;" appearance="outline">
+          <mat-label>Enter account domain</mat-label>
+          <input matInput style="font-size: 18px;" type="text" placeholder="Enter account domain"
+            formControlName="domain" id="domain">
+          <span matSuffix style="font-size: 18px;">
+            .yoroflow.com</span>
+          <mat-error> Domain is required</mat-error>
+        </mat-form-field>
+      </form>
+    </div>
+    <div fxLayout="row" fxFlexAlign="center">
+      <button mat-raised-button style="width: 17rem;" type="submit" id="btnSubmit" color="primary"
+        (click)="loginPage()">Submit</button>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+<div class="row  m-0 container-fluid justify-content-around" id="main-container" style="background-color: #000;"
+  [style.height]="screenHeight">
+  <div class="col-md-12 container align-self-center">
+    <mat-card class="p-0">
+      <div class="row p-0 m-0 justify-content-center text-center ">
+        <div class="col-md-9 p-0 d-sm-none d-md-block" id="left_half">
+          <img class="img-fluid" src="../assets/login_left.svg">
+        </div>
+        <div class="col-md-3 col-sm-0 p-5" id="right_half" appMaterialElevation defaultElevation=8 raisedElevation=8>
+          <img src="../assets/logo/newlogo3.svg" class="img-fluid col-md-8 mx-auto d-block domain_logo ">
+          <div class="row w-100 mx-0 justify-content-center">
+            <a style="font-size: 21px;color:#404041;margin-top: 10%;text-align: center;">ENTER YOUR DOMAIN NAME</a>
+          </div>
+          <div class="row w-100 mx-0 pt-3 justify-content-center">
+            <form [formGroup]="domainForm" #userForm="ngForm">
+              <mat-form-field style="width: 100%;" appearance="outline">
+                <mat-label>Enter account domain</mat-label>
+                <input matInput style="font-size: 18px;" type="text" placeholder="Enter account domain"
+                  formControlName="domain" id="domain">
+                <span matSuffix style="font-size: 18px;">
+                  .yoroflow.com</span>
+                <mat-error> Domain is required</mat-error>
+              </mat-form-field>
+            </form>
+          </div>
+          <div class="row d-block justify-content-center">
+            <button class="btn btn-primary btn-block" mat-raised-button type="submit" (click)="loginPage()"
+              color="primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </mat-card>

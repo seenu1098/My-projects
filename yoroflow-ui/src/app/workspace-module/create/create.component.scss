@@ -1,0 +1,145 @@
+$primary_color: black; /* #04b5ac */
+$hover_color: #039be5; /* rgb(0, 88, 0) */
+.team-btn{
+    width: 100px;
+    border: 1px solid #c0c0c9;
+    margin: 10px;
+    &:hover {
+        background-color: white;;
+        border: 1px solid rgb(9, 18, 146);
+        color: rgb(9, 18, 146);
+        font-weight: 600;
+    }
+}
+.active{
+    background-color: white;;
+        border: 1px solid rgb(9, 18, 146);
+        color: rgb(9, 18, 146);
+        font-weight: 600;
+    }
+    .circle-class-workspace{
+        width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    font-size: 40px;
+    color: #fff;
+    line-height: 150px;
+    text-align: center;
+    // background: #28a745;
+    background-position: center center;
+    margin-left: 16%;
+      }
+
+      .circle-class-avatar{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+       margin:10px 0 0 10px;
+      }
+      .workspace-box{
+        margin-left: 3%;
+        margin-top: 20px;
+        width: 95%;
+        border-radius: 5px;
+        border: 0.5px solid lightgray;
+        box-shadow:  -1px 1px #e5e6ea,
+         -2px 2px #e5e6ea,
+         -3px 3px #e5e6ea,
+         -4px 4px #e5e6ea,
+         -5px 5px #e5e6ea;
+      }
+      .user_letter{
+        width: 30px;
+          height: 30px;
+          line-height: 30px;
+          border-radius: 10%;
+          text-align: center;
+          cursor: pointer;
+          padding: 0px;
+          background-color:#c2185b;
+          color: white;
+      }
+      .border-right{
+          border-right: 0.5px solid lightgray;
+          height:100px;
+          margin-left: 20px;
+      }
+
+      .column-icon-css {
+        font-size: 20px;
+        margin-top: 8px;
+      }
+      .mat-icon-color{
+        color:gray;
+        &:hover {
+          color:black;
+      }
+    }
+    .table-btn{
+      height: 25px;
+      line-height: 25px;
+    }
+    .circle-css {
+      position: absolute;
+      font-size: 16px;
+      margin-left: 19px;
+    margin-top: -18px;
+      z-index: 9999;
+    }
+    .flag-container-css {
+      width: 30px;
+      height: 30px;
+      border: 2px dashed grey;
+      border-radius: 50%;
+      line-height: 30px;
+      position: relative;
+      cursor: pointer;
+      margin-top: 1px;
+      margin-left: 10px;
+      color: grey;
+    }
+    .flag-css {
+      margin-left: 5px;
+      margin-top: 4px;
+      font-size: 15px;
+      color: lightgray;
+    }
+    .filter_option{
+      padding: 4px 8px;
+      border-radius: 5px;
+      background-color: #e1e9ff;
+      color: #6993ff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .active{
+      background-color:#435fff!important;
+      color:#fff!important;
+      }
+      .edit-desc-css {
+        margin-left: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--theme-main-color);
+        &:hover {
+            color: $hover_color;
+        }
+    }
+
+
+    .active-workspace{
+      margin-left: 3%;
+      margin-top: 20px;
+      width: 95%;
+      border-radius: 5px;
+      border: 1px solid #65d37e;
+      box-shadow: -1px 1px #65d37e, -2px 2px #65d37e, -3px 3px #65d37e, -4px 4px #65d37e, -5px 5px #65d37e;
+    }
+
+    #workspace ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+      background-color: #00e600;
+  }
+  
+  #workspace ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+      background-color: #80ff80;
+  }

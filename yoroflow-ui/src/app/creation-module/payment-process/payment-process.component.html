@@ -1,0 +1,305 @@
+<div class="container">
+    <form [formGroup]="customStripeForm" #userForm="ngForm">
+        <div class="row pt-4" *ngIf="isUpgradeSubscription">
+            <mat-card style="margin-left: 16px;width: 97%;">
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <mat-form-field (focusout)="calculateAmount()" class="w-100" appearance="outline">
+                        <mat-label id="defaultLanguage">
+                            {{'Select Package' | translate}}
+                        </mat-label>
+                        <mat-select id="planType" formControlName="orgPlanType">
+                            <mat-optgroup label="{{'Select Package' | translate}}">
+
+                                <mat-option value="BUSINESS PACK">
+                                    BUSINESS PACK</mat-option>
+                                <mat-option value="STANDARD">
+                                    STANDARD</mat-option>
+                                <mat-option value="PRO">
+                                    PRO</mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field (focusout)="calculateAmount()" class="w-100" appearance="outline">
+                        <mat-label id="defaultLanguage">
+                            {{'Select Billing Type' | translate}}
+                        </mat-label>
+                        <mat-select id="billingType" formControlName="orgBillingType">
+                            <mat-optgroup label="{{'Select billing type' | translate}}">
+                                <mat-option value="monthly" i18n="Monthly">Monthly</mat-option>
+                                <mat-option value="yearly" i18n="Yearly">Yearly</mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="Total Number of Users *">Total Number of Users</mat-label>
+                        <input min="5" type="number" matInput formControlName="totalNumberOfUsers"
+                            name="totalNumberOfUsers" id="totalNumberOfUsers" placeholder="Total Number of Users *"
+                            i18n-placeholder="Total Number of Users *">
+                        <mat-error *ngIf="customStripeForm.get('totalNumberOfUsers').errors?.min">Minimum Number of
+                            users is 5</mat-error>
+                        <mat-error *ngIf="customStripeForm.get('totalNumberOfUsers').errors?.required">Minimum Number of
+                            users is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <span>
+                        Your current plan is <b>{{customStripeForm.get('orgPlanType').value}}.</b>
+                    </span>
+                    <span>
+                        Total amount for <b>{{customStripeForm.get('orgBillingType').value}}</b> of
+                        <b>{{customStripeForm.get('totalNumberOfUsers').value}}</b> users will be
+                        <b>$ {{this.totalAmount}}</b>.
+                    </span>
+                </div>
+            </mat-card>
+        </div>
+
+        <div class="row pt-4">
+            <div class="col-md-6">
+                <mat-card>
+                    <h4 class="fs-20" i18n="Billing Address">Billing Address</h4>
+                    <hr>
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="Address Line 1">Address Line 1</mat-label>
+                        <textarea matInput formControlName="addressLine1" name="addressLine1" id="addressLine1"
+                            style="height: 40px;" placeholder="Address Line 1 *"
+                            i18n-placeholder="Address Line 1"></textarea>
+                        <mat-error i18n="Address Line 1 is required">Address Line 1 is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="Address Line 2 ">Address Line 2</mat-label>
+                        <textarea matInput formControlName="addressLine2" name="addressLine2" id="addressLine2"
+                            style="height: 40px;" placeholder="Address Line 2"
+                            i18n-placeholder="Address Line 2"></textarea>
+                    </mat-form-field>
+                    <div class="row w-100 mx-0">
+                        <div class="col-md-6 pl-0 pr-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="City *">City</mat-label>
+                                <input matInput formControlName="city" name="city" id="city" placeholder="City *"
+                                    i18n-placeholder="City *">
+                                <mat-error i18n="City is required">City is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-6 pr-0 pl-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="State *">State</mat-label>
+                                <input matInput formControlName="state" name="state" id="state" placeholder="State *"
+                                    i18n-placeholder="State *">
+                                <mat-error i18n="State is required">State is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0">
+                        <div class="col-md-6 pl-0 pr-2">
+                            <app-country-list class="w-100" (paymentEmit)="getCountry($event)"
+                                [country]="customStripeForm.get('country').value"></app-country-list>
+                        </div>
+                        <div class="col-md-6 pr-0 pl-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Zip/Postal Code *">Zip/Postal Code</mat-label>
+                                <input matInput formControlName="postalCode" name="postalCode" id="postalCode"
+                                    placeholder="Postal Code" i18n-placeholder="Postal Code">
+                                <mat-error *ngIf="customStripeForm.get('postalCode').errors?.required"
+                                    i18n="Zip/Postal Code is required">
+                                    Zip/Postal Code is required</mat-error>
+                                <mat-error *ngIf="customStripeForm.get('postalCode').errors?.maxlength"
+                                    i18n="Postal Code should be 2 characters">
+                                    Postal Code should be 2 characters</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="Email *">Email</mat-label>
+                        <input matInput formControlName="email" name="email" id="email" placeholder="Email"
+                            i18n-placeholder="Email">
+                        <mat-error *ngIf="customStripeForm.get('email').errors?.required" i18n="Email id is required">
+                            Email id is required
+                        </mat-error>
+                        <mat-error *ngIf="customStripeForm.get('email').errors?.email" i18n="Invalid Email id">Invalid
+                            Email id
+                        </mat-error>
+                    </mat-form-field>
+
+
+                    <app-telephone class="w-100" [telephoneInput]="customStripeForm.get('phone').value"
+                        (phoneEmit)="getTelephoneNumber($event)">
+                    </app-telephone>
+                    <mat-error class="error-css" id="emailRequired" i18n="Phone is required"
+                        *ngIf="customStripeForm.get('phone').errors?.required && showError">Phone is required
+                    </mat-error>
+
+
+                </mat-card>
+            </div>
+            <div class="col-md-6">
+                <mat-card>
+                    <h4 class="fs-20" i18n="Enter Payment Details">Enter Payment Details</h4>
+                    <hr>
+                    <mat-form-field class="w-100" appearance="outline" *ngIf="paymentProcessVO===undefined">
+                        <mat-label>Amount</mat-label>
+                        <input matInput type="text" (focusout)="checkMinimum()" formControlName="paymentAmount"
+                            name="amount" id="amount" placeholder="Amount" i18n-placeholder="Amount">
+                        <mat-error *ngIf="customStripeForm.get('paymentAmount').errors?.required"
+                            i18n="Amount is required">
+                            Amount is required</mat-error>
+                        <mat-error *ngIf="customStripeForm.get('paymentAmount').errors?.minError"
+                            i18n="Minimum Should be 0.5">
+                            Minimum Should be 0.5</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label i18n="Card Number *">Card Number</mat-label>
+                        <input matInput type="tel" [textMask]="numberMask" placeholder="Card number"
+                            i18n-placeholder="Card number" formControlName="cardNumber" appCardTypeDetector
+                            (cardDetect)="onCardDetect($event)">
+
+                        <mat-error>
+                            <app-form-errors [control]="customStripeForm.get('cardNumber')" [force]="submitted">
+                                <ng-container
+                                    *ngIf="customStripeForm.get('cardNumber').errors && customStripeForm.get('cardNumber').errors['invalidLength']">
+                                    <span *ngIf="cardType.lengths.length > 1" i18n="Card number length should be between {{ cardType.lengths[0] }} and {{ cardType.lengths[cardType.lengths.length - 1]
+                                        }}">Card number length should be between {{
+                                        cardType.lengths[0] }} and {{ cardType.lengths[cardType.lengths.length - 1]
+                                        }}</span>
+                                    <span *ngIf="cardType.lengths.length === 1" i18n="Card number length should be {{
+                                        cardType.lengths[0] }}">Card number length should be {{
+                                        cardType.lengths[0] }}</span>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="customStripeForm.get('cardNumber').errors && customStripeForm.get('cardNumber').errors['luhn']">
+                                    <span i18n="You must enter a valid card number">You must enter a valid card
+                                        number</span>
+                                </ng-container>
+
+                                <ng-container
+                                    *ngIf="customStripeForm.get('cardNumber').errors && customStripeForm.get('cardNumber').errors['required']">
+                                    <span i18n>Card Number is required</span>
+                                </ng-container>
+                            </app-form-errors>
+                        </mat-error>
+                        <div matSuffix *ngIf="cardType" class="payment-icon" [ngClass]="cardType?.name">
+                            <img *ngIf="cardType?.name==='visa'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/visa.svg">
+                            <img *ngIf="cardType?.name==='amex'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/amex.svg">
+                            <img *ngIf="cardType?.name==='mastercard'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/mastercard.svg">
+                            <img *ngIf="cardType?.name==='discover'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/discover.svg">
+                            <img *ngIf="cardType?.name==='unionpay'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/unionpay.svg">
+                            <img *ngIf="cardType?.name==='jcb'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/jcb.svg">
+                            <img *ngIf="cardType?.name==='dinersclub'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/diners.svg">
+                            <img *ngIf="cardType?.name==='maestro'" style="height: 30px;margin-bottom: 10px;"
+                                src="../../../assets/maestro.svg">
+                        </div>
+                    </mat-form-field>
+                    <div class="row w-100 mx-0">
+                        <div class="col-md-6 pl-0 pr-2">
+                            <h5 class=" font-weight-bold mb-2" i18n>EXPIRATION DATE</h5>
+                            <div class="row w-100 mx-0">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>MM/YY</mat-label>
+                                    <i matPrefix class="fa fa-calendar-o"></i>
+                                    <input matInput i18n-placeholder placeholder="MM / YY *" formControlName="expDate"
+                                        [textMask]="expiryMask" (keyup)="onExpiryKeyup($event)"
+                                        (focus)="onExpiryFocus($event)">
+                                    <mat-error>
+                                        <app-form-errors [control]="customStripeForm.get('expDate')"
+                                            [force]="submitted">
+                                            <ng-container
+                                                *ngIf="customStripeForm.get('expDate').errors && customStripeForm.get('expDate').errors['expired']">
+                                                <span i18n>The card is expired</span>
+                                            </ng-container>
+
+                                            <ng-container
+                                                *ngIf="customStripeForm.get('expDate').errors && customStripeForm.get('expDate').errors['required']">
+                                                <span i18n>Expiration month/year is required</span>
+                                            </ng-container>
+                                        </app-form-errors>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pr-0 pl-2">
+                            <h5 class=" font-weight-bold mb-2">CVV CODE</h5>
+
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n>CVV CODE</mat-label>
+                                <input type="text" matInput formControlName="cvv" placeholder="CVV"
+                                    [maxlength]="cardType?.name==='amex'?4:3" />
+                                <mat-error *ngIf="customStripeForm.get('cvv').errors?.required" i18n>
+                                    CVV is required</mat-error>
+
+
+                            </mat-form-field>
+
+                        </div>
+                    </div>
+
+                </mat-card>
+                <mat-card style="margin-top: 1%;" *ngIf="paymentProcessVO===undefined">
+                    <h4 class="fs-20">Bill Summary</h4>
+                    <div class="row w-100">
+                        <div class="col-md-6">
+                            <h6 class="fs_15" i18n>Total Subscription Amount</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <p *ngIf="isUpgradeSubscription===false">$ {{subscriptionDetails?.totalAmountPayable}}</p>
+                            <p *ngIf="isUpgradeSubscription===true">$ {{totalAmount}}</p>
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-md-6">
+                            <h6 class="fs_15" i18n>Discount Amount</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <p *ngIf="subscriptionDetails?.discountApplied === null">$ 0</p>
+
+                            <p *ngIf="subscriptionDetails?.discountApplied !== null">$
+                                {{subscriptionDetails?.discountApplied}}</p>
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-md-6">
+                            <h6 class="fs_15" i18n>Total Amount to be Paid</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <p *ngIf="isUpgradeSubscription===false">$ {{subscriptionDetails?.totalSubscriptionAmount}}
+                            </p>
+                            <p *ngIf="isUpgradeSubscription===true">$ {{totalAmount}}</p>
+                        </div>
+                    </div>
+                    <div class="row w-100 justify-content-end">
+                        <button mat-raised-button color="accent" *ngIf="!showButton" [disabled]="showButton"
+                            id="previous" type="button" (click)="previousPage()" style="margin-right: 15px;"
+                            i18n>PREVIOUS</button>
+                        <button mat-raised-button color="primary" id="btnsave" type="submit" *ngIf="!showButton"
+                            class="btn btn-warning btn-sm text-uppercase  " (click)="pay(userForm)" i18n>Process
+                            payment</button>
+                        <div fxLayout="row" fxLayoutAlign="center" *ngIf="showButton===true">
+                            <span class="dot-falling"></span>
+                        </div>
+                    </div>
+                </mat-card>
+                <mat-card *ngIf="paymentProcessVO!==undefined">
+                    <div class="row w-100 justify-content-end">
+                        <button mat-raised-button color="accent" *ngIf="!showButton" [disabled]="showButton"
+                            id="previous" type="button" (click)="previousPage()"
+                            style="margin-right: 15px;">PREVIOUS</button>
+                        <button mat-raised-button color="primary" id="btnsave" type="submit" *ngIf="!showButton"
+                            (click)="updatePaymentMethod(userForm)"
+                            class="btn btn-warning btn-sm text-uppercase">Update</button>
+                        <div fxLayout="row" fxLayoutAlign="center" *ngIf="showButton===true">
+                            <span class="dot-falling"></span>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </form>
+</div>

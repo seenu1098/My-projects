@@ -1,0 +1,352 @@
+.column-name-css {
+  padding: 0px 0px 1px 4px;
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: -23px;
+  background: white;
+}
+
+.subtask-column-name-css {
+  background: white;
+  padding: 10px 0px 5px 21px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.grid-view {
+  overflow-x: scroll;
+  background: white;
+  padding: 10px 10px 10px 5px;
+  margin-left: 10px;
+}
+
+.hover-class {
+  z-index: 0;
+  &:hover {
+    z-index: 9999;
+    border: 0.5px solid #2525ff;
+  }
+}
+
+.header-css {
+  word-wrap: break-word;
+  background-color: whitesmoke;
+  min-height: 44px;
+  line-height: 40px;
+  color: grey;
+  font-weight: bold;
+}
+
+.header-column-css {
+  border-right: 3px solid white;
+}
+
+.assignee-header-column-css {
+  border-right: 3px solid white;
+}
+
+.cell-css {
+  word-wrap: break-word;
+  margin-top: 3px;
+  background-color: whitesmoke;
+  min-height: 44px;
+  line-height: 40px;
+  &:hover {
+    background-color: rgb(226, 226, 226);
+  }
+}
+
+.subtask-cell-css {
+  word-wrap: break-word;
+  margin-top: 3px;
+  background-color: whitesmoke;
+  min-height: 44px;
+  line-height: 40px;
+  &:hover {
+    background-color: rgb(226, 226, 226);
+  }
+}
+
+.cell-column-css {
+  border-right: 3px solid white;
+}
+
+.text-css {
+  margin-left: 10px;
+}
+
+.text-css-title {
+  margin-left: 10px;
+  text-decoration: underline;
+  color: #039be5;
+  cursor: pointer;
+}
+
+.assignee-cell-css {
+  border-right: 3px solid white;
+  min-height: 44px;
+}
+
+.width-css {
+  width: 100px;
+}
+
+.label-css {
+  min-height: 20px;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  border-radius: 8px;
+  line-height: 9px;
+  color: white;
+  // font-size: 12px;
+  padding: 5px;
+  margin-left: 5px;
+  margin-top: 3px;
+  max-width: 90%;
+}
+
+.remove-label-icon {
+  font-size: 12px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.drag-indicator-css {
+  font-size: 22px;
+  margin: 0px 0px 0px -1px;
+  position: absolute;
+  color: grey;
+  z-index: 9999;
+}
+
+.add-icon {
+  font-size: 15px;
+  color: blue;
+  margin-top: 8px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.input-css {
+  height: 97%;
+  width: 100%;
+  margin-top: 1px;
+  background: whitesmoke;
+  border: none;
+  &:hover {
+    background-color: rgb(226, 226, 226);
+  }
+}
+
+.animmate-css {
+  animation: drop-animation 2s infinite linear;
+  font-weight: bold;
+}
+
+@keyframes drop-animation {
+  from {
+    color: blue;
+  }
+  to {
+    color: green;
+  }
+}
+
+.subtask-icon-css {
+  cursor: pointer;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  background-color: #889dff;
+}
+
+.container {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+#grid-view ::ng-deep .ps--active-x > .ps__rail-x {
+  display: inline-block;
+  margin-left: 23px;
+  z-index: 10001;
+}
+
+#grid-view ::ng-deep .ps.ps--active-x.ps--active-y > .ps__rail-y {
+  margin-right: 5px;
+  display: inline;
+}
+
+#grid-view ::ng-deep .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+  width: 15px !important;
+  height: 15px !important;
+  font-size: 9px !important;
+  line-height: 16px !important;
+  background-color: red !important;
+  margin-top: 5px;
+  right: -5px;
+}
+
+.perfect-scroll-css {
+  width: 99%;
+  padding-right: 0px;
+  margin-left: 16px;
+}
+
+.hidden-column-css {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0px;
+  background-color: whitesmoke;
+  z-index: 10000;
+}
+
+::ng-deep .drop-down {
+  width: 200px;
+  margin-left: 10px;
+}
+
+.actions-css {
+  z-index: 9999;
+  font-size: 15px;
+  position: absolute;
+  left: 77%;
+  height: 100%;
+  background-color: rgb(226, 226, 226);
+}
+
+.date-css {
+  margin-left: 10px;
+  height: 25px;
+  line-height: 25px;
+  color: white;
+  padding: 0px 3px;
+  border-radius: 6px;
+  // font-size: 12px;
+}
+
+.remove-date-css {
+  font-size: 12px;
+  margin-left: 8px;
+  cursor: pointer;
+  margin-top: 6px;
+  width: 12px;
+}
+
+/**** Start falling dots ****/
+.dot-falling {
+  position: relative;
+  left: -9999px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  box-shadow: 9999px 0 0 0 #9880ff;
+  animation: dotFalling 1s infinite linear;
+  animation-delay: 0.1s;
+}
+
+.dot-falling::before,
+.dot-falling::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot-falling::before {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFallingBefore 1s infinite linear;
+  animation-delay: 0s;
+}
+
+.dot-falling::after {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFallingAfter 1s infinite linear;
+  animation-delay: 0.2s;
+}
+
+@keyframes dotFalling {
+  0% {
+    box-shadow: 9999px -15px 0 0 rgba(152, 128, 255, 0);
+  }
+  25%,
+  50%,
+  75% {
+    box-shadow: 9999px 0 0 0 #9880ff;
+  }
+  100% {
+    box-shadow: 9999px 15px 0 0 rgba(152, 128, 255, 0);
+  }
+}
+
+@keyframes dotFallingBefore {
+  0% {
+    box-shadow: 9984px -15px 0 0 rgba(152, 128, 255, 0);
+  }
+  25%,
+  50%,
+  75% {
+    box-shadow: 9984px 0 0 0 #9880ff;
+  }
+  100% {
+    box-shadow: 9984px 15px 0 0 rgba(152, 128, 255, 0);
+  }
+}
+
+@keyframes dotFallingAfter {
+  0% {
+    box-shadow: 10014px -15px 0 0 rgba(152, 128, 255, 0);
+  }
+  25%,
+  50%,
+  75% {
+    box-shadow: 10014px 0 0 0 #9880ff;
+  }
+  100% {
+    box-shadow: 10014px 15px 0 0 rgba(152, 128, 255, 0);
+  }
+}
+/*** end falling dots ***/
+
+::ng-deep .assignee-menu {
+  width: 240px !important;
+  overflow: visible;
+  max-height: 400px;
+  .ps--active-x > .ps__rail-x {
+    display: none;
+  }
+}
+
+::ng-deep .remaining-users-menu {
+  width: 240px !important;
+  overflow: visible;
+  max-height: 400px;
+  .ps--active-x > .ps__rail-x {
+    display: none;
+  }
+}
+
+.setHighlight {
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.user-margin {
+  margin-top: 4px;
+}

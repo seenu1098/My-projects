@@ -1,0 +1,32 @@
+<ng-container *ngIf="data && data.type==='users-autocomplete'">
+    <form [formGroup]="form" #userForm="ngForm">
+        <mat-dialog-content>
+            <mat-form-field style="width: 100%;">
+                <input type="text" i18n-placeholder="Enter User Name" placeholder="Enter User Name" matInput
+                    formControlName="userName" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <ng-container *ngFor="let user of userVOList">
+                        <mat-option value="{{user.firstName}} {{user.lastName}}" *ngIf="user.userId !==chatId"
+                            (onSelectionChange)="setUserId($event,user.userId)">
+                            {{user.firstName}} {{user.lastName}}
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
+                <mat-error i18n="User Name is required">User Name is required</mat-error>
+            </mat-form-field>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" (click)="addUsersToGroup()" i18n="Add User">Add User</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="Cancel">Cancel</button>
+        </mat-dialog-actions>
+    </form>
+</ng-container>
+<ng-container>
+    <mat-dialog-content i18n="Are you sure want to delete selected notifications?">
+        Are you sure want to delete selected notifications?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" (click)="deleteNotification()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="Cancel">Cancel</button>
+    </mat-dialog-actions>
+</ng-container>

@@ -1,0 +1,106 @@
+<div fxLayout="row" class="background-css" [style.height.px]="screenHeight" id="notification">
+    <div fxLayout="column" class="menu-column-css">
+        <h2 class="header-css" i18n="Notifications"><span>Notifications</span>
+            <span>
+                <mat-icon class="icon-css" fontSet="material-icons-outlined">notifications</mat-icon>
+            </span>
+        </h2>
+        <div fxLayout="row" class="inbox-css" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutGap="10px">
+                <span style="width: 20px;">
+                    <mat-icon class="inbox-icon-css">inbox</mat-icon>
+                </span>
+                <span class="inbox-text-css" i18n="Inbox">Inbox</span>
+            </div>
+            <div style="margin-right: 10px;">{{notficationList}}</div>
+        </div>
+        <span class="filter-header-css" i18n="Filters">Filters</span>
+        <ng-container *ngFor="let filter of filterButtonArray;let i = index;">
+            <button mat-button (click)="filterSelect(filter)"
+                [class]="filter.isSelected?'active-filter-button':'filter-button'">{{filter.name | translate}}</button>
+        </ng-container>
+    </div>
+    <perfect-scrollbar [style.height.px]="screenHeight">
+        <div fxLayout="row" fxLayoutAlign="start" style="padding: 10px;">
+            <thy-button-group thySize="sm" thyType="outline-default">
+                <button thyButton *ngFor="let view of views" [class.active]="view.isSelected"
+                    (click)="viewChange(view)">
+                    {{ view.name | translate}}
+                </button>
+            </thy-button-group>
+        </div>
+        <div fxLayout="column" class="notification-body">
+            <table class="table-css">
+                <div fxLayout="row" class="primary-row-css" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <mat-checkbox (change)="selectAll($event)" class="select-all-checkbox-css"
+                            [checked]="selectAllNotification" [indeterminate]="interMediate()"></mat-checkbox>
+                        <span *ngIf="!getNotificationSelect()" class="select-all-css" i18n="Select All">Select
+                            All</span>
+                        <ng-container *ngIf="getNotificationSelect()">
+                            <span class="select-all-css" i18n="{{selectedLength}} selected">{{selectedLength}}
+                                selected</span>
+                            <button mat-button color="primary" *ngIf="markasReadBtn()" (click)="markAsReadSelected()"
+                                class="mark-read-css" i18n="Mark as read">Mark
+                                as
+                                read</button>
+                            <button mat-button color="primary" *ngIf="markasUnReadBtn()"
+                                (click)="markAsUnReadSelected()" class="mark-read-css" i18n="Mark as unread">Mark
+                                as
+                                unread</button>
+                            <button mat-button class="ml-2" color="accent" (click)="deleteAsSelected()"
+                                class="mark-read-css" i18n="Delete">Delete</button>
+                        </ng-container>
+                    </div>
+                    <div>
+                        <button mat-button color="primary" (click)="markAllAsRead()" class="mark-read-css"
+                            i18n="Mark all as read">Mark all
+                            as read</button>
+                    </div>
+                </div>
+                <ng-container *ngFor="let notification of notficationsVO;let i = index;">
+                    <div fxLayout="row" class="secondary-row-css" [style.background]="i%2===0?'#f6f8fa':'white'">
+                        <div fxLayout="row" fxLayoutGap="10px" class="table-column-css">
+                            <div style="width: 10px;">
+                                <div *ngIf="notification.readTime === null" class="mark-unread-indication-css"></div>
+                            </div>
+                            <mat-checkbox class="secondary-checkbox-css" [checked]="notification.isSelected"
+                                (change)="selectNotification(notification,$event)"></mat-checkbox>
+                            <div fxLayout="column"
+                                *ngIf="notification.link===undefined || notification.link===null || notification.link===''"
+                                class="notification_msg">
+                                <span class="notification_msg_title" i18n="{{notification.message}} is assigned to you">
+                                    {{notification.message}} is assigned to you</span>
+                                <span class="notification_msg_link"
+                                    (click)="anyAction(notification)">{{notification.message}}</span>
+                            </div>
+                            <div fxLayout="column"
+                                *ngIf="notification.link!==undefined && notification.link!==null && notification.link!==''"
+                                class="notification_msg">
+                                <span class="notification_msg_title">
+                                    {{notification.message}}</span>
+                                <span class="notification_msg_link"
+                                    (click)="anyAction(notification)">{{notification.link}}</span>
+                            </div>
+                        </div>
+                        <ng-container
+                            *ngIf="notification.fromUserProfilePicture !==null && notification.fromUserProfilePicture !==''">
+                            <img [src]="transformImage(notification.fromUserProfilePicture)" class="avatar"
+                                alt="User Image">
+                        </ng-container>
+                        <div class="avatar"
+                            *ngIf="!notification.fromUserProfilePicture || notification.fromUserProfilePicture ===null || notification.fromUserProfilePicture ===''">
+                            {{userProfileValue(notification.fromUserName)}}
+                        </div>
+                        <div class="assigned-time-css">{{getDataDiff(notification.createdDate)}}</div>
+                    </div>
+                </ng-container>
+            </table>
+            <div fxLayout="row" fxLayoutAlign="end" style="margin-right:10px;">
+                <app-paginator id="mat_table_page_selector" *ngIf="totalCount" [length]="totalCount" pageSize=25
+                    [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)">
+                </app-paginator>
+            </div>
+        </div>
+    </perfect-scrollbar>
+</div>

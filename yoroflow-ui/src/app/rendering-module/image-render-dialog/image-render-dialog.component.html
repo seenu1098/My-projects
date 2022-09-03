@@ -1,0 +1,12 @@
+
+<div fxLayoutAlign="end end">
+    <mat-icon (click)="onNoClick()" style="cursor: pointer; width: 25px; height: 25px;">close</mat-icon>
+</div>
+<mat-spinner [diameter]="40" style="margin-left: 4%;margin-top: 4%;" *ngIf="!show"></mat-spinner>
+<ng-container *ngIf = "show">
+    <mat-dialog-content style="overflow-x: hidden;">
+    <ng-container>
+        <img [src]="imageurl" [style.width.%]="100" [style.height.%]="100" style="margin-top: 2%;">
+    </ng-container>
+</mat-dialog-content>
+</ng-container>

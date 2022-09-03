@@ -1,0 +1,154 @@
+@import "variables";
+
+.primary-darker {
+    background-color: $primary-darker;
+}
+.primary-darker--text {
+    color: $primary-darker;
+}
+
+.primary-dark {
+    background-color: $primary-dark;
+}
+.primary-dark--text {
+    color: $primary-dark;
+}
+
+.primary {
+    background-color: $primary;
+}
+.primary--text {
+    color: $primary;
+}
+
+.primary-alt {
+    background-color: $primary-alt;
+}
+.primary-alt--text {
+    color: $primary-alt;
+}
+
+.primary-light {
+    background-color: $primary-light;
+}
+.primary-light--text {
+    color: $primary-light;
+}
+
+.warn {
+    background-color: $warn;
+}
+.warn--text {
+    color: $warn;
+}
+
+.error {
+    background-color: $error;
+}
+.error--text {
+    color: $error;
+}
+
+.accent {
+    background-color: $accent;
+}
+.accent--text {
+    color: $accent;
+}
+
+.purple {
+    background-color: $purple;
+}
+.purple--text {
+    color: $purple;
+}
+
+.orange {
+    background-color: $orange;
+}
+.orange--text {
+    color: $orange;
+}
+
+.teal {
+    background-color: $teal;
+}
+.teal--text {
+    color: $teal;
+}
+
+.pink {
+    background-color: $pink;
+}
+.pink--text {
+    color: $pink;
+}
+
+.brown {
+    background-color: $brown;
+}
+.brown--text {
+    color: $brown;
+}
+
+.white {
+    background-color: $white;
+}
+.white--text {
+    color: $white;
+}
+
+.black {
+    background-color: $black;
+}
+.black--text {
+    color: $black;
+}
+
+.gray {
+    background-color: $gray;
+}
+.gray--text {
+    color: $gray;
+}
+
+.dark-gray {
+    background-color: $dark-gray;
+}
+.dark-gray--text {
+    color: $dark-gray;
+}
+
+.gray-light {
+    background-color: $gray-light;
+}
+.gray-light--text {
+    color: $gray-light;
+}
+
+.gray-lighter {
+    background-color: $gray-lighter;
+}
+.gray-lighter--text {
+    color: $gray-lighter;
+}
+
+.gray-lightest {
+    background-color: $gray-lightest;
+}
+.gray-lightest--text {
+    color: $gray-lightest;
+}
+
+.gray-lightest-alt {
+    background-color: $gray-lightest-alt;
+}
+.gray-lightest-alt--text {
+    color: $gray-lightest-alt;
+}
+
+// Breaking from convention above and not adding "--text"
+// counterpart for transparent as it won't be useful
+.transparent {
+    background-color: $transparent;
+}

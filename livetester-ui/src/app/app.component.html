@@ -1,0 +1,6 @@
+<app-header *ngIf="service.loggedIn()"></app-header>
+
+<body class="Site">
+    <router-outlet></router-outlet>
+</body>
+<app-footer class="Site-content" *ngIf="service.loggedIn()"></app-footer>

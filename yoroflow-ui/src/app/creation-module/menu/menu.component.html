@@ -1,0 +1,22 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened position="start" class="header">
+        <div fxLayout="column" fxLayoutGap="10px" fxLayout.xs="column" fxLayoutAlign="start start" class="menuAlign">
+            <div fxLayoutAlign="start center" style="padding: 5px;">
+                <img src="assets/images/product-logo.png" alt="YOROSIS LOGO">
+            </div>
+
+            <button mat-button routerLink="grid-config" id="grid">Grid</button>
+            <button mat-button routerLink="menu-config" id="menu">Menu</button>
+            <button mat-button routerLink="page" id="page">Page</button>
+            <button mat-button routerLink="page-list" id="pageList">Page List</button>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div fxLayout="row" [style.width.%]="100">
+            <div [style.width.%]="99">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

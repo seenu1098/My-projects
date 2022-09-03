@@ -1,0 +1,276 @@
+<ng-container *ngIf="type!=='create task'">
+    <div fxLayout="row">
+        <h4 style="color: #656565;width:130px" i18n="Select taskboard">Select taskboard</h4>
+        <span class="line-style"></span>
+    </div>
+    <div fxLayout="row wrap" *ngIf="showList">
+        <ng-container *ngFor="let taskboard of taskboardList;let i = index;">
+            <div *ngIf="taskboard.name!==taskboardName" class="taskboardList-style"
+                (click)="getTaskboardName(taskboard)" [id]="'taskboard_'+i" appMaterialElevation>
+                {{taskboard.name}}
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<ng-container *ngIf="showSpinner">
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+        <span i18n="Loading mapping fields">Loading mapping fields</span>
+        <span class="dot-falling"></span>
+    </div>
+</ng-container>
+<ng-container *ngIf="!showList && !showSpinner">
+    <form [formGroup]="mappingForm" #userForm="ngForm" id="form">
+        <div class="row mx-0 w-100 justify-content-center">
+            <table>
+                <tr>
+                    <th>
+                        <h4 class="mb-0" i18n="{{boardName}} form fields">{{boardName}} form fields</h4>
+                    </th>
+                    <th>
+                        <h4 class="mb-0" i18n="{{taskboardName}} form fields">{{taskboardName}} form fields</h4>
+                    </th>
+                </tr>
+                <ng-container>
+                    <tr *ngFor="let field of fieldsListForMapping;let i = index;">
+                        <ng-container *ngIf="field.repeatableFieldId === null"
+                            [formGroupName]="getMainSectionFieldGroup(field)">
+                            <td>
+                                <div fxLayout="row">
+                                    <mat-icon class="mr-1 f_21 pt-1" [style.color]="field.color">{{getIcon(field)}}
+                                    </mat-icon>
+                                    <h4 class="f_12">{{field.fieldName}}</h4>
+                                </div>
+                            </td>
+                            <td>
+                                <div fxLayout="row">
+                                    <ng-container
+                                        *ngIf="field.datatype!=='date' || mappingForm.get(field.fieldId).value.variableType==='pagefield'">
+                                        <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                            [id]="'fieldName_'+i" readonly class="border-css"
+                                            [value]="getValue(mappingForm.get(field.fieldId).value)">
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="field.datatype==='date' && mappingForm.get(field.fieldId).value.variableType==='constant'">
+                                        <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                            [id]="'fieldName_'+i" readonly class="border-css" [matDatepicker]="picker"
+                                            [value]="getValue(mappingForm.get(field.fieldId).value)">
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </ng-container>
+                                    <button mat-icon-button [matMenuTriggerFor]="menu1" #menuTrigger1="matMenuTrigger"
+                                        class="float-right" aria-label="Example icon-button with a menu"
+                                        (mousedown)="mousedown(field)" [id]="'field_'+i"
+                                        (click)="getConstantValue(field)">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-container *ngIf="field.repeatableFieldId !== null">
+                            <td>
+                                <div fxLayout="row">
+                                    <mat-icon class="mr-1 f_21 pt-1" [style.color]="field.color">list_alt</mat-icon>
+                                    <h4 class="f_12">{{field.repeatableFieldName}}</h4>
+                                </div>
+                            </td>
+                            <td>
+                                <div fxLayout="row">
+                                    <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                        [id]="'fieldName_'+i" readonly class="border-css"
+                                        [value]="getRepeatableFieldValue(mappingForm.get(field.repeatableFieldId))">
+                                    <button mat-icon-button [matMenuTriggerFor]="menu2" #menuTrigger2="matMenuTrigger"
+                                        class="float-right" aria-label="Example icon-button with a menu"
+                                        (mousedown)="mousedown(field)" [id]="'field_'+i">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
+                    </tr>
+                    <ng-container *ngFor="let formName of repeatableFieldsListFormName">
+                        <ng-container
+                            *ngIf="mappingForm.get(formName.repeatableFieldId).value!==undefined && mappingForm.get(formName.repeatableFieldId).value!==null && mappingForm.get(formName.repeatableFieldId).value!==''">
+                            <ng-container [formGroupName]="getformGroupName(formName.repeatableFieldId)">
+                                <tr *ngFor="let field of repeatableFieldsListsForMapping">
+                                    <ng-container *ngIf="field.repeatableFieldId === formName.repeatableFieldId"
+                                        [formGroupName]="getSubSectionFieldGroup(field)">
+                                        <td>
+                                            <div fxLayout="row">
+                                                <mat-icon class="mr-1 f_21 pt-1" [style.color]="field.color">
+                                                    {{getIcon(field)}}</mat-icon>
+                                                <h4 class="f_12">{{getFieldlabel(field)}}</h4>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div fxLayout="row">
+                                                <ng-container
+                                                    *ngIf="field.datatype!=='date' || mappingForm.get(formName.repeatableFieldId+'ya').get(field.fieldId).value.variableType==='pagefield'">
+                                                    <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                                        [id]="'fieldName_'+i" readonly class="border-css"
+                                                        [value]="getValue(mappingForm.get(formName.repeatableFieldId+'ya').get(field.fieldId).value)">
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="field && field.datatype==='date' && mappingForm.get(formName.repeatableFieldId+'ya').get(field.fieldId).value.variableType==='constant'">
+                                                    <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                                        [id]="'fieldName_'+i" readonly class="border-css"
+                                                        [matDatepicker]="picker"
+                                                        [value]="getValue(mappingForm.get(formName.repeatableFieldId+'ya').get(field.fieldId).value)">
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                </ng-container>
+                                                <button mat-icon-button [matMenuTriggerFor]="menu3"
+                                                    #menuTrigger3="matMenuTrigger" class="float-right"
+                                                    aria-label="Example icon-button with a menu"
+                                                    (mousedown)="repeatableFieldMousedown(field,formName.repeatableFieldId)"
+                                                    (click)="getRepeatableFieldConstantValue(field,formName.repeatableFieldId)"
+                                                    [id]="'field_'+i">
+                                                    <mat-icon>more_vert</mat-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </table>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px">
+            <button mat-raised-button id="apply-button" color="primary" (click)="apply()" i18n="Apply">Apply</button>
+            <button mat-raised-button *ngIf="type!=='create task'" id="previous" color="accent"
+                (click)="change('previous')" i18n="Previous">Previous</button>
+        </div>
+        <mat-menu #menu1="matMenu" class="column-menu">
+            <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                <div class="col-md-6 pr-1">
+                    <p class="text-dark font-weight-bold mb-2" i18n="Constant">Constant</p>
+                </div>
+                <div class="col-md-12 pl-2 pr-1">
+                    <div fxLayout="row" id="search">
+                        <div class="input-group mb-3 px-2">
+                            <ng-container *ngIf="selectedField && selectedField.datatype!=='date'">
+                                <input [type]="getFieldType()" formControlName="constantValue" class="form-control"
+                                    placeholder="Variable value" i18n-placeholder="Variable value">
+                            </ng-container>
+                            <ng-container *ngIf="selectedField && selectedField.datatype==='date'">
+                                <input matInput [matDatepicker]="picker" formControlName="constantValue"
+                                    class="form-control" placeholder="Variable value" i18n-placeholder="Variable value">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </ng-container>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <mat-icon matSuffix style="cursor: pointer;" (click)="setConstantValue(field)">done
+                                    </mat-icon>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row" (click)="$event.stopPropagation()">
+                <hr class="hr_style">
+                <span i18n="OR">
+                    OR
+                </span>
+                <hr class="hr_style">
+            </div>
+            <div fxLayout="row" (click)="$event.stopPropagation()">
+                <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                    Page Field</p>
+                <hr class="hr_style_pagefield">
+            </div>
+            <button mat-menu-item class="px-0" (click)="setPageFieldValue('')">
+                <span fxLayoutAlign="end" style="margin-right: 10px;" i18n="(empty)">(empty)</span>
+            </button>
+            <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                <div class=" col-md-12 mx-0 w-100" *ngFor="let field of fieldList" style="margin-top:10px;">
+                    <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                    <div *ngFor="let value of field.fieldVO">
+                        <button mat-menu-item class="px-0" (click)="setPageFieldValue(value.fieldId)">
+                            <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">{{getIcon(value)}}</mat-icon>
+                            <span>{{value.fieldName}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-menu>
+        <mat-menu #menu2="matMenu" class="column-menu">
+            <div fxLayout="row" (click)="$event.stopPropagation()">
+                <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                    Page Field</p>
+                <hr class="hr_style_pagefield">
+            </div>
+            <button mat-menu-item class="px-0" (click)="setRepeatableFieldValue('')"></button>
+            <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                <div class=" col-md-12 mx-0 w-100" *ngFor="let field of initialFieldList" style="margin-top:10px;">
+                    <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                    <div *ngFor="let value of field.fieldVO">
+                        <button *ngIf="value.datatype === 'array' || value.controlType ==='shoppingcart'" mat-menu-item
+                            class="px-0" (click)="setRepeatableFieldValue(value.fieldId)">
+                            <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">{{getIcon(value)}}</mat-icon>
+                            <span>{{value.fieldName}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-menu>
+        <mat-menu #menu3="matMenu" class="column-menu">
+            <div class="row mx-0  w-100" (click)="$event.stopPropagation()"
+                *ngIf="selectedField && selectedField.datatype !== 'array'">
+                <div class="col-md-6 pr-1">
+                    <p class="text-dark font-weight-bold mb-2" i18n="Constant">Constant</p>
+                </div>
+                <div class="col-md-12 pl-2 pr-1">
+                    <div fxLayout="row" id="search">
+                        <div class="input-group mb-3 px-2">
+                            <ng-container *ngIf="selectedField && selectedField.datatype!=='date'">
+                                <input [type]="getFieldType()" formControlName="constantValue" class="form-control"
+                                    placeholder="Variable value" i18n-placeholder="Variable value">
+                            </ng-container>
+                            <ng-container *ngIf="selectedField && selectedField.datatype==='date'">
+                                <input matInput [matDatepicker]="picker" formControlName="constantValue"
+                                    class="form-control" placeholder="Variable value" i18n-placeholder="Variable value">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </ng-container>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <mat-icon matSuffix style="cursor: pointer;"
+                                        (click)="setRepetableConstantValue(field)">done
+                                    </mat-icon>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row" (click)="$event.stopPropagation()"
+                *ngIf="selectedField && selectedField.datatype !== 'array'">
+                <hr class="hr_style">
+                <span i18n="OR">
+                    OR
+                </span>
+                <hr class="hr_style">
+            </div>
+            <div fxLayout="row" (click)="$event.stopPropagation()">
+                <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                    Page Field</p>
+                <hr class="hr_style_pagefield">
+            </div>
+            <button mat-menu-item class="px-0" (click)="setRepeatablePageFieldValue('')">
+                <span fxLayoutAlign="end" style="margin-right: 10px;" i18n="(empty)">(empty)</span>
+            </button>
+            <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                <div class=" col-md-12 mx-0 w-100" *ngFor="let field of fieldList" style="margin-top:10px;">
+                    <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                    <div *ngFor="let value of field.fieldVO">
+                        <button mat-menu-item class="px-0" (click)="setRepeatablePageFieldValue(value.fieldId)">
+                            <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">{{getIcon(value)}}</mat-icon>
+                            <span>{{value.fieldName}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-menu>
+    </form>
+</ng-container>

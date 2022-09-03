@@ -1,0 +1,41 @@
+.mat-mini-fab  {
+    height: 30px;
+    width: 30px;
+  }
+
+  .icon  {
+    margin-bottom: 10px;
+    height: 30px;
+    width: 30px;
+  } 
+
+  .add{
+    height: 30px;
+    width: 30px;
+    /* margin-top: 18px; */
+   }
+
+   .mat-icon{
+    font-size: 16px;;
+}
+
+.ca-label-width-css{
+  min-width: 100px;
+  max-width: 33.333333%;
+  margin-right: 10px;
+}
+
+.ca-value-width-css{
+  -ms-flex: 0 0 66.666667%;
+  flex: 0 0 66.666667%;
+  max-width: 66.666667%;
+}
+
+.ca-label-css{
+  height: 44px;
+    line-height: 30px;
+}
+
+.field-width{
+  width: 200px;
+}

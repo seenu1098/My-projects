@@ -1,0 +1,78 @@
+<div style="margin-top: 1%;margin-left: 1%;">
+    <div>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-card-title>{{'Payment History' | translate}}</mat-card-title>
+            <button mat-button style="color: white;" (click)="goBack()" i18n="Go Back"
+                class="background-color-css go_back">{{'Go Back' | translate}}</button>
+        </div>
+    </div>
+
+
+    <mat-table [dataSource]="customerPaymentVO" matSort [matSortDisableClear]="true">
+        <ng-container matColumnDef="isPaymentSucceed">
+            <mat-header-cell *matHeaderCellDef style="width:20%">
+                {{'Payment Status' | translate}}
+            </mat-header-cell>
+            <mat-cell *matCellDef="let payHistoryVo" style="width:20%">
+
+                <button *ngIf="payHistoryVo.isPaymentSucceed=== 'Y'" class="succeeded" mat-raised-button> <span
+                        style="font-size: 15px;">{{'Succeeded' | translate}}</span>
+                    <mat-icon class="text-success">done</mat-icon>
+                </button>
+
+                <button *ngIf="payHistoryVo.isPaymentSucceed=== 'N' || 
+                payHistoryVo.isPaymentSucceed=== '' || 
+                payHistoryVo.isPaymentSucceed=== null" class="failed" mat-raised-button> <span
+                        style="font-size: 15px;">{{'Failed' | translate}}</span>
+                    <mat-icon class="text-danger">close</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="paymentDate">
+            <mat-header-cell *matHeaderCellDef style="width:20%">
+                <span>{{'Date' | translate}}</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let payHistoryVo" style="width:20%">
+                {{payHistoryVo.paymentDate| date: 'M/d/yy'}}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentMethod">
+            <mat-header-cell *matHeaderCellDef style="width:20%">
+                <span>{{'Payment Method' | translate}}</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let payHistoryVo" style="width:20%">
+                <mat-icon>credit_card</mat-icon> {{ payHistoryVo.paymentMethod}}
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentAmount">
+            <mat-header-cell *matHeaderCellDef style="width:20%">
+                <span>{{'Payment Amount' | translate}}</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let payHistoryVo" style="width:20%">
+                <span style="font-weight: bold;"> {{ payHistoryVo.paymentAmount | currency }} USD</span>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="receipt">
+            <mat-header-cell *matHeaderCellDef style="width:20%">
+                <span>{{'Receipt' | translate}}</span>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let payHistoryVo" style="width:20%">
+                <mat-icon (click)="downloadFile(payHistoryVo.id)" style="cursor: pointer;">download</mat-icon>
+            </mat-cell>
+        </ng-container>
+
+
+
+        <mat-header-row *matHeaderRowDef="displayedColumns;">
+        </mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <ng-container *ngIf="customerPaymentVO.length === 0">
+        <div class="row w-100 mx-0 justify-content-center mt-1">
+            <div class="font-weight-bold">{{'No data available' | translate}}</div>
+        </div>
+    </ng-container>
+</div>

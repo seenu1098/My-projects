@@ -1,0 +1,37 @@
+
+.mat-header-row {
+   background-color:#0078ff;
+}
+.mat-table { 
+  overflow: auto;
+  height: 400px;
+  width: 99% !important;
+  display: block;
+  }
+.mat-header-cell, .mat-cell{
+  margin: 0 3px;
+ }
+.mat-cell {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.mat-header-cell {
+  text-decoration: black;
+  font-size: small;
+  font-weight: bold;
+  color: white;
+}
+.mat-form-field{
+    width: 27%;
+    margin: 3px;
+}
+
+.card-style {
+  background-color:rgb(154, 199, 212)
+}
+mat-card{
+  background-color: rgb(248, 248, 248)
+}
+

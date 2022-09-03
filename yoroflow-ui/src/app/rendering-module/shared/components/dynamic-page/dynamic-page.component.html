@@ -1,0 +1,41 @@
+<!-- <mat-spinner *ngIf="!show" [diameter]="45" class="loader"></mat-spinner> -->
+<div *ngIf="show && (message===null || message==='' || message===undefined)">
+    <!-- id="content" #content -->
+    <!-- <app-warning type="authorize" *ngIf="!page.security.read"></app-warning> -->
+    <!-- <mat-card> -->
+    <ng-container *ngIf="page.exportAsPdf===true">
+        <div fxLayout="row" fxLayoutAlign="end start" *ngIf="!isExclude">
+            <button mat-raised-button id="exportPdf" type="button" color="primary" (click)="exportasPDF()">Export as
+                PDF</button>
+        </div>
+    </ng-container>
+    <!-- <div fxLayout="row" fxLayoutAlign="space-between center" style="margin-left: 10px;">
+        <mat-card-title>{{page.pageName}}</mat-card-title>
+    </div> -->
+    <ng-container>
+        <dynamic-form [page]="page" [form]="form" [setJson]="setJson" [formData]="formData"
+            (submit)="formSubmit($event)" (formObj)="getForm($event)" (progressBar)="showProgressbar($event)"
+            [loadFormInfo]="loadFormInfo" [yoroflowInfo]="yoroflowInfo" [publicPage]="publicForm" [taskObject]="object"
+            [inputObject]="inputObject" [editable]="pageSecurity">
+        </dynamic-form>
+    </ng-container>
+    <!-- </mat-card> -->
+</div>
+<!-- <div *ngIf="loadCustomForm">
+ <app-custom-form [yoroflowInfo]="yoroflowInfo" (customFormSubmitAction)="formSubmit($event)"></app-custom-form>
+</div> -->
+<!-- <button mat-raised-button type="button" color="primary" (click)="generatePdf()">Export as PDF</button> -->
+<div *ngIf="message" style="margin-top: 14%;">
+    <br />
+    <br />
+    <br />
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <div fxFlex="50%">
+            <!-- <mat-card> -->
+                <div style="padding: 2%;" fxLayoutAlign="center center">
+                    <h2>{{message}}</h2>
+                </div>
+            <!-- </mat-card> -->
+        </div>
+    </div>
+</div>

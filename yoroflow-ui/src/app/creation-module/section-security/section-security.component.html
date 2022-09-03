@@ -1,0 +1,87 @@
+<mat-card style="margin: 10px">
+    <!-- <mat-card-title>Page Section Security</mat-card-title> -->
+    <!-- *ngIf="index===0" -->
+    <h2>{{'Page Section Security' | translate}}</h2>
+    <form [formGroup]="form" #userForm="ngForm">
+        <div fxLayout="row" fxLayoutGap="30px">
+            <mat-label style="width: 27%;">{{'Group Name' | translate}}</mat-label>
+            <mat-label style="width: 5%;">{{'Create' | translate}}</mat-label>
+            <mat-label style="width: 5%;">{{'Read' | translate}}</mat-label>
+            <mat-label style="width: 5%;">{{'Update' | translate}}</mat-label>
+            <mat-label style="width: 5%;">{{'Show' | translate}}</mat-label>
+            <mat-label style="width: 5%;">{{'Delete' | translate}}</mat-label>
+            <mat-label style="width: 5%;">{{'All' | translate}}</mat-label>
+        </div>
+        <div formArrayName="pagePermissionArray"
+            *ngFor="let permissionArray of getPagePermissionArray().controls; let j = index"
+            style="margin-bottom:10px ;" appMaterialElevation defaultElevation=2 raisedElevation=2>
+            <div [formGroupName]="j" style="padding:5px;">
+                <div fxLayout="row">
+                    <h3 *ngIf="page.sections[j].name">{{page.sections[j].name}}</h3>
+                    <h3 *ngIf="!page.sections[j].name">{{'Section' | translate}} &nbsp;{{j}}</h3>
+                </div>
+                <div>
+                    <div formArrayName="pagePermissions"
+                        *ngFor="let permission of permissionArray['controls'].pagePermissions['controls']; let i = index">
+                        <div [formGroupName]="i" fxLayout="row" fxLayoutGap="30px">
+                            <mat-form-field style="width: 27%;">
+                                <input matInput [id]="'groupId_'+'j_'+'i'" formControlName="groupId"
+                                    [matAutocomplete]="auto">
+                                <mat-autocomplete #auto="matAutocomplete">
+                                    <mat-option type="text" [value]="name.name" *ngFor="let name of yoroGroups">
+                                        {{name.name}}-{{name.description}}</mat-option>
+                                </mat-autocomplete>
+                                <mat-error *ngIf="permission.get('groupId').errors?.required">{{'Team Name is required'
+                                    | translate}}
+                                </mat-error>
+                                <mat-error *ngIf="permission.get('groupId').errors?.validators">{{'Team Name already
+                                    selected' | translate}}
+                                </mat-error>
+                                <mat-error *ngIf="permission.get('groupId').errors?.groupExist">{{'Team does not exist'
+                                    | translate}}
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-checkbox [id]="'createAllowed'+'_'+j+'_'+i" style="width: 5%;" class="mat-checkbox"
+                                formControlName="createAllowed" (change)="unCheckValue($event,i,j)"></mat-checkbox>
+
+                            <mat-checkbox [id]="'readAllowed'+'_'+j+'_'+i" style="width: 5%;" class="mat-checkbox"
+                                formControlName="readAllowed" (change)="unCheckValue($event,i)"></mat-checkbox>
+
+                            <mat-checkbox [id]="'updateAllowed'+'_'+j+'_'+i" style="width: 5%;"
+                                formControlName="updateAllowed" (change)="unCheckValue($event,i,j)">
+                            </mat-checkbox>
+
+                            <mat-checkbox [id]="'showAllowed'+'_'+j+'_'+i" style="width: 5%;"
+                                formControlName="showAllowed" (change)="unCheckValue($event,i,j)">
+                            </mat-checkbox>
+
+                            <mat-checkbox [id]="'deleteAllowed'+'_'+j+'_'+i" style="width: 5%;"
+                                formControlName="deleteAllowed" (change)="unCheckValue($event,i,j)">
+                            </mat-checkbox>
+
+                            <mat-checkbox style="width: 5%;" [id]="'all'+'_'+j+'_'+i" formControlName="allAllowed"
+                                [checked]="allCheckBoxControl[i]" (change)="setAllChecked($event,i,j)">
+                            </mat-checkbox>
+                            <button mat-mini-fab [id]="'btnAdd'+'_'+j+'_'+i" type="button" color="primary"
+                                (click)="addPermission(j)">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                            <button type="button" *ngIf="getPermissionsFormArray(j).length>1" mat-mini-fab
+                                color="primary" id="'remove'+'_'+j+'_'+i" (click)="removePermission(i,j)">
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 1%;" fxLayout="row" fxLayoutAlign="end">
+            <!-- <button mat-raised-button id="btnPublish" color="primary" (click)="save(userForm)"
+            *ngIf="publish">Publish</button>&nbsp; -->
+            <button mat-raised-button id="btnSave" color="primary" (click)="save(userForm)">{{'Save' |
+                translate}}</button>&nbsp;
+            <button mat-raised-button id="close" color="accent" (click)="cancel()">{{'Close' | translate}}</button>
+        </div>
+    </form>
+</mat-card>

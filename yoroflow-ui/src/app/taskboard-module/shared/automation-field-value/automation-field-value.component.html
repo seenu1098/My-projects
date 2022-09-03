@@ -1,0 +1,15 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;width: 130px;" i18n="Select field value">Select field value</h4>
+    <span class="line-style"></span>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <ng-container>
+        <mat-form-field appearance="outline">
+            <mat-label>Field Value</mat-label>
+            <input matInput formControlName="fieldValue">
+        </mat-form-field>
+    </ng-container>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button color="primary" (click)="apply()">Apply</button>
+    </div>
+</form>

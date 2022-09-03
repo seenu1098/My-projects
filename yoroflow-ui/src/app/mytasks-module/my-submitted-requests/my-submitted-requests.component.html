@@ -1,0 +1,106 @@
+<div class="mat_ui">
+    <mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true">
+        <ng-container *ngFor="let column of columnHeaders;let i = index;" matColumnDef="{{column.headerId}}">
+            <mat-header-cell mat-header-cell *matHeaderCellDef [style.flex.%]="column.widthPercentage">
+                <div fxLayout="row" class="w-100">
+                    <div [disabled]="column.headerId!=='submittedDate'" mat-sort-header class="pl-3 text-black">
+                        {{ column.headerName | translate}}
+                    </div>
+                    <mat-icon *ngIf="column.headerId==='submittedDate' || column.headerId==='reqName'"
+                        class="icon-css filter_list_css" id="workflow_date" [matMenuTriggerFor]="dropdownMenuOne"
+                        #menuTrigger="matMenuTrigger" (click)="setDataTypeForWorkflow(column.headerId)"
+                        [ngClass]="{'active_filter': isSelectedColumn(column.headerId)}"
+                        style="margin-right: 8px;cursor: pointer;margin-top: 4px;">
+                        filter_list
+                    </mat-icon>
+                </div>
+            </mat-header-cell>
+
+            <ng-container *ngIf="length>0">
+                <mat-cell id="data" mat-cell *matCellDef="let data"
+                    [matTooltip]="column.headerId!=='submittedDate'?data[column.headerId]:data[column.headerId]|date:'MMM dd,yyyy,HH:MM:ss a'"
+                    matTooltipPosition="below" [style.flex.%]="column.widthPercentage">
+                    <div class="col-md-12 mat_font"
+                        *ngIf="column.headerId!=='assignedTo' && column.headerId!=='action' && column.headerId!=='submittedDate'">
+                        {{data[column.headerId]}}
+                    </div>
+                    <div class="col-md-12 mat_font" *ngIf="column.headerId==='submittedDate'">
+                        {{data[column.headerId]|date:'MMM dd,yyyy,HH:MM:ss a'}}
+                    </div>
+                    <div fxLayout="row" *ngIf="column.headerId==='assignedTo'">
+                        <ng-container *ngFor="let user of getAssigneeList(data);let i = index;">
+                            <div *ngIf="i<=3" class="setHighlight mt-1"
+                                [matTooltip]="user.groupName?user.groupName:user.userName"
+                                [style.margin-left]="i>0?'-5px':''" [style.background]="user.color">
+                                <span
+                                    style="font-size: 10px; color: white;font-weight: 100;">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                            </div>
+                            <ng-container *ngIf="i===4">
+                                <div class="hover-class assign_user_count mt-1">
+                                    <span
+                                        style="font-size: 12px; color: grey;font-weight: 100;">+{{getRemainingUsersCount(getAssigneeList(data))}}</span>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <button mat-raised-button *ngIf="column.headerId==='action'" color="primary" type="button"
+                        (click)="openTask(data)">View Details</button>
+                </mat-cell>
+            </ng-container>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row class="ripple-row" *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <ng-container *ngIf="showSubmittedTask && (length===undefined || length===null || length === 0)">
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <span style="font-weight: bold;padding: 10px;"> No request submitted </span>
+        </div>
+    </ng-container>
+    <div class="my-auto" *ngIf="showSubmittedTask === false" fxLayoutAlign="center center">
+        <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+    <div *ngIf="showSubmittedTask && length!==undefined && length!=null && length>0" fxLayout="row" fxLayoutAlign="end"
+        class="mx-2 my-3">
+        <app-paginator *ngIf="length" id="mat_table_page_selector" [length]="length" [pageSize]="paginationVO.size"
+            [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)">
+        </app-paginator>
+    </div>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <mat-menu #dropdownMenuOne="matMenu" class="remaining-menu" id="operator">
+        <div class="row w-100 mx-0 justify-content-center" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-size">
+                <mat-label i18n="@@Operator">Operator</mat-label>
+                <mat-select formControlName="operator" required>
+                    <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                        {{data.description}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('operator').errors?.required" i18n="@@OperatorRequired">Operator is
+                    required</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="row w-100 mx-0 justify-content-center mt-3" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-size" *ngIf="isDateField===false">
+                <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                <input matInput id="columnValue" *ngIf="isDateField===false" type="text" formControlName="filterValue"
+                    required>
+                <mat-error *ngIf="form.get('filterValue').errors?.required" i18n="@@Filter Value is Required">
+                    Filter value is required</mat-error>
+            </mat-form-field>
+            <mat-form-field class="field-size" *ngIf="isDateField===true">
+                <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                <input matInput id="columnValue" [matDatepicker]="picker" formControlName="filterValue" required>
+                <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                </mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="form.get('filterValue').errors?.required" i18n="@@Filter Value is Required">
+                    Filter value is required</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+            style="margin-top:30px">
+            <button mat-raised-button type="submit" color="primary" (click)="filterApply()" i18n="Apply">Apply</button>
+            <button mat-raised-button type="button" color="accent" (click)="clearFilter()" i18n="Clear">Clear</button>
+        </div>
+    </mat-menu>
+</form>

@@ -1,0 +1,98 @@
+<br />
+<br />
+<div fxLayout="row" fxLayoutAlign="space-around center">
+
+  <div fxFlex="50%">
+    <mat-card style="margin-top: 1%">
+      <form [formGroup]="signupForm" #userForm="ngForm">
+        <div fxLayout="column" fxLayoutAlign="center center">
+          <h2>Create User </h2>
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-form-field>
+              <input matInput type="email" placeholder="Email" required formControlName="emailId">
+              <mat-error class="text-danger" id="emailRequired" *ngIf="signupForm.get('emailId').errors?.required
+                  &&(userForm.submitted || signupForm.get('emailId').touched || signupForm.get('emailId').dirty)">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="signupForm.get('emailId').hasError('email')">
+                Please enter a valid email address
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="top-buffer">
+              <input matInput [type]="hide ? 'password' : 'text'" placeholder="Password" formControlName="password"
+                required>
+
+              <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+
+
+              <mat-error class="text-danger" id="passwordRequired"
+                *ngIf="signupForm.get('password').errors?.required
+                        &&(userForm.submitted || signupForm.get('password').touched || signupForm.get('password').dirty)">
+                Password is required</mat-error>
+            </mat-form-field>
+
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+
+            <mat-form-field>
+              <input matInput type="text" placeholder="First Name" required formControlName="firstName">
+              <mat-error class="text-danger" id="firstNameRequired"
+                *ngIf="signupForm.get('firstName').errors?.required
+                            &&(userForm.submitted || signupForm.get('firstName').touched || signupForm.get('firstName').dirty)">
+                First Name is required</mat-error>
+            </mat-form-field>
+
+
+            <mat-form-field class="lastname-buffer">
+              <input matInput type="text" placeholder="Last Name" required formControlName="lastName">
+              <mat-error class="text-danger" id="lastNameRequired"
+                *ngIf="signupForm.get('lastName').errors?.required
+                            &&(userForm.submitted || signupForm.get('lastName').touched || signupForm.get('lastName').dirty)">
+                Last Name is required</mat-error>
+            </mat-form-field>
+
+          </div>
+          <div fxLayout="row" style="margin-left: 15%">
+            <mat-form-field>
+              <mat-label for="role">Roles</mat-label>
+              <mat-select formControlName="userRole" multiple>
+                <mat-option [value]="roles.id" id="role" *ngFor="let roles of roleList">{{roles.rolesDesc}}
+                </mat-option>
+              </mat-select>
+              <mat-error class="text-danger" id="userRoleRequired"
+                *ngIf="signupForm.get('userRole').errors?.required
+                          &&(userForm.submitted || signupForm.get('userRole').touched || signupForm.get('userRole').dirty)">
+                Role is required</mat-error>
+            </mat-form-field>
+
+            <mat-radio-group style="margin-left: 5%;margin-top: 3%" formControlName="globalSpecification" id="mandatory"
+              aria-label="Select an option">
+              <fieldset class="border">
+                <legend>Global Specification *</legend>
+                <div style="margin-top: 3%">
+                  <mat-radio-button id="yes" value="Y">Users Can See All TestCases</mat-radio-button>
+                </div>
+                <div style="margin-top: 3%">
+                  <mat-radio-button id="no" value="N">Users Can See only their TestCases</mat-radio-button>
+                </div>
+              </fieldset>
+              <mat-error class="text-danger" id="globalSpecificationRequired"
+                *ngIf="signupForm.get('globalSpecification').errors?.required
+                        &&(userForm.submitted || signupForm.get('globalSpecification').touched || signupForm.get('globalSpecification').dirty)">
+                Global Specification is required</mat-error>
+            </mat-radio-group>
+          </div>
+
+
+
+          <div fxFlex="100%" fxFlexAlign="center">
+            <button mat-raised-button color="primary" type="submit" style="width : 17em;"
+              (click)=createUser(userForm)>Sign Up</button>
+          </div>
+        </div>
+
+      </form>
+    </mat-card>
+  </div>
+</div>

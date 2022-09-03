@@ -1,0 +1,8 @@
+    <div fxFlex="100%">
+        <mat-card>
+            <mat-card-title i18n="Failed Process">Failed Process</mat-card-title>
+            <app-yorogrid gridId="Failed Tasks" (messageEvent)="receiveMessage($event)"
+                defaultColumn="b.created_date" defaultSortDirection="desc">
+            </app-yorogrid>
+        </mat-card>
+    </div>

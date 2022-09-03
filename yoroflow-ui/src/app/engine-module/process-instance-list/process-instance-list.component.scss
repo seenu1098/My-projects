@@ -1,0 +1,115 @@
+// div.pn:nth-child(2n){
+//     background-color:rgb(240, 243, 245);
+//    // height:40px;
+//     padding: 1%;
+// }
+// div.pn:nth-child(2n+1){
+//     background-color:rgb(202, 220, 231);
+//    // height:40px;
+//     padding: 1%;
+// }
+// .header{
+//     height: 50px;
+//     padding-top: 15px;
+//     padding-left: 10px;
+//     font-weight: bold;
+// }
+table {
+    width: 100%;
+  }
+
+//   .mat-header-row {
+//     background-color: #0078ff; 
+//  }
+
+//   .mat-header-cell {
+//     text-decoration: black;
+//     font-size: small;
+//     font-weight: bold;
+//     color: white; 
+//   }
+
+//   mat-header-row {
+//     min-height:40px;
+//  }
+
+//  mat-cell {
+//   border-left: 0.5px solid  rgb(241, 241, 241); 
+//    justify-content:left;
+//  }
+
+ mat-row {
+  min-height: 35px !important;
+  }
+
+  .ripple-row {
+    position: relative;
+    cursor: pointer;
+    &:hover .mat-cell {
+      background-color: #CCC;
+    }
+  }
+  .legacy {
+    border-radius: 25px;
+    border: 2px solid rgb(221, 218, 218);
+    padding: 3px;
+    width: 100%;
+    height: 24px;
+    display: inline-block;
+  }
+
+  .add{
+    height: 30px;
+    width: 30px;
+   }
+   .matdatepicker {
+  margin-top: -6%;
+  color: rgb(138, 134, 134);
+  width: 25px;
+  height: 10px;
+   }
+
+   @media only screen and (min-width: 600px) {
+    .filter-css{
+      width:48%;
+      display: inline-block;
+    }
+  }
+
+//   @media only screen and (max-width: 600px) {
+//     th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+//       font-size: 9px;
+//     padding: 0; 
+//   border-bottom-width: 0px; 
+//    border-bottom-style: none;
+//   }
+
+//   .mat-sort-header-content {
+//     text-align: center;
+//     display: flex;
+//     font-size: 15px;
+//     align-items: center;
+// }
+//   }
+
+  .field-size{
+    width:180px;
+    height:50px;
+  }
+
+  ::ng-deep .filter-drop-down{
+    width:200px;
+    background-color: whitesmoke;
+  }
+  
+  .apply-button {
+    height: 35px;
+    border: 1px solid rgb(56, 149, 255) !important;
+    border-radius: 15px;
+  }
+  
+  .clear-button {
+    height: 35px;
+    border: 1px solid #ff4081 !important;
+    border-radius: 15px;
+  }

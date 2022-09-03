@@ -1,0 +1,45 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h1 i18n="Add New Sprint">Add New Sprint</h1>
+    <mat-icon class="close-icon-css" matDialogClose id="close_sprint_dialog">close</mat-icon>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="column" class="w-80 fs_12 mt-2 ml-1 mb-2">
+        <span i18n="Start & End Date">Start & End Date</span>
+        <mat-form-field appearance="outline">
+            <mat-date-range-input [rangePicker]="campaignOnePicker" [min]="minDate">
+                <input matStartDate placeholder="Start date" formControlName="sprintStartDate"
+                    (dateChange)="dateChange($event)">
+                <input matEndDate placeholder="End date" formControlName="sprintEndDate"
+                    (dateChange)="dateChangeEnd($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            <mat-error i18n="Start & end date is required">Start & end date is required</mat-error>
+        </mat-form-field>
+    </div>
+    <div fxLayout="row wrap" class="w-100 fs_12 mt-1 ml-1">
+
+        <span i18n="Add">Add</span>
+
+        &nbsp;<mat-form-field appearance="outline" style="width: 100px;margin-top: -10px;">
+            <input matInput type="number" formControlName="sprintCounts" id="sprintCounts" min="1"
+                oninput="this.value = Math.abs(this.value)">
+            <mat-error class="error-css" i18n="Sprint counts is required"
+                *ngIf="form.get('sprintCounts').errors?.required">Sprint counts is required
+            </mat-error>
+            <mat-error class="error-css" i18n="Sprint counts should minimum 1"
+                *ngIf="form.get('sprintCounts').errors?.min">Sprint counts should minimum 1
+            </mat-error>
+        </mat-form-field>&nbsp;
+        <span
+            i18n="&nbsp; sprint(s) to this board &nbsp;(<b>{{data?.taskboardVO?.name}}</b>)&nbsp; for future date.">&nbsp;
+            sprint(s) to this board &nbsp;(<b>{{data?.taskboardVO?.name}}</b>)&nbsp; for future date.</span>
+
+
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px" class="w-100 fs_12 mt-3 ml-1">
+        <button mat-raised-button color="primary" i18n="Create" [disabled]="userForm.invalid || !userForm.dirty"
+            (click)="save()" id="save">Create</button>
+        <button mat-raised-button color="accent" matDialogClose i18n="Cancel" id="cancel">Cancel</button>
+    </div>
+</form>

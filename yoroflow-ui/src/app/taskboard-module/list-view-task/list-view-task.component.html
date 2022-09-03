@@ -1,0 +1,460 @@
+<perfect-scrollbar id="grid-view" class="perfect-scroll-css" [style.height.px]="scrollHeight"
+    (psScrollY)="onScrollEvent($event)" *ngIf="load">
+    <div class="px-3">
+        <ng-container *ngFor="let taskboardColumnMapVO of taskboardVO.taskboardColumnMapVO;let columnIndex = index;">
+            <ng-container *ngIf="(taskboardDetailsVO?.taskboardColumnMapVO[columnIndex]?.taskboardTaskVOList?.length===0) ||
+                (taskboardDetailsVO?.taskboardColumnMapVO[columnIndex]?.taskboardTaskVOList?.length>0 && (taskboardColumnMapVO?.taskboardTaskVOList?.length>0 || taskboardColumnMapVO?.taskLength!==0))
+                || enableTaskView">
+                <div class="row w-100 mx-0 mt-2 px-0 mb-2">
+                    <mat-icon (click)="handleSubStatus(taskboardColumnMapVO)" class="expand-icon text-black"
+                        [@indicatorRotate]="taskboardColumnMapVO.collapse === undefined || taskboardColumnMapVO.collapse === null || taskboardColumnMapVO.collapse===false?'collapsed':'expanded'">
+                        <span>expand_more</span>
+                    </mat-icon>
+                    <h3 [style.color]="taskboardColumnMapVO.taskboardColumnsVO.columnColor==='white'?'black':taskboardColumnMapVO.taskboardColumnsVO.columnColor"
+                        class="mr-3 mb-2 font-weight-bold"
+                        *ngIf="taskboardConfigurationComponent.groupByName!=='Assignee'">
+                        {{taskboardColumnMapVO.taskboardColumnsVO.columnName}}</h3>
+                    <div fxLayoutAlign="start start" style="cursor: pointer"
+                        *ngIf="taskboardConfigurationComponent.groupByName==='Assignee'">
+                        <ng-container
+                            *ngFor="let user of taskboardColumnMapVO?.taskboardColumnsVO?.userFieldList;let i = index;">
+                            <div *ngIf="i<=3" class="hover-class round_firstletter" [style.margin-left]="i>0?'-4px':''"
+                                [matTooltip]="getUserNameForAssigneeColumn(user.name)" [style.background]="user.color">
+                                <span class=" round_firstletter_size">{{getUserNamePrefix(user.name)}}</span>
+                            </div>
+                            <ng-container *ngIf="i===4">
+                                <div class="hover-class round_add_count" [matMenuTriggerFor]="remainingUserFieldMenu"
+                                    #remainingUserFieldMenuTrigger="matMenuTrigger"
+                                    (mouseenter)="remainingUserFieldMenuTrigger.openMenu()">
+                                    <span
+                                        class=" round_firstletter_count">+{{getRemainingAssigneeUserCount(taskboardColumnMapVO?.taskboardColumnsVO?.userFieldList)}}</span>
+                                </div>
+
+                                <mat-menu class="remaining-users-menu" #remainingUserFieldMenu="matMenu"
+                                    [overlapTrigger]="false">
+                                    <span>
+                                        <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:250px;">
+                                            <ng-container
+                                                *ngFor="let user of taskboardColumnMapVO?.taskboardColumnsVO?.userFieldList">
+                                                <div style="margin-left: 15px;margin-top: 5px;" fxLayout="row">
+
+                                                    <div fxLayout="row" fxLayoutGap="5px">
+                                                        <div class="setHighlight" [style.background-color]="user.color">
+                                                            <span [matTooltip]="user.name"
+                                                                style="font-size: 12px; color: white;font-weight: 100;">{{getUserNamePrefix(user.name)}}</span>
+                                                        </div>
+                                                        <div class="assignee-user-margin">
+                                                            <div style="width: 196px; overflow: hidden;
+                                                                      text-overflow: ellipsis;
+                                                                      white-space: nowrap;" [matTooltip]="user.name">
+                                                                {{user.name}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </perfect-scrollbar>
+                                    </span>
+                                </mat-menu>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <button class="ml-3 ht-css" mat-stroked-button
+                        *ngIf="columnIndex===0 && (taskboardVO.isTaskBoardOwner || taskboardVO.taskboardColumns[columnIndex].taskboardColumnSecurity.update)"
+                        (click)="addTask(taskboardColumnMapVO.taskboardColumnsVO,taskboardColumnMapVO,columnIndex)"
+                        color="primary">&#X2B;
+                        {{'New Task' | translate}}</button>
+                    <button mat-raised-button color="primary"
+                        *ngIf="columnIndex===0 && taskboardVO?.sprintEnabled && isSprintButtonEnabled()"
+                        class="ml-2 sprint-add-btn-css" (click)="addTaskToSprint()">Add to sprint</button>
+                </div>
+                <table class="mb-3 margin-class"
+                    *ngIf="taskboardColumnMapVO.collapse === undefined || taskboardColumnMapVO.collapse === null || taskboardColumnMapVO.collapse===false">
+                    <thead class="header-css">
+                        <tr>
+                            <div fxLayout="row">
+                                <!-- <th fxLayout="column" class="hidden-column-css"
+                                    style="width: 50px;background-color: white;">
+                                </th> -->
+                                <div fxLayout="column" class="header-column-css hidden-column-css"
+                                    [style.width]="columnWidth" style="left:24px;">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                                        <span class="text-css fs_12">{{'Task Title' | translate}}</span>
+                                    </div>
+                                </div>
+                                <div fxLayout="column" class="assignee-header-column-css"
+                                    [style.width]="asssigneeColumnWidth">
+                                    <span class="text-css fs_12">{{'Assignee' | translate}}</span>
+                                </div>
+                                <div fxLayout="column" class="header-column-css" [style.width]="asssigneeColumnWidth">
+                                    <span class="text-css fs_12">{{'Sub Status' | translate}}</span>
+                                </div>
+                                <div fxLayout="column" class="header-column-css" [style.width]="columnWidth">
+                                    <span class="text-css fs_12">{{'Labels' | translate}}</span>
+                                </div>
+                                <div fxLayout="column" class="header-column-css" [style.width]="asssigneeColumnWidth">
+                                    <span class="text-css fs_12">{{'Priority' | translate}}</span>
+                                </div>
+                                <div fxLayout="column" class="assignee-header-column-css"
+                                    [style.width]="asssigneeColumnWidth">
+                                    <span class="text-css fs_12">{{'Start Date' | translate}}</span>
+                                </div>
+                                <div fxLayout="column" class="assignee-header-column-css"
+                                    [style.width]="asssigneeColumnWidth">
+                                    <span class="text-css fs_12">{{'Due Date' | translate}}</span>
+                                </div>
+                            </div>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <div cdkDropList cdkDropListOrientation="vertical"
+                                (cdkDropListDropped)="dropped($event,columnIndex,taskboardColumnMapVO)"
+                                [cdkDropListConnectedTo]="taskService.connectedTo"
+                                [id]="taskboardColumnMapVO.taskboardColumnsVO.columnName">
+                                <ng-container
+                                    *ngIf="(taskboardConfigurationComponent.groupByName!=='Status' || taskboardColumnMapVO.taskboardColumnsVO.taskboardColumnSecurity.read || taskboardVO.isTaskBoardOwner)">
+                                    <ng-container
+                                        *ngFor="let task of taskboardColumnMapVO.taskboardTaskVOList;let taskIndex = index;">
+                                        <ng-container *ngIf="task.taskType==='parentTask'">
+                                            <div fxLayout="row" class="cell-css" cdkDrag [id]="'row_'+taskIndex"
+                                                (mousedown)="mouseDown(taskIndex,columnIndex,task,taskboardColumnMapVO.taskboardColumnsVO)"
+                                                (mouseenter)="mouseEnter(taskIndex,columnIndex)"
+                                                (mouseleave)="mouseLeave()">
+                                                <th fxLayout="column" fxLayoutAlign="center center"
+                                                    class="hidden-column-css"
+                                                    style="background-color: white;width: 10px;margin-left:-8px;">
+                                                    <span class="select-circle-css" (click)="taskSelection(task)"
+                                                        [id]="'select_circle_'+columnIndex+'_'+taskIndex"
+                                                        *ngIf="taskboardColumnMapVO.taskboardColumnsVO.columnName!==doneColumnName && taskboardVO?.sprintEnabled===true">
+                                                        <mat-icon class="done-icon-css" *ngIf="task?.taskSelection">
+                                                            done
+                                                        </mat-icon>
+                                                    </span>
+                                                </th>
+                                                <th fxLayout="column" fxLayoutAlign="center center"
+                                                    class="hidden-column-css"
+                                                    style="background-color: white;width: 10px;margin-left:-13px ;">
+                                                    <mat-icon cdkDragHandle class="drag-indicator-css"
+                                                        [id]="'task_'+columnIndex+'_'+taskIndex"
+                                                        *ngIf="taskIndex===hoverTaskIndex && hoverColumnIndex===columnIndex">
+                                                        drag_indicator
+                                                    </mat-icon>
+                                                </th>
+                                                <div fxLayout="column" fxLayoutAlign="center start"
+                                                    class="hidden-column-css cell-column-css"
+                                                    [style.width]="columnWidth" style="left: 24px;"
+                                                    [style.background]="taskIndex===hoverTaskIndex && hoverColumnIndex===columnIndex?'rgb(226, 226, 226)':'white'">
+                                                    <div fxLayout="row" style="width: 100%;height: 100%;">
+                                                        <div fxLayout="column" style="width: 100%;">
+                                                            <a style="cursor: pointer;" *ngIf="task.taskName"
+                                                                (click)="openTaskForm(task,taskboardColumnMapVO,'taskForm')"
+                                                                class="text-css fs_12">{{task.taskName}}</a>
+                                                            <a style="cursor: pointer;"
+                                                                (click)="openTaskForm(task,taskboardColumnMapVO,'taskForm')"
+                                                                *ngIf="!task.taskName && task.taskId"
+                                                                class="text-css fs_12">{{task.taskId}}</a>
+                                                        </div>
+                                                        <div fxLayout="column" fxLayoutAlign="center center"
+                                                            class="actions-css"
+                                                            *ngIf="taskIndex===hoverTaskIndex && hoverColumnIndex===columnIndex">
+                                                            <div fxLayout="row" fxLayoutGap="5px">
+                                                                <mat-icon matBadge="{{ task.commentsLength }}"
+                                                                    matTooltip="{{'Comment' | translate}}"
+                                                                    style="color: orange;font-size: 20px;cursor: pointer;"
+                                                                    (click)="openTaskForm(task,taskboardColumnMapVO,'comment')">
+                                                                    comment</mat-icon>
+                                                                <mat-icon matBadge="{{ task?.filesList }}"
+                                                                    matTooltip="{{'Attachments' | translate}}"
+                                                                    style="color: blue;font-size: 20px;cursor: pointer;"
+                                                                    (click)="openTaskForm(task,taskboardColumnMapVO,'file')">
+                                                                    attach_file</mat-icon>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="column" class="assignee-cell-css"
+                                                    fxLayoutALign="center center" [style.width]="asssigneeColumnWidth"
+                                                    (mouseenter)="asssigneeMouseEnter(taskIndex)"
+                                                    (mouseleave)="asigneeMouseLeave()"
+                                                    (click)=" !taskboardVO.taskboardColumnMapVO.isDoneColumn && openAssignTaskDialog(taskboardColumnMapVO.taskboardColumnsVO)">
+                                                    <ng-container>
+                                                        <div fxLayout="row" style="height: 100%;width: 100%;">
+                                                            <div fxLayout="row" fxLayoutAlign="center center"
+                                                                style="height: 100%;width: 95%;">
+                                                                <ng-container
+                                                                    *ngFor="let user of task?.assignTaskVO?.assigneeUserTaskList;let i = index;">
+                                                                    <!-- style="width: 30px; height: 30px; line-height: 30px; border-radius: 50%;text-align: center; padding: 0px;cursor: pointer;" -->
+                                                                    <div *ngIf="i<=3"
+                                                                        class="hover-class round_firstletter "
+                                                                        [style.margin-left]="i>0?'-8px':''"
+                                                                        [matTooltip]="getUserName(user)"
+                                                                        [style.background]="getUserColor(user)">
+                                                                        <!-- style="font-size: 12px; color: white;font-weight: 100;" -->
+                                                                        <span
+                                                                            class="round_firstletter_size">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                                                                    </div>
+                                                                    <ng-container *ngIf="i===4">
+                                                                        <!-- style=" width: 30px; height: 30px; line-height: 30px; border-radius: 50%;  background-color: rgb(192, 192, 192); text-align: center; padding: 0px;cursor: pointer; margin-left:-8px;" -->
+                                                                        <div class="hover-class round_add_count"
+                                                                            [matMenuTriggerFor]="remainingAssigneeMenu"
+                                                                            #remainingAssigneeMenuTrigger="matMenuTrigger"
+                                                                            (mouseenter)="remainingAssigneeMenuTrigger.openMenu()">
+                                                                            <!-- style="font-size: 12px; color: grey;font-weight: 100;" -->
+                                                                            <span
+                                                                                class="round_firstletter_count">+{{getRemainingAssigneeUserCount(task.assignTaskVO.assigneeUserTaskList)}}</span>
+                                                                        </div>
+
+                                                                        <mat-menu class="assignee-menu"
+                                                                            #remainingAssigneeMenu="matMenu"
+                                                                            [overlapTrigger]="false">
+                                                                            <span>
+                                                                                <perfect-scrollbar [config]="config"
+                                                                                    id="menu_with_icon"
+                                                                                    style="height:250px;">
+                                                                                    <ng-container
+                                                                                        *ngFor="let user of getRemainingAssigneeUsersList(task.assignTaskVO.assigneeUserTaskList)">
+                                                                                        <div style="margin-left: 15px;margin-top: 5px;"
+                                                                                            fxLayout="row">
+
+                                                                                            <div fxLayout="row"
+                                                                                                fxLayoutGap="5px">
+                                                                                                <div class="setHighlight"
+                                                                                                    [style.background-color]="user.color">
+                                                                                                    <span
+                                                                                                        [matTooltip]="user.firstName+' '+user.lastName"
+                                                                                                        style="font-size: 12px; color: white;font-weight: 100;">{{user.firstName.charAt(0).toUpperCase()
+                                                                                                        +
+                                                                                                        user.lastName.charAt(0).toUpperCase()}}</span>
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    class="user-margin">
+                                                                                                    <div style="width: 196px; overflow: hidden;
+                                                                                                      text-overflow: ellipsis;
+                                                                                                      white-space: nowrap;"
+                                                                                                        [matTooltip]="user.firstName+' '+user.lastName">
+                                                                                                        {{user.firstName}}
+                                                                                                        {{user.lastName}}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </ng-container>
+                                                                                </perfect-scrollbar>
+                                                                            </span>
+                                                                        </mat-menu>
+                                                                    </ng-container>
+                                                                </ng-container>
+                                                                <span class="flag-container-css"
+                                                                    *ngIf="(task?.assignTaskVO === null && !taskboardVO.taskboardColumnMapVO.isDoneColumn) ||task?.assignTaskVO?.assigneeUserTaskList.length === 0 ">
+                                                                    <mat-icon appearance="filled" class="flag-css">
+                                                                        person
+                                                                    </mat-icon>
+                                                                    <mat-icon class="circle-css">add_circle</mat-icon>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                                <div fxLayout="column" fxLayoutAlign="center start"
+                                                    class="cell-column-css" [style.width]="asssigneeColumnWidth"
+                                                    style="cursor: pointer;" [matMenuTriggerFor]="dropdownMenu"
+                                                    [ngClass]="{ 'disabled' :columnIndex===taskboardVO.taskboardColumnMapVO.length-1 ||  !taskboardColumnMapVO.taskboardColumnsVO.subStatus 
+                                                ||taskboardColumnMapVO.taskboardColumnsVO.subStatus.length === 0}"
+                                                    #menuTrigger="matMenuTrigger">
+                                                    <span class="fs_12"
+                                                        *ngIf="!taskboardVO.taskboardColumnMapVO.isDoneColumn"
+                                                        [style.color]="getSubStatusColor(task.subStatus,taskboardColumnMapVO.taskboardColumnsVO, task)">{{task?.subStatus}}</span>
+                                                    <mat-menu #dropdownMenu="matMenu" class="drop-down">
+                                                        <ng-container
+                                                            *ngFor="let subStatus of taskboardColumnMapVO.taskboardColumnsVO.subStatus">
+                                                            <div fxLayout="row" fxLayoutAlign="center center"
+                                                                (click)="changeSubStatus(subStatus,task)"
+                                                                style="margin-top: 5px;">
+                                                                <button mat-raised-button
+                                                                    [style.background]="subStatus.color"
+                                                                    style="width: 180px;"
+                                                                    color="primary">{{subStatus.name}}</button>
+                                                            </div>
+                                                        </ng-container>
+                                                    </mat-menu>
+                                                </div>
+                                                <div fxLayout="column" class="cell-column-css"
+                                                    [style.width]="columnWidth"
+                                                    (mouseenter)="labelMouseEnter(taskIndex)"
+                                                    (mouseleave)="labelMouseLeave()">
+                                                    <div fxLayout="row" style="height: 100%;width: 100%;">
+                                                        <div fxLayout="row wrap" fxLayoutAlign="start center"
+                                                            style="width:95%;height: 100%;"
+                                                            (click)="openLabelDialog(taskboardColumnMapVO.taskboardColumnsVO,task)">
+                                                            <ng-container
+                                                                *ngFor="let label of task.labels; let i = index">
+                                                                <div fxLayout="row" class="label-css fs_12"
+                                                                    fxLayoutAlign="space-between center"
+                                                                    [style.background-color]="label.labelcolor">
+                                                                    <div fxLayout="column" style="max-width: 100%;">
+                                                                        {{label.labelName}}</div>
+                                                                    <div fxLayout="column" fxLayoutAlign="center center"
+                                                                        style="height: 15px;"
+                                                                        *ngIf="subTaskIndex===hoverSubTaskIndex && (taskboardVO.isTaskBoardOwner === true ||(taskboardColumnMapVO.taskboardColumnsVO.taskboardColumnSecurity 
+                                                                 && taskboardVO.taskboardColumns[columnIndex].taskboardColumnSecurity.update===true))">
+                                                                        <div style="height: 12px;"
+                                                                            (click)="$event.stopPropagation()">
+                                                                            <mat-icon class="remove-label-icon"
+                                                                                (click)="removeLabel(label,taskboardColumnMapVO.taskboardColumnsVO,task);$event.stopPropagation()">
+                                                                                highlight_off
+                                                                            </mat-icon>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+                                                            <mat-icon class="add-icon"
+                                                                *ngIf="task?.labels.length === 0">
+                                                                new_label</mat-icon>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="column" class="assignee-cell-css"
+                                                    fxLayoutAlign="center start" [style.width]="asssigneeColumnWidth"
+                                                    style="cursor: pointer;">
+                                                    <div fxLayout="row"
+                                                        style="height: 100%;white-space: nowrap;width: 100%;"
+                                                        fxLayoutAlign="space-between center">
+                                                        <span [matMenuTriggerFor]="flagMenu"
+                                                            [ngClass]="{ 'disabled' :taskboardVO.taskboardColumnMapVO.isDoneColumn }"
+                                                            #flagMenuTrigger="matMenuTrigger"
+                                                            [matTooltip]="task?.priority | translate">
+                                                            <mat-icon appearance="filled" class="flag-css"
+                                                                [style.color]="getFlagColor(task)">
+                                                                flag
+                                                            </mat-icon>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="column" class="assignee-cell-css"
+                                                    fxLayoutAlign="center start" [style.width]="asssigneeColumnWidth"
+                                                    style="cursor: pointer;"
+                                                    (mousedown)="dateMouseDown(task,'startDate')"
+                                                    (mouseenter)="startDateMouseEnter(taskIndex)"
+                                                    (mouseleave)="startDateMouseLeave()">
+                                                    <div fxLayout="row" class="w-100 justify-content-center"
+                                                        style="height: 100%;white-space: nowrap;width: 100%;"
+                                                        fxLayoutAlign="space-between center">
+                                                        <div fxLayout="column">
+                                                            <div fxLayout="row" *ngIf="task.startDate"
+                                                                style="background:#039703;" class="date-css fs_12">
+                                                                <span [matMenuTriggerFor]="dateDropDown"
+                                                                    [ngClass]="{ 'disabled' :taskboardVO.taskboardColumnMapVO.isDoneColumn }"
+                                                                    #menuTrigger="matMenuTrigger">{{task.startDate |
+                                                                    date:'dd-MMM-yyyy'}}
+                                                                </span>
+                                                                <mat-icon class="remove-date-css"
+                                                                    (click)="removeDate(task,'start')"
+                                                                    *ngIf="taskboardConfigurationComponent.groupByName!=='Status' || !taskboardVO.taskboardColumnMapVO.isDoneColumn"
+                                                                    matTooltip="{{'Remove start date' | translate}}">
+                                                                    highlight_off
+                                                                </mat-icon>
+                                                            </div>
+                                                            <mat-icon
+                                                                *ngIf="columnIndex!==taskboardVO.taskboardColumnMapVO.length-1 && !task.startDate"
+                                                                class="add-icon" [matMenuTriggerFor]="dateDropDown"
+                                                                #menuTrigger="matMenuTrigger">
+                                                                event_available</mat-icon>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div fxLayout="column" class="assignee-cell-css"
+                                                    fxLayoutAlign="center start" [style.width]="asssigneeColumnWidth"
+                                                    style="cursor: pointer;" (mousedown)="dateMouseDown(task,'dueDate')"
+                                                    (mouseenter)="dueDateMouseEnter(taskIndex)"
+                                                    (mouseleave)="dueDateMouseLeave()">
+                                                    <div fxLayout="row" class="w-100 justify-content-center"
+                                                        style="height: 100%;white-space: nowrap;width: 100%;"
+                                                        fxLayoutAlign="space-between center">
+                                                        <div fxLayout="column">
+                                                            <div fxLayout="row" *ngIf="task.dueDate"
+                                                                [style.background]="getDueDateColor(task.dueDate) > currentDate ? '#039703':'#c90000'"
+                                                                class="date-css fs_12">
+                                                                <span [matMenuTriggerFor]="dateDropDown1"
+                                                                    [ngClass]="{ 'disabled' :taskboardVO.taskboardColumnMapVO.isDoneColumn }"
+                                                                    #menuTrigger1="matMenuTrigger">{{task.dueDate
+                                                                    | date:'dd-MMM-yyyy'}}</span>
+                                                                <div fxLayout="column"
+                                                                    (mousedown)="menuTrigger1.closeMenu()">
+                                                                    <mat-icon class="remove-date-css"
+                                                                        (click)="removeDate(task,'due')"
+                                                                        *ngIf="taskboardConfigurationComponent.groupByName!=='Status' || columnIndex!==taskboardVO.taskboardColumnMapVO.length-1"
+                                                                        matTooltip="{{'Remove due date' | translate}}">
+                                                                        highlight_off
+                                                                    </mat-icon>
+                                                                </div>
+                                                            </div>
+                                                            <mat-icon
+                                                                *ngIf="columnIndex!==taskboardVO.taskboardColumnMapVO.length-1 && !task?.dueDate"
+                                                                class="add-icon" [matMenuTriggerFor]="dateDropDown1"
+                                                                #menuTrigger1="matMenuTrigger">
+                                                                event_busy</mat-icon>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <mat-menu #dateDropDown="matMenu">
+                                                    <mat-calendar (selectedChange)="onSelect($event)"
+                                                        [maxDate]="task.maxStartDate"
+                                                        (click)="$event.stopPropagation()">
+                                                    </mat-calendar>
+                                                </mat-menu>
+                                                <mat-menu #dateDropDown1="matMenu">
+                                                    <mat-calendar (selectedChange)="onSelectDueDate($event)"
+                                                        [minDate]="task.minDueDate" (click)="$event.stopPropagation()">
+                                                    </mat-calendar>
+                                                </mat-menu>
+                                                <mat-menu #flagMenu="matMenu">
+                                                    <ng-container *ngFor="let priority of priorityArray;let i = index">
+                                                        <div fxLayout="row">
+                                                            <button mat-button
+                                                                (click)="columnIndex!==taskboardVO.taskboardColumnMapVO.length-1 && savePriority(priority,task) "
+                                                                style="width: 100%;text-align: left;">
+                                                                <mat-icon appearance="filled"
+                                                                    [style.color]="priority.color">
+                                                                    flag
+                                                                </mat-icon>
+                                                                <span style="margin-left: 10px;">{{priority.name |
+                                                                    translate}}</span>
+                                                            </button>
+                                                        </div>
+                                                    </ng-container>
+                                                    <div fxLayout="row"
+                                                        style="border-top: 0.5px solid rgb(182, 182, 182);">
+                                                        <button mat-button
+                                                            (click)="savePriority({name:'',color:'grey'},task)">
+                                                            <mat-icon style="color:grey">clear</mat-icon>
+                                                            <span style="margin-left: 10px;">{{'Clear' |
+                                                                translate}}</span>
+                                                        </button>
+                                                    </div>
+                                                </mat-menu>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="taskboardColumnMapVO.taskboardTaskVOList.length===0">
+                                    <div fxLayout="row" class="cell-css" style="justify-content: center;">
+                                        <div fxLayout="row" class="animmate-css" fxLayoutAlign="center center">
+                                            {{'Drop here' | translate}}
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div fxLayout="row" style="height: 20px;"></div>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </ng-container>
+    </div>
+    <ng-container *ngIf="isLoad===false">
+        <div fxLayout="row" fxLayoutAlign="center center" style="width:100%" fxLayoutGap="20px">
+            <span>Loading</span>
+            <span class="dot-falling"></span>
+        </div>
+    </ng-container>
+</perfect-scrollbar>

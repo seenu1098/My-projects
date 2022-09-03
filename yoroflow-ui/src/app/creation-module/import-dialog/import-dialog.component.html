@@ -1,0 +1,84 @@
+<form #userForm="ngForm" [formGroup]="form">
+    <div class="row w-100  mx-0">
+        <div class="col-md-6 w-100">
+            <h3 class="text-uppercase fs_14 mb-0 font-weight-bold" *ngIf="data.importAs === 'import'">Import Page</h3>
+            <h3 class="text-uppercase fs_14 mb-0 font-weight-bold" *ngIf="data.importAs === 'copy'">Copy Page</h3>
+        </div>
+        <div class="col-md-6 w-100">
+            <div class="row w-100 mx-0 justify-content-end">
+                <button mat-raised-button color="primary" id="btnsave" (click)="copy(userForm)"
+                    class="mr-2">Save</button>
+                <button mat-raised-button (click)="close()" color="accent" type="button"
+                    class="float-right">close</button>
+            </div>
+        </div>
+    </div>
+    <hr class="my-1 py-1">
+    <div class="row w-100  mx-0 mt-2">
+        <mat-form-field appearance="outline" class="col-md-6 w-100"
+            *ngIf="data.type==='page-import' && data.applicationList.length>=1">
+            <mat-label>Application Name *</mat-label>
+            <mat-select formControlName="applicationName" id="applicationName">
+                <mat-option [value]="app.applicationName" *ngFor="let app of data.applicationList"
+                    (onSelectionChange)="setApplicationId($event,app)" [id]="app.applicationName">
+                    {{app.applicationName}}</mat-option>
+            </mat-select>
+            <mat-error>Application is required</mat-error>
+        </mat-form-field>
+        <mat-slide-toggle class="col-md-6 w-100 pt-3" style="margin-bottom: 20px;" *ngIf="data.importAs === 'copy'"
+            id="addUserPermission" color="accent" formControlName="addUserPermission">
+            Copy User Permission
+        </mat-slide-toggle>
+    </div>
+    <div class="row w-100  mx-0">
+        <mat-form-field appearance="outline" class="col-md-4 w-100">
+            <mat-label> Old Page Name *</mat-label>
+            <input id="pageName" formControlName="pageName" matInput type="text">
+            <mat-error> Old Page Name is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="col-md-4 w-100">
+            <mat-label>Import As *</mat-label>
+            <mat-select formControlName="importAs">
+                <mat-option *ngIf="data.importAs==='import'" value="useAsItIs">Use as it is
+                </mat-option>
+                <mat-option value="copy">Create New Page</mat-option>
+            </mat-select>
+            <mat-error> Import As is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="col-md-4 w-100" *ngIf="form.get('importAs').value==='copy'"
+            style="width:40%;">
+            <mat-label>New Page Name *</mat-label>
+            <input id="newPageName" formControlName="newPageName" matInput type="text"
+                (focusout)="focusOutForPageName($event)">
+            <mat-error *ngIf="form.get('newPageName').errors?.required">New Page Name is required
+            </mat-error>
+            <mat-error *ngIf="form.get('newPageName').errors?.alreadyExist">Page Name Already
+                Exist</mat-error>
+        </mat-form-field>
+    </div>
+    <div class="row w-100  mx-0" *ngIf="gridExist">
+        <mat-form-field appearance="outline" class="col-md-4 w-100">
+            <mat-label>Old Grid Name *</mat-label>
+            <input id="gridName" formControlName="gridName" matInput type="text">
+            <mat-error>Old Grid Name is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="col-md-4 w-100">
+            <mat-label>Import Grid As *</mat-label>
+            <mat-select formControlName="importGridAs">
+                <mat-option *ngIf="data.importAs==='import'" value="useAsItIs">Use as it is
+                </mat-option>
+                <mat-option value="copy">Create New Grid</mat-option>
+            </mat-select>
+            <mat-error>Import Grid As is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="form.get('importGridAs').value==='copy'"
+            (focusout)="focusOutForGridName($event)" class="col-md-4 w-100">
+            <mat-label>New Grid Name *</mat-label>
+            <input id="newGridName" formControlName="newGridName" matInput type="text">
+            <mat-error *ngIf="form.get('newGridName').errors?.required">New Grid Name is required
+            </mat-error>
+            <mat-error *ngIf="form.get('newGridName').errors?.alreadyGridExist">Grid Name Already
+                Exist</mat-error>
+        </mat-form-field>
+    </div>
+</form>

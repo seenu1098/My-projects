@@ -1,0 +1,30 @@
+<div class="row w-100 justify-content-center  mx-0">
+    <h4 style="font-weight: bold;font-size: 20px;text-transform: uppercase;">Terms and Conditions</h4>
+</div>
+<div class="row w-100 mx-0">
+    <form [formGroup]="termsForm" #userForm="ngForm">
+        <div class="row w-100 mx-0 mt-3">
+            <p>
+                <span class="mt-3">
+                    <mat-checkbox id="terms" formControlName="terms">I read and fully agreed with&nbsp; </mat-checkbox>
+                </span>
+                <span>
+                    <a class="mt-0" href="https://www.yorosis.com/terms-and-conditions/" target=_blank>Terms and
+                        Conditions</a><b style="color:red">
+                        *</b>
+                </span>
+            </p>
+        </div>
+        <div class="row mt-3 mb-2 justify-content-end w-100 mx-0">
+            <div class="mr-3">
+                <button mat-raised-button color="accent" style="color: white;" (click)="decline()">Decline</button>
+            </div>
+            <div class="justify-content-end">
+                <button mat-raised-button type="button" color="primary"
+                    class="align-self-center justify-content-end float-right mr-2" [disabled]="!termsForm.valid"
+                    (click)="accept()">Accept
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

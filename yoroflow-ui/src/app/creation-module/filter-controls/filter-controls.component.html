@@ -1,0 +1,135 @@
+<div *ngIf="pageName">
+    <!-- <mat-label>Filters</mat-label> -->
+    <div [formGroup]="formGroup">
+        <div formGroupName="field">
+            <div formGroupName="control">
+                <div formArrayName="filters">
+                    <div *ngFor="let filter of getFiltersArray().controls; let i=index">
+                        <div [formGroupName]="i">
+                            <div fxLayout="column">
+                                <div fxLayout="row" fxLayoutGap="20px" style="margin-left:10px;margin-top: 20px;">
+                                <mat-form-field appearance="outline" >
+                                    <mat-label>Column Name *</mat-label>
+                                    <!-- <input matInput formControlName="descriptionColumnName">
+                                    <mat-error>Description Column Name is required</mat-error> -->
+                                    <mat-select id="columnName" formControlName="columnName">
+                                        <mat-option (onSelectionChange)="loadColumnNames(field,i)"
+                                            [value]="field.fieldId" *ngFor="let field of pageFields;"
+                                            [id]="i+field.fieldName">
+                                            {{field.fieldName}}</mat-option>
+                                        <mat-option value="active_flag">
+                                            Active Flag</mat-option>
+                                    </mat-select>
+                                    <mat-error [id]="i+'columnNameError'"
+                                        *ngIf="filter.get('columnName') && filter.get('columnName').errors?.required">
+                                        Column Name is Required
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Operator *</mat-label>
+                                    <mat-select class="legacy" id="operator" formControlName="operator"
+                                        placeholder="Operator">
+                                        <mat-option value="li" id="like">Like</mat-option>
+                                        <mat-option value="eq" id="equals">equals</mat-option>
+                                        <mat-option value="ne" id="notEquals">not equals</mat-option>
+                                        <mat-option value="bw" id="beginsWith">begins with</mat-option>
+                                        <mat-option value="ew" id="endsWith">ends with</mat-option>
+                                        <mat-option value="cn" id="contains">contains</mat-option>
+                                        <mat-option value="gt" id="greaterThan">greater than </mat-option>
+                                        <mat-option value="ge" id="greaterThanOrEqual">greater than or equal to
+                                        </mat-option>
+                                        <mat-option value="lt" id="lessThan">less than</mat-option>
+                                        <mat-option value="le" id="lessThanOrEqual">less than or equal to</mat-option>
+                                    </mat-select>
+                                    <mat-error [id]="i+'operator'" *ngIf="filter.get('operator').errors?.required">
+                                        Operator is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            </div>
+                            <div fxLayout="column">
+                                <div fxLayout="row" fxLayoutGap="20px" style="margin-left:10px;"> 
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Data Type *</mat-label>
+                                    <mat-select id="dataType" formControlName="dataType"
+                                        (selectionChange)="datatypeChange($event)">
+                                        <mat-option value="string" [id]="i+'String'">String </mat-option>
+                                        <mat-option value="float" [id]="i+'Float'">Float </mat-option>
+                                        <mat-option value="long" [id]="i+'Long'">Long </mat-option>
+                                        <mat-option value="date" [id]="i+'Date'">Date </mat-option>
+
+                                    </mat-select>
+                                    <mat-error [id]="i+'dataTypeError'" *ngIf="filter.get('dataType').errors?.required">
+                                        Data Type is Required
+                                    </mat-error>
+                                </mat-form-field>
+                                <!-- <div *ngIf="showDateFormat"> -->
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Date Format</mat-label>
+                                        <mat-select id="dateFormat" formControlName="dateFormat" [disabled]="!showDateFormat">
+                                            <mat-option value='MM/dd/yyyy' id="MM/dd/yyyy">MM/dd/yyyy</mat-option>
+                                            <mat-option value='dd/MM/yyyy' id="dd/MM/yyyy">dd/MM/yyyy</mat-option>
+                                            <mat-option value='yyyy-mm-dd' id="yyyy-mm-dd">yyyy-mm-dd</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <ng-container>
+                                <div fxLayout="row" fxLayoutGap="20px" style="margin-left:10px;">
+                                <mat-radio-group [id]="i+'_radio'" aria-label="Label Option" formControlName="valueType"
+                                    required>
+                                        <mat-label>Value Type * : </mat-label>
+                                        <mat-radio-button (change)="optionTypeChange($event,i)" value="constant" style="margin-top: 8%;">
+                                            Constant
+                                        </mat-radio-button>
+                                        <mat-radio-button (change)="optionTypeChange($event,i)" value="fieldName" style="margin-top: 8%;">Page
+                                            Field
+                                            Name</mat-radio-button>
+                                </mat-radio-group>
+                                <mat-error *ngIf="allowValidation && filter.get('valueType').errors?.required">
+                                    Value Type is Required
+                                </mat-error>
+                                <div *ngIf="filter.get('valueType').value ==='constant'">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Value *</mat-label>
+                                        <input matInput id="value" type="text" formControlName="value">
+                                        <mat-error *ngIf="filter.get('value').errors?.required">
+                                            Value is Required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                                <div *ngIf="filter.get('valueType').value ==='fieldName'">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Page Field Name *</mat-label>
+                                        <!-- <input matInput formControlName="descriptionColumnName">
+                                        <mat-error>Description Column Name is required</mat-error> -->
+                                        <mat-select id="fieldName" formControlName="fieldName">
+                                            <mat-option [value]="field" *ngFor="let field of samePageFields">
+                                                {{field}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="filter.get('fieldName').errors?.required">
+                                            Page Field Name is
+                                            Required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            </ng-container>
+
+                            <div fxLayout="row" style="float: right;" fxLayoutAlign="space-between  center">
+                                    <button mat-mini-fab [id]="i+'btnAdd'" type="button" color="primary" style="margin-top:3%;"
+                                        (click)="addFilters()">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <button *ngIf="getFiltersArray().controls.length>1" type="button" mat-mini-fab
+                                        color="primary" [id]="i+'remove'" (click)="removeFilters(i)" style="margin-left: 10px; margin-top: 3%; ">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

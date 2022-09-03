@@ -1,0 +1,17 @@
+.yorofooter {
+  padding-left: 7px;
+  padding-right: 10px;
+  background: #0077ffee;
+  color: #fff;
+  font-size: small;
+}
+
+.yoropage-wrap {
+  line-height: 5px;
+}
+
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+}

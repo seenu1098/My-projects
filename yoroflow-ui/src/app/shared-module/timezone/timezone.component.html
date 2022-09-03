@@ -1,0 +1,18 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label id="timeZone">
+            {{'Time Zone *' | translate}}
+        </mat-label>
+        <mat-select formControlName="timezone" id="timeZone" (selectionChange)="getZones($event)"
+            style="max-height: 400px;overflow: auto;">
+            <input matInput placeholder="{{'Search' | translate}}" autocomplete="off" formControlName="searchZone"
+                class="search-input" style="height: 40px;">
+            <mat-option [value]="fromAutomation===true?zone.utc[0]:zone.utc[0]" [id]="'zone_'+i"
+                *ngFor="let zone of newArr | zonefilter : this.form.value.searchZone :'text';let i=index">{{zone?.text}}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('timezone').errors?.required">
+            {{'Time Zone is required' | translate}}
+        </mat-error>
+    </mat-form-field>
+</form>

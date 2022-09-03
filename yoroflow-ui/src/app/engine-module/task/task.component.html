@@ -1,0 +1,210 @@
+<div fxLayout="row" fxLayoutAlign="space-between  center">
+  <mat-card-header *ngIf="!data">
+    <mat-card-title i18n="Add New Task">Add New Task</mat-card-title>
+  </mat-card-header>
+  <mat-card-header *ngIf="data">
+    <mat-card-title>{{adhocTask.taskName}}</mat-card-title>
+  </mat-card-header>
+  <button id="clear" (click)="onNoClick()" mat-raised-button type="button">
+    <mat-icon style="cursor: context-menu;">clear</mat-icon>
+  </button>
+</div>
+
+<mat-card-content>
+  <form [formGroup]="checkoutForm">
+    <mat-card>
+      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap.lt-md="0px" fxLayoutAlign="space-between  center">
+
+        <div fxLayout="column" fxLayout.lt-md="column" fxLayoutGap.lt-md="0px" style="width:60%">
+
+          <mat-form-field style="width:100%">
+
+            <textarea matInput id="description" placeholder="Description" rows="8" cols="5"
+              formControlName="description"></textarea>
+          </mat-form-field>
+
+
+
+        </div>
+        <div fxLayout="column" fxLayout.lt-md="column" fxLayoutGap.lt-md="0px">
+          <mat-form-field *ngIf="!data">
+            <input matInput id="taskName" placeholder="Task Name" i18n-placeholder="Task Name"
+              formControlName="taskName">
+            <mat-error i18n="Task Name is Required">Task Name is Required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="!data" style="width:49%">
+            <mat-label i18n="Select Status">Select Status</mat-label>
+            <mat-select formControlName="status" id="status">
+              <mat-option value="To do" i18n="To do">To do</mat-option>
+              <mat-option value="In Progress" i18n="In Progress">In Progress</mat-option>
+              <mat-option value="Code Review" i18n="Code Review">Code Review</mat-option>
+              <mat-option value="Testing" i18n="Testing">Testing</mat-option>
+              <mat-option value="Done" i18n="Done">Done</mat-option>
+              <mat-option value="Accepted" i18n="Accepted">Accepted</mat-option>
+            </mat-select>
+            <mat-error i18n="Select Status is Required">Select Status is Required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="data" style="width:49%">
+            <mat-label i18n="State">State</mat-label>
+            <mat-select formControlName="status" id="status">
+              <mat-option value="To do" i18n="To do">To do</mat-option>
+              <mat-option value="In Progress" i18n="In Progress">In Progress</mat-option>
+              <mat-option value="Code Review" i18n="Code Review">Code Review</mat-option>
+              <mat-option value="Testing" i18n="Testing">Testing</mat-option>
+              <mat-option value="Done" i18n="Done">Done</mat-option>
+              <mat-option value="Accepted" i18n="Accepted">Accepted</mat-option>
+            </mat-select>
+            <mat-error i18n="Select Status is Required">Select Status is Required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput id="assignee" formControlName="assignee" placeholder="Assignee" i18n-placeholder="Assignee">
+            <mat-error i18n="Assignee is Required">Assignee is Required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input id="dueDate" placeholder="Due Date" i18n-placeholder="Due Date" formControlName="dueDate" matInput
+              [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between  center">
+        <mat-card-actions *ngIf="!data">
+          <button id="btnAdd" mat-raised-button (click)="addtask()" color="primary" i18n="Add">Add</button>
+
+        </mat-card-actions>
+        <mat-card-actions *ngIf="data">
+          <button id="update" mat-raised-button (click)="addtask()" color="primary" i18n="Update">Update</button>
+
+        </mat-card-actions>
+
+      </div>
+    </mat-card>
+
+
+    <div fxLayout="row">
+
+      <mat-card style="width: 100%;margin-top: 2%;">
+        <mat-card-title i18n="Attachments">Attachments</mat-card-title>
+
+        <div *ngIf="data">
+          <mat-progress-bar id="progressbar" *ngIf="progress" mode="indeterminate" class="progress_loader">
+          </mat-progress-bar>
+          <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap.lt-md="0px" fxLayoutGap="10px">
+            <ng-container *ngIf="files.length>0;else emptyAttchments">
+
+              <ng-container *ngFor='let file of files;let fileIndex=index'>
+                <div class="alert alert-warning" style="width: 100%;">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span>{{file.fileName}}</span>
+                    <div fxLayout="row" fxLayoutGap="10px">
+                      <mat-icon id="download" (click)="showFile(file.fileId,file.fileName)">cloud_download</mat-icon>
+                      <mat-icon id="close" (click)="deleteAttachedFile(file)">close</mat-icon>
+                    </div>
+                  </div>
+                </div>
+
+              </ng-container>
+            </ng-container>
+          </div>
+          <ng-template #emptyAttchments>
+            <ng-container *ngIf="urls.length===0">
+              <span fxLayoutAlign="center center" style="font-size: 20px;" i18n="There are no Attachments">There are no
+                Attachments</span>
+
+            </ng-container>
+
+          </ng-template>
+        </div>
+
+        <div *ngIf="!data" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap.lt-md="0px" fxLayoutGap="10px">
+          <ng-container *ngFor='let file of filesIndex;let fileIndex=index'>
+
+            <!-- <span></span> -->
+            <div class="alert alert-warning" style="width: 100%;">
+              <div>
+                <a (click)="close(fileIndex)" id="close" class="close" data-dismiss="alert" aria-label="close"
+                  i18n="&times;">&times;</a>
+                {{file.fileName}}
+              </div>
+            </div>
+
+          </ng-container>
+
+
+        </div>
+
+        <mat-card-actions fxLayoutAlign="end end">
+          <div *ngIf="files.length>0 && data">
+            <button mat-button id="btnSave" color="primary" type="button" (click)="saveFiles()">Save</button>
+          </div>
+          <button mat-raised-button id="attach" color="primary" type="button" (click)="fileInput.click()">
+            <mat-icon>attach_file</mat-icon><span i18n="Attach">Attach</span>
+            <input #fileInput type='file' id="file" (change)="onSelectFile($event)" multiple style="display:none;" />
+          </button>
+        </mat-card-actions>
+
+      </mat-card>
+
+    </div>
+
+    <div *ngIf="data">
+
+
+      <mat-card style="margin-top:2%">
+        <mat-card-title i18n="Notes">Notes</mat-card-title>
+        <div formArrayName="taskNotes" *ngFor="let note of notesFormArray(); let columnIndex = index">
+
+          <div [formGroupName]="columnIndex">
+            <div fxLayout="column" style="margin-top:2%">
+              <div *ngIf="isShow && (columnIndex===editIndex)">
+                <span style="font-weight:bold">
+                  {{note.get('updatedBy').value}}
+                </span>-{{note.get('updatedDate').value | date:'MM/dd/yyyy'}}
+                <textarea id="notes" formControlName="notes"></textarea>
+                <!--<ejs-richtexteditor formControlName="notes"></ejs-richtexteditor>-->
+                <div fxLayout="row" fxLayoutGap="10px">
+                  <button mat-raised-button (click)=editNotes(columnIndex) color="primary" i18n="Save">Save</button>
+                  <button mat-raised-button (click)=toggleDisplay(columnIndex) color="primary"
+                    i18n="Cancel">Cancel</button>
+                </div>
+              </div>
+              <div *ngIf="!isShow">
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                  <span style="font-weight:bold">
+                    {{note.get('updatedBy').value}}
+                  </span>
+                  <span *ngIf="note.get('updatedDate').value"
+                    i18n="Last Modified On {{note.get('updatedDate').value | date:'medium'}}">
+                    Last Modified On {{note.get('updatedDate').value | date:'medium'}}
+                  </span>
+
+                </div>
+
+                <div class="alert alert-warning" style="width: 95%;">
+                  <div>
+                    <input id="notes" style="background: whitesmoke;" matInput formControlName="notes"
+                      placeholder="Add Notes" i18n-placeholder="Add Notes" (click)=toggleDisplay(columnIndex)>
+                  </div>
+                </div>
+
+                <div fxLayout="row" style="margin-top:-3%;" fxLayoutGap="10px" fxLayoutAlign="end end">
+                  <button mat-raised-button id="edit" color="primary" (click)=toggleDisplay(columnIndex)
+                    i18n="Edit">Edit</button>
+                  <button mat-raised-button id="delete" color="accent" (click)="removeNotes(columnIndex)"
+                    i18n="Delete">Delete</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </form>
+</mat-card-content>

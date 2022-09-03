@@ -1,0 +1,31 @@
+{
+  "key": "leave-application",
+  "name": "Leave application- FINAL",
+  "startKey": "startevent1",
+  "taskNodeList": [
+    {
+      "key": "startevent1",
+      "taskType": "START_TASK",
+      "label": "Request Leave"
+    },
+    {
+      "key": "usertask1",
+      "taskType": "END_TASK",
+      "label": "Enter Leave details"
+    },
+    {
+      "key": "usertask2",
+      "taskType": "END_TASK",
+      "label": "Approval / Reject form"
+    }
+   
+  ],
+  "linkNodeList": [
+    {
+      "key": "seqFlow1",
+      "source": "startevent1",
+      "target": "usertask1"
+    }  
+  ]
+  
+}

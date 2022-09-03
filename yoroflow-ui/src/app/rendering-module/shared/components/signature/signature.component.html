@@ -1,0 +1,35 @@
+<div [style]="field.style" style="width:100%">
+     <div fxLayout="column" fxLayoutGap="1px" style="margin:1%" [style.background-color]="field.rowBackground">
+          <div>
+               <h2>{{field.label.labelName}}</h2>
+          </div>
+          <signature-pad #signature id="signature" [options]="signaturePadOptions" (onBeginEvent)="drawStart()"
+               (onEndEvent)="drawComplete()"></signature-pad>
+          <ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+               <mat-error style="margin-top:-1%" *ngIf="validation.type === 'required' && isRequired
+                         && group.get(field.name) && group.get(field.name).touched">
+                    {{formService.getValidationErrorMessage(validation,field.label.labelName)}}
+               </mat-error>
+          </ng-container>
+          <div *ngIf="this.group.get(this.field.name).status !== 'DISABLED'" [style.width]="signatureWidth"
+               fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end center">
+               <a class="clear-css" [matMenuTriggerFor]="menusignature" #menuTrigger4="matMenuTrigger"
+                    *ngIf="signatureList.length > 0" color="primary">Select Signatures</a>
+               <a class="clear-css" *ngIf="drawCompleted === true && signatureList.length !== 3"
+                    (click)="save()">Save</a>
+               <a class="clear-css" style="color: red;" (click)="clear()">Clear</a>
+          </div>
+     </div>
+</div>
+
+<ng-container>
+     <mat-menu #menusignature="matMenu">
+          <div (click)="$event.stopPropagation()">
+               <div *ngFor="let field of signatureList">
+                    <button [id]="field.signatureKey" mat-menu-item (click)="saveUserSignature(field.signatureKey)">
+                         <span>{{field.signatureName}}</span>
+                    </button>
+               </div>
+          </div>
+     </mat-menu>
+</ng-container>

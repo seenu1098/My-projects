@@ -1,0 +1,421 @@
+<ng-container *ngIf=data.pageName>
+    <mat-dialog-content i18n="Are you sure want to open this {{data.pageName}}?">
+        Are you sure want to open this {{data.pageName}}?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="openPage()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data === 'delete-section'">
+    <mat-dialog-content i18n="Are you sure want to Delete this Section?">
+        Are you sure want to Delete this Section?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteSection()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data === 'reset-page'">
+    <mat-dialog-content i18n="Do You Want to Reset the Whole Page?">
+        Do You Want to Reset the Whole Page?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetPage()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type === 'field-dropped'">
+    <mat-dialog-content i18n="Do you want to replace this control ?">
+        Do you want to replace this control ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+
+<ng-container *ngIf="data.type === 'allow-submit-button-action'">
+    <mat-dialog-content i18n="Page doesn't have button action, do you want proceed ?">
+        Page doesn't have button action, do you want proceed ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'remove-row'">
+    <mat-dialog-content i18n="Are you sure you want to remove the row?">
+        Are you sure you want to remove the row?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'navigation'">
+    <mat-dialog-content i18n="Are you sure You have unsaved changes! If you leave, your changes will be lost.">
+        Are you sure You have unsaved changes! If you leave, your changes will be lost.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="navigation()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type === 'menuExist'">
+    <mat-dialog-content>
+        {{data.response}}
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="updateMenu()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'delete-application'">
+    <div [formGroup]="appicationForm">
+        <mat-dialog-content>
+            <ng-container i18n="Do you want to delete this application?.Type application name">
+                Do you want to delete this application?.<br>
+                Type application name
+            </ng-container>
+            <mat-form-field style="width:33%">
+                <input matInput type="text" formControlName="applicationName" placeholder="Appication Name *">
+                <mat-error *ngIf="appicationForm.get('applicationName').errors?.required"
+                    i18n="Application Name is required">Application Name is required
+                </mat-error>
+                <mat-error *ngIf="appicationForm.get('applicationName').errors?.notExists" i18n="Application Name does not
+                exist">Application Name does not
+                    exist</mat-error>
+                <mat-error *ngIf="appicationForm.get('applicationName').errors?.notMatch" i18n="Application Name does not
+                match">Application Name does not
+                    match</mat-error>
+            </mat-form-field>
+            <ng-container i18n="and click yes to delete.">
+                and click yes to delete.
+            </ng-container>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteApplication()"
+                i18n="Yes">Yes</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="onCloseClick()" i18n="No">No</button>
+        </mat-dialog-actions>
+    </div>
+</ng-container>
+<ng-container *ngIf="data === 'grid-config'">
+    <mat-dialog-content i18n="Do You Want to Configure the New Grid?">
+        Do You Want to Configure the New Grid?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="openGridConfiguration()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data === 'cart-config'">
+    <mat-dialog-content i18n="Do You Want to Configure the New Shopping Cart?">
+        Do You Want to Configure the New Shopping Cart?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="openShoppingCartConfiguration()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'parentMenu'">
+    <mat-dialog-content>
+        <ng-container i18n="Are you sure you want to remove this Parent Menu?
+        If you did, all sub menus for this Parent Menu will be deleted.">
+            Are you sure you want to remove this Parent Menu?
+            If you did, all sub menus for this Parent Menu will be deleted.
+        </ng-container>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="openParentMenuConfig()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+
+<ng-container *ngIf="data === 'menu-config'">
+    <mat-dialog-content i18n="Do you want to create a new menu or select an existing menu?">
+        Do you want to create a new menu or select an existing menu?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="createMenu()"
+            i18n="Create New Menu">Create New Menu</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="Select Existing Menu">Select
+            Existing Menu</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.data === 'menu-creation'">
+    <div fxLayoutAlign="end end">
+        <mat-icon (click)="onNoClick()" id="close" style="cursor: pointer;">close</mat-icon>
+    </div>
+    <mat-dialog-content style="height: 800px;">
+        <app-menu-configuration isFromPageCreation=true [applicationName]="data.appName"
+            (response)="getMenuCreationResponse($event)" [appId]="data.appId">
+        </app-menu-configuration>
+    </mat-dialog-content>
+</ng-container>
+<ng-container *ngIf="data.type==='version'">
+    <!-- <div fxLayoutAlign="end end">
+        <mat-icon (click)="close()" style="cursor: pointer;">clear</mat-icon>
+    </div> -->
+    <mat-dialog-content i18n="Do you want to save as a new version?">
+        Do you want to save as a new version?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="generateVersion()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="btnNo" (click)="updateForm()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='app-layout'">
+    <mat-dialog-content>
+        <div fxLayout="row" fxLayoutAlign="space-between center"
+            i18n="Do you want to create a new page or select an existing page?">
+            Do you want to create a new page or select an existing page?
+            <mat-icon style="cursor: pointer;" id="close" (click)="onNoClick()">close</mat-icon>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 1%;">
+            <button mat-raised-button color="primary" id="createPage" (click)="createNewPage()"
+                i18n="Create a page">Create a page</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="selecteExistingForm()" i18n="Select an existing
+            page">Select an existing
+                page</button>
+        </div>
+    </mat-dialog-content>
+</ng-container>
+<ng-container *ngIf="data==='appMenu'">
+    <mat-card>
+        <div fxLayoutAlign="end end">
+            <mat-icon (click)="onNoClick()" id="close" style="cursor: pointer;">close</mat-icon>
+        </div>
+        <div style="padding-top: 5px;">
+            <mat-dialog-content i18n="You need to select application name in page then will be create a new menu.">
+                You need to select application name in page then will be create a new menu.
+            </mat-dialog-content>
+        </div>
+    </mat-card>
+</ng-container>
+<ng-container *ngIf="data.type === 'remove-profile-picture'">
+    <mat-dialog-content i18n="Are you sure you want to remove profile picture.">
+        Are you sure you want to remove profile picture.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="removeProfilePicture()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data === 'remove-section'">
+    <mat-dialog-content i18n="Are you sure you want to remove this section.">
+        Are you sure you want to remove this section.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="removeProfilePicture()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data === 'confirm-page-workflow-delete'">
+    <mat-dialog-content i18n="Are you sure you want to delete.">
+        Are you sure you want to delete.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="removeProfilePicture()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='export'">
+    <mat-dialog-content i18n="Your session has been expired. Do you want to export this page">
+        Your session has been expired. Do you want to export this page
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="exportUI" (click)="exportUI()" i18n="Export">Export</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='lastlogin'">
+    <mat-card>
+        <div fxLayoutAlign="end end">
+            <mat-icon (click)="onNoClick()" id="close" style="cursor: pointer;">close</mat-icon>
+        </div>
+        <div style="padding-top: 5px;">
+            <mat-dialog-content i18n="This user has been already logged in at ({{data.data}})">
+                This user has been already logged in at ({{data.data}})
+            </mat-dialog-content>
+        </div>
+    </mat-card>
+</ng-container>
+<ng-container *ngIf="data.type==='user-management' && (data.userType==='inactivateUser' || 'reactivateUser')">
+    <mat-dialog-content *ngIf="data.userType==='inactivateUser'" i18n="Do you want to inactivate this user.">
+        Do you want to inactivate this user.
+    </mat-dialog-content>
+    <mat-dialog-content *ngIf="data.userType==='reactivateUser'" i18n="Do you want to reactivate this user.">
+        Do you want to reactivate this user.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" *ngIf="data.userType==='inactivateUser' || 'reactivateUser'">
+        <button mat-raised-button color="primary" id="btnYes" (click)="inactivateUser()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="btnNo" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='createApp'">
+    <app-application-provision (submitEvent)="getEvent($event)"></app-application-provision>
+</ng-container>
+<ng-container *ngIf="data==='deactive the first user'">
+    <mat-card>
+        <div fxLayoutAlign="end end">
+            <mat-icon (click)="onNoClick()" id="close" style="cursor: pointer;">close</mat-icon>
+        </div>
+        <div>
+            <mat-dialog-content i18n="Does not access to deactivate the first user.">
+                Does not access to deactivate the first user.
+            </mat-dialog-content>
+        </div>
+    </mat-card>
+</ng-container>
+
+<ng-container *ngIf="data.type==='publicAccess'">
+    <mat-dialog-content i18n="Do you want to give public access to this table?">
+        Do you want to give public access to this table?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" (click)="agree()" i18n="Agree">Agree</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="Disagree">Disagree</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type==='import-table'">
+    <mat-dialog-content i18n="Below are the tables are not associated with your application">
+        Below are the tables are not associated with your application
+        <ng-container *ngFor="let item of data.list">
+            {{item.pageName}}
+        </ng-container>
+    </mat-dialog-content>
+</ng-container>
+
+<ng-container *ngIf="data.type==='export-table'">
+    <mat-dialog-content i18n="Do you want to export the page with tables ?">
+        Do you want to export the page with tables ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" (click)="includeTable()" i18n="Agree">Agree</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="excludeTable()" i18n="Disagree">Disagree</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="Cancel">Cancel</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='previewForm'">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <h3 class="fs_14 font-weight-bold mb-0">{{data.data.pageName}}</h3>
+        <mat-icon style="cursor: pointer;" (click)="onNoClick()">close</mat-icon>
+    </div>
+    <hr class="mb-1 mx-0 mb-0 b-0">
+    <dynamic-form [page]="data.data" [form]="dynamicForm" [preview]="true"></dynamic-form>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'reset-password'">
+    <mat-dialog-content i18n="Do you want to reset the password ?">
+        Do you want to reset the password ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'reset-two-factor'">
+    <mat-dialog-content i18n="Do you want to reset the two factor ?">
+        Do you want to reset the two factor ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'remove-two-factor'">
+    <mat-dialog-content i18n="Do you want to disable the two factor ?">
+        Do you want to disable the two factor ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'enable-two-factor'">
+    <mat-dialog-content i18n="Do you want to enable the two factor ?">
+        Do you want to enable the two factor ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'delete-dataTable'">
+    <mat-dialog-content i18n="Are you sure want to Delete this Table?">
+        Are you sure want to Delete this Table?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteSection()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'deleteTableRow'">
+    <mat-dialog-content i18n="Are you sure want to delete selected row(s)?">
+        Are you sure want to delete selected row(s)?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteSection()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'deleteTableColumn'">
+    <mat-dialog-content i18n="Are you sure want to Delete this Table?">
+        Are you sure want to delete this column?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteSection()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'backToDataTable'">
+    <mat-dialog-content i18n="Are you sure You have unsaved changes! If you leave, your changes will be lost.">
+        Are you sure You have unsaved changes! If you leave, your changes will be lost.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteSection()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type==='spinner'">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'dataTableMapping'">
+    <mat-dialog-content
+        i18n=" Are you sure You have unmapped fields! If you haven't mapped fields, then it will update as empty">
+        Are you sure You have unmapped fields! If you haven't mapped fields, then it will update as empty
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="updateEmpty()" i18n="Yes">Yes,
+            update</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>

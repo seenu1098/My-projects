@@ -1,0 +1,32 @@
+<ng-container *ngIf="showControl">
+    <div [style]="fieldConfig.field.style" style="width:100%">
+      <mat-form-field style="width: 100%" [style.background-color]="fieldConfig.field.rowBackground" [formGroup]="group" [floatLabel]="fieldConfig.field.label.labelOption"
+             [id]="fieldConfig.field.name" appearance="outline">
+             <mat-label>{{fieldConfig.field.label.labelName}}{{required}}</mat-label>
+  <!-- <span matPrefix></span> -->
+             <input matInput [id]="fieldConfig.field.label.labelName" [formControlName]="fieldConfig.field.name" [placeholder]="fieldConfig.field.label.labelName + required" [type]="type"
+             (blur)="transformAmount($event,'amt')">
+             <ng-container *ngFor="let validation of fieldConfig.field.validations;" ngProjectAs="mat-error">
+              <mat-error *ngIf="group.get(fieldConfig.field.name) && group.get(fieldConfig.field.name).hasError(validation.type)">
+                   {{formService.getValidationErrorMessage(validation,fieldConfig.field.label.labelName)}}</mat-error>
+                   <!-- <mat-error *ngIf="group.get(fieldConfig.field.name) && group.get(fieldConfig.field.name).hasError(validation.type)">
+                  {{formService.getValidationErrorMessage(validation,fieldConfig.field.label.labelName)}}</mat-error> -->
+                   <!-- <ng-container *ngIf="validation.type==='pattern'">
+                   <mat-error *ngIf="group.get(fieldConfig.field.name) && group.get(fieldConfig.field.name).hasError(validation.type)
+                    && group.get(fieldConfig.field.name).value!==null">
+                   {{formService.getValidationErrorMessage(validation,fieldConfig.field.label.labelName)}}</mat-error>
+                   </ng-container> -->
+                   <mat-error *ngIf="requiredEmail===true
+                    && validation.type==='required'&& group.get(fieldConfig.field.name)
+                    && group.get(fieldConfig.field.name).value===null  
+                    && group.get(fieldConfig.field.name).hasError(validation.type) ">{{fieldConfig.field.label.labelName}} is required</mat-error>
+                    <!-- <mat-error *ngIf="group.get(fieldConfig.field.name) && group.get(fieldConfig.field.name).errors?.lessValid">{{fieldConfig.field.label.labelName}}
+                     should be less than {{fieldConfig.field.numberFieldValidation.toField}}</mat-error>
+                     <mat-error *ngIf="group.get(fieldConfig.field.name) && group.get(fieldConfig.field.name).errors?.greaterValid">{{fieldConfig.field.label.labelName}}
+                     should be greater than {{fieldConfig.field.numberFieldValidation.toField}}</mat-error> -->
+                    </ng-container>
+      </mat-form-field>
+
+      
+      </div>
+    </ng-container>

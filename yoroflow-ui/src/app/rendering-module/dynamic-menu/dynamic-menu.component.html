@@ -1,0 +1,240 @@
+<mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" *ngIf="isMobile" color="primary">
+    <div fxLayout="row" fxLayoutGap="10px">
+
+
+        <div>
+            <ng-container>
+                <button style="margin-top: -4px;" mat-icon-button [matMenuTriggerFor]="dropMenu">
+                    <mat-icon>menu</mat-icon>
+                </button>
+                <mat-menu #dropMenu="matMenu">
+                    <button mat-menu-item class="buttonCss" id="userMenu" [matMenuTriggerFor]="userMenu">
+                        <div fxLayout="row" fxLayoutGap="5px">
+                            <div style="margin-top: 5px;">{{userVo.firstName}} {{userVo.lastName}}</div>
+                            <div
+                                *ngIf="userVo.profilePicture && userVo.profilePicture !==null && userVo.profilePicture !==''">
+                                <img mat-card-avatar [src]="transformImage(userVo.profilePicture)" class="chat-prof-pic"
+                                    alt="User Avatar">
+                            </div>
+                            <div class="circle"
+                                *ngIf="userVo.profilePicture ===null || userVo.profilePicture ==='' || !userVo.profilePicture">
+                                {{userProfileValue(userVo.firstName)}}</div>
+                        </div>
+                    </button>
+                    <mat-menu #userMenu="matMenu">
+                        <button mat-menu-item id="userProfile" (click)="userProfile()">User Settings</button>
+                        <button mat-menu-item id="logout" (click)="logout()">Logout</button>
+                    </mat-menu>
+                    <mat-divider></mat-divider>
+                    <ng-template matMenuContent>
+                        <ng-container *ngFor="let menu of menuOptions;let i=index">
+                            <div fxLayout="row">
+                                <!-- routerLink="page/{{menu.pageId}}/{{menu.version}}" -->
+                                <a [id]=menu.menuName+i *ngIf="menu.dynamicMenus===null && menu.pageId!==null"
+                                    mat-button (click)="routerLink('page/'+menu.pageId+'/'+menu.version)">
+                                    {{ menu.menuName }}</a>
+                            </div>
+                            <div fxLayout="row">
+                                <!-- routerLink="/{{menu.menuPath}}" -->
+                                <a [id]=menu.menuName+i
+                                    *ngIf="menu.menuPath !==null && menu.dynamicMenus===null && menu.pageId===null"
+                                    mat-button (click)="routerLink('/'+menu.menuPath)">
+                                    {{ menu.menuName }}
+                                </a>
+                            </div>
+
+                            <div fxLayout="row">
+                                <button [id]=menu.menuName+i *ngIf="menu.dynamicMenus!==null" mat-menu-item
+                                    [matMenuTriggerFor]="childMenu">
+                                    {{ menu.menuName }}</button>
+                            </div>
+
+                            <mat-menu #childMenu="matMenu">
+                                <ng-template matMenuContent>
+                                    <ng-container *ngFor="let subItem of menu.dynamicMenus; let j= index">
+                                        <ng-container *ngIf="subItem.pageId !=null && subItem.dynamicMenus ===null">
+                                            <!-- routerLink="page/{{subItem.pageId}}/{{subItem.version}}" -->
+                                            <a [id]=subItem.menuName+j mat-menu-item
+                                                (click)="routerLink('page/'+subItem.pageId+'/'+subItem.version)">
+                                                {{ subItem.menuName }}</a>
+                                        </ng-container>
+                                        <!-- routerLink="/{{subItem.menuPath}}" -->
+                                        <ng-container *ngIf="subItem.pageId ==null && subItem.dynamicMenus ===null">
+                                            <a [id]=subItem.menuName+j (click)="routerLink('/'+subItem.menuPath)"
+                                                mat-menu-item>{{ subItem.menuName }}</a>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="subItem.dynamicMenus !==null">
+                                            <button [id]=subItem.menuName *ngIf="subItem.dynamicMenus!==null"
+                                                mat-menu-item [matMenuTriggerFor]="dynamiceMenu">
+                                                {{ subItem.menuName }} </button>
+                                            <mat-menu #dynamiceMenu="matMenu">
+                                                <ng-template matMenuContent>
+                                                    <ng-container
+                                                        *ngFor="let child of subItem.dynamicMenus; let j= index">
+                                                        <ng-container *ngIf="child.pageId !=null">
+                                                            <!-- routerLink="page/{{child.pageId}}/{{child.version}}" -->
+                                                            <a [id]=child.menuName mat-menu-item
+                                                                (click)="routerLink('page/'+child.pageId+'/'+child.version)">
+                                                                {{ child.menuName }}</a>
+                                                        </ng-container>
+                                                        <!-- routerLink="/{{child.menuPath}}" -->
+                                                        <ng-container *ngIf="child.pageId ==null">
+                                                            <a [id]=child.menuName
+                                                                (click)="routerLink('/'+child.menuPath)"
+                                                                mat-menu-item>{{ child.menuName }}</a>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </ng-template>
+
+                                            </mat-menu>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-template>
+                            </mat-menu>
+                        </ng-container>
+                    </ng-template>
+                </mat-menu>
+            </ng-container>
+        </div>
+
+        <div *ngIf="isAllowed">
+            <app-message style="margin-top: 12px;" (checkMessageOpenEmiiter)="getMessageOpened($event)"
+                (messageObject)="getMessageObject($event)" id="message"></app-message>
+        </div>
+        <div *ngIf="isAllowed">
+            <app-notification style="margin-top: 12px;" (notificationEmiiter)="getNotification($event)"
+                (checkNotificationOpenEmiiter)="getNotificationOpened($event)"
+                (notificationObject)="getNotificationObject($event)" id="notification">
+            </app-notification>
+        </div>
+        <div>
+            <span class="material-icons" style="margin-top: 9px; cursor: context-menu;margin-top: 6px;"
+                (click)="pinClicked()">
+                push_pin
+            </span>
+        </div>
+    </div>
+
+    <div>
+        <ng-container *ngIf="hideLogo">
+            <div *ngIf="!showLogo">
+                <img style="margin-top: 10px;" src="assets/images/product-logo.png" alt="YOROSIS LOGO">
+            </div>
+            <div *ngIf="showLogo">
+                <app-load-logo style="margin-top: 10px;" [base64Image]="logoUrl" *ngIf="logoUrl && showLogo">
+                </app-load-logo>
+            </div>
+        </ng-container>
+    </div>
+
+
+</mat-toolbar>
+<div *ngIf="!isMobile" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
+    fxLayoutAlign="space-between center" class="header">
+
+    <div fxLayout="row" class="menuAlign" fxLayoutGap.lt-md="0px" fxLayout.lt-md="column" fxLayoutGap="2px">
+        <ng-container *ngIf="hideLogo">
+            <div *ngIf="!showLogo" style="padding: 6px;">
+                <img src="assets/images/product-logo.png" alt="YOROSIS LOGO">
+            </div>
+            <div *ngIf="showLogo">
+                <app-load-logo [base64Image]="logoUrl" *ngIf="logoUrl && showLogo">
+                </app-load-logo>
+            </div>
+        </ng-container>
+        <ng-container *ngFor="let menu of menuOptions;let i=index">
+            <!-- routerLink="page/{{menu.pageId}}/{{menu.version}}" -->
+            <a [id]=menu.menuName+i *ngIf="menu.dynamicMenus===null && menu.pageId!==null" mat-button
+                (click)="routerLink('page/'+menu.pageId+'/'+menu.version)">
+                {{ menu.menuName }}</a>
+            <!-- routerLink="/{{menu.menuPath}}" -->
+            <a [id]=menu.menuName+i *ngIf="menu.menuPath !==null && menu.dynamicMenus===null && menu.pageId===null"
+                mat-button (click)="routerLink('/'+menu.menuPath)">
+                {{ menu.menuName }}
+            </a>
+            <button [id]=menu.menuName+i *ngIf="menu.dynamicMenus!==null" mat-button [matMenuTriggerFor]="childMenu">
+                {{ menu.menuName }} <mat-icon>arrow_drop_down</mat-icon></button>
+            <mat-menu #childMenu="matMenu">
+                <ng-template matMenuContent>
+                    <ng-container *ngFor="let subItem of menu.dynamicMenus; let j= index">
+                        <!-- routerLink="page/{{subItem.pageId}}/{{subItem.version}}" -->
+                        <ng-container *ngIf="subItem.pageId !=null && subItem.dynamicMenus ===null">
+                            <a [id]=subItem.menuName+j mat-menu-item
+                                (click)="routerLink('page/'+subItem.pageId+'/'+subItem.version)">
+                                {{ subItem.menuName }}</a>
+                        </ng-container>
+                        <!-- routerLink="/{{subItem.menuPath}}" -->
+                        <ng-container *ngIf="subItem.pageId ==null && subItem.dynamicMenus ===null">
+                            <a [id]=subItem.menuName+j (click)="routerLink('/'+subItem.menuPath)" mat-menu-item>{{
+                                subItem.menuName }}</a>
+                        </ng-container>
+
+                        <ng-container *ngIf="subItem.dynamicMenus !==null">
+                            <button [id]=subItem.menuName *ngIf="subItem.dynamicMenus!==null" mat-menu-item
+                                [matMenuTriggerFor]="dynamiceMenu">
+                                {{ subItem.menuName }} </button>
+                            <mat-menu #dynamiceMenu="matMenu">
+                                <ng-container *ngFor="let child of subItem.dynamicMenus; let j= index">
+                                    <!-- routerLink="page/{{child.pageId}}/{{child.version}}" -->
+                                    <ng-container *ngIf="child.pageId !=null">
+                                        <a [id]=child.menuName mat-menu-item
+                                            (click)="routerLink('page/'+child.pageId+'/'+child.version)">
+                                            {{ child.menuName }}</a>
+                                    </ng-container>
+                                    <!-- routerLink="/{{child.menuPath}}" -->
+                                    <ng-container *ngIf="child.pageId ==null">
+                                        <a [id]=child.menuName (click)="routerLink('/'+child.menuPath)" mat-menu-item>{{
+                                            child.menuName }}</a>
+                                    </ng-container>
+                                </ng-container>
+                            </mat-menu>
+                        </ng-container>
+                    </ng-container>
+                </ng-template>
+            </mat-menu>
+        </ng-container>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="5px">
+        <ng-container *ngIf="hideLogo">
+            <div>
+                <span class="material-icons" style="margin-top: 9px; cursor: context-menu;margin-top: 6px;"
+                    (click)="marketPlaceClicked()">
+                    add_shopping_cart
+                </span>
+            </div>
+            <div>
+                <span class="material-icons" style="margin-top: 9px; cursor: context-menu;margin-top: 6px;"
+                    (click)="pinClicked()">
+                    push_pin
+                </span>
+            </div>
+            <div *ngIf="isMessageAllowed">
+                <app-message style="margin-top: 9px;" (checkMessageOpenEmiiter)="getMessageOpened($event)"
+                    (messageObject)="getMessageObject($event)" id="message"></app-message>
+            </div>
+            <div *ngIf="isNotificationAllowed">
+                <app-notification style="margin-top: 7px;" (notificationEmiiter)="getNotification($event)"
+                    (checkNotificationOpenEmiiter)="getNotificationOpened($event)"
+                    (notificationObject)="getNotificationObject($event)" id="notification"></app-notification>
+            </div>
+            <button mat-button class="buttonCss" id="userMenu" [matMenuTriggerFor]="userMenu">
+                <div fxLayout="row" fxLayoutGap="5px">
+                    <div style="margin-top: 5px;">{{userVo.firstName}} {{userVo.lastName}}</div>
+                    <div *ngIf="userVo.profilePicture && userVo.profilePicture !==null && userVo.profilePicture !==''">
+                        <img mat-card-avatar [src]="transformImage(userVo.profilePicture)" class="chat-prof-pic"
+                            alt="User Avatar">
+                    </div>
+                    <div class="circle"
+                        *ngIf="userVo.profilePicture ===null || userVo.profilePicture ==='' || !userVo.profilePicture">
+                        {{userProfileValue(userVo.firstName)}}</div>
+                </div>
+            </button>
+            <mat-menu #userMenu="matMenu">
+                <button mat-menu-item id="userProfile" (click)="userProfile()">User Settings</button>
+                <button mat-menu-item id="logout" (click)="logout()">Logout</button>
+            </mat-menu>
+        </ng-container>
+    </div>
+</div>

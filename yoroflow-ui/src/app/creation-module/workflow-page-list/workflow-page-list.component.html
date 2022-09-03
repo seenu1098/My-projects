@@ -1,0 +1,7 @@
+<div class="row p-3 w-100">
+        <mat-card class="w-100">
+                <mat-card-title class="pl-3" i18n="Workflow Page List">Workflow Form List</mat-card-title>
+                <app-yorogrid #page gridId="workflow-page" (messageEvent)="receiveMessage($event)" class="w-100"
+                        defaultColumn="pageName"></app-yorogrid>
+        </mat-card>
+</div>

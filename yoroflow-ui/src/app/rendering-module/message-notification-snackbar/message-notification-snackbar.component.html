@@ -1,0 +1,68 @@
+<ng-container *ngIf="data.type === 'notification' ">
+
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
+        <mat-card-title>Notification</mat-card-title>
+        <mat-icon id="close" style="cursor: context-menu;" (click)="dismiss()">close</mat-icon>
+    </div>
+    <br>
+    <div fxLayout="row" fxLayoutGap="15px">
+        <div *ngIf="data.snackBarData.fromUserProfilePicture !==null && data.snackBarData.fromUserProfilePicture !==''">
+            <img id="profilePicture" [src]="transformImage(data.snackBarData.fromUserProfilePicture)"
+                class="chat-prof-pic" alt="User Avatar">
+
+        </div>
+        <div class="circle" *ngIf="data.snackBarData.fromUserProfilePicture ===null || data.snackBarData.fromUserProfilePicture ===''
+        || !data.snackBarData.fromUserProfilePicture">
+            {{userProfile(data.snackBarData.fromUserName)}}</div>
+
+        <div>
+            <p style="font-weight: bolder;">
+                {{data.snackBarData.message}} is assigned to you</p>
+            <a id="message" style="cursor: pointer;text-decoration: underline;"
+                (click)="anyAction()">{{data.snackBarData.message}}</a>
+        </div>
+    </div>
+    <!-- <div fxLayout="row" fxLayoutAlign="end end" style="margin-top: 1%;">
+        <button mat-raised-button id="notification" color="primary" class="button-css" (click)="openNotifications()">Open
+            Notifications</button>
+    </div> -->
+</ng-container>
+<ng-container *ngIf="data.type === 'message' ">
+
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="space-between center">
+        <mat-card-title>Message</mat-card-title>
+        <mat-icon id="close" style="cursor: context-menu;" (click)="dismiss()">close</mat-icon>
+    </div>
+    <br>
+    <div fxLayout="row" fxLayoutGap="15px">
+        <ng-container *ngIf="data.snackBarData.groupId === null">
+            <div *ngIf="data.snackBarData.profilePicture !==null && data.snackBarData.profilePicture !==''">
+                <img id="profilePicture" [src]="transformImage(data.snackBarData.profilePicture)" class="chat-prof-pic"
+                    alt="User Avatar">
+
+            </div>
+            <div class="circle" *ngIf="data.snackBarData.profilePicture ===null || data.snackBarData.profilePicture ===''
+            || !data.snackBarData.profilePicture">
+                {{userProfile(data.snackBarData.fromUserName)}}</div>
+        </ng-container>
+        <ng-container *ngIf="data.snackBarData.groupId !==null">
+            <div class="circle" style="font-weight: bolder;">
+                {{userProfile(data.snackBarData.groupName)}}
+            </div>
+        </ng-container>
+        <div>
+            <p style="font-weight: bolder;">{{data.snackBarData.fromUserName}}</p>
+            <p style="font-weight: bolder;margin-top: 8px;">
+                {{data.snackBarData.message}}</p>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end end" style="margin-top: 1%;">
+        <button mat-raised-button id="openMessage" color="primary" class="button-css" (click)="openMessage()">Open
+            Message</button>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="isNotificationOpen">
+    <app-dynamic-side-nav-bar [isNotificationOpen]="isNotificationOpen">
+    </app-dynamic-side-nav-bar>
+</ng-container>

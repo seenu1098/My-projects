@@ -1,0 +1,225 @@
+<ng-container *ngIf="applicationCount === 0">
+    <!-- <app-warning type="menu"></app-warning> -->
+</ng-container>
+<!-- <ng-container *ngIf="applicationCount > 0"> -->
+<mat-card class="card-css bg-whitesmoke">
+    <form #userForm="ngForm" [formGroup]="form">
+        <mat-card class="mt-2">
+            <mat-card-title i18n="@@Menu Configuration"> Menu Configuration</mat-card-title>
+            <input type="hidden" name="id" formControlName="menuId" />
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <input matInput id="menuName" formControlName="menuName" (focusout)="checkMenuNameExists()"
+                            type="text" placeholder="Menu Name*" i18n-placeholder="Menu Name*"
+                            (keypress)="omit_number($event)">
+                        <mat-error id="menuNameError" *ngIf="form.get('menuName').errors?.required"
+                            i18n="Menu Name is required">
+                            Menu Name is required
+                        </mat-error>
+                        <mat-error id="menuNameError" *ngIf="form.get('menuName').errors?.alreadyExist"
+                            i18n="Menu Name is already exist">
+                            Menu Name is already exist
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label i18n="Menu Orientation *">Menu Orientation *</mat-label>
+                        <mat-select formControlName="menuOrientation" id="menuOrientation"
+                            (selectionChange)="checkMenuExist()">
+                            <mat-option id="Top" value="Top" i18n="Top">Top</mat-option>
+                            <mat-option id="Bottom" value="Bottom" *ngIf="!isFromPageCreation" i18n="Bottom">Bottom
+                            </mat-option>
+                            <mat-option id="Left" value="Left" i18n="Left">Left</mat-option>
+                            <mat-option id="Right" value="Right" *ngIf="!isFromPageCreation" i18n="Right">Right
+                            </mat-option>
+                        </mat-select>
+                        <mat-error i18n="Menu Orientation is required">Menu Orientation is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label i18n="Application Name *">Application Name *</mat-label>
+                        <mat-select formControlName="applicationName" id="applicationName"
+                            (selectionChange)="checkMenuExist()"
+                            [disabled]="isFromPageCreation || isApplicationDisable">
+                            <mat-option [value]="app.applicationName" *ngFor="let app of applicationsList"
+                                (onSelectionChange)="setApplicationId($event,app.id)">{{app.applicationName}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error i18n="Application Name is required">Application Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="mat-slide-toggle-content col-md-3 col-sm-12"
+                    *ngIf="form.get('menuOrientation').value!=='Top'">
+                    <mat-slide-toggle id="collapsible" color="accent" formControlName="collapsible" i18n="collapsible">
+                        Collapsible
+                    </mat-slide-toggle>
+                </div>
+            </div>
+        </mat-card>
+        <ng-container *ngIf="!parentMenuEnable">
+            <div class="row mt-2 justify-content-center text-center">
+                <p class="notification-box text-center font-weight-bold mb-1" i18n="note-menu-config1">Save menu to add
+                    child menu (Enable parent
+                    menu)</p>
+            </div>
+        </ng-container>
+        <div formArrayName="menuDetails" class="mt-2"
+            *ngFor="let column of getMenuDetailsFormArray(); let columnIndex = index">
+            <div [formGroupName]="columnIndex">
+                <mat-card>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-8">
+                            <mat-card-title i18n="Menu Details">Menu Details #{{columnIndex+1}}</mat-card-title>
+                        </div>
+                        <div class="col-md-6 col-sm-4">
+                            <div class="row justify-content-end">
+                                <button mat-mini-fab [id]="columnIndex+'menubtnAdd'" type="button" color="primary"
+                                    (click)="addAnotherMenuDetails(columnIndex)" class="mr-2">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button type="button" *ngIf="getMenuDetailsFormArray().length>1" mat-mini-fab
+                                    color="accent" class="mr-2" [id]="columnIndex+'menuRemove'"
+                                    (click)="removeMenuDetails(columnIndex, true)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-card-content>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <input matInput [id]="'menuName'+columnIndex" type="text" formControlName="menuName"
+                                        placeholder="Menu Name *" i18n-placeholder="Menu Name *"
+                                        (focusout)="checkMenuDetailsNameExists(columnIndex, column)"
+                                        (focusout)="validateFormGroupMenuName(column, columnIndex)"
+                                        (keypress)="omit_number($event)">
+                                    <mat-error *ngIf="column.get('menuName').errors?.required"
+                                        i18n="Menu Name is required">
+                                        Menu Name is required
+                                    </mat-error>
+                                    <mat-error *ngIf="column.get('menuName').errors?.alreadyExistMenuDetails"
+                                        [id]="columnIndex+'menuNameError'" i18n="Menu Name is already exist">
+                                        Menu Name is already exist
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-select [id]="columnIndex+'pageType'" formControlName="pageType" id="pageType"
+                                        (selectionChange)="selectPageType($event , columnIndex,column)"
+                                        placeholder="Page Type" i18n-placeholder="Page Type">
+                                        <mat-option value=""></mat-option>
+                                        <mat-option value="pageName" [id]="columnIndex+'dynamicPage'">Dynamic Page
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <ng-container *ngIf="column.get('pageType').value === 'pageName'"
+                                class="col-md-2 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100 col-md-2 col-sm-12">
+                                    <input matInput [id]="columnIndex+'pageName'" type="text" formControlName="pageName"
+                                        placeholder="Page Name *" i18n-placeholder="Page Name *"
+                                        [matAutocomplete]="pageName"
+                                        (focusout)="setAutocompleteValidation(columnIndex)">
+                                    <mat-autocomplete #pageName="matAutocomplete">
+                                        <mat-option value="" (onSelectionChange)="removePageId($event, columnIndex)">
+                                        </mat-option>
+                                        <mat-option *ngFor="let option of pageNameOptions; let i = index;"
+                                            [value]="option.pageName" [id]="columnIndex+option.pageName"
+                                            (onSelectionChange)="setPageId(columnIndex,option.pageId)">
+                                            {{option.pageName}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <mat-error [id]="columnIndex+'pageNameRequired'" i18n="Page Name Is Required"
+                                        *ngIf="column.get('pageName').value === '' || column.get('pageName').value === null">
+                                        Page Name Is Required</mat-error>
+                                    <mat-error *ngIf="column.get('pageName').errors?.invalidPageName"
+                                        [id]="columnIndex+'invalidPageNameError'" i18n="Invalid Page Name">
+                                        Invalid Page Name
+                                    </mat-error>
+                                </mat-form-field>
+                            </ng-container>
+                            <ng-container *ngIf="pageType[columnIndex]==='menuPath'" class="col-md-2 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <input matInput [id]="columnIndex+'menuPath'" type="text" formControlName="menuPath"
+                                        placeholder="Menu Path" i18n-placeholder="Menu Path">
+                                </mat-form-field>
+                            </ng-container>
+                            <div class="col-md-2 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label i18n="Parent Menu">Parent Menu</mat-label>
+                                    <mat-select formControlName="parentMenu" [id]="columnIndex+'parentMenu'"
+                                        (selectionChange)="validateFormGroupMenuName(column, columnIndex)"
+                                        [disabled]="!parentMenuEnable">
+                                        <mat-option value=""></mat-option>
+                                        <ng-container *ngFor="let option of parentNameOptions; let i = index;">
+                                            <mat-option *ngIf="column.get('menuName').value !== option.menuName"
+                                                [value]="option.menuName" [id]="columnIndex+option.menuName"
+                                                (onSelectionChange)="setParentId(columnIndex,option)">
+                                                {{option.menuName}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <!-- *ngIf="column.get('parentMenu').value === null || column.get('parentMenu').value === undefined || column.get('parentMenu').value === ''" -->
+                                    <mat-label i18n="Icon">Icon</mat-label>
+                                    <mat-select formControlName="icon" [id]="columnIndex+'icon'">
+                                        <mat-option value=""></mat-option>
+                                        <ng-container *ngFor="let icon of iconList; let i = index;">
+                                            <mat-option [value]="icon.value" [id]="columnIndex+icon.name"
+                                                (onSelectionChange)="setIconName(columnIndex,icon.name)">
+                                                <div fxLayout="row" fxLayoutAlign="space-between center">
+                                                    <mat-icon>{{icon.value}}</mat-icon>
+                                                    <span>{{icon.name | translate}}</span>
+                                                </div>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-1 col-sm-12">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <input matInput [id]="columnIndex+'menuNamenumber'" type="number" min="0"
+                                        oninput="this.value = Math.abs(this.value)" formControlName="displayOrder"
+                                        placeholder="Order *" i18n-placeholder="Order *">
+                                    <mat-error i18n="Display Order is required">Display Order is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+        <div fxLayoutAlign="center center">
+            <div class="alert alert-warning" style="width: 50%;" *ngIf="showMenuWarning">
+                <div i18n="note-menu-config2">
+                    There no pages for this menu. Please
+                    <a routerLink="/page" class="alert-link"> click here </a> to create.
+                </div>
+            </div>
+        </div>
+        <mat-card-actions>
+            <div fxLayoutAlign="center center">
+                <button mat-raised-button color="primary" id="btnsave" (click)="save(userForm)"
+                    i18n="Save">Save</button>
+                <button mat-raised-button color="accent" id="reset" type="reset" (click)="reset(userForm)" id="btnreset"
+                    i18n="Reset">Reset</button>
+            </div>
+        </mat-card-actions>
+    </form>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" *ngIf="!isFromPageCreation">
+        <mat-card class="w-100">
+            <mat-card-title i18n="Menu List">Menu List</mat-card-title>
+            <app-yorogrid #MenuConfig gridId="MenuConfig" (messageEvent)="receiveMessage($event)"
+                defaultColumn="menuName">
+            </app-yorogrid>
+        </mat-card>
+    </div>
+</mat-card>

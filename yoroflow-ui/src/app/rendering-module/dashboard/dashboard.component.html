@@ -1,0 +1,213 @@
+<h1 class="my-2 font-weight-bold pl-3" i18n="@@Application Dashboard">Application Dashboard</h1>
+<div class="bg_whitesmoke ">
+    <div *ngIf="applicationsList.length===0" class="mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 justify-content-center">
+                <mat-card class="w-100 justify-content-center text-center">
+                    <h2 class="text-center" i18n="note1">There is no application at this time</h2>
+                    <button mat-button id="appCreate" color="primary" (click)="appCreate()" class="btn-block"
+                        i18n="note2">Click here to create a
+                        application</button>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+
+    <!-- <mat-card *ngIf="applicationsList.length>=1" class="card">
+        <div fxLayout="row" fxLayoutAlign="space-between  center">
+            <mat-card-title>Application Dashboard</mat-card-title>
+        </div>
+        <div *ngIf="!isMobile">
+            <ng-container *ngFor="let application of applicationsList;let i=index">
+                <mat-card class="dashboard-items">
+                    <mat-card-header>
+                        <img *ngIf="application.image" mat-card-avatar [src]="transformImage(application.image)" />
+                        <div fxLayout="column">
+                            <div style="font-weight: bold;font-size: medium;">{{application.applicationName}}</div>
+                            <div>{{application.applicationId}}</div>
+                        </div>
+                    </mat-card-header>
+
+                    <mat-card-content>
+                        <p>
+                            {{application.description}}
+                        </p>
+                    </mat-card-content>
+
+                    <mat-card-content
+                        *ngIf="!showButton && (application.canLaunch===false) && (application.canEdit===false) && (application.canDelete===false)">
+                        <p>
+                            Ask Administrator for permission to edit,launch and delete
+                        </p>
+
+                    </mat-card-content>
+
+                    <mat-card-actions>
+                        <div fxLayout="column" fxLayoutGap="10px">
+                            <div fxLayout="row" fxLayoutGap="10px">
+                                <button mat-raised-button [id]="application.applicationName+'app_launch'+i"
+                                    color="primary" [disabled]="application.canLaunch===false"
+                                    (click)="launchApplication(application.applicationId)">Launch</button>
+                                <button mat-raised-button *ngIf="showButton && !isTablet"
+                                    [id]="application.applicationName+'app_security'+i" color="primary" type="button"
+                                    (click)="openApplicationPermissions(application.id)">
+                                    User
+                                    Permissions
+                                </button>
+                                <div *ngIf="!isTablet && application.canEdit===true">
+                                    <mat-icon [id]="application.applicationName+'app_edit'+i"
+                                        (click)="getApplication(application.applicationId)">create</mat-icon>
+                                </div>
+                                <div *ngIf="!isTablet && application.canDelete===true">
+                                    <mat-icon [id]="application.applicationName+'app_delete'+i"
+                                        (click)="deleteApplication(application)" style="color:#f05a5a;">delete_sweep
+                                    </mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card-actions>
+                </mat-card>
+            </ng-container>
+        </div>
+
+        <div *ngIf="isMobile">
+            <mat-toolbar *ngIf="isMobile" style="height: 650px;background-color: none;overflow: auto;"
+                fxLayout="column">
+                <ng-container *ngFor="let application of applicationsList;let i=index">
+                    <mat-card style="margin: 1%;display: inline-block;width: 98%;">
+                        <mat-card-header>
+                            <img *ngIf="application.image" mat-card-avatar [src]="transformImage(application.image)" />
+                            <mat-card-title>{{application.applicationName}}</mat-card-title>
+                            <mat-card-subtitle>{{application.applicationId}}</mat-card-subtitle>
+                        </mat-card-header>
+
+                        <mat-card-content>
+                            <p>
+                                {{application.description}}
+                            </p>
+                        </mat-card-content>
+
+                        <mat-card-content
+                            *ngIf="!showButton && (application.canLaunch===false) && (application.canEdit===false) && (application.canDelete===false)">
+                            <p>
+                                Ask Administrator for permission to edit,launch and delete
+                            </p>
+
+                        </mat-card-content>
+
+                        <mat-card-actions>
+                            <div fxLayout="column" fxLayoutGap="10px">
+                                <div fxLayout="row" fxLayoutGap="10px">
+                                    <button mat-raised-button [id]="application.applicationName+'app_launch'+i"
+                                        color="primary" [disabled]="application.canLaunch===false"
+                                        (click)="launchApplication(application.applicationId)">Launch</button>
+                                </div>
+                            </div>
+                        </mat-card-actions>
+                    </mat-card>
+                </ng-container>
+            </mat-toolbar>
+
+        </div>
+    </mat-card> -->
+    <div class="row justify-content-center mx-0" id="container_mat_card">
+        <div class="col-md-12 px-0 mx-0" *ngIf="applicationsList.length>=1">
+            <ng-container *ngFor="let application of applicationsList;let i=index">
+                <mat-card appMaterialElevation class="dashboard-items">
+                    <!-- <mat-card-header style="border-top-left-radius: 5px;border-top-right-radius: 5px;"
+                        [style.background-color]="setBackground(i)"> -->
+                    <!-- <div class="main_continer" [style.background-color]="setBackground(i)"> -->
+                    <mat-card-header [style.background-color]="setBackground(i)">
+                        <div class="row w-100 mx-0">
+                            <div class="col-md-1 col-sm-2 p-0" *ngIf="application.image">
+                                <img class="app-logo mr-2" alt="User Avatar"
+                                    [src]="transformImage(application.image)" />
+                            </div>
+                            <div class="col-md-8 col-sm-10  p-0">
+                                <h4 class="title text-white fs_12 m-0">{{application.applicationName}}</h4>
+                            </div>
+                            <div class="col-md-3 pr-0">
+                                <div class="row w-100 mx-0 px-0 justify-content-end">
+                                    <mat-icon *ngIf="!isTablet && application.canEdit===true"
+                                        class="top fs_14 h_14 w_14 mr-2" [id]="application.applicationName+'app_edit'+i"
+                                        (click)="getApplication(application.applicationId)"
+                                        i18n-matTooltip="Edit Application" matTooltip="Edit Application">
+                                        create</mat-icon>
+
+                                    <mat-icon *ngIf="!isTablet && application.canDelete===true"
+                                        class="top fs_14 h_14 w_14 mr-2"
+                                        [id]="application.applicationName+'app_delete'+i"
+                                        (click)="deleteApplication(application)" matTooltip="Delete Application"
+                                        i18n-matTooltip="Delete Application">
+                                        delete_sweep
+                                    </mat-icon>
+
+                                    <mat-icon class="top fs_14 h_14 w_14" *ngIf="showButton && !isTablet"
+                                        [id]="application.applicationName+'app_security'+i" type="button"
+                                        (click)="openApplicationPermissions(application.id)"
+                                        matTooltip="User Permissions" i18n-matTooltip="User Permissions">
+                                        manage_accounts
+                                    </mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-card-header>
+                    <mat-card-content class="pb-0 mb-0">
+                        <div class="row mx-0">
+                            <div class="col-md-12 col-sm-12 mt-3">
+                                <p class="text-center fs_12 text-dark">
+                                    <mat-icon class="fs_14 w_14 h_14">badge</mat-icon>{{application.applicationId}}
+                                </p>
+                                <p class="text-center fs_12 scroll_content" [matTooltip]="application.description">
+                                    <mat-icon class="fs_14 w_14 h_14">description</mat-icon>
+                                    {{application.description}}
+                                </p>
+                                <p class="text-center fs_12 text-danger pb-0 pl-2 "
+                                    *ngIf="!showButton && (application.canLaunch===false) && (application.canEdit===false) && (application.canDelete===false)"
+                                    i18n="note3">
+                                    <mat-icon class="fs_14 w_14 h_14">notification_important</mat-icon> Ask
+                                    Administrator
+                                    for permission to edit, launch and delete
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- <div fxLayout="column" style="margin-top: 15px;border-bottom: black;" fxLayoutAlign="center center"> -->
+                        <!-- <div fxLayout="row" style="font-size: 14px;margin-left:5px;width: 96%;" fxLayoutAlign="center">
+                            <mat-icon style="font-size: 16px;
+                            margin-top: 1px;">badge</mat-icon>{{application.applicationId}}11
+                        </div> -->
+                        <!-- <div class="row justify-content-center text-center text_description"
+                            fxLayoutAlign="center">
+                            <!-- <div fxLayout="column"> --
+                                <mat-icon style="font-size: 16px;
+                        margin-top: 1px;">description</mat-icon>
+                            <!-- </div> -->
+                        <!-- <div fxLayout="column wrap"> --
+                                {{application.description}}
+                            <!-- </div> --
+                        </div> -->
+                        <!-- <div fxLayout="row" style="margin-left:2%;font-size: 14px;color: #f05a5a;width: 96%;"
+                            fxLayoutAlign="center"
+                            *ngIf="!showButton && (application.canLaunch===false) && (application.canEdit===false) && (application.canDelete===false)">
+                            <div fxLayout="column">
+                                <mat-icon style="font-size: 16px;
+                            margin-top: 1px;">notification_important</mat-icon>
+                            </div>
+                            <div fxLayout="column wrap">
+                                Ask Administrator for permission to edit, launch and delete
+                            </div>
+                        </div> -->
+                        <!-- </div> -->
+                        <hr class="new1">
+                        <div class="row justify-content-center text-center my-1">
+                            <button mat-button [id]="application.applicationName+'app_launch'+i"
+                                class="align-self-center fs_12" (click)="launchApplication(application.applicationId)"
+                                color="primary" [disabled]="application.canLaunch===false" i18n="launch">LAUNCH</button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </ng-container>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin-top: 1%">
+    <div fxFill="100">
+        <mat-card style="background-color:rgb(154, 199, 212)">
+            <mat-card-title>Testcase List</mat-card-title>
+            <app-yorogrid gridId="claims" (messageEvent)="receiveMessage($event)" defaultColumn="testcaseName">
+            </app-yorogrid>
+        </mat-card>
+    </div>
+</div>

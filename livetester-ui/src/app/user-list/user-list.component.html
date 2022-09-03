@@ -1,0 +1,119 @@
+<div fxLayout.xs="column" fxLayoutAlign="start none" style="margin: 1%">
+  <mat-card class="card-style">
+  <div fxFill="100">
+
+    <mat-card-title>User</mat-card-title>
+    <form [formGroup]="form" #userForm="ngForm">
+      <mat-card>
+        <div class="row">
+          <input type="hidden" name="userId" formControlName="userId" />
+          <mat-form-field>
+            <input matInput type="text" formControlName="emailId" name="email" id="email" required placeholder="Email"
+              readonly={{readonly}}>
+            <mat-error class="text-danger" id="emailRequired" *ngIf="form.get('emailId').errors?.required
+            &&(userForm.submitted || form.get('emailId').touched || form.get('emailId').dirty)">
+              Email is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="top-buffer">
+            <input matInput type="text" formControlName="firstName" name="firstName" id="firstName" required
+              placeholder="First Name" readonly={{readonly}}>
+            <mat-error class="text-danger" id="firstNameRequired" *ngIf="form.get('firstName').errors?.required
+                      &&(userForm.submitted || form.get('firstName').touched || form.get('firstName').dirty)">
+              First Name is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="top-buffer">
+            <input matInput type="text" formControlName="lastName" name="lastName" id="lastName" required
+              placeholder="Last Name" readonly={{readonly}}>
+            <mat-error class="text-danger" id="lastNameRequired" *ngIf="form.get('lastName').errors?.required
+                      &&(userForm.submitted || form.get('lastName').touched || form.get('lastName').dirty)">
+              Last Name is required</mat-error>
+          </mat-form-field>
+
+        </div>
+        <div class="row">
+
+          <mat-form-field>
+            <mat-label>Roles</mat-label>
+            <mat-select formControlName="userRole" multiple>
+              <mat-option [value]="roles.id" *ngFor="let roles of roleList">{{roles.rolesDesc}}
+              </mat-option>
+            </mat-select>
+            <mat-error class="text-danger" id="userRoleRequired" *ngIf="form.get('userRole').errors?.required
+                      &&(userForm.submitted || form.get('userRole').touched || form.get('userRole').dirty)">
+              Role is required</mat-error>
+          </mat-form-field>
+
+          <div style="display: inline-block; margin-left: 10%;">
+            <mat-radio-group formControlName="globalSpecification" id="mandatory" aria-label="Select an option">
+              <fieldset class="border">
+                <legend>Global Specification *</legend>
+                <div>
+                  <mat-radio-button id="yes" value="Y">Users Can See All TestCases</mat-radio-button>
+                </div>
+                <div>
+                  <mat-radio-button id="no" value="N">Users Can See only their TestCases</mat-radio-button>
+                </div>
+              </fieldset>
+              <mat-error class="text-danger" id="globalSpecificationRequired"
+                *ngIf="form.get('globalSpecification').errors?.required
+                    &&(userForm.submitted || form.get('globalSpecification').touched || form.get('globalSpecification').dirty)">
+                Global Specification is required</mat-error>
+            </mat-radio-group>
+          </div>
+        </div>
+        <mat-card-actions>
+          <div fxLayoutAlign="center center">
+            <button mat-raised-button color="primary" id="btnsave" class="ml-3 float-center"
+              (click)="rolesAndGlobalSpecificationUpdate(userForm)">Submit</button>
+            <button mat-raised-button color="accent" type="reset" id="btnreset" name="btnrset" class="resetbutton"
+              (click)="clearSearch()">Reset</button>
+          </div>
+        </mat-card-actions>
+
+      </mat-card>
+     
+      <mat-card style="margin-top: 1%">
+          <mat-card-title>Change Password</mat-card-title>
+        <mat-form-field>
+          <input matInput type="text" formControlName="emailId" name="email" id="email" required placeholder="Username"
+            readonly={{readonly}}>
+          <mat-error class="text-danger" id="emailRequired" *ngIf="form.get('emailId').errors?.required
+              &&(userForm.submitted || form.get('emailId').touched || form.get('emailId').dirty)">
+            Email is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field  class="top-buffer">
+          <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" name="password" id="password"
+            required placeholder="Password">
+          <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          <mat-error class="text-danger" id="passwordRequired" *ngIf="form.get('password').errors?.required
+                        &&(userForm.submitted || form.get('password').touched || form.get('password').dirty)">
+            Password is required</mat-error>
+
+        </mat-form-field>
+        <mat-card-actions>
+          <div fxLayoutAlign="center center">
+            <button mat-raised-button color="primary" (click)="changePassword(userForm)">Reset Pasword</button>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </form>
+
+
+
+  </div>
+  </mat-card>
+</div>
+
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+  <div fxFill="100">
+    <mat-card class="card-style">
+      <mat-card-title>Users List</mat-card-title>
+      <app-yorogrid #user gridId="user" (messageEvent)="receiveMessage($event)" defaultColumn="firstName">
+      </app-yorogrid>
+    </mat-card>
+  </div>
+</div>

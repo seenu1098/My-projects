@@ -1,0 +1,70 @@
+ngx-intl-tel-input input {
+	height: 44px;
+	margin-bottom: 20px;
+	padding: 10px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #c7cace;
+	border-radius: 4px;
+	font-size: 18px;
+}
+
+.custom{
+    width: 148%;
+    height: 48px;
+}
+
+ngx-intl-tel-input.ng-invalid.ng-touched input {
+	border: 1px solid #c0392b;
+}
+
+ngx-intl-tel-input input:hover {
+	box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.24);
+}
+
+ngx-intl-tel-input input:focus {
+	outline: none !important;
+	border-color: #3498db;
+	box-shadow: 0 0 0 0 #000;
+}
+
+ngx-intl-tel-input input::-webkit-input-placeholder {
+	color: #bac2c7;
+}
+
+ngx-intl-tel-input input:-ms-input-placeholder {
+	color: #bac2c7;
+}
+
+ngx-intl-tel-input input::-ms-input-placeholder {
+	color: #bac2c7;
+}
+
+ngx-intl-tel-input input::placeholder {
+	color: #bac2c7;
+}
+
+ngx-intl-tel-input input[disabled] {
+	background-color: #e5eaf1;
+}
+
+#tel-control ::ng-deep .iti.separate-dial-code.iti--allow-dropdown.iti-sdc-2 .iti__selected-flag{
+width: 70px !important;
+background-color: rgb(235, 235, 235);
+}
+#tel-control{
+	width:100%;
+	margin-bottom: 10px;
+}
+
+::ng-deep .iti{
+    width: 100% !important;
+    border: 0.5px solid #dddddd;
+    border-radius: 5px;
+}
+
+.input-headline {
+    font-size: 28px;
+    line-height: 32px;
+    font-weight: 400;
+}

@@ -1,0 +1,86 @@
+<mat-card style="width: 98%;">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-card-title>SMS Key Management</mat-card-title>
+        <mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+    </div>
+    <form #userForm="ngForm" [formGroup]="form">
+        <div formArrayName="organizationSmsKeys" *ngFor="let smsSection of getSMSSectionFormArray();let i = index">
+            <mat-card [formGroupName]="i" style="margin-top:1%;background-color: whitesmoke;">
+                <div fxLayout="row" fxLayoutGap="20px">
+                    <mat-form-field style="width:20%">
+                        <mat-label>Provider Name *</mat-label>
+                        <mat-select [id]="'providerName_'+i" formControlName="providerName"
+                            (selectionChange)="providerNameSelect($event,i)">
+                            <mat-option value="aws" [id]="'aws_'+i" [disabled]="!show">AWS
+                            </mat-option>
+                            <mat-option value="twilio" [id]="'twilio_'+i">Twilio
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field style="width:20%">
+                        <mat-label>SMS From *</mat-label>
+                        <mat-select [id]="'smsFrom_'+i" formControlName="smsFrom"
+                            (selectionChange)="smsFromSelect($event,i)">
+                            <mat-option value="phoneNumber">Phone Number</mat-option>
+                            <mat-option value="serviceName">Service Name</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('organizationSmsKeys').get(''+i).get('smsFrom').errors?.required">
+                            SMS From is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width:20%">
+                        <input matInput type="text" [id]="'phoneNumber_'+i" placeholder="Phone Number"
+                            formControlName="fromPhoneNumber" (focusout)="alreadyExistCheckForPhoneNumber(i)">
+                        <mat-error
+                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('fromPhoneNumber').errors?.required">
+                            From Phone Number is required</mat-error>
+                        <mat-error
+                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('fromPhoneNumber').errors?.alreadyExistNumber">
+                            From Phone Number is already exist
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width:20%">
+                        <input matInput type="text" [id]="'serviceName_'+i" placeholder="Service Name"
+                            formControlName="serviceName" (focusout)="alreadyExistCheckForServiceName(i)">
+                        <mat-error
+                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('serviceName').errors?.required">
+                            Service Name is required</mat-error>
+                        <mat-error
+                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('serviceName').errors?.alreadyExistServiceName">
+                            Service Name is already exist
+                        </mat-error>
+                    </mat-form-field>
+                    <button mat-mini-fab [id]="'addSMSSection_'+i" type="button" color="primary"
+                        (click)="addSmsFormArray(i+1)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <button type="button" mat-mini-fab color="accent" [id]="'removeSMSSection_'+i"
+                        (click)="removeSmsFormArray(i)" [disabled]="getSMSSectionFormArray().length === 1">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+                <div fxLayout="row">
+                    <mat-form-field style="width:100%">
+                        <textarea matInput type="text" [id]="'secretKey_'+i" placeholder="Secret Key"
+                            formControlName="secretKey" cols="2" rows="2"></textarea>
+                        <mat-error *ngIf="form.get('organizationSmsKeys').get(''+i).get('secretKey').errors?.required">
+                            Secret Key is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row">
+                    <mat-form-field style="width:100%">
+                        <textarea matInput type="text" [id]="'secretToken_'+i" placeholder="Secret Token *"
+                            formControlName="secretToken" cols="2" rows="2"></textarea>
+                        <mat-error
+                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('secretToken').errors?.required">
+                            Secret Token is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-card>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" id="btnYes" (click)="saveSMSKey(userForm)">Save</button>
+            <!-- <button mat-raised-button color="accent" id="cancel" (click)="reset()">Reset</button> -->
+        </mat-dialog-actions>
+    </form>
+</mat-card>

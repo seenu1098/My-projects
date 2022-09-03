@@ -1,0 +1,141 @@
+<div class="p-2" style="overflow-y: hidden!important;" [style.height]="screenHeight">
+    <mat-card class="w-100" [style.height]="screenHeight">
+        <perfect-scrollbar style="width:100%" id="menu_with_icon" style="height: 100%;">
+            <div fxLayout="row" id="task-route" fxLayoutAlign="space-between center">
+                <h1 class="my-2 font-weight-bold pl-2">Templates</h1>
+                <div fxLayout="row">
+                    <ng-container *ngFor="let tab of tabList;let i = index;">
+                        <div [class.shadow-class]="tab.isSelected">
+                            <button mat-button type="button" [class.color-btn]="tab.isSelected" [id]="'tab_'+i"
+                                (click)="tabChange(tab)" stle="margin-left:5px;margin-right:5px">{{tab.name |
+                                translate}}</button>
+
+                        </div>
+                    </ng-container>
+                </div>
+                <div>
+
+                </div>
+            </div>
+            <ng-congtainer *ngIf="show">
+                <div [hidden]="selectedTab==='workflow'?false:true">
+                    <div>
+                        <form [formGroup]="form" #userForm="ngForm">
+                            <mat-horizontal-stepper #stepper id="taskboard-horizontalStepper">
+                                <mat-step>
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" id=category-column>
+                                            <span class="category-label-css" i18n="Categories">Categories</span>
+                                            <ng-container
+                                                *ngFor="let category of templatesCategoriesArray;let i = index;">
+                                                <button mat-button color="primary" class="category-button-css"
+                                                    (click)="onWorkflowCategorySelected(category)"
+                                                    [style.color]="category.isSelected?'#039be5':'black'"
+                                                    [style.background]="category.isSelected?'#e5f4ff':''"
+                                                    [id]="'category_button_'+i">
+                                                    <mat-icon *ngIf="category.icon" [style.color]="category.color"
+                                                        class="categories_icons">
+                                                        {{category.icon}}</mat-icon>
+                                                    <span>{{category.name | translate}}</span>
+                                                </button>
+                                            </ng-container>
+                                        </div>
+                                        <div fxLayout="column" style="width:87%">
+                                            <ng-conatiner
+                                                *ngFor="let category of selectedWorkflowTemplatesWithCategory; let i = index">
+                                                <div fxLayout="row" class="categoryName-header-css">
+                                                    <span
+                                                        class="category-headerName-css font-weight-bold fs_14">{{category.category
+                                                        |
+                                                        translate}}</span>
+                                                    <span class="categoryName-heading-border-css"></span>
+                                                </div>
+                                                <div fxLayout="row wrap">
+                                                    <ng-conatiner
+                                                        *ngFor="let templates of category.templates; let j = index">
+                                                        <div class="category-automation-card"
+                                                            (click)="selectedWorkflowTemplate(templates)"
+                                                            [id]="'template_'+i+'_'+j" appMaterialElevation
+                                                            defaultElevation=4 raisedElevation=16>
+                                                            <p class="fs_12 font-weight-bold">{{templates.templateName}}
+                                                            </p>
+                                                            <div style="font-weight: 100;color:grey" fxLayout="row"
+                                                                fxLayoutGap="10px">
+                                                                <mat-icon class="description-icon-css">description
+                                                                </mat-icon>
+
+                                                                <span class="fs_12">{{
+                                                                    (templates.description.length>300) ?
+                                                                    (templates.description |
+                                                                    slice:0:300)+'..':(templates.description) }} </span>
+                                                            </div>
+                                                        </div>
+                                                    </ng-conatiner>
+                                                </div>
+                                            </ng-conatiner>
+                                        </div>
+                                    </div>
+                                </mat-step>
+
+
+
+                            </mat-horizontal-stepper>
+                        </form>
+                    </div>
+                </div>
+                <div [hidden]="selectedTab==='taskboard'?false:true">
+                    <mat-horizontal-stepper #stepper id="taskboard-horizontalStepper">
+                        <mat-step>
+                            <div fxLayout="row">
+                                <div fxLayout="column" id=category-column>
+                                    <span class="category-label-css" i18n="Categories">Categories</span>
+                                    <ng-container *ngFor="let category of templatesCategoriesArray;let i = index;">
+                                        <button mat-button color="primary" class="category-button-css"
+                                            (click)="onTaskboardCategorySelected(category)"
+                                            [style.color]="category.isSelected?'#039be5':'black'"
+                                            [style.background]="category.isSelected?'#e5f4ff':''"
+                                            [id]="'category_button_'+i">
+                                            <mat-icon *ngIf="category.icon" [style.color]="category.color"
+                                                class="categories_icons">
+                                                {{category.icon}}</mat-icon>
+                                            <span>{{category.name | translate}}</span>
+                                        </button>
+                                    </ng-container>
+                                </div>
+                                <div fxLayout="column" style="width:87%">
+                                    <ng-conatiner
+                                        *ngFor="let category of selectedTaskboardTemplatesWithCategory; let i = index">
+                                        <div fxLayout="row" class="categoryName-header-css">
+                                            <span
+                                                class="category-headerName-css font-weight-bold fs_14">{{category.category
+                                                | translate}}</span>
+                                            <span class="categoryName-heading-border-css"></span>
+                                        </div>
+                                        <div fxLayout="row wrap">
+                                            <ng-conatiner *ngFor="let templates of category.templates; let j = index">
+                                                <div class="taskboard-category-automation-card"
+                                                    (click)="selectedTaskboardTemplate(templates)"
+                                                    [id]="'template_'+i+'_'+j" appMaterialElevation defaultElevation=4
+                                                    raisedElevation=16>
+                                                    <h3>{{templates.templateName}}</h3>
+                                                    <div style="font-weight: 100;color:grey" fxLayout="row"
+                                                        fxLayoutGap="10px">
+                                                        <mat-icon class="description-icon-css">description</mat-icon>
+                                                        <span class="fs_12">{{
+                                                            (templates.description.length>300) ?
+                                                            (templates.description |
+                                                            slice:0:300)+'..':(templates.description) }} </span>
+                                                    </div>
+                                                </div>
+                                            </ng-conatiner>
+                                        </div>
+                                    </ng-conatiner>
+                                </div>
+                            </div>
+                        </mat-step>
+                    </mat-horizontal-stepper>
+                </div>
+            </ng-congtainer>
+        </perfect-scrollbar>
+    </mat-card>
+</div>

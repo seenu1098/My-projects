@@ -1,0 +1,26 @@
+<a mat-list-item style="height:40px" (click)="onItemSelected(menu)"
+    [ngClass]="{'active': menu.menuPath ? router.isActive(menu.menuPath, true): false, 'expanded': menu.openPanel}"
+    class="menu-list-item" style="color:black" [style]="menu.style" [id]="menu.id">
+    <ng-container *ngIf="menu.icon==='add_task'">
+        <img style="width:16px;height:16px;margin-right:5px" [style.margin-left]="left?'15px':''"
+            src="../../../assets/images/clipboard_black.svg">
+    </ng-container>
+    <ng-container *ngIf="menu.icon!=='add_task'">
+        <mat-icon class="routeIcon" style="font-size:16px;margin-top:7px" [style.margin-left]="left?'15px':''">
+            {{menu.icon}}</mat-icon>
+    </ng-container>
+    <span style="font-size:14px;">{{menu.menuName}}</span>
+    <span fxFlex *ngIf="menu.dynamicMenus!==null">
+        <span fxFlex></span>
+        <mat-icon style="transform: rotate(-90deg)" [@indicatorRotate]="menu.openPanel ? 'expanded': 'collapsed'">
+            expand_more
+        </mat-icon>
+    </span>
+</a>
+<div *ngIf="menu.openPanel">
+    <lib-menu-list-item *ngFor="let child of menu.dynamicMenus" [menuOptions]="menuOptions" [menu]="child"
+        [depth]="depth+1" [child]=true>
+    </lib-menu-list-item>
+</div>
+
+<!-- [style.width]="isMobile?'':'145px'"? -->

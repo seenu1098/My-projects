@@ -1,0 +1,84 @@
+<mat-card>
+    <mat-card-title>Customer Attribute List</mat-card-title>
+    <form [formGroup]="customAttributeForm" #userForm="ngForm">
+        <!-- <div fxLayout="row" style="margin-top: .5%;" fxLayoutAlign="center center">
+            <mat-spinner [diameter]="40" *ngIf="loadVariables"></mat-spinner>
+        </div> -->
+        <mat-dialog-content>
+            <div formArrayName="customAttributeListVo"
+                *ngFor="let attribute of getCustomAtrributeFormArray().controls; let i = index">
+                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="10px">
+                    <div fxLayout="row" fxLayoutGap="20px" fxFlex="100">
+                    <mat-form-field style="width: 45%;">
+                        <span matPrefix>userCustomAttribute_</span>
+                        <input matInput id="attributeName" type="text" formControlName="name"
+                            placeholder="Attribute Name" (focusout)="checkDuplicateAttribute(i)">
+                        <mat-error *ngIf="attribute.get('name').errors?.required">Attribute Name is required</mat-error>
+                        <mat-error *ngIf="attribute.get('name').errors?.unique">Attribute Name is unique</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width: 18%;">
+                        <mat-label>Data Type</mat-label>
+                        <mat-select id="dataType" formControlName="dataType">
+                            <mat-option value='string'>String</mat-option>
+                            <mat-option value='long'>Number</mat-option>
+                            <mat-option value='float'>Float</mat-option>
+                            <mat-option value='date'>Date</mat-option>
+                        </mat-select>
+                        <mat-error>Data Type is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width: 10%;">
+                    <input matInput id="size" placeholder="Attribute Size" type="number" formControlName="size"
+                     oninput="this.value = Math.abs(this.value)" required>
+                     <mat-error>Attribute Size is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width: 18%;">
+                        <mat-label>Attribute Type</mat-label>
+                        <mat-select id="attributeType" formControlName="attributeType">
+                            <mat-option value='org'>Organization Level</mat-option>
+                            <mat-option value='user'>User Level</mat-option>
+                        </mat-select>
+                        <mat-error>Attribute Type is required</mat-error>
+                    </mat-form-field>
+                    <ng-container *ngIf="attribute.get('attributeType').value === 'org'">
+                    <mat-form-field style="width: 25%;" *ngIf="attribute.get('dataType').value !== 'long' &&
+                     attribute.get('dataType').value !== 'float' && attribute.get('dataType').value !== 'date'">
+                        <input matInput type="text" formControlName="value" placeholder="Attribute Value"
+                            id="attributeValue">
+                        <mat-error>Attribute Value is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width: 25%;"
+                        *ngIf="attribute.get('dataType').value === 'long' || attribute.get('dataType').value === 'float'">
+                        <input matInput type="number" formControlName="value" placeholder="Attribute Value"
+                            id="attributeValue">
+                        <mat-error>Attribute Value is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="attribute.get('dataType').value === 'date'" style="width: 25%;">
+                        <input matInput id="attributeValue" [matDatepicker]="picker" formControlName="value"
+                            placeholder="Attribute Value">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error>Attribute Value is required</mat-error>
+                    </mat-form-field>
+                </ng-container>
+                    <mat-slide-toggle color="accent" formControlName="required">
+                        Required
+                    </mat-slide-toggle>
+                </div>
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <button mat-mini-fab id="addAttributes" type="button" class="add" color="primary" (click)="addAttributes()" class="icon" style="margin-top: 15px;">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <button type="button" mat-mini-fab color="accent" class="add"
+                        id="removeAttributes" (click)="removeAttributes(i)" class="icon" style="margin-top: 15px;">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" type="submit" (click)="save(userForm)" id="btnSave"
+                [disabled]="!customAttributeForm.dirty">Save</button>
+        </mat-card-actions>
+    </form>
+</mat-card>

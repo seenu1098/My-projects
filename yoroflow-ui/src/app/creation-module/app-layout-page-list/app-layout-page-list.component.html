@@ -1,0 +1,9 @@
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+    <div fxFlex="100%">
+        <mat-card>
+            <mat-card-title i18n="Application Layout Page List">Application Layout Page List</mat-card-title>
+            <app-yorogrid #page gridId="application_page_list" (messageEvent)="receiveMessage($event)"
+                defaultColumn="pageName"></app-yorogrid>
+        </mat-card>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<!-- <div [style]="section.style"> -->
+<ng-container *ngIf="formArray">
+    <mat-card style="margin-top: 1%" *ngFor="let arrayGroup of formArray.controls;let i=index;"
+        [style.box-shadow]="showBorder" style="margin-top:2%" [style]="section.style">
+        <div fxLayoutAlign="space-between center">
+            <mat-card-title>{{section.name}}&nbsp;#{{i+1}}</mat-card-title>
+            <div fxLayoutGap="20px">
+
+                <button mat-raised-button [disabled]="isAllowEdit === false" style="height:34px" type="button"
+                    *ngIf="section.addRepeatableSectionButtonName" color="primary" [id]="'btnAdd_'+i"
+                    (click)="addAnotherSection(i,section)">+&nbsp;&nbsp;{{section.addRepeatableSectionButtonName}}</button>
+                <button mat-mini-fab *ngIf="!section.addRepeatableSectionButtonName" [id]="'btnAdd_'+i" type="button"
+                    color="primary" (click)="addAnotherSection(i,section)" [disabled]="isAllowEdit === false">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button mat-raised-button [disabled]="isAllowEdit === false" style="height:34px" type="button"
+                    *ngIf="section.removeRepeatableSectionButtonName && formArray.length>1" color="accent"
+                    [id]="'remove_'+i"
+                    (click)="removeThisSection(i,section)">-&nbsp;&nbsp;{{section.removeRepeatableSectionButtonName}}</button>
+                <button style="margin-top: 1%" [disabled]="isAllowEdit === false" [id]="'remove_'+i" type="button"
+                    mat-mini-fab color="primary" (click)="removeThisSection(i,section)"
+                    *ngIf="!section.removeRepeatableSectionButtonName && formArray.length>1">
+                    <mat-icon>remove</mat-icon>
+                </button>
+
+            </div>
+        </div>
+        <app-card-section [group]="arrayGroup" [section]="section"
+            (getChipComponentFromSection)="getChipArrayComponentInstance($event,section.repeatableName,i,0)">
+        </app-card-section>
+
+        <ng-container *ngFor="let childSection of section.sections">
+
+            <ng-container *ngIf="!childSection.collapsible && childSection.repeatable !==true">
+                <app-card-section [group]="arrayGroup" [section]="childSection"
+                    (getChipComponentFromSection)="getChipArrayComponentInstance($event,childSection.repeatableName,i,0)">
+                </app-card-section>
+            </ng-container>
+
+            <ng-container *ngIf="childSection.collapsible && childSection.repeatable !==true">
+                <app-collapsible-section [group]="arrayGroup" [section]="childSection"
+                    (getChipComponentFromSection)="getChipArrayComponentInstance($event,childSection.repeatableName,i,0)">
+                </app-collapsible-section>
+            </ng-container>
+
+            <ng-container *ngIf="childSection.repeatable === true && childSection.repeatableName !==null">
+                <app-dynamic-array [formArray]="arrayGroup.get(childSection.repeatableName)" [section]="childSection"
+                    (getChipComponentFromArray)="getChipArraytInstance($event,childSection.repeatableName,arrayGroup.get(childSection.repeatableName).length-1,i)">
+                </app-dynamic-array>
+            </ng-container>
+
+        </ng-container>
+
+    </mat-card>
+</ng-container>
+<!-- </div> -->

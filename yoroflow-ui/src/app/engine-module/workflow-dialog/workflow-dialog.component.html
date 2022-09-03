@@ -1,0 +1,10 @@
+
+<ng-container>
+    <mat-dialog-content>
+        You have a task that was temporarily saved before.  What do you like to do? 
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="dialogClose()">Open already saved task</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="close()">Create a new task</button>
+    </mat-dialog-actions>
+</ng-container>

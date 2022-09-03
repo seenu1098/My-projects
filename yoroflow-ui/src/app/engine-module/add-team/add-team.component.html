@@ -1,0 +1,83 @@
+<ng-container *ngIf="data.data === null">
+    <div class="row w-100 mx-0">
+        <div class="col-md-8 pl-0">
+            <h3 class="fs_14 text-uppercase font-weight-bold" *ngIf="data.data === null">{{'Add Team' | translate}}
+            </h3>
+            <h3 class="fs_14 text-uppercase font-weight-bold" *ngIf="data.data !== null">{{'Edit Team' | translate}}
+            </h3>
+        </div>
+        <div class="col-md-4 pr-0">
+            <div class="row w-100 mx-0 justify-content-end">
+                <mat-icon type="button" i18n="Cancel" [mat-dialog-close]="false" class="mat-icon-color" id="close_btn">
+                    close
+                </mat-icon>
+            </div>
+        </div>
+    </div>
+    <hr class="my-1 mx-0 b-0">
+    <div class="row w-100 mx-0">
+        <form [formGroup]="form" #userForm="ngForm" class="w-100">
+            <div class="row w-100 mx-0">
+                <mat-form-field appearance="outline" class="mr-2 w-100">
+                    <mat-label i18n="Team Name *">{{'Team Name *' | translate}}</mat-label>
+                    <input matInput id="name" type="text" formControlName="name">
+                    <mat-icon matSuffix style="color:grey">group</mat-icon>
+                    <mat-error *ngIf="form.get('name').errors?.required">
+                        {{'Team Name is required' | translate}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="row w-100 mx-0">
+                <mat-form-field appearance="outline" class="mr-3 w-100">
+                    <mat-label i18n="Description *">{{'Description *' | translate}}</mat-label>
+                    <textarea rows="3" cols="3" matInput id="description" type="text"
+                        formControlName="description"></textarea>
+                    <!-- <mat-icon matSuffix style="color:grey">description</mat-icon> -->
+                    <mat-error *ngIf="form.get('description').errors?.required">
+                        {{'Description is required' | translate}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="row w-100 mb-3 ">
+                <h4 class="mt-4 mx-3"><b i18n="Avatar">Avatar</b></h4>
+                <div class="row w-100 mx-4">
+                    <div class="circle-class-avatar" *ngFor="let color of avatarColors" [style.background]="color"
+                        (click)="changeAvatarColor(color)">
+                        <mat-icon *ngIf="color===form.get('color').value" class="done-css">done</mat-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="row w-100 mx-0  justify-content-end">
+                <button mat-raised-button id="submit" color="primary" i18n="Submit" [disabled]="form.invalid"
+                    (click)="submit(userForm)" *ngIf="data.data === null">{{'Create Team' | translate}}</button>
+
+                <button mat-raised-button id="submit" color="primary" i18n="Submit" [disabled]="!userForm.dirty"
+                    (click)="submit(userForm)" *ngIf="data.data !== null">{{'Edit' | translate}}</button>
+
+                <button mat-raised-button id="reset" type="button" color="accent" style="margin-left:1%;" i18n="Reset"
+                    (click)="reset(userForm)">{{'Cancel' | translate}}</button>
+            </div>
+
+
+        </form>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="data.data !== null">
+    <div class="row w-100 mb-3">
+        <h4 class="mt-4  mx-3"><b i18n="Avatar">Avatar</b></h4>
+        <div class="row w-100 mx-4">
+            <div class="circle-class-workspace" [style.background]="group?.color">
+                {{groupNameFirstLetter()}}
+            </div>
+            <div class="circle-class-avatar" *ngFor="let color of avatarColors" [style.background]="color"
+                (click)="changeAvatarColor(color)">
+                <mat-icon *ngIf="color===group.color" class="done-css">done</mat-icon>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px">
+        <button mat-raised-button color="primary" (click)="updateTeamAvatar()">Update</button>
+        <button mat-raised-button color="accent" (click)="close()">Cancel</button>
+    </div>
+</ng-container>

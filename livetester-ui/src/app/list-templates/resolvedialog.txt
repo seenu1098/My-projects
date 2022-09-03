@@ -1,0 +1,843 @@
+<mat-spinner *ngIf="!dataFetched" [diameter]="45" class="loader"></mat-spinner>
+<!-- <div *ngIf="dataFetched">
+  <div fxLayout="row" fxLayout.xs="column">
+    <div fxFill="100">
+      <mat-card style="margin-top: 1%">
+        <div class=" container mt-2 p-2 accordion-form-section dialog">
+          <mat-accordion>
+            <mat-card-title>{{ 'claims.inquire_claim_details' | translate}}
+              <span>
+                <button mat-button type="btn" id="closebtn" class="close " (click)="onNoClick()" aria-label="Close">
+                  <mat-icon class="icon" svgIcon="clear"></mat-icon>
+                </button>
+              </span>
+            </mat-card-title>
+
+            <form #userForm="ngForm" (ngSubmit)="save(userForm)">
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{ 'claims.tcn' | translate}}:</label> -->
+                  <input type="text" [disabled]="updateVO.claimEditableVO.clmTcn"
+                    placeholder="{{ 'claims.tcn' | translate}}" [(ngModel)]="updateVO.clmTcn" id="tcn" name="clmTcn"
+                    [value]="updateVO.clmTcn" matInput>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{ 'claims.claim_type' | translate}}:</label> -->
+                  <input type="text" matInput [disabled]="updateVO.claimEditableVO.clmType"
+                    [(ngModel)]="updateVO.clmType" id="claimtype" name="clmType" [value]="updateVO.clmType"
+                    placeholder="{{ 'claims.claim_type' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{ 'claims.claim _source' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.clmSource"
+                    placeholder="{{ 'claims.claim _source' | translate}}" [(ngModel)]="updateVO.clmSource" id="source"
+                    name="clmSource" [value]="updateVO.clmSource" matInput>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{ 'claims.claim_frequency' | translate}}:</label> -->
+                  <input type="text" [disabled]="updateVO.claimEditableVO.frequencyType"
+                    [(ngModel)]="updateVO.frequencyType" id="claimfrequency" name="frequencyType" required
+                    [value]="updateVO.frequencyType" #frequency="ngModel" maxlength="2" matInput
+                    placeholder="{{ 'claims.claim_frequency' | translate}}">
+
+                  <mat-error class="text-danger" id="frequencyRequired" *ngIf="frequency.errors?.required
+              &&  (frequency.dirty||frequency.touched||frequency.invalid) ">
+                    {{'errorMessages.resolve_dialog_box.claim_frequency_is_required' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.from_date' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.fromDate"
+                    [(ngModel)]="updateVO.fromDate" name="headerfromdate" [value]="updateVO.fromDate"
+                    placeholder="{{'claims.from_date' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.to_date' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.throughDate" id="headertodate"
+                    [(ngModel)]="updateVO.throughDate" name="headertodate" [value]="updateVO.throughDate"
+                    placeholder="{{'claims.to_date' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.facility_type' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.facilityType" id="facilitytype"
+                    required maxlength="2" [(ngModel)]="updateVO.facilityType" name="headerfacility"
+                    [value]="updateVO.facilityType" #facility="ngModel"
+                    placeholder="{{'claims.facility_type' | translate}}">
+                  <mat-error class="text-danger" id="facilityRequired"
+                    *ngIf="facility.errors?.required && (facility.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.facility_type_is_required' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.beneficiary_case_number' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.benefciaryCaseNmbr"
+                    id="benefciarycasenmbr" [(ngModel)]="updateVO.benefciaryCaseNmbr" name="benefciarycasenmbr"
+                    [value]="updateVO.benefciaryCaseNmbr"
+                    placeholder="{{'claims.beneficiary_case_number' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.beneficiary_first_name' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.benefciaryFirstName"
+                    id="beneficiaryfirstname" required [(ngModel)]="updateVO.benefciaryFirstName"
+                    name="benefciaryFirstName" [value]="updateVO.benefciaryFirstName" #fname="ngModel"
+                    placeholder="{{'claims.beneficiary_first_name' | translate}}">
+                  <mat-error class="text-danger" id="fnameRequired"
+                    *ngIf="fname.errors?.required &&(fname.touched||userForm.submitted) ">
+                    {{'errorMessages.resolve_dialog_box.first_name_is_required' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.beneficiary _last_name' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.benefciaryLastName"
+                    id="beneficiarylastname" required [(ngModel)]="updateVO.benefciaryLastName"
+                    name="beneficiarylastname" [value]="updateVO.benefciaryLastName" #lname="ngModel"
+                    placeholder="{{'claims.beneficiary _last_name' | translate}}">
+                  <mat-error class="text-danger" id="lnameRequired"
+                    *ngIf="lname.errors?.required && (lname.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.last_name_is_required' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.beneficiary_date_of_birth' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.benefciaryDob" id="beneficiarydob"
+                    [(ngModel)]="updateVO.benefciaryDob" name="beneficiarydob" [value]="updateVO.benefciaryDob"
+                    placeholder="{{'claims.beneficiary_date_of_birth' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.beneficiary_gender' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.benefciaryGender"
+                    id="beneficiarygender" required maxlength="1" [(ngModel)]="updateVO.benefciaryGender"
+                    name="beneficiarygender" [value]="updateVO.benefciaryGender" #gender="ngModel"
+                    placeholder="{{'claims.beneficiary_gender' | translate}}">
+                  <mat-error class="text-danger" id="genderRequired"
+                    *ngIf="gender.errors?.required && (gender.touched||gender.dirty||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.gender_is_required' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.beneficiary_age' | translate}}:</label> -->
+                  <input matInput type="number" [disabled]="updateVO.claimEditableVO.benefciaryAge" id="beneficiaryage"
+                    required [(ngModel)]="updateVO.benefciaryAge" name="beneficiaryage" [value]="updateVO.benefciaryAge"
+                    #age="ngModel" placeholder="{{'claims.beneficiary_age' | translate}}" pattern="^\d{0,2}?\d?$">
+                  <mat-error class="text-danger" id="ageRequired"
+                    *ngIf="age.errors?.required && (age.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.age_is_required' | translate}}
+                  </mat-error>
+                  <mat-error class="text-danger" id="ageError"
+                    *ngIf="age.errors?.pattern && (age.touched||age.dirty||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.age_should_below_three_digits' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.patient_control' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.patientControlNum"
+                    id="patientcontrolnum" [(ngModel)]="updateVO.patientControlNum" name="patientcontrolnum"
+                    [value]="updateVO.patientControlNum" placeholder="{{'claims.patient_control' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.billing_provider_npi' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.billingProviderNpi" id="billingnpi"
+                    [(ngModel)]="updateVO.billingProviderNpi" name="billingnpi" [value]="updateVO.billingProviderNpi"
+                    placeholder="{{'claims.billing_provider_npi' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.billing_provider_taxonomy' | translate}}:</label> -->
+                  <input matInput type="text" [disabled]="updateVO.claimEditableVO.billingProviderTaxonomy"
+                    id="billingtaxonomy" [(ngModel)]="updateVO.billingProviderTaxonomy" name="billingtaxonomy"
+                    [value]="updateVO.billingProviderTaxonomy"
+                    placeholder="{{'claims.billing_provider_taxonomy' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.servicing_provider_npi' | translate}}:</label> -->
+                  <input matInput type="text" id="servicingnpi"
+                    [disabled]="updateVO.claimServices[0].claimServiceEdtableVO.srvcTcn" name="srvcTcn"
+                    [value]="updateVO.claimServices[0].srvcTcn" [(ngModel)]="updateVO.claimServices[0].srvcTcn"
+                    placeholder="{{'claims.servicing_provider_npi' | translate}}">
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.servicing_provider_taxonomy' | translate}}:</label> -->
+                  <input matInput type="number" id="servicingtaxonomy"
+                    [disabled]="updateVO.claimServices[0].claimServiceEdtableVO.srvcPrvdrTaxonomy" required
+                    #taxonomy="ngModel" name="srvcPrvdrTaxonomy" [value]="updateVO.claimServices[0].srvcPrvdrTaxonomy"
+                    [(ngModel)]="updateVO.claimServices[0].srvcPrvdrTaxonomy"
+                    placeholder="{{'claims.servicing_provider_taxonomy' | translate}}" pattern="^\d{0,6}?\d?$">
+                  <mat-error class="text-danger" id="taxonomyerrorRequired"
+                    *ngIf="taxonomy.errors?.required && (taxonomy.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.servicing_provider_taxonomy_is_required' | translate}}
+                  </mat-error>
+                  <mat-error class="text-danger" id="taxonomyerror"
+                    *ngIf="taxonomy.errors?.pattern && (taxonomy.dirty||taxonomy.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.allowed_maximum_7_digits' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.claim_charge' | translate}}:</label> -->
+                  <input matInput type="number" [disabled]="updateVO.claimEditableVO.claimCharge" id="claimtotalcharge"
+                    required maxlength="7" placeholder="{{'claims.claim_charge' | translate}}"
+                    [(ngModel)]="updateVO.claimCharge" name="claimtotalcharge" [value]="updateVO.claimCharge"
+                    #charge="ngModel" pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$">
+                  <mat-error class="text-danger" id="chargerequired"
+                    *ngIf="charge.errors?.required && (charge.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.charge_amount_is_required' | translate}}
+                  </mat-error>
+                  <mat-error class="text-danger" id="charge"
+                    *ngIf="charge.errors?.pattern && (charge.dirty||charge.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.claim_allowed_amount' | translate}}:</label> -->
+                  <input matInput type="number" [disabled]="updateVO.claimEditableVO.dallowedAmt"
+                    id="claimallowedamount" placeholder="{{'claims.claim_allowed_amount' | translate}}"
+                    [(ngModel)]="updateVO.dallowedAmt" name="claimallowedamount" [value]="updateVO.dallowedAmt"
+                    pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$" required #allowedAmount="ngModel">
+                  <mat-error class="text-danger" id="allowedAmtRequired"
+                    *ngIf="allowedAmount.errors?.required && (allowedAmount.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.claim_allowed_amount_is_required' | translate}}
+                  </mat-error>
+                  <mat-error class="text-danger" id="allowedAmtError"
+                    *ngIf="allowedAmount.errors?.pattern && (allowedAmount.dirty||allowedAmount.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.claim_reimbursement_amount' | translate}}:</label> -->
+                  <input matInput type="number" [disabled]="updateVO.claimEditableVO.dreimburseAmt" id="claimpaidamount"
+                    [(ngModel)]="updateVO.dreimburseAmt" name="dreimburseAmt" [value]="updateVO.dreimburseAmt"
+                    pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$" required #reimbursementAmount="ngModel"
+                    placeholder="{{'claims.claim_reimbursement_amount' | translate}}">
+                  <mat-error class="text-danger" id="reimbursementAmountReuired"
+                    *ngIf="reimbursementAmount.errors?.required && (reimbursementAmount.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.claim_reimbursement_amount_is_required' | translate}}
+                  </mat-error>
+                  <mat-error class="text-danger" id="reimbursementAmountError"
+                    *ngIf="reimbursementAmount.errors?.pattern && (reimbursementAmount.dirty||reimbursementAmount.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              <p>
+                <mat-form-field>
+                  <!-- <label>{{'claims.processing_cycle' | translate}}:</label> -->
+                  <input matInput type="number" [disabled]="updateVO.claimEditableVO.processCycle" id="processingcycle"
+                    required pattern="^\d{0,6}?\d?$" [(ngModel)]="updateVO.processCycle" name="processingcycle"
+                    [value]="updateVO.processCycle" #process="ngModel"
+                    placeholder="{{'claims.process_cycle' | translate}}">
+                  <mat-error class="text-danger" id="processCycleRequired"
+                    *ngIf="process.errors?.required && (process.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.processing_cycle_is_required' | translate}}
+                  </mat-error>
+                  <mat-error class="text-danger" id="processCycleError"
+                    *ngIf="process.errors?.pattern && (process.dirty||process.touched||userForm.submitted)">
+                    {{'errorMessages.resolve_dialog_box.allowed_maximum_7_digits' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </p>
+              
+              <mat-expansion-panel id="claim_edit_header" opened="true" class="accordion-form-section"
+                style="margin-top: 1%">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{ 'claims.claim_level_edits' | translate}} ({{updateVO.countOfclaimEdit}})
+                  </mat-panel-title>
+
+                </mat-expansion-panel-header>
+                <div *ngFor="let edit of updateVO.claimEdit;let i = index;">
+
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>&nbsp; {{ 'claims.edit_code' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="edit.editCode"
+                        [disabled]="edit.claimLevelEditableVO.editCode" id="editcode" name="edit.{{i}}.editcode"
+                        [value]="edit.editCode" placeholder="{{ 'claims.edit_code' | translate}}">
+                    </mat-form-field>
+                  </p>
+
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>&nbsp; {{'claims.edit_disposition' | translate}}:</label> -->
+                      <input matInput type="text" [disabled]="edit.claimLevelEditableVO.editDisposition"
+                        #editDis="ngModel" required maxlength="5"
+                        placeholder="{{'claims.edit_disposition' | translate}}" [(ngModel)]="edit.editDisposition"
+                        id="editDisposition" name="edit.{{i}}.editDisposition" [value]="edit.editDisposition">
+                      <mat-error class="text-danger" id="editDispositionError"
+                        *ngIf="editDis.errors?.required && (editDis.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.edit_disposition_required.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>&nbsp; {{'claims.process_cycle' | translate}}:</label> -->
+                      <input type="text" matInput [disabled]="edit.claimLevelEditableVO.processCycle"
+                        placeholder="{{'claims.process_cycle' | translate}}" [(ngModel)]="edit.processCycle"
+                        id="processCycle" name="edit.{{i}}.processCycle" [value]="edit.processCycle">
+                    </mat-form-field>
+                  </p>
+
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>&nbsp; {{'claims.erroneous_data' | translate}}:</label> -->
+                      <input matInput type="text" [disabled]="edit.claimLevelEditableVO.erroneousData"
+                        #ernsData="ngModel" required maxlength="45"
+                        placeholder="{{'claims.erroneous_data' | translate}}" [(ngModel)]="edit.erroneousData"
+                        id="erroneousData" name="edit.{{i}}.erroneousData" [value]="edit.erroneousData">
+                      <mat-error class="text-danger" id="erroneousDataError"
+                        *ngIf="ernsData.errors?.required && (ernsData.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.erroneous_data_required.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>&nbsp; UserAction:</label> -->
+                      <select matNativeControl [(ngModel)]="edit.userAction" name="edit.{{i}}.userAction"
+                        [value]="edit.userAction" placeholder="UserAction">
+                        <option>No action</option>
+                        <option>Denied</option>
+                        <option>Super Suspend</option>
+                        <option>Force</option>
+                      </select>
+                    </mat-form-field>
+                    <p></p>
+                </div>
+              </mat-expansion-panel>
+              <mat-expansion-panel id="claim_diagnosis_header" class="accordion-form-section" style="margin-top: 1%">
+
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{'claims.diagnosis_codes' | translate}} ({{updateVO.countOfclaimDiagnosis}})
+                  </mat-panel-title>
+
+                </mat-expansion-panel-header>
+                <div *ngFor="let diagnosis of updateVO.claimDiagnosis;let i = index;">
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.code' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="diagnosis.diagCode"
+                        [disabled]="diagnosis.claimDiagnosisEditableVO.diagCode" id="diagCode"
+                        name="diagnosis.{{i}}.diagCode" [value]="diagnosis.diagCode"
+                        placeholder="{{'claims.code' | translate}}">
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.type' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="diagnosis.diagCodeType"
+                        [disabled]="diagnosis.claimDiagnosisEditableVO.diagCodeType" id="diagCodeType"
+                        name="diagnosis.{{i}}.diagCodeType" [value]="diagnosis.diagCodeType" #type="ngModel" required
+                        maxlength="15" placeholder="{{'claims.type' | translate}}">
+                      <mat-error class="text-danger" id="diagCodeTypeError"
+                        *ngIf="type.errors?.required && (type.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.code_type_required.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.seq.no' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="diagnosis.diagSeq"
+                        [disabled]="diagnosis.claimDiagnosisEditableVO.diagSeq"
+                        placeholder="{{'claims.seq.no' | translate}}" id="diagSeq" name="diagnosis.{{i}}.diagSeq"
+                        [value]="diagnosis.diagSeq" placeholder="{{'claims.seq.no' | translate}}">
+                    </mat-form-field>
+                  </p>
+                </div>
+              </mat-expansion-panel>
+              <mat-expansion-panel id="claim_indicator_header" class="accordion-form-section" style="margin-top: 1%">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{'claims.claim_indicator' | translate}} ({{updateVO.countOfclaimIndicator}})
+                  </mat-panel-title>
+
+                </mat-expansion-panel-header>
+                <div *ngFor="let indicator of updateVO.claimIndicator;let i = index;">
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.code' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="indicator.indCode"
+                        [disabled]="indicator.claimIndicatorEditableVO.indCode"
+                        placeholder="{{'claims.code' | translate}}" id="intCode" name="indicator.{{i}}.intCode"
+                        [value]="indicator.indCode">
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.value' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="indicator.indValue"
+                        [disabled]="indicator.claimIndicatorEditableVO.indValue"
+                        placeholder="{{'claims.value' | translate}}" id="intValue" name="indicator.{{i}}.intValue"
+                        [value]="indicator.indValue" #indicatorValue="ngModel" required maxlength="50">
+                      <mat-error class="text-danger" id="indValueError"
+                        *ngIf="indicatorValue.errors?.required && (indicatorValue.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.value_required.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                </div>
+              </mat-expansion-panel>
+
+              <div *ngFor="let service of updateVO.claimServices;let i = index;">
+
+                <mat-expansion-panel id="claim_service_header" class="accordion-form-section" style="margin-top: 1%">
+
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <p>{{'claims.service_line' | translate}} #{{ service.srvcTcn}}</p>
+                      <p>{{'claims.from_dos' | translate}}:{{service.srvcFromDate}}</p>&emsp;
+                      <p>{{'claims.to_dos' | translate}}:{{service.srvcThroughDate}}</p>
+                      <p>{{'claims.procedure_code' | translate}}:{{service.srvcProcCode}}</p>
+                    </mat-panel-title>
+
+                  </mat-expansion-panel-header>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.service_tcn' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="service.srvcTcn"
+                        [disabled]="service.claimServiceEdtableVO.srvcTcn" id="linetcn" name="service.{{i}}.srvcTcn"
+                        [value]="service.srvcTcn" placeholder="{{'claims.service_tcn' | translate}}">
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.from_date' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="service.srvcFromDate"
+                        [disabled]="service.claimServiceEdtableVO.srvcFromDate" id="linefromdos"
+                        name="service.{{i}}.srvcFromDate" [value]="service.srvcFromDate"
+                        placeholder="{{'claims.from_date' | translate}}">
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.to_date' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="service.srvcThroughDate"
+                        [disabled]="service.claimServiceEdtableVO.srvcThroughDate" id="linetodos"
+                        name="service.{{i}}.srvcThroughDate" [value]="service.srvcThroughDate"
+                        placeholder="{{'claims.to_date' | translate}}">
+                    </mat-form-field>
+                  </p>
+
+
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.procedure_code' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="service.srvcProcCode"
+                        [disabled]="service.claimServiceEdtableVO.srvcProcCode" id="lineprocedurecode"
+                        name="service.{{i}}.srvcProcCode" [value]="service.srvcProcCode"
+                        placeholder="{{'claims.procedure_code' | translate}}">
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.servicing_provider_npi' | translate}}:</label> -->
+                      <input matInput type="number" [(ngModel)]="service.srvcPrvdrNpi"
+                        [disabled]="service.claimServiceEdtableVO.srvcPrvdrNpi" required
+                        placeholder="{{'claims.servicing_provider_npi' | translate}}" id="lineservicingprovider"
+                        name="service.{{i}}.srvcPrvdrNpi" [value]="service.srvcPrvdrNpi" #srvcNpi="ngModel"
+                        pattern="^\d{0,6}?\d?$">
+                      <mat-error class="text-danger" id="srvcPrvdrNpiErrorRequired"
+                        *ngIf="srvcNpi.errors?.required && (srvcNpi.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.servicing_provider_npi_required.' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="srvcPrvdrNpiError"
+                        *ngIf="srvcNpi.errors?.pattern && (srvcNpi.dirty||srvcNpi.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_maximum_7_digits' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.servicing_provider_taxonomy' | translate}}:</label> -->
+                      <input matInput type="number" [(ngModel)]="service.srvcPrvdrTaxonomy"
+                        [disabled]="service.claimServiceEdtableVO.srvcPrvdrTaxonomy" required pattern="^\d{0,6}?\d?$"
+                        placeholder="{{'claims.servicing_provider_taxonomy' | translate}}" id="lineservicingtaxonomy"
+                        name="service.{{i}}.srvcPrvdrTaxonomy" [value]="service.srvcPrvdrTaxonomy" #taxomony="ngModel">
+                      <mat-error class="text-danger" id="srvcPrvdrTaxonomyrequired"
+                        *ngIf="taxomony.errors?.required && (taxomony.touched||userForm.submitted) ">
+                        {{'errorMessages.resolve_dialog_box.servicing_provider_taxonomy_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="srvcPrvdrTaxonomyError"
+                        *ngIf="taxomony.errors?.pattern && (taxomony.dirty||taxomony.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_maximum_7_digits' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.charged_amount' | translate}}:</label> -->
+                      <input matInput type="text" [(ngModel)]="service.srvcChargeAmt"
+                        [disabled]="service.claimServiceEdtableVO.srvcChargeAmt" required
+                        placeholder="{{'claims.charged_amount' | translate}}" pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$"
+                        id="linechargedamount" name="service.{{i}}.srvcChargeAmt" [value]="service.srvcChargeAmt"
+                        #chrgAmount="ngModel">
+                      <mat-error class="text-danger" id="srvcChargeAmtRequired"
+                        *ngIf="chrgAmount.errors?.required && (chrgAmount.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.charged_amount_is_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="srvcChargeAmtError"
+                        *ngIf="chrgAmount.errors?.pattern && (chrgAmount.dirty||chrgAmount.untouched||chrgAmount.touched||userForm.submitted) ">
+                        {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.charged_units' | translate}}:</label> -->
+                      <input matInput type="number" [(ngModel)]="service.srvcUnits"
+                        [disabled]="service.claimServiceEdtableVO.srvcUnits" required
+                        placeholder="{{'claims.charged_units' | translate}}" pattern="^\d{0,2}(\d\.\d?|\.\d)?\d?$"
+                        id="linechargedunits" name="service.{{i}}.srvcUnits" [value]="service.srvcUnits"
+                        #srvcUnits="ngModel">
+                      <mat-error class="text-danger" id="srvcUnitsReq"
+                        *ngIf="srvcUnits.errors?.required && (srvcUnits.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.charge_unit_is_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="srvcUnitsError"
+                        *ngIf="srvcUnits.errors?.pattern && (srvcUnits.dirty||srvcUnits.touched||srvcUnits.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_max_3_digits_and_2_decimals.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.non_covered_amount' | translate}}:</label> -->
+                      <input matInput type="number" [(ngModel)]="service.srvcNonCoveredAmt"
+                        [disabled]="service.claimServiceEdtableVO.srvcNonCoveredAmt" required
+                        placeholder="{{'claims.non_covered_amount' | translate}}" pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$"
+                        id="linenoncoveredamount" name="service.{{i}}.srvcNonCoveredAmt"
+                        [value]="service.srvcNonCoveredAmt" #nonCvrdAmt="ngModel">
+                      <mat-error class="text-danger" id="srvcNonCoveredAmtRequired"
+                        *ngIf="nonCvrdAmt.errors?.required && (nonCvrdAmt.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.non_covered_amount_is_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="srvcNonCoveredAmtError"
+                        *ngIf="nonCvrdAmt.errors?.pattern && (nonCvrdAmt.dirty||nonCvrdAmt.touched||nonCvrdAmt.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.allowed_amount' | translate}}</label> -->
+                      <input matInput type="number" [(ngModel)]="service.srvcDAllowedAmt"
+                        [disabled]="service.claimServiceEdtableVO.srvcDAllowedAmt"
+                        placeholder="{{'claims.allowed_amount' | translate}}" pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$"
+                        id="lineallowedamount" name="service.{{i}}.srvcDAllowedAmt" [value]="service.srvcDAllowedAmt"
+                        required #allowedAmt="ngModel">
+                      <mat-error class="text-danger" id="srvcAllowedAmtReq"
+                        *ngIf="allowedAmt.errors?.required && (allowedAmt.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_amount_is_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="srvcAllowedAmtError" *ngIf="allowedAmt.errors?.pattern && 
+             (allowedAmt.dirty||allowedAmt.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.reimbursement_amount' | translate}}:</label> -->
+                      <input matInput type="number" [(ngModel)]="service.servcDReimburseAmt"
+                        [disabled]="service.claimServiceEdtableVO.servcDReimburseAmt"
+                        placeholder="{{'claims.reimbursement_amount' | translate}}"
+                        pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$" id="linepaidamount"
+                        name="service.{{i}}.servcDReimburseAmt" [value]="service.servcDReimburseAmt" required
+                        #reimbursementAmt="ngModel">
+                      <mat-error class="text-danger" id="servcDReimburseAmtReq"
+                        *ngIf="reimbursementAmt.errors?.required && (reimbursementAmt.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.reimbursement_amount_is_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="servcDReimburseAmtError" *ngIf="reimbursementAmt.errors?.pattern && 
+             (reimbursementAmt.dirty||reimbursementAmt.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field>
+                      <!-- <label>{{'claims.paid_units' | translate}}:</label> -->
+                      <input matInput type="number" [(ngModel)]="service.dpaidUnits"
+                        [disabled]="service.claimServiceEdtableVO.dpaidUnits"
+                        placeholder="{{'claims.paid_units' | translate}}" pattern="^\d{0,4}(\d\.\d?|\.\d)?\d?$"
+                        id="linepaidunits" name="service.{{i}}.linepaidunits" [value]="service.dpaidUnits" required
+                        #paidUnits="ngModel">
+                      <mat-error class="text-danger" id="servcPaidUnitReq"
+                        *ngIf="paidUnits.errors?.required && (paidUnits.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.paid_units_is_required' | translate}}
+                      </mat-error>
+                      <mat-error class="text-danger" id="servcPaidUnitError" *ngIf="paidUnits.errors?.pattern && 
+              (paidUnits.dirty||paidUnits.touched||userForm.submitted)">
+                        {{'errorMessages.resolve_dialog_box.allowed_max_5_digits_and_2_decimals.' | translate}}.
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <mat-accordion>
+                    <mat-expansion-panel id="clmsrvc_diagnosis_header" class="accordion-form-section"
+                      style="margin-top: 1%">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{'claims.claim_service_diagnosis' | translate}} ({{service.countOfclaimServiceDiagnosis}})
+                        </mat-panel-title>
+
+                      </mat-expansion-panel-header>
+                      <div *ngFor="let srvcDiagnosis of service.claimServiceDiagnosis;let sd = index;">
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.diagnosis_code_type' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcDiagnosis.diagCodeType"
+                              [disabled]="srvcDiagnosis.caimServiceDiagnosisEditableVO.diagCodeType" id="intCode"
+                              name="srvcDiagnosis.{{service.clmSrvcId}}.{{sd}}.diagCodeType"
+                              [value]="srvcDiagnosis.diagCodeType"
+                              placeholder="{{'claims.diagnosis_code_type' | translate}}">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.diagnosis_pointer' | translate}}:</label> -->
+                            <input matInput type="number" [(ngModel)]="srvcDiagnosis.diagPointer"
+                              [disabled]="srvcDiagnosis.caimServiceDiagnosisEditableVO.diagPointer"
+                              placeholder="{{'claims.diagnosis_pointer' | translate}}" pattern="^\d{0,6}?\d?$"
+                              id="pointer" name="srvcDiagnosis.{{service.clmSrvcId}}.{{sd}}.diagPointer"
+                              [value]="srvcDiagnosis.diagPointer" required #dPointer="ngModel">
+                            <mat-error class="text-danger" id="diagPointerError"
+                              *ngIf="dPointer.errors?.required && (dPointer.touched||userForm.submitted)">
+                              {{'errorMessages.resolve_dialog_box.diagnosis_pointer_is_required' | translate}}.
+                            </mat-error>
+                            <mat-error class="text-danger" id="diagPointerError" *ngIf="dPointer.errors?.pattern && 
+             (dPointer.dirty||dPointer.touched||userForm.submitted)">
+                              {{'errorMessages.resolve_dialog_box.allowed_maximum_7_digits' | translate}}.
+                            </mat-error>
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.diagnosis_sequence' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcDiagnosis.diagSeq"
+                              [disabled]="srvcDiagnosis.caimServiceDiagnosisEditableVO.diagSeq" id="seaquence"
+                              name="srvcDiagnosis.{{service.clmSrvcId}}.{{sd}}.diagSeq" [value]="srvcDiagnosis.diagSeq"
+                              placeholder="{{'claims.diagnosis_sequence' | translate}}">
+                          </mat-form-field>
+                        </p>
+                      </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel id="clmsrvc_edit_header" class="accordion-form-section" style="margin-top: 1%">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{'claims.claim_service_edits' | translate}} ({{service.countOfclaimServiceEdit}})
+                        </mat-panel-title>
+
+                      </mat-expansion-panel-header>
+                      <div *ngFor="let srvcEdits of service.claimServiceEdit;let se = index;">
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.edit_code' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcEdits.editCode"
+                              [disabled]="srvcEdits.claimServiceLevelEditableVO.editCode" id="editCode"
+                              name="srvcEdits.{{service.clmSrvcId}}.{{se}}.editCode" [value]="srvcEdits.editCode"
+                              placeholder="{{'claims.edit_code' | translate}}">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.edit_disposition' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcEdits.editDisposition"
+                              [disabled]="srvcEdits.claimServiceLevelEditableVO.editDisposition"
+                              placeholder="{{'claims.edit_disposition' | translate}}" maxlength="5" id="editDis"
+                              name="srvcEdits.{{service.clmSrvcId}}.{{se}}.editDisposition"
+                              [value]="srvcEdits.editDisposition" required #editDisposition="ngModel">
+                            <mat-error class="text-danger" id="diagPointerError"
+                              *ngIf="editDisposition.errors?.required && (editDisposition.touched||userForm.submitted)">
+                              {{'errorMessages.resolve_dialog_box.edit_disposition_required.' | translate}}.
+                            </mat-error>
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.process_cycle' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcEdits.processCycle"
+                              [disabled]="srvcEdits.claimServiceLevelEditableVO.processCycle"
+                              name="srvcEdits.{{service.clmSrvcId}}.{{se}}.processCycle"
+                              [value]="srvcEdits.processCycle" placeholder="{{'claims.process_cycle' | translate}}">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.erroneous_data' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcEdits.erroneousData"
+                              [disabled]="srvcEdits.claimServiceLevelEditableVO.erroneousData"
+                              placeholder="{{'claims.erroneous_data' | translate}}" maxlength="45" id="erroneousData"
+                              name="srvcEdits.{{service.clmSrvcId}}.{{se}}.erroneousData"
+                              [value]="srvcEdits.erroneousData" required #ernsData="ngModel">
+                          </mat-form-field>
+                        </p>
+                        <mat-form-field>
+                          <!-- <label>&nbsp; UserAction:</label> -->
+                          <select matNativeControl [(ngModel)]="srvcEdits.userAction"
+                            name="srvcEdits.{{service.clmSrvcId}}.{{se}}.userAction" [value]="srvcEdits.userAction"
+                            placeholder="UserAction">
+                            <option>No action</option>
+                            <option>Denied</option>
+                            <option>Super Suspend</option>
+                            <option>Force</option>
+                          </select>
+                        </mat-form-field>
+
+                      </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel id="clmsrvc_indicator_header" class="accordion-form-section"
+                      style="margin-top: 1%">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{'claims.claim_service_indicator' | translate}} ({{service.countOfclaimServiceIndicator}})
+                        </mat-panel-title>
+
+                      </mat-expansion-panel-header>
+                      <div *ngFor="let srvcIndicator of service.claimServiceIndicator;let si = index;">
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.code' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcIndicator.srvcIndCode"
+                              [disabled]="srvcIndicator.claimServiceIndicatorEditableVO.srvcIndCode"
+                              placeholder="{{'claims.code' | translate}}" id="pointer"
+                              name="srvcIndicator.{{service.clmSrvcId}}.{{si}}.srvcIndCode"
+                              [value]="srvcIndicator.srvcIndCode">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.value' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcIndicator.srvcIndValue"
+                              [disabled]="srvcIndicator.claimServiceIndicatorEditableVO.srvcIndValue"
+                              placeholder="{{'claims.value' | translate}}" maxlength="45" id="value"
+                              name="srvcIndicator.{{service.clmSrvcId}}.{{si}}.srvcIndValue"
+                              [value]="srvcIndicator.srvcIndValue" required #value="ngModel">
+                            <mat-error class="text-danger" id="diagPointerError"
+                              *ngIf="value.errors?.required && (value.touched||userForm.submitted)">
+                              {{'errorMessages.resolve_dialog_box.value_required.' | translate}}.
+                            </mat-error>
+                          </mat-form-field>
+                        </p>
+                      </div>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel id="clmsrvc_filenotes_header" class="accordion-form-section"
+                      style="margin-top: 1%">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          {{'claims.claim_service_filenotes' | translate}} ({{service.countOfclaimServiceFileNote}})
+                        </mat-panel-title>
+
+                      </mat-expansion-panel-header>
+                      <div *ngFor="let srvcFileNote of service.claimServiceFileNote;let sf = index;">
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.att_rep_code1' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcFileNote.srvcAttRepCode1"
+                              [disabled]="srvcFileNote.claimServiceFileNoteEditableVO.srvcAttRepCode1"
+                              placeholder="{{'claims.att_rep_code1' | translate}}" id="srvcAttRepCode1"
+                              name="srvcFileNote.{{service.clmSrvcId}}.{{sf}}.srvcAttRepCode1"
+                              [value]="srvcFileNote.srvcAttRepCode1">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.att_tran_code1' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcFileNote.srvcAttTranCode1"
+                              [disabled]="srvcFileNote.claimServiceFileNoteEditableVO.srvcAttTranCode1"
+                              placeholder="{{'claims.att_tran_code1' | translate}}" id="srvcAttTranCode1"
+                              name="srvcFileNote.{{service.clmSrvcId}}.{{sf}}.srvcAttTranCode1"
+                              [value]="srvcFileNote.srvcAttTranCode1">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.note_code1' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcFileNote.srvcNoteCode1"
+                              [disabled]="srvcFileNote.claimServiceFileNoteEditableVO.srvcNoteCode1"
+                              placeholder="{{'claims.note_code1' | translate}}" maxlength="2" id="srvcNoteCode1"
+                              name="srvcFileNote.{{service.clmSrvcId}}.{{sf}}.srvcNoteCode1"
+                              [value]="srvcFileNote.srvcNoteCode1" required #nodeCode="ngModel">
+                            <mat-error class="text-danger" id="diagPointerError"
+                              *ngIf="nodeCode.errors?.required && (nodeCode.touched||userForm.submitted)">
+                              {{'errorMessages.resolve_dialog_box.note_code1_is_required' | translate}}.
+                            </mat-error>
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <mat-form-field>
+                            <!-- <label>{{'claims.note_value1' | translate}}:</label> -->
+                            <input matInput type="text" [(ngModel)]="srvcFileNote.srvcNoteValue1"
+                              [disabled]="srvcFileNote.claimServiceFileNoteEditableVO.srvcNoteValue1"
+                              placeholder="{{'claims.note_value1' | translate}}" maxlength="80" id="srvcNoteValue1"
+                              name="srvcFileNote.{{service.clmSrvcId}}.{{sf}}.srvcNoteValue1"
+                              [value]="srvcFileNote.srvcNoteValue1" required #noteValue="ngModel">
+                            <mat-error class="text-danger" id="diagPointerError"
+                              *ngIf="noteValue.errors?.required && (noteValue.touched||userForm.submitted)">
+                              {{'errorMessages.resolve_dialog_box.note_code1_is_required' | translate}}.
+                            </mat-error>
+                          </mat-form-field>
+                        </p>
+                      </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </mat-expansion-panel>
+
+              </div>
+              <div *ngIf="updated" [class]="alterCssProperty" role="alert">
+                <span id="response">{{ response| translate}}</span>
+                <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <mat-card-actions>
+                <button mat-button color="primary" id="btnsave" class="btn"
+                  [disabled]="!userForm.dirty">{{'claims.save' | translate}}</button>
+              </mat-card-actions>
+            </form>
+          </mat-accordion>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div> -->

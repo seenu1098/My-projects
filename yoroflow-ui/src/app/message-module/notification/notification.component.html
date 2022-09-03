@@ -1,0 +1,37 @@
+<div fxLayout="row" id="theme_css">
+    <ng-container *ngIf="notficationService.notificationCount > 0">
+        <mat-icon [matBadge]="notficationService.notificationCount" matBadgeColor="warn" (click)="openNotification()"
+            [ngClass]="themeService.layoutName==='simple' ? 'header_notification_icon_1' : 'header_notification_icon_modern'">
+            notifications_none</mat-icon>
+        <!-- class="header_notification_icon_1" -->
+    </ng-container>
+    <ng-container *ngIf="notficationService.notificationCount === 0">
+        <mat-icon (click)="openNotification()"
+            [ngClass]="themeService.layoutName==='simple' ? 'header_notification_icon_1' : 'header_notification_icon_modern'">
+            notifications_none</mat-icon>
+    </ng-container>
+
+</div>
+<!-- <div style="visibility: hidden; position: fixed;margin-top: 13px;" [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+</div> -->
+<mat-menu #contextMenu="matMenu">
+    <div fxLayout="column" fxLayoutGap="20px" style="background-color: #2c3e50;width: 100%;"
+        *ngIf="notficationList && show" class="chat-margin user-chat-list-container">
+        <div>
+            <ng-container *ngIf="notficationList && show">
+                <ng-container *ngFor="let notfication of notficationList">
+                    <div fxLayout="row" fxLayoutGap="15px" class="chat-margin" style="width: 100%;padding: 10px;"
+                        (click)="anyAction(notfication)">
+                        <div class="circle">{{userProfile(notfication.fromUserName)}}</div>
+                        <div>
+                            <p style="margin-top: 13px;color: white;">{{notfication.message}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                </ng-container>
+
+            </ng-container>
+        </div>
+    </div>
+</mat-menu>

@@ -1,0 +1,177 @@
+@import "../styles/variables";
+
+/** Screen reader only, makes element invisible */
+.sr-only {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.aria-live-only {
+    position: absolute;
+    top: 0;
+}
+
+/** Static chip. Can use instead of mat-chip if you do not need all that extra functionality. **/
+.chip {
+    border-radius: 13px;
+    height: 10px;
+    padding: 6px 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    &.error,
+    &.accent {
+        color: $white;
+    }
+}
+
+/** Base scrollbar
+(firefox does not support overriding scroll bar yet, so it will have default )**/
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: $gray-lighter;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: $gray-light;
+}
+
+/****** Various helper classes. Add more as needed by following pattern ******/
+.clickable {
+    cursor: pointer;
+}
+
+$small: 24px;
+$extra-small: 8px;
+/* Margin Classes */
+.mt-s {
+    margin-top: $small;
+}
+.mt-xs {
+    margin-top: $extra-small;
+}
+.ml-s {
+    margin-left: $small;
+}
+.ml-xs {
+    margin-left: $extra-small;
+}
+.mr-s {
+    margin-right: $small;
+}
+.mr-xs {
+    margin-right: $extra-small;
+}
+.mb-s {
+    margin-bottom: $small;
+}
+.mb-xs {
+    margin-bottom: $extra-small;
+}
+.ma-s {
+    margin: $small;
+}
+.ma-xs {
+    margin: $extra-small;
+}
+.my-s {
+    margin-top: $small;
+    margin-bottom: $small;
+}
+.my-xs {
+    margin-top: $extra-small;
+    margin-bottom: $extra-small;
+}
+.mx-s {
+    margin-left: $small;
+    margin-right: $small;
+}
+.mx-xs {
+    margin-left: $extra-small;
+    margin-right: $extra-small;
+}
+
+/* Padding Classes */
+.pt-s {
+    padding-top: $small;
+}
+.pt-xs {
+    padding-top: $extra-small;
+}
+.pl-s {
+    padding-left: $small;
+}
+.pl-xs {
+    padding-left: $extra-small;
+}
+.pr-s {
+    padding-right: $small;
+}
+.pr-xs {
+    padding-right: $extra-small;
+}
+.pb-s {
+    padding-bottom: $small;
+}
+.pb-xs {
+    padding-bottom: $extra-small;
+}
+.pa-s {
+    padding: $small;
+}
+.pa-xs {
+    padding: $extra-small;
+}
+.px-s {
+    padding-left: $small;
+    padding-right: $small;
+}
+.px-xs {
+    padding-left: $extra-small;
+    padding-right: $extra-small;
+}
+.py-s {
+    padding-top: $small;
+    padding-bottom: $small;
+}
+.py-xs {
+    padding-top: $extra-small;
+    padding-bottom: $extra-small;
+}
+
+/** Flex helpers in case FxLayout is too heavy **/
+.d-flex {
+    display: flex;
+}
+.d-col {
+    flex-direction: column;
+}
+.f-wrap {
+    flex-wrap: wrap;
+}
+.justify-between {
+    justify-content: space-between;
+}
+.justify-center {
+    justify-content: center;
+}
+.justify-end {
+    justify-content: flex-end;
+}
+.align-center {
+    align-items: center;
+}
+
+.rounded-s {
+    border-radius: 10px;
+}
+.rounded-xs {
+    border-radius: 4px;
+}

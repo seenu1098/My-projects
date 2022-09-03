@@ -1,0 +1,94 @@
+.mat-cell {
+    word-wrap: initial;
+    line-break: unset;
+    width: auto;
+    overflow: hidden;
+    justify-content: left;
+    font-size: 12px;
+    border-radius: 0px!important;
+  }
+  
+  .mat-header-cell {
+    word-wrap: initial;
+    line-break: unset;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 12px;
+    padding:0px!important;
+    /* background: #e1e1e1; */
+    background: #f1f3f4;
+    justify-content: left;
+    font-weight: normal;
+    border-radius: 0px!important;
+  
+  }
+
+  .mat-header-row {
+    min-height: 40px;
+  }
+
+  .mat-row {
+    min-height: 35px;
+    border-bottom: 1px dashed #eff2f5!important;
+  }
+
+  ::ng-deep mat-cell:first-of-type{
+    padding-left: 0px!important;
+  }
+
+  ::ng-deep mat-cell:last-of-type{
+    padding-right: 0px!important;
+  }
+
+  ::ng-deep .mat-header-cell .mat-sort-header-content{
+    color: #8d8e90!important;
+    font-weight: 600!important;
+  }
+
+  .ripple-row {
+    position: relative;
+    border-top:1px solid #eff2f5;
+    border-left:3px solid ;
+    border-left-color: var(--theme-transparent-color)!important;
+    border-top-left-radius: 0.5px;
+    border-bottom-left-radius: 0.5px;
+  }
+  
+  .ripple-row:hover .mat-cell {
+    background-color: var(--theme-lightmain-color);
+  
+  }
+  
+  .ripple-row:hover{
+    border-left:3px solid ;
+    border-left-color: var(--theme-main-color)!important;
+    background-color: var(--theme-lightmain-color)!important;
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 1px;
+  }
+  
+  .mat-row {
+    min-height: 35px;
+    border-bottom: 1px dashed #eff2f5!important;
+    /* border-bottom: 1px dashed #eff2f5; */
+  }
+  
+  .mat-header-row {
+    min-height: 40px;
+  }
+
+  .mat_ui{
+    background: #fff;
+    border: 0;
+    border-radius: 0px!important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    // margin-top: 40px;
+    // width: 98%;
+    // margin-left: 1%;
+  }
+
+  .active_filter {
+    cursor: pointer;
+    color: var(--theme-main-color);
+  }

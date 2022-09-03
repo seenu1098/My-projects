@@ -1,0 +1,92 @@
+<div class="workflow_dashboard">
+    <mat-card *ngIf="showButton">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <mat-card-title i18n="Workflow Dashboard">Workflow Dashboard</mat-card-title>
+            </div>
+            <div class="col-md-6 col-sm-12 mobile_btn">
+                <div class="row justify-content-center justify-content-xl-end  justify-content-md-end">
+                    <button mat-raised-button id="createWorkflow" class="float-right mr-3 mb-3" color="primary"
+                        style="color:white" (click)="routeWorkflow()" i18n="Create Workflow">Create Workflow
+                    </button>
+                    <button mat-raised-button id="smsCount" class="float-right mr-3 mb-3" color="primary"
+                        style="color:white" (click)="smsCount()" i18n="SMS Count">SMS Count
+                        ({{workflowListCount?.smsCount}})</button>
+                    <button mat-raised-button id="workflowItems" class="float-right mr-3 mb-3" color="primary"
+                        style="color:white" (click)="workflowItems()" i18n="Workflow
+                        Applications">Workflow
+                        Applications</button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <div class="row justify-content-center">
+                <div class="col-md-3 col-sm-6">
+                    <div class="ctn">
+                        <img src="assets/47b3eea914b91fb44acab96f457f2b47.jpg" class="icon_size">
+                        <div class="centered" *ngIf="enableCount">{{workflowListCount.inProcessListCount}}</div>
+                    </div>
+                    <div class="mt-2 mb-4 justify-content-center">
+                        <button mat-raised-button id="inProcess" class="mx-auto d-block"
+                            (click)="navigateTask('running')" i18n="In Process Tasks">In Process Tasks</button>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ctn">
+                        <img src="assets/unnamed.png" class="icon_size">
+                        <div class="centered" *ngIf="enableCount">{{workflowListCount.completedListCount}}</div>
+                    </div>
+                    <div class="mt-2 mb-4 justify-content-center">
+                        <button mat-raised-button id="completed" class="mx-auto d-block"
+                            (click)="navigateTask('completed')" i18n="Completed Tasks">Completed Tasks</button>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6" *ngIf="allowFailedTask">
+                    <div class="ctn">
+                        <img src="assets/images.png" class="icon_size">
+                        <div class="centered" *ngIf="enableCount">{{workflowListCount.errorListCount}}</div>
+                    </div>
+                    <div class="mt-2 mb-4 justify-content-center">
+                        <button mat-raised-button id="errorTask" class="mx-auto d-block"
+                            (click)="navigateTask('failed')" i18n="Error Tasks">Error Tasks</button>
+                    </div>
+                </div>
+            </div>
+            <!-- <div *ngIf="isMobile" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="50px">
+                <div fxLayout="column" fxLayoutGap="20px">
+                    <div style="padding-left: 4%;">
+                        <button mat-raised-button style="color: white; background-color: rgb(84, 195, 214);"
+                            (click)="navigateTask('running')">In Process Tasks</button>
+                    </div>
+                    <div class="ctn">
+                        <img src="assets/47b3eea914b91fb44acab96f457f2b47.jpg" style="width: 120px;height: 120px;">
+                        <div class="centered" *ngIf="enableCount">{{workflowListCount.inProcessListCount}}</div>
+                    </div>
+
+                </div>
+                <div fxLayout="column" fxLayoutGap="20px">
+                    <div style="padding-left: 4%;">
+                        <button mat-raised-button style="color: white; background-color: rgb(99, 190, 134);"
+                            (click)="navigateTask('completed')">Completed Tasks</button>
+                    </div>
+                    <div class="ctn">
+                        <img src="assets/unnamed.png" style="width: 120px;height: 120px;">
+                        <div class="centered" *ngIf="enableCount">{{workflowListCount.completedListCount}}</div>
+                    </div>
+
+                </div>
+                <div fxLayout="column" fxLayoutGap="20px">
+                    <div style="padding-left: 4%;">
+                        <button mat-raised-button style="color: white; background-color: rgb(243, 95, 95);"
+                            (click)="navigateTask('failed')">Error Tasks</button>
+                    </div>
+                    <div class="ctn">
+                        <img src="assets/images.png" style="width: 120px;height: 120px;">
+                        <div class="centered" *ngIf="enableCount">{{workflowListCount.errorListCount}}</div>
+                    </div>
+
+                </div>
+            </div> -->
+        </div>
+    </mat-card>
+</div>

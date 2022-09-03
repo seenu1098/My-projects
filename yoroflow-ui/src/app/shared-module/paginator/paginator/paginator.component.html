@@ -1,0 +1,34 @@
+<div fxLayout="row" fxLayoutAlign="end start" style="margin-top: 5px;">
+    <a class="show-data" i18n="Showing {{startData}} to {{endData}} of {{length}} entries">Showing {{startData}} to
+        {{endData}} of {{length}} entries </a>
+    <div>
+        <div fxLayout="row" fxLayoutGap="5px">
+            <button mat-button class="pagintaion-button" (click)="setFirstPage()" [disabled]="!firstPageIcon">
+                <mat-icon>first_page</mat-icon>
+            </button>
+            <button mat-button class="pagintaion-button" (click)="setBeforePage()" [disabled]="!beforePageIcon">
+                <mat-icon>navigate_before</mat-icon>
+            </button>
+            <ng-container *ngFor="let number of displayPageNumbers;let i =  index;">
+                <button mat-button class="pagintaion-button" [ngClass]="{'buton-hover': number.color}"
+                    (click)="getData(number.number-1)">
+                    {{number.number}}
+                </button>
+            </ng-container>
+            <button mat-button class="pagintaion-button" (click)="setNextPge()" [disabled]="!nextPageIcon">
+                <mat-icon>navigate_next</mat-icon>
+            </button>
+            <button mat-button class="pagintaion-button" (click)="setLastPage()" [disabled]="!lastPageIcon">
+                <mat-icon>last_page</mat-icon>
+            </button>
+        </div>
+    </div>
+    <form [formGroup]="form" #userForm="ngForm">
+        <mat-select class="legacy" (selectionChange)="getPageSize($event)" formControlName="pageSize"
+            style="height:20px">
+            <ng-container *ngFor="let pageSize of pageSizeOptions">
+                <mat-option [value]="pageSize">{{pageSize}}</mat-option>
+            </ng-container>
+        </mat-select>
+    </form>
+</div>

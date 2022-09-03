@@ -1,0 +1,14 @@
+
+@media only screen and (min-width:1500px){
+::ng-deep .uppy-Dashboard-inner {
+    height:300px !important;
+    width: 900px !important;
+}
+}
+
+@media only screen and (max-width:1499){
+    ::ng-deep .uppy-Dashboard-inner {
+        height:300px !important;
+        width: 700px !important;
+    }
+    }

@@ -1,0 +1,182 @@
+<div>
+    <form [formGroup]="form" #userForm="ngForm" id="workflow_formfield_popup">
+        <div class="row w-100 mx-0">
+            <div class="col-md-5 pl-0">
+                <h2 class="fs_14 font-weight-bold" i18n="Nested Section Settings">Nested Section Settings</h2>
+            </div>
+            <div class="col-md-7 pr-0">
+                <div class="row w-100 mx-0 justify-content-end">
+                    <button mat-raised-button color="primary" id="btnSave" (click)="save(userForm)" class="mr-2"
+                        type="button" i18n="Save">Save</button>
+                    <button mat-raised-button color="accent" type="button" id="cancel" class="mr-2" (click)="cancel()"
+                        *ngIf="data.sectionObj.name" i18n="Delete">Delete</button>
+                    <button mat-raised-button color="accent" type="button" id="close" (click)="close()"
+                        i18n="Close">Close</button>
+                </div>
+            </div>
+        </div>
+        <hr class="mb-1 mx-0 mb-0 b-0">
+
+        <div class="row mx-0 w-100 mt-1">
+            <div class="col-md-3 border_right_lgray pl-0 pr-2">
+                <span class="category-label-css fs_14" i18n="Settings">Settings</span>
+                <!-- <ng-container *ngFor="let tab of tabs">
+                    <button mat-button class="category-button-css" (click)="changeTab(tab)"
+                        [style.color]="tab.isSelected?'#039be5':'black'"
+                        [style.background]="tab.isSelected?'#e5f4ff':''" [id]="'tab'+i">
+                        <mat-icon [style.color]="tab.color" style="font-size: 20px;margin-right: 10px;">
+                            {{tab.icon}}
+                        </mat-icon>
+                        <span>{{tab.name}}</span>
+                    </button>
+                </ng-container> -->
+
+                <button mat-button class="category-button-css" (click)="changeTab('Configuration')"
+                    [style.color]="selectedTab === 'Configuration' ? '#039be5':'black'"
+                    [style.background]="selectedTab === 'Configuration' ? '#e5f4ff':''" type="button">
+                    <mat-icon style="color: blue;" class="fs_14 h_14 w_14 mt-2">manage_accounts
+                    </mat-icon>
+                    <span i18n="Configuration">Configuration</span>
+                </button>
+
+                <button mat-button class="category-button-css" (click)="changeTab('Settings')"
+                    [style.color]="selectedTab === 'Settings' ? '#039be5':'black'"
+                    [style.background]="selectedTab === 'Settings' ? '#e5f4ff':''" type="button">
+                    <mat-icon style="color: green;" class="fs_14 h_14 w_14 mt-2">settings
+                    </mat-icon>
+                    <span i18n="Settings">Settings</span>
+                </button>
+            </div>
+
+            <!-- <mat-tab-group id="nestedSectionSideTab"> -->
+            <div *ngIf="selectedTab === 'Configuration'" class="col-md-8 mx-0 px-0">
+                <!-- <ng-template mat-tab-label>
+                    <mat-icon matTooltip="Configuration">manage_accounts</mat-icon>
+                </ng-template> -->
+                <div fxLayout="row" style="margin-left: 10px;">
+                    <div fxLayout="column">
+                        <mat-form-field appearance="outline" class="w-95 px-0">
+                            <mat-label i18n="Title">Title</mat-label>
+                            <input matInput id="name" formControlName="name" type="text">
+                            <mat-error i18n="Section Title is required">Section Title is required</mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row">
+                    <mat-slide-toggle id="childSection" formControlName="childSection"
+                        style="margin-top: 1%;margin-left: 2%;" (change)="showLogicalName($event)" i18n="Is
+                        it child of Section">Is
+                        it child of
+                        <span>Section</span>
+                    </mat-slide-toggle>
+                </div>
+
+                <div *ngIf="form.get('childSection').value===true" style="margin-top: 2%;">
+                    <div fxLayout="row" style="margin-left: 10px;">
+                        <div fxLayout="column">
+                            <mat-form-field appearance="outline" class="w-95 px-0">
+                                <mat-label i18n="Logical Section Name">Logical Section Name</mat-label>
+                                <input matInput id="logicalSectionName" formControlName="logicalSectionName" type="text"
+                                    (blur)="focusOutForFormElement($event)">
+                                <mat-error i18n="Logical Section Name is required">Logical Section Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div fxLayout="column">
+                            <mat-form-field appearance="outline" class="w-95 px-0">
+                                <mat-label i18n="Add Section Button Name">Add Section Button Name</mat-label>
+                                <input matInput id="addRepeatableSectionName"
+                                    formControlName="addRepeatableSectionButtonName">
+                                <mat-error i18n="Add Section Button Name should be character">Add Section Button Name
+                                    should be character</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div fxLayout="column">
+                            <mat-form-field appearance="outline" class="w-95 px-0">
+                                <mat-label i18n="Remove Section Button Name">Remove Section Button Name</mat-label>
+                                <input matInput id="removeRepeatableSectionName"
+                                    formControlName="removeRepeatableSectionButtonName">
+                                <mat-error i18n="Remove Section Button Name should be character">Remove Section Button
+                                    Name should be character</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" style="margin-top: 2%;margin-left: 10px;">
+                    <div fxLayout="column">
+                        <mat-form-field appearance="outline" class="w-95 px-0">
+                            <mat-label i18n="Style">Style</mat-label>
+                            <textarea matInput id="style" formControlName="style" cols="2" rows="2" type="text">
+                              </textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+
+                <div *ngIf="form.get('childSection').value===true">
+                    <mat-slide-toggle id="repeatable" color="accent" formControlName="repeatable"
+                        (change)="changeRepeatable($event)" style="margin-left: 2%;" i18n="Repeatable">
+                        Repeatable
+                    </mat-slide-toggle>
+                </div>
+
+                <div [style]="width" style="margin-top: -3%;">
+                    <mat-slide-toggle id="conditionallyApplicable" color="accent" style="margin-left: 2%;"
+                        formControlName="conditionallyApplicable" (change)="changedConditionallyApplicable($event)"
+                        i18n="Conditionally Applicable">
+                        Conditionally Applicable
+                    </mat-slide-toggle>
+                    <div *ngIf="conditionallyApplicable" style="margin-top: 2%;">
+                        <mat-form-field appearance="outline">
+                            <mat-label i18n="Field Name">Field Name</mat-label>
+                            <mat-select formControlName="fieldName" id="fieldName">
+                                <mat-option *ngFor="let column of columns" [value]=column>{{column}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label i18n="Value">Value</mat-label>
+                            <input matInput id="value" formControlName="value" type="text">
+                        </mat-form-field>
+                    </div>
+                    <mat-slide-toggle id="collapsible" color="accent" formControlName="collapsible"
+                        style="margin-top: 1%;margin-left: 2%;" (change)="changedCollapsible($event)"
+                        i18n="Collapsible"> Collapsible
+                    </mat-slide-toggle>
+                    <mat-slide-toggle id="border" color="accent" formControlName="border" style="margin-left: 2%;"
+                        (change)="changedBorder($event)" i18n="Show
+                        Border"> Show
+                        Border
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <div *ngIf="selectedTab === 'Settings'" class="col-md-8 mx-0 px-0">
+                <div fxLayout="column">
+                    <ng-template mat-tab-label>
+                        <mat-icon matTooltip="Settings" i18n="settings">settings</mat-icon>
+                    </ng-template>
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Associated Database Table Name">Associated Database Table Name</mat-label>
+                        <input matInput id="tableName" formControlName="tableName" type="text">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Description">Description</mat-label>
+                        <textarea matInput id="description" formControlName="description"></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Parent Table">Parent Table</mat-label>
+                        <input matInput id="parentTable" formControlName="parentTable" type="text">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Primary Key Columns">Primary Key Columns</mat-label>
+                        <input matInput id="primaryKey" formControlName="primaryKey" type="text">
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- </mat-tab-group> -->
+
+        </div>
+    </form>
+</div>

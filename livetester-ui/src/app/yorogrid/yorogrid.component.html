@@ -1,0 +1,88 @@
+<div *ngIf=filterOption style="margin: 10px;">
+  <mat-card style="width: 98%">
+    <form [formGroup]="form" #userForm="ngForm">
+      <div style="width: 100%">
+        <div formArrayName="filters" style="display: inline-block"
+          *ngFor="let filter of form.controls.filters.controls; let i = index">
+          <div [formGroupName]="i" >
+            <mat-form-field style="margin:1%">
+              <mat-select formControlName="filterIdColumn" placeholder="Filter Column"
+                (selectionChange)="selectionChange($event.value , i)" >
+                <mat-option *ngFor="let filterColumn of filterColumns;" [value]="filterColumn">
+                  {{ filterColumn.header }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-select formControlName="operators" placeholder="Operators" (selectionChange)="checkValidation($event.value , i)">
+                <mat-option value="eq" selected>equals</mat-option>
+                <mat-option value="ne">not equals</mat-option>
+                <mat-option value="bw">begins with</mat-option>
+                <mat-option value="ew">ends with</mat-option>
+                <mat-option value="cn">contains</mat-option>
+                <mat-option value="gt">greater than </mat-option>
+                <mat-option value="ge">greater than or equal to</mat-option>
+                <mat-option value="lt">less than</mat-option>
+                <mat-option value="le">less than or equal to</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="!show[i];else datepicker">
+              <input matInput placeholder="Search Value" formControlName="filterIdColumnValue" *ngIf=!show[i] change="checkValidation($event.value, i)">
+            </mat-form-field>
+            <ng-template #datepicker>
+              <mat-form-field>
+                <input matInput formControlName="filterIdColumnValue" change="checkValidation($event.value, i)" [matDatepicker]="i" placeholder="Choose a date">
+                <mat-datepicker-toggle matSuffix [for]="i"></mat-datepicker-toggle>
+                <mat-datepicker #i></mat-datepicker>
+              </mat-form-field>
+            </ng-template>
+            <button style="margin: 1px" mat-button type="button" *ngIf="i%2==1" id="remove"
+              (click)="removeThisService(i)" mat-mini-fab>-</button>
+            <button  mat-button type="button" style="margin: 1%" (click)="addAnotherFilter($event)" mat-mini-fab
+              color="primary" *ngIf="(i+1)%2==0 || (form.get('filters').length === i+1)">+</button>
+          </div>
+        </div>
+        <div fxLayoutAlign="end center">
+          <button mat-raised-button color="primary" (click)="searchFilter(userForm)">Search</button>&nbsp;
+          <button mat-raised-button color="accent" type="reset" (click)="reset()">Reset</button>
+        </div>
+      </div>
+    </form>
+  </mat-card>
+</div>
+<div  fxLayout="row" fxLayoutAlign="center center" >
+  <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+     
+    <ng-container *ngFor="let column of columns; index as i" matColumnDef="{{column.columnDef}}"  >
+      
+      <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header  [disabled]="!column.sortable" [style.flex.%]="column.style">
+          <div *ngIf="column.columnDef === 'select' ">
+              <mat-checkbox id="selectall" (change)="isAllSelected($event)" [checked]=isSelectAll ></mat-checkbox>
+          </div>
+          <div *ngIf="column.columnDef !== 'select' ">
+        {{ column.header}}
+        </div>
+      </mat-header-cell>
+      <mat-cell  [id]="data['col' + (i+2)]" mat-cell *matCellDef="let data" [matTooltip]="data['col' + (i+1)]"
+        matTooltipPosition="below" (dblclick)="onRowClicked(data)" [style.flex.%]="column.style" > 
+       
+        <div *ngIf="column.columnDef === 'select' ">
+               <mat-checkbox (change)="isSelctedIndividual(data , $event)" [checked]=isSelectAll></mat-checkbox>
+        </div>
+       
+             {{data['col' + (i+1)]}}</mat-cell>
+    </ng-container>
+    <mat-header-row [style.width.%]="tableWidth" *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row [style.width.%]="tableWidth" *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+</div>
+<div fxLayout="row" fxLayoutAlign="end center">
+  <mat-paginator style="background-color:rgb(154, 199, 212)" class="paginator" 
+          [length]="resultsLength" 
+          [pageIndex]="0"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 100, 500, 1000]"
+    
+  
+  showFirstLastButtons></mat-paginator>
+</div>

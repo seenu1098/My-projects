@@ -1,0 +1,88 @@
+{
+	"key": "leave-application",
+	"name": "Leave application- FINAL",
+	"startKey": "startevent1",
+	"taskNodeList": [
+		{
+			"key": "startevent1",
+			"taskType": "START_TASK",
+			"label": "Request Leave"
+		},
+		{
+			"key": "usertask1",
+			"taskType": "USER_TASK",
+			"label": "Enter Leave details"
+		},
+		{
+			"key": "usertask2",
+			"taskType": "USER_TASK",
+			"label": "Approval / Reject form"
+		},
+		{
+			"key": "decision_task1",
+			"taskType": "DECISION_TASK",
+			"label": "Decide based on Logic",
+			"taskProperty": {
+				"propertyValue": {
+					"ifTargetTask": "emailevent",
+					"elseTargetTask": "endevent1",
+					"decisionLogic": {
+						"logicOperator": "AND",
+						"rules": [
+							{
+								"leftAssignment": {
+									"dataType": "number",
+									"variableType": "constant",
+									"variableName": "A"
+								},
+								"operator": "lt",
+								"rightAssignment": {
+									"dataType": "number",
+									"variableType": "constant",
+									"variableName": "B"
+								}
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"key": "emailevent",
+			"taskType": "EMAIL_TASK",
+			"label": "Email user"
+		},
+		{
+			"key": "endevent1",
+			"taskType": "END_TASK",
+			"label": "Completed Review"
+		}
+	],
+	"linkNodeList": [
+		{
+			"key": "seqFlow1",
+			"source": "startevent1",
+			"target": "usertask1"
+		},
+		{
+			"key": "seqFlow2",
+			"source": "usertask1",
+			"target": "usertask2"
+		},
+		{
+			"key": "seqFlow3",
+			"source": "usertask2",
+			"target": "decision_task1"
+		},
+		{
+			"key": "seqFlow4",
+			"source": "decision_task1",
+			"target": "endevent1"
+		},
+		{
+			"key": "seqFlow6",
+			"source": "emailevent",
+			"target": "endevent1"
+		}
+	]
+}

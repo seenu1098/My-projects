@@ -1,0 +1,52 @@
+<mat-card class="page-content">
+  <mat-card style="margin-right: 5%;">
+    <mat-card>
+      <ng-container *ngFor="let item of headers">
+        <div class="example-container">
+          <div class="cardList">
+            <div fxLayout="row" fxLayoutAlign="space-around  center">
+
+              <mat-card-title>{{item}}</mat-card-title>
+
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </mat-card>
+    <button mat-raised-button id="addTask" type="button" style="padding:0 10px;margin: 1%;" color="primary" (click)="openDialog()">
+      Add Task
+    </button>
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-card-title>workflow</mat-card-title>
+      </mat-expansion-panel-header>
+      <ng-container *ngFor="let week of weeks">
+        <div class="example-container">
+          <div cdkDropList id="{{week.id}}" [cdkDropListData]="week.weeklist" [cdkDropListConnectedTo]="connectedTo"
+            class="example-list" (cdkDropListDropped)="drop($event)">
+            <div class="example-box" (click)="editDialog(weekItem.taskID)" *ngFor="let weekItem of week.weeklist"
+              cdkDrag>
+              <div style="font-size: large;">
+                <mat-card-title>{{weekItem.taskName}}</mat-card-title>
+              </div>
+              <div style="margin-top: 2%;">Due Date:{{getBrowsertime(weekItem.dueDate) | date:'MM/dd/yyyy'}}</div>
+
+              Description:
+              {{weekItem.description | slice: 0: 50}}
+              <div fxLayout="row" fxLayoutAlign="end end">
+                <span mat-card-avatar style="background-color: blue;padding:5px;color: white">
+                  <div style="padding: 10px 11px;">{{titleCase(weekItem.assignee)}}</div>
+                </span>
+              </div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-card>
+
+</mat-card>

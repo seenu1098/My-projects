@@ -1,0 +1,82 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;" i18n="Select To Emails">Select To Emails</h4>
+    <span class="line-style"></span>
+</div>
+<mat-form-field appearance="outline" class="w-100">
+    <mat-label i18n="To email">To email</mat-label>
+    <mat-chip-list #toChipList>
+        <mat-chip *ngFor="let user of selectedToUsers" [selectable]="selectable" [removable]="removable"
+            (removed)="removeToUser(user)">
+            {{user.name}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input #toInput [formControl]="toMail" [matAutocomplete]="auto1" [matChipInputFor]="toChipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+            (matChipInputTokenEnd)="addToUser($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto1="matAutocomplete" (optionSelected)="selectedToUser($event)">
+        <mat-option *ngFor="let user of filteredToUsers | async" [value]="user.emailId">
+            <div fxLayout="row" fxLayoutGap="10px">
+                <!-- <span
+                    class="avatar" [style.background]="getBackground(user.userId)">{{user.firstName.toUpperCase().charAt(0)}}{{user.lastName.toUpperCase().charAt(0)}}</span> -->
+                <span>{{user.firstName}} {{user.lastName}}</span>
+            </div>
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+<div fxLayout="row">
+    <h4 style="color: #656565;margin-bottom:0px" i18n="Form Fields">Form Fields</h4>
+    <span class="line-style"></span>
+</div>
+<div fxLayout="row wrap" style="width: 100%;">
+    <ng-container *ngFor="let field of toMailFields">
+        <div [class]="field.isSelected===true?'selected-field-css':'labelList-style'" (click)="setToEmailFields(field)"
+            [id]="'toFields_'+i" appMaterialElevation>
+            {{field.label.labelName}}
+        </div>
+    </ng-container>
+</div>
+<ng-container
+    *ngIf="!selectedScript.keyValuePair?.automationSubType && selectedScript.keyValuePair?.automationType!=='app_schedule'">
+    <div fxLayout="row" style="margin-top: 30px;">
+        <h4 style="color: #656565;" i18n="Select Cc Emails">Select Cc Emails</h4>
+        <span class="line-style"></span>
+    </div>
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label i18n="Cc email">Cc email</mat-label>
+        <mat-chip-list #ccChipList>
+            <mat-chip *ngFor="let user of selectedCcUsers" [selectable]="selectable" [removable]="removable"
+                (removed)="removeCcUser(user)">
+                {{user.name}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input #ccInput [formControl]="ccMail" [matAutocomplete]="auto2" [matChipInputFor]="ccChipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="addCcUser($event)">
+        </mat-chip-list>
+        <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="selectedCcUser($event)">
+            <mat-option *ngFor="let user of filteredCcUsers | async" [value]="user.emailId">
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <!-- <span
+                    class="avatar" [style.background]="getBackground(user.userId)">{{user.firstName.toUpperCase().charAt(0)}}{{user.lastName.toUpperCase().charAt(0)}}</span> -->
+                    <span>{{user.firstName}} {{user.lastName}}</span>
+                </div>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div fxLayout="row">
+        <h4 style="color: #656565;margin-bottom:0px" i18n="Form Fields">Form Fields</h4>
+        <span class="line-style"></span>
+    </div>
+    <div fxLayout="row wrap" style="width: 100%;">
+        <ng-container *ngFor="let field of ccMailFields">
+            <div [class]="field.isSelected===true?'selected-field-css':'labelList-style'"
+                (click)="setCcEmailFields(field)" [id]="'ccFields_'+i" appMaterialElevation>
+                {{field.label.labelName}}
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<div fxLayout="row" fxLayoutAlign="end">
+    <button mat-raised-button color="primary" (click)="applyMail()">Apply</button>
+</div>

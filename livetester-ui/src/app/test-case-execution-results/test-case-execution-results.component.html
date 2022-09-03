@@ -1,0 +1,9 @@
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+  <div fxFill="100">
+    <mat-card style="background-color:rgb(154, 199, 212)">
+      <mat-card-title>Batch List</mat-card-title>
+      <app-yorogrid gridId="batch" (messageEvent)="receiveMessage($event)" defaultColumn="startTime" defaultColumnDirection="desc">
+      </app-yorogrid>
+    </mat-card>
+  </div>
+</div>

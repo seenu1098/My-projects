@@ -1,0 +1,221 @@
+$gantt-bar-layer-append-width: 32px;
+$gantt-bar-layer-append-height: 42px;
+$gantt-bar-link-height: 16px;
+$gantt-bar-link-drop-border: 5px;
+
+@mixin link-handles {
+    .link-handles {
+        .handle {
+            position: absolute;
+            display: inline-block;
+            cursor: pointer;
+            width: $gantt-bar-link-height;
+            height: $gantt-bar-link-height;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+
+            &:first-child {
+                left: 0;
+                top: 0;
+            }
+
+            &:last-child {
+                right: 0;
+                bottom: 0;
+            }
+
+            .point {
+                color: #348fe4;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #348fe4;
+                transition: 0.3 ease;
+
+                &:hover {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
+        }
+    }
+}
+
+@mixin drag-handles {
+    .drag-handles {
+        background: $gantt-bar-layer-bg;
+        width: 100%;
+        height: calc(100% - #{$gantt-bar-link-height} * 2);
+        position: absolute;
+        border-radius: 4px;
+        top: $gantt-bar-link-height;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.15);
+
+        .handle {
+            width: 15px;
+            height: 100%;
+            position: absolute;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:before,
+            &:after {
+                content: '';
+                display: inline-block;
+                width: 1px;
+                height: $gantt-bar-handle-height;
+                background: $gantt-bar-handle-color;
+            }
+
+            &::before {
+                margin-right: 2px;
+            }
+
+            &:first-child {
+                left: 0;
+            }
+
+            &:last-child {
+                right: 0;
+            }
+        }
+    }
+}
+
+@mixin active-bar {
+    z-index: 1000;
+
+    .gantt-bar-layer {
+        display: block;
+        z-index: 1;
+    }
+
+    .gantt-bar-content {
+        z-index: 1;
+        box-shadow: none;
+    }
+
+    .cdk-drag {
+        transition: none;
+    }
+}
+
+.gantt-bar {
+    position: absolute;
+    border-radius: 4px;
+    z-index: 2;
+    background: $gantt-bar-bg;
+    .gantt-bar-layer {
+        width: calc(100% + #{$gantt-bar-layer-append-width});
+        height: calc(100% + #{$gantt-bar-layer-append-height});
+        position: absolute;
+        border-radius: 4px;
+        left: $gantt-bar-layer-append-width / 2 * -1;
+        top: $gantt-bar-layer-append-height / 2 * -1;
+        display: none;
+        @include drag-handles();
+        @include link-handles();
+    }
+
+    .gantt-bar-border {
+        width: calc(100% + #{$gantt-bar-link-drop-border} * 2);
+        height: calc(100% + #{$gantt-bar-link-drop-border} * 2);
+        position: absolute;
+        border-radius: 4px;
+        left: $gantt-bar-link-drop-border * -1;
+        top: $gantt-bar-link-drop-border * -1;
+        display: none;
+        background: #fff;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .gantt-bar-content {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        cursor: pointer;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        background: $gantt-bar-background-color;
+        overflow: hidden;
+        box-sizing: border-box;
+        .gantt-bar-content-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+        }
+
+    }
+
+    &-active {
+        @include active-bar();
+    }
+
+    &-link-drop {
+        .gantt-bar-border {
+            display: block;
+        }
+
+        .gantt-bar-content {
+            box-shadow: none;
+        }
+    }
+}
+
+.tooltip-css+* .mat-menu-panel {
+    // background: red;
+    min-width: 250px;
+    max-width: 324px;
+    padding: 0px 10px !important;
+  }
+
+::ng-deep .tooltip-css{
+    background-color: white;
+    z-index: 9999;
+    margin-top: 30px;
+    min-width: 250px;
+    max-width: 324px;
+    width: 250px !important;
+    padding: 0px 50px 0px 10px !important;
+    border: 0.5px solid #d5d5d5;
+    border-radius: 5px;
+    box-shadow: 0 4px 4px #cecece;
+}
+
+.tooltip-content-css{
+    width: 70px !important;
+}
+
+.title-css{
+    line-height: 23px;
+    margin-left: 5px;
+    color: white;
+}
+
+.percentage-text-css{
+    position: absolute;
+    color: black;
+    // min-width: 250px;
+    // max-width: 324px;
+    width: 100%;
+    text-align: center;
+}
+
+.example-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 35px;
+  }
+
+  .progressbar-css{
+       height: 20px !important;
+  border-radius: 10px;
+  }
+  
+ 

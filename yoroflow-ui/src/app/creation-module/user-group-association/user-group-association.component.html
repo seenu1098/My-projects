@@ -1,0 +1,113 @@
+<!-- <mat-card id="event-automation" class="mx-3 mt-3"> -->
+<form #userForm="ngForm" [formGroup]="form">
+    <div class="row w-100 mx-0">
+        <div class="col-md-8">
+            <h3 class="fs_14 mb-1 text-uppercase font-weight-bold">{{'Users' | translate}}</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="row w-100 mx-0 justify-content-end">
+                <mat-icon type="button" i18n="Cancel" [mat-dialog-close]="false" class="mat-icon-color" id="close_btn">
+                    close</mat-icon>
+
+            </div>
+        </div>
+    </div>
+    <hr class="my-1 mx-0 p-0">
+    <!-- <div class="row w-100 ml-5 mt-3">
+        <h5 class="text-style">{{'Owners' | translate}}</h5>
+        <span class="border-style"></span>
+    </div>
+    <div class="row w-100 ml-5 mb-3">
+        <ng-container *ngFor="let user of OwnerList;let i = index;">
+            <div *ngIf="i<=3" style="
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 50%;
+            /* background-color: brown; */
+            text-align: center;cursor: pointer;
+            padding: 0px;
+           " class="hover-class" [style.margin-left]="i>0?'-8px':''" [style.background]="assigneeUserColorArray[i]"
+                [matTooltip]="user?.firstName + ' ' + user?.lastName">
+
+                <span style="font-size: 12px; color: white;font-weight: 100;">{{setUserProfilename(user)}}</span>
+            </div>
+            <ng-container *ngIf="i===4">
+                <div style="
+                   width: 30px;
+                   height: 30px;
+                     line-height: 30px;
+                    border-radius: 50%;
+                    background-color: rgb(192, 192, 192);
+                   text-align: center;
+                   padding: 0px;cursor: pointer;
+                     margin-left:-8px;" class="hover-class">
+                    <span
+                        style="font-size: 12px; color: grey;font-weight: 100;">+{{getRemainingAssigneeUserCount(user?.firstName)}}</span>
+                </div>
+            </ng-container>
+        </ng-container>
+        <mat-icon style="font-size: 22px;cursor: pointer;margin-top: 4px;
+          margin-left: 5px;" (click)="openTaskOwnerDialog()">edit
+        </mat-icon>
+
+    </div> -->
+    <div class="row w-100 mx-0 justify-content-center" *ngIf="show_selected === true">
+        <div class="col-md-12 col-sm-12">
+            <mat-card class="main_card_user px-0">
+                <div class="row w-100 mx-0">
+                    <div class="col-md-8 col-sm-12">
+                        <h3 class="pl-3 text-style fs_12">{{'Selected Users' | translate}}</h3>
+                    </div>
+                    <div class="col-md-4 col-sm-12" *ngIf="show_selected == true">
+                        <div class="row w-100 mx-0 justify-content-end">
+                            <button mat-raised-button class="mr-3" color="primary" (click)="save(userForm)"
+                                [disabled]="selectedUsers?.length === 0" id="btnsave">{{'Save' | translate}}</button>
+                            <button mat-raised-button class="mr-3" color="accent" type="button"
+                                (click)="reset(userForm)" id="btnreset" [disabled]="data.access === false">{{'Cancel' |
+                                translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedUsers?.length !== 0">
+                    <div class="col-md-11 col-sm-11 justify-content-center">
+                        <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                            <mat-chip-list #chipList aria-label="Fruit selection">
+                                <ng-container *ngFor="let users of selectedUsers; let i=index">
+                                    <mat-chip [selectable]="selectable" [removable]="removable"
+                                        (removed)="remove(users,i)">
+                                        {{users?.firstName}} {{users?.lastName}}
+                                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                </ng-container>
+                                <input matInput placeholder="{{'Search...' | translate}}" formControlName="searchUser"
+                                    [matChipInputFor]="chipList">
+                            </mat-chip-list>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-card>
+            <mat-card class="w-100 mt-3">
+                <div class="row w-100 mx-0" style="height:300px;overflow-y: scroll;">
+                    <ng-container *ngFor="let user of myArray; let i=index">
+                        <div class="col-md-4 col-sm-12 px-2" *ngIf="user.filter">
+                            <mat-card class=" inner_card_user" (click)="add(user,i)" appMaterialElevation>
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-2 align-self-center">
+                                        <p class="user_letter fs_12" [style.background]="user.color">
+                                            {{setUserProfilename(user)}}</p>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h5 class="mb-0 text-uppercase font-weight-bold">{{user?.firstName}}
+                                            {{user?.lastName}}</h5>
+                                        <h5 class="mb-0" style="word-break:break-all">{{user?.emailId}}</h5>
+                                    </div>
+                                </div>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</form>

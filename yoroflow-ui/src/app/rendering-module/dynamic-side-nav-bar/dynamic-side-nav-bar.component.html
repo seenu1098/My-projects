@@ -1,0 +1,536 @@
+<div [class]="darkThemeEmitter===true?' dark-mode':themeService.themeName" [style.height]="screenHeight">
+    <mat-sidenav-container id="main_sidebar_div" [class]="themeService.layoutName">
+        <mat-sidenav *ngIf="isMobile" #sidenav_sm mode="over" [opened]="open" position="start" (opened)="openMenu()"
+            (closed)="closeMenu()" (mouseleave)="closeNav()">
+            <div fxLayout="column" fxLayoutGap="10px" fxLayout.xs="column" fxLayoutAlign="start start"
+                class="side_nav_sm_colum">
+                <ng-container *ngIf="hideLogo">
+                    <div id="sidenav-header-div" fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="space-between center">
+                        <div *ngIf="!showLogo" class="logo">
+                            <img src="../../../assets/logo/newlogo.svg" alt="YOROSIS LOGO">
+                        </div>
+                        <div *ngIf="showLogo" class="logo">
+                            <app-load-logo [base64Image]="logoUrl" *ngIf="logoUrl && showLogo">
+                            </app-load-logo>
+                        </div>
+                        <mat-icon (click)="close()" id="collapseMenu">menu
+                        </mat-icon>
+                    </div>
+                </ng-container>
+                <perfect-scrollbar class="side_nav_sm_scrollbar" [config]="config" [style.height]="screenHeight1">
+                    <ng-container class="side_nav_sm_main">
+                        <div id="dark-sidebar" class="dark_sm_sidebar">
+                            <div fxLayout="row" fxLayoutAlign="center center" class="side_nav_sm_username_div">
+                                <div class="side_nav_sm_username">{{userVo.firstName}}
+                                    {{userVo.lastName}}</div>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="center center" class="side_nav_sm_usermail_div">
+                                <div class="side_nav_sm_usermail">{{userVo.emailId}}</div>
+                            </div>
+                            <div class="image">
+                                <div
+                                    *ngIf="userVo.profilePicture && userVo.profilePicture !==null && userVo.profilePicture !==''">
+                                    <img mat-card-avatar [src]="transformImage(userVo.profilePicture)"
+                                        class="chat-prof-pic" alt="User Avatar">
+                                </div>
+                                <div class="circle-class"
+                                    *ngIf="userVo.profilePicture ===null || userVo.profilePicture ==='' || !userVo.profilePicture">
+                                    {{userProfileValue(userVo.firstName)}}</div>
+                            </div>
+                        </div>
+                        <div class="side_nav_sm_menulist">
+                            <mat-nav-list>
+                                <lib-menu-list-item *ngFor="let menu of menuOptions" [menuOptions]="menuOptions"
+                                    [menu]="menu" [child]=false></lib-menu-list-item>
+                            </mat-nav-list>
+                        </div>
+                    </ng-container>
+                </perfect-scrollbar>
+            </div>
+        </mat-sidenav>
+
+
+
+
+
+
+        <mat-sidenav *ngIf="sidenavOpen" #sidenav2 mode="over" [opened]="sidenavOpen" position="end"
+            (opened)="openNotifiction()" (closed)="closeNotification()"
+            [style.width]="mobileQuery.matches? '80%':'27%'">
+            <mat-nav-list>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="notification_sidebar">
+                    <div>
+                        <mat-icon (click)="closeNotification()" id="notificationClose">
+                            keyboard_backspace
+                        </mat-icon>
+                    </div>
+                    <div fxLayoutAlign="center center">
+                        <a>Notifications{{getShowList()}}</a>
+                    </div>
+                    <div>
+                        <div *ngIf="notificationService.getNotificationCounts() > 0">
+                            <mat-icon matTooltip="Mark All As Read" (click)="markAllAsRead()" class="mark_all_as_read">
+                                mark_chat_unread</mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <perfect-scrollbar [config]="config" [style.height]="screenHeight1">
+                    <ng-container *ngFor="let notfication of notficationList;let i = index;">
+                        <div fxLayout="row">
+                            <a class="notification_sidebar_list_full">
+                                <div fxLayout="row" fxLAyoutAlign="space-between center"
+                                    class="notification_sidebar_list_call">
+                                    <div fxLayout="column" class="notification_sidebar_list_coloum">
+                                        <div fxLayout="row" fxLayoutGap="15px">
+                                            <div *ngIf="notfication.fromUserProfilePicture !==null && notfication.fromUserProfilePicture !==''"
+                                                class="notification_with_profile">
+                                                <img [src]="transformImage(notfication.fromUserProfilePicture)"
+                                                    class="notification-prof" alt="User Image">
+                                            </div>
+                                            <div class="circle"
+                                                *ngIf="!notfication.fromUserProfilePicture || notfication.fromUserProfilePicture ===null || notfication.fromUserProfilePicture ===''">
+                                                {{userprofile(notfication.fromUserName)}}
+                                            </div>
+                                            <div *ngIf="notfication.link===undefined || notfication.link===null || notfication.link===''"
+                                                class="notification_msg">
+                                                <p class="notification_msg_title">
+                                                    {{notfication.message}} is assigned to you</p>
+                                                <a class="notification_msg_link"
+                                                    (click)="anyAction(notfication)">{{notfication.message}}</a>
+                                            </div>
+                                            <div *ngIf="notfication.link!==undefined && notfication.link!==null && notfication.link!==''"
+                                                class="notification_msg">
+                                                <p class="notification_msg_title">
+                                                    {{notfication.message}}</p>
+                                                <a class="notification_msg_link"
+                                                    (click)="anyAction(notfication)">{{notfication.link}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="column">
+                                        <ng-container *ngIf="notfication.readTime !== null">
+                                            <mat-icon class="notification_msg_green_icon"
+                                                class="material-icons-outlined"
+                                                style="color: #429142;margin-top:42px;margin-right: 5px;font-size: 20px;  cursor: pointer;">
+                                                mark_chat_read</mat-icon>
+                                        </ng-container>
+                                        <ng-container *ngIf="notfication.readTime === null">
+                                            <mat-icon class="notification_msg_red_icon"
+                                                (click)="markAsRead(notfication)" class="material-icons-outlined"
+                                                style="color: #ff1825;margin-top:42px;margin-right: 5px;font-size: 20px; cursor: pointer;">
+                                                mark_chat_unread</mat-icon>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </ng-container>
+                </perfect-scrollbar>
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <mat-icon *ngIf="totalNotifications === 10" style="cursor: pointer;"
+                        (click)="getNotificationByIndex()" id="notificationExpand">
+                        expand_more
+                    </mat-icon>
+                    <mat-icon *ngIf="index !== 0" style="cursor: pointer;" (click)="getNotificationByExpandLess()"
+                        id="notificationExpand">
+                        expand_less
+                    </mat-icon>
+                </div>
+            </mat-nav-list>
+        </mat-sidenav>
+
+
+
+
+
+
+
+
+
+
+
+
+        <mat-sidenav-content id="common_header" style="overflow-y: hidden;" [class]="themeService.fontSizeClass">
+            <div fxLayout="row" *ngIf="!isMobile && themeService.layoutName==='simple'" class="desktop_header"
+                fxLayoutGap="20px" fxLayoutAlign="space-between center">
+                <div fxLayout="column">
+                    <img class="main_logo" src="../../../assets/logo/newlogo.svg">
+                </div>
+                <div fxLayout="column" class="desktop_header_icon_column_1" fxLayoutGap="20px">
+                    <div *ngIf="ipadResolution.matches" class="desktop_header_menuicon_border">
+                        <a mat-button (click)="openNavBar('collapseIcon',0)" id="exapandMenu">
+                            <div class="desktop_header_menuicon_div">
+                                <mat-icon class="desktop_header_menuicon"
+                                    [style.font-size]="mobileResolution.matches?'15px':''">menu</mat-icon>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div fxLayout="row">
+                    <div class="desktop_header_icon_column_2" *ngIf="iconDisable === false">
+                        <a mat-button (click)="mydashboard()" id="myTask" class="desktop_myTask">
+                            <mat-icon class="desktop_header_addtaskicon">home</mat-icon>
+                        </a>
+                    </div>
+                    <div class="desktop_header_icon_column_3">
+                        <a mat-button (click)="mytask()" id="myTask" class="desktop_myTask">
+                            <img class="desktop_header_icon_image"
+                                src="../../../assets/images/clipboard_whitesmoke.svg">
+                        </a>
+                    </div>
+
+                    <div class="desktop_header_icon_column_3">
+                        <a mat-button id="myTask" class="desktop_myTask" [matMenuTriggerFor]="languageMenu">
+                            <mat-icon class="desktop_header_addtaskicon">language</mat-icon>
+                        </a>
+                        <mat-menu #languageMenu="matMenu">
+                            <div *ngFor="let language of allLanguages;let i=index">
+                                <button mat-menu-item style="width: 100%;" (click)="changeLanguage(language.lang)">
+                                    <a href="{{language.href + contextUrl}}" class="float-right"
+                                        style="color: black;text-decoration: none;"
+                                        [ngStyle]="{'color' : selectedLang === language.lang ? 'darkblue' : 'black'}">
+                                        <mat-icon *ngIf="selectedLang === language.lang"
+                                            [ngStyle]="{'color' : selectedLang === language.lang ? 'darkblue' : 'black'}">
+                                            done</mat-icon>
+                                        {{language.name}}
+                                    </a>
+                                </button>
+                            </div>
+                        </mat-menu>
+                    </div>
+                    <div class="desktop_header_icon_column_5">
+                        <a mat-button (click)="pinClickedIcon()" id="pinnedMenu" class="desktop_pinnedMenu">
+                            <span class="material-icons desktop_header_pushpinicon"
+                                [style.font-size]="mobileResolution.matches?'15px':''">
+                                push_pin
+                            </span>
+                        </a>
+                    </div>
+                    <!-- <div class="desktop_header_icon_column_6" [style.font-size]="mobileResolution.matches?'8px':''">
+                        <div class="top-icon">
+                            <app-message (checkMessageOpenEmiiter)="getMessageOpened($event)"
+                                (messageObject)="getMessageObject($event)" id="message" class="desktop_message">
+                            </app-message>
+                        </div>
+                    </div> -->
+                    <div class="desktop_header_icon_column_7" [style.font-size]="mobileResolution.matches?'8px':''">
+                        <div class="top-icon">
+                            <app-notification (notificationEmiiter)="getNotification($event)"
+                                (checkNotificationOpenEmiiter)="getNotificationOpened($event)" id="notification"
+                                (notificationObject)="getNotificationObject($event)"
+                                (notificationOpen)="getSidenavObject($event)"></app-notification>
+                        </div>
+                    </div>
+                    <a mat-button id="userMenu" [matMenuTriggerFor]="userMenu" id="userSettings">
+                        <div fxLayout="row" fxLayoutGap="5px">
+                            <div
+                                *ngIf="userVo.profilePicture && userVo.profilePicture !==null && userVo.profilePicture !==''">
+                                <img mat-card-avatar [src]="transformImage(userVo.profilePicture)"
+                                    class="chat-prof-picture"
+                                    [class]="mobileResolution.matches?'user-prof-picture-mobile':'chat-prof-picture'"
+                                    alt="User Avatar">
+                            </div>
+                            <div class="chat-prof-picture"
+                                [class]="mobileResolution.matches?'circle-mobile':'circle-user'"
+                                [style.background]="userVo.color"
+                                *ngIf="userVo.profilePicture ===null || userVo.profilePicture ==='' || !userVo.profilePicture">
+                                {{userProfileValue(userVo.firstName)}}</div>
+                            <div [class]="mobileResolution.matches? '':'top'"
+                                style="color: whitesmoke;text-decoration: none;"
+                                [style.font-size]="mobileResolution.matches?'10px':''">
+                                {{userVo.firstName}} {{userVo.lastName}}
+                            </div>
+                            <div>
+                                <mat-icon class="align-self-center desktop_header_keyboard_arrow_downicon">
+                                    keyboard_arrow_down
+                                </mat-icon>
+                            </div>
+                        </div>
+                    </a>
+                    <mat-menu #userMenu="matMenu">
+                        <button mat-menu-item id="userProfile" (click)="userProfile()">{{'User Settings' |
+                            translate}}</button>
+                        <button mat-menu-item id="theme" (click)="openThemeDialog()">Themes</button>
+                        <button mat-menu-item id="logout" (click)="logout()">{{'Logout' | translate}}</button>
+                    </mat-menu>
+                </div>
+            </div>
+
+
+            <div fxLayout="row" class="mobile_header" *ngIf="isMobile" fxLayoutGap="20px"
+                fxLayoutAlign="space-between center">
+                <div fxLayout="row" class="mobile_header_row" fxLayoutGap="10px">
+                    <div *ngIf="ipadResolution.matches">
+                        <div class="mobile_header_coloum_1">
+                            <mat-icon class="mobile_header_menuicon" (click)="openNav()" id="exapandMenu">menu
+                            </mat-icon>
+                        </div>
+                    </div>
+                    <div class="mobile_header_coloum_3">
+                        <span class="material-icons mobile_header_push_pinicon" (click)="pinClickedIcon()"
+                            id="pinnedMenu">
+                            push_pin
+                        </span>
+                    </div>
+                    <div class="mobile_header_coloum_4">
+                        <mat-icon class="mobile_header_add_homeicon" (click)="mydashboard()" id="myHome">home</mat-icon>
+                    </div>
+                    <div class="mobile_header_coloum_4">
+                        <img class="mobile_header_icon_image" (click)="mytask()"
+                            src="../../../assets/images/clipboard_whitesmoke.svg">
+                    </div>
+                    <div class="mobile_header_coloum_6">
+                        <app-notification class="mobile_header_notificationicon"
+                            (notificationEmiiter)="getNotification($event)"
+                            (checkNotificationOpenEmiiter)="getNotificationOpened($event)" id="notification"
+                            (notificationObject)="getNotificationObject($event)"
+                            (notificationOpen)="getSidenavObject($event)"></app-notification>
+                    </div>
+                </div>
+                <div>
+                    <button mat-button id="userMenu" [matMenuTriggerFor]="userMenu">
+                        <!-- id="userSettings" -->
+                        <div fxLayout="row" fxLayoutGap="5px">
+                            <div
+                                *ngIf="userVo.profilePicture && userVo.profilePicture !==null && userVo.profilePicture !==''">
+                                <img mat-card-avatar [src]="transformImage(userVo.profilePicture)"
+                                    class="user-prof-picture-mobile">
+                            </div>
+                            <div class="circle-mobile "
+                                *ngIf="userVo.profilePicture ===null || userVo.profilePicture ==='' || !userVo.profilePicture">
+                                {{userProfileValue(userVo.firstName)}}</div>
+                            <div class="mobile_profilename">
+                                {{userVo.firstName}} {{userVo.lastName}}
+                            </div>
+                            <div>
+                                <mat-icon class="mobile_keyboard_arrow_downicon">
+                                    keyboard_arrow_down
+                                </mat-icon>
+                            </div>
+                        </div>
+                    </button>
+                    <mat-menu #userMenu="matMenu">
+                        <button mat-menu-item id="userProfile" (click)="userProfile()">User Settings</button>
+                        <button mat-menu-item id="logout" (click)="logout()">Logout</button>
+                    </mat-menu>
+                </div>
+            </div>
+            <div fxLayout="row" id="menu_with_icon_sidebar">
+                <div>
+                    <mat-progress-bar id="progressBar" class="progress_loader" *ngIf="show" mode="indeterminate"
+                        color="primary">
+                    </mat-progress-bar>
+                </div>
+                <!-----=Left main old menu iconbar-->
+                <div fxLayout="column" class="menu_icon " *ngIf="themeService.layoutName==='simple' && !isMobile">
+                    <!-- *ngIf="(!open || mode==='over')&& !ipadResolution.matches" 
+                (mouseenter)="openNav()" -->
+                    <div fxLayout="column" [style.height]="screenHeight1" class="menu_icon_desktop"
+                        fxLayoutAlign="space-between center">
+                        <div fxLayout="column">
+                            <ng-container *ngFor="let menu of menuOptions;let i=index">
+                                <div *ngIf="menu.icon && menu.icon!=='add_task'"
+                                    [ngClass]="menu.menuName === activeElement && workspaceService.hideHover === false ? 'active' : 'none'"
+                                    class="menu_icon_left" (click)="openNavBar(menu,i,true)">
+                                    <ng-container *ngIf="menu.icon==='add_task'">
+                                        <img [id]="'menu_icon_'+i" style="margin-bottom: 5px;"
+                                            class="mobile_header_icon_image_task"
+                                            src="../../../assets/images/clipboard_grey.svg">
+                                    </ng-container>
+                                    <ng-container *ngIf="menu.icon!=='add_task'">
+                                        <mat-icon
+                                            [ngClass]="menu.menuName === 'Teams'? 'teams':''|| menu.menuName === 'Workflow'? 'Workflow':''
+                                        || menu.menuName === 'Taskboard'? 'Taskboard':'' || menu.menuName === 'Administration'? 'Administration':'' || menu.menuName === 'Application'? 'Application':''"
+                                            [id]="'menu_icon_'+i" class="menu_mat_icon">
+                                            {{menu.icon}}</mat-icon>
+                                    </ng-container>
+                                    <p *ngIf="menu.icon!=='add_task'">{{menu.menuName | translate}}</p>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div fxLayout="column" *ngIf="menuOptions.length>0 && workspaceLoad===true">
+                            <div style="cursor: pointer;">
+                                <mat-icon [matMenuTriggerFor]="menu" class="demo-title ion help-icon-simple">help
+                                </mat-icon>
+
+                                <mat-menu #menu="matMenu" class="menuContent">
+                                    <button class="row w-100 align-self-left left" mat-button (click)="restartTour()">
+                                        <mat-icon class="ion mar ">near_me</mat-icon>
+                                        <span>Guided navigation</span>
+                                    </button>
+                                    <button class="row w-100 align-self-left left" mat-button (click)="userManual()">
+                                        <mat-icon class="ion mar ">chrome_reader_mode</mat-icon>
+                                        <span>User Manual</span>
+                                    </button>
+                                </mat-menu>
+
+                            </div>
+
+                            <div style="position: relative;" (click)="createWorkspace()"
+                                [matTooltip]="workspaceService.getWorkSpaceName()" class="workspace">
+                                <div class="workspace-avatar" [style.background]="workspaceService.getAvatar()">
+                                    {{workspaceService.getFirstLetter()}}</div>
+                                <img src="../../../assets/images/bring.svg" class="circle-class-workspace">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-----=Left main new menu iconbar-->
+                <div fxLayout="column" style="background: #fff;" [style.height]="screenHeight" id="desktop_menu"
+                    fxLayoutAlign="space-between center" *ngIf="themeService.layoutName==='modern'">
+
+
+                    <div class="menu_w_55px px-0 ">
+                        <!-- <div fxLayout="row" fxLayoutAlign="end">
+                            <span *ngIf="hide===false" class="navigate-close-css" id="expand-icon" appMaterialElevation
+                                defaultElevation=4 raisedElevation=8 (click)="show_hide(true)">
+                                <mat-icon class="animate-css">navigate_next</mat-icon>
+                            </span>
+                        </div> -->
+                        <a class="p-0 m-0  main_logo_link">
+                            <img (click)="landingPageRoute()" src="../../../assets/Favicon/Favicon_32x32.png"
+                                class="img-fluid mx-auto d-block mt-2 mb-3 py-0">
+                        </a>
+                        <div class="px-2 pt-0 pb-2 align-top">
+                            <button class="menu_btn my-1 fs_12" *ngFor="let menu of menuOptions;let i=index"
+                                [ngClass]="menu.menuName === activeElement && workspaceService.hideHover === false ? 'active' : 'none'"
+                                (click)="openNavBar(menu,i,true)" [tooltip]="menu.menuName" [options]="myOptions">
+                                <ng-container *ngIf="menu.icon==='add_task'">
+                                    <img *ngIf="menu.menuName !== activeElement || workspaceService.hideHover === true"
+                                        [id]="'menu_icon_'+i" class="mobile_header_icon_image"
+                                        src="../../../assets/images/clipboard_black.svg">
+                                    <img *ngIf="menu.menuName === activeElement && workspaceService.hideHover === false"
+                                        [id]="'menu_icon_'+i" class="mobile_header_icon_image"
+                                        src="../../../assets/images/clipboard_whitesmoke.svg">
+
+                                    <!-- <mat-icon fontSet="material-icons-outlined" *ngIf="menu.menuName !== activeElement">
+                                        assignment</mat-icon>
+                                    <mat-icon appearance="filled" *ngIf="menu.menuName === activeElement">assignment
+                                    </mat-icon> -->
+                                </ng-container>
+                                <ng-container *ngIf="menu.icon!=='add_task'">
+                                    <mat-icon fontSet="material-icons-outlined"
+                                        [ngClass]="menu.menuName === 'Teams'? 'teams':''|| menu.menuName === 'Workflow'? 'Workflow':''
+                                        || menu.menuName === 'Taskboard'? 'Taskboard':'' || menu.menuName === 'Administration'? 'Administration':'' || menu.menuName === 'Application'? 'Application':''"
+                                        *ngIf="menu.menuName !== activeElement || workspaceService.hideHover === true">
+                                        {{menu.icon}}</mat-icon>
+                                    <mat-icon appearance="filled"
+                                        *ngIf="menu.menuName === activeElement && workspaceService.hideHover === false">
+                                        {{menu.icon}}
+                                    </mat-icon>
+                                </ng-container>
+                            </button>
+                        </div>
+                        <div class="px-2 pt-0 pb-2 align-top">
+                            <button class="menu_btn my-1 fs_12" (click)="notificationClick()"
+                                [ngClass]="workspaceService.notificationSelected === true ? 'active' : 'none'">
+                                <app-notification (notificationEmiiter)="getNotification($event)"
+                                    (checkNotificationOpenEmiiter)="getNotificationOpened($event)"
+                                    id="notification_modern" (notificationObject)="getNotificationObject($event)"
+                                    (notificationOpen)="getSidenavObject($event)"></app-notification>
+                            </button>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="menuOptions.length>0 && workspaceLoad===true">
+                        <div style="cursor: pointer;">
+                            <mat-icon [matMenuTriggerFor]="menu" class="demo-title ion size">help</mat-icon>
+
+                            <mat-menu #menu="matMenu" class="menuContent">
+                                <button class="row w-100 align-self-left left" mat-button (click)="restartTour()">
+                                    <mat-icon class="ion mar ">near_me</mat-icon>
+                                    <span>Guided navigation</span>
+                                </button>
+                                <button class="row w-100 align-self-left left" mat-button (click)="userManual()">
+                                    <mat-icon class="ion mar ">chrome_reader_mode</mat-icon>
+                                    <span>User Manual</span>
+                                </button>
+                            </mat-menu>
+
+                        </div>
+
+                        <span (click)="openUserDetailsDialog()" class="workspace">
+                            <div
+                                *ngIf="userVo.profilePicture && userVo.profilePicture !==null && userVo.profilePicture !==''">
+                                <img mat-card-avatar [src]="transformImage(userVo.profilePicture)" class="avatar">
+                            </div>
+                            <div class="avatar" [style.background]="userVo.color"
+                                *ngIf="userVo.profilePicture ===null || userVo.profilePicture ==='' || !userVo.profilePicture">
+                                {{userProfileValue(userVo.firstName)}}</div>
+                            <div class="workspace-avatar" [style.background]="workspaceService.getAvatar()">
+                                {{workspaceService.getFirstLetter()}}</div>
+                        </span>
+                    </ng-container>
+                </div>
+                <!-----=side hidden & visible bar-->
+                <ng-container *ngIf=" !isMobile && dynamicoptions!= null && hide === false && 
+                    notificationClicked === false && workspaceService.hideSubMenu === false">
+                    <perfect-scrollbar [config]="config" id="menu_with_icon">
+                        <div id="menu_child" class="menu_text" fxLayout="column" [style.height]="screenHeight1">
+                            <div fxLayout="row" fxLayoutAlign="space-between center">
+                                <h4 fxLayout="column" class="parent_menu fs_14">{{menuName2 | translate}}</h4>
+                                <mat-icon fxLayout="column" name="close" class="text-dark menu_close_desktop"
+                                    (click)="show_hide('true')">close</mat-icon>
+                            </div>
+                            <div class="child_menu mx-1">
+                                <ng-container *ngFor="let submenu of dynamicoptions;let n=index">
+                                    <div fxLayout="row" *ngIf="submenu.menuName !== 'Workflow Reports'"
+                                        class="child_menu_link fs_12"
+                                        [ngClass]="submenu.menuName === activeElement1 ? 'active_li' : 'none'"
+                                        (click)="on_itemclicked(submenu)">{{submenu?.menuName | translate}}</div>
+                                    <div fxLayout="row" fxLayoutAlign="space-between center"
+                                        *ngIf="submenu.menuName === 'Workflow Reports'"
+                                        class="child_menu_link_report fs_12"
+                                        [ngClass]="submenu.menuName === activeElement1 ? 'active_li' : 'none'"
+                                        (click)="openReports(submenu)">
+                                        <div fxLayout="row">
+                                            <span>
+                                                <mat-icon *ngIf="isWorkflowReportsOpened">
+                                                    arrow_drop_down</mat-icon>
+                                                <mat-icon *ngIf="!isWorkflowReportsOpened">
+                                                    arrow_right</mat-icon>
+                                            </span>
+                                            {{submenu?.menuName | translate}}
+                                        </div>
+                                        <div class="count-css">{{submenu?.dynamicMenus?.length}}</div>
+                                    </div>
+                                    <div *ngIf="submenu.dynamicMenus && submenu.menuName === 'Workflow Reports' && isWorkflowReportsOpened"
+                                        class="dynamic_child_menu">
+                                        <ng-container *ngFor="let child of submenu.dynamicMenus;let i=index">
+                                            <div fxLayout="row" class="dynamic_child_menu_link fs_12"
+                                                [ngClass]="child.menuName === activeElement2 ? 'active_li' : 'none'"
+                                                (click)="on_itemclicked(child)">{{child?.menuName | translate}}</div>
+                                        </ng-container>
+                                    </div>
+                                    <div *ngIf="submenu.dynamicMenus && submenu.menuName !== 'Workflow Reports'"
+                                        class="dynamic_child_menu">
+                                        <ng-container *ngFor="let child of submenu.dynamicMenus;let i=index">
+                                            <div fxLayout="row" class="dynamic_child_menu_link fs_12"
+                                                [ngClass]="child.menuName === activeElement2 ? 'active_li' : 'none'"
+                                                (click)="on_itemclicked(child)">{{child?.menuName | translate}}</div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </perfect-scrollbar>
+                </ng-container>
+                <div fxLayout="column" class="router_coloum">
+                    <ng-container *ngIf="checkValue == false && workspaceLoad===true">
+                        <perfect-scrollbar [config]="config" class="router_coloum_scrollbar"
+                            [style.height]="screenHeight1">
+                            <router-outlet></router-outlet>
+                            <div [class]="messageWindowCss" appMaterialElevation defaultElevation=8 raisedElevation=8>
+                                <app-message class="mobile_header_messageicon"
+                                    (checkMessageOpenEmiiter)="getMessageOpened($event)"
+                                    (messageObject)="getMessageObject($event)" id="message"
+                                    (opened)="getMessageWindowOpened($event)" (collapsed)="isCollapsed($event)">
+                                </app-message>
+                            </div>
+                        </perfect-scrollbar>
+                    </ng-container>
+                </div>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+<ngx-guided-tour progressIndicatorLocation="hidden"></ngx-guided-tour>

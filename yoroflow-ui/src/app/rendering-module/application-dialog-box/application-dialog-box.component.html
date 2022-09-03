@@ -1,0 +1,9 @@
+<!-- <mat-spinner *ngIf="!show" [diameter]="45" class="loader"></mat-spinner>  -->
+
+<div fxLayout="row" fxLayoutAlign="end end">
+    <mat-icon id="clear" (click)="close()" style="cursor:pointer;">clear</mat-icon>
+</div>
+
+<dynamic-page [id]="data.pageIdentifier" [version]="data.version" [loadFormInfo]="data"
+    (submit)="getFormAndsubmitEvent($event)">
+</dynamic-page>

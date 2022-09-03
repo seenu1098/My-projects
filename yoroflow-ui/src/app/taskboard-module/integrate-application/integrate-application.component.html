@@ -1,0 +1,61 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" style="margin: 10px">
+  <h1>Apps</h1>
+</div>
+<!-- <div fxLayout="row" fxLayoutAlign="end" style="margin-right: 20px;">
+    <mat-checkbox (change)="setAllApps($event)">Allow all apps</mat-checkbox>
+</div> -->
+<div fxLayout="row" style="width: 100%">
+  <div fxLayout="column" id="category-column">
+    <span class="category-label-css">Categories</span>
+    <ng-container *ngFor="let category of categoriesArray; let i = index">
+      <button mat-button class="category-button-css" [style.color]="category.isSelected ? '#039be5' : 'black'"
+        [style.background]="category.isSelected ? '#e5f4ff' : ''" (click)="onCategorySelected(category)"
+        [id]="'catagory_' + i">
+        <mat-icon [style.color]="category.color" style="font-size: 20px; margin-right: 10px">
+          {{ category.icon }}
+        </mat-icon>
+        <span>{{ category.name }}</span>
+      </button>
+    </ng-container>
+  </div>
+  <div fxLayout="column" style="width: 87%">
+    <div fxLayout="row" class="categoryName-header-css">
+      <span class="category-headerName-css">{{ selectedCategory }}</span>
+      <span class="categoryName-heading-border-css"></span>
+    </div>
+    <div fxLayout="row wrap">
+      <ng-container *ngIf="integratedApps$ | async as apps">
+        <ng-container *ngFor="let app of apps; let j = index">
+          <mat-card *ngIf="
+              selectedCategory === 'Explore By App' || app.isRemoved === 'N'
+            " class="app-card" (mouseenter)="mouseEnter(j)">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <div fxLayout="column">
+                <div fxLayout="row">
+                  <img class="app-image" [src]="getImage(app.applicationName)" />
+                  <div fxLayout="column">
+                    <b style="margin-left: 10px">{{ app.applicationName }}</b>
+                    <span *ngIf="app.isRemoved === 'N'" class="installed-badge-css">Installed</span>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="column" *ngIf="hoverCard === j">
+                <mat-icon *ngIf="app.isRemoved === 'Y'" (click)="addApplication(app)" matTooltip="Add application"
+                  class="add-icon-css">add</mat-icon>
+                <ng-container *ngIf="app.isRemoved === 'N'">
+                  <div fxLayout="row" fxLayoutGap="5px">
+                    <mat-icon (click)="removeApplication(app)" matTooltip="Remove application" class="remove-icon-css">
+                      delete_sweep</mat-icon>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div fxLayout="row" class="description-class">
+              <p>{{ app.description }}</p>
+            </div>
+          </mat-card>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="row w-100 mb-2">
+    <div class="col-md-6">
+        <h2>Work Log List</h2>
+    </div>
+    <div class="col-md-6 justify-content-end">
+        <button mat-raised-button color="primary" type="submit" i18n="Save" class="float-right"
+            (click)="logWorkdialog()">Add
+            Work Log</button>
+    </div>
+</div>
+<mat-table [dataSource]="workLog" class="w-100" matSort>
+    <!-- userName Column -->
+    <ng-container matColumnDef="userName">
+        <mat-header-cell *matHeaderCellDef class="ud_coloum">Username</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="ud_coloum">
+            <div class="row w-100">
+                <div class="col-md-8 ">{{getUsername(element.userId)}} </div>
+                <div class="col-md-4 p-0 justify-content-end">
+                    <!-- <span class="un_inactive text-right float-right">Inactive</span> -->
+                    <!-- <span class="un_active text-right float-right mt-2">Active</span> -->
+                </div>
+            </div>
+        </mat-cell>
+    </ng-container>
+    <!-- workDate Column -->
+    <ng-container matColumnDef="workDate">
+        <mat-header-cell mat-sort-header *matHeaderCellDef class="wd_coloum">Work Date</mat-header-cell>
+        <mat-cell mat-cell *matCellDef="let element" class="wd_coloum">
+            <span class="worklog_date fs_12">{{element.workDate | date:'mediumDate'}}</span>
+        </mat-cell>
+    </ng-container>
+    <!-- timespent Column -->
+    <ng-container matColumnDef="timespent">
+        <mat-header-cell mat-sort-header *matHeaderCellDef class="ts_coloum">Time Spent</mat-header-cell>
+        <mat-cell mat-cell *matCellDef="let element" class="ts_coloum">
+            <span class="timespent fs_12">{{element.timespent}} h</span>
+        </mat-cell>
+    </ng-container>
+    <!-- description Column -->
+    <ng-container matColumnDef="description">
+        <mat-header-cell mat-header-cell *matHeaderCellDef> Work comment </mat-header-cell>
+        <mat-cell mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+    </ng-container>
+    <!-- loggedattime Column-->
+    <ng-container matColumnDef="loggedatTime">
+        <mat-header-cell mat-sort-header mat-header-cell *matHeaderCellDef> Work logged at </mat-header-cell>
+        <mat-cell mat-cell *matCellDef="let element"> {{element.loggedatTime | date:'medium'}} </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns:displayedColumns;" (click)="updateWorkLog(row)"></mat-row>
+</mat-table>
+
+<div fxLayout="row" fxLayoutAlign="end" class="mt-2">
+    <app-paginator id="mat_table_page_selector" *ngIf="isPaginator && isLength" [length]="resultsLength"
+        [pageSize]="defaultPageSize" [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]"
+        (page)="pageEvent($event)"></app-paginator>
+</div>

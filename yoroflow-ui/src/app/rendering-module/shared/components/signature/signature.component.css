@@ -1,0 +1,7 @@
+.clear-css :hover{
+text-decoration: underline;
+}
+
+.clear-css{
+    cursor: pointer;
+}

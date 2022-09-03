@@ -1,0 +1,89 @@
+.border-style{
+  border-right: 0.5px solid rgb(194, 194, 194);
+}
+
+.avatar{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  line-height: 25px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 7px;
+  place-content: center;
+  margin: 1.6px 0px 0px 1.5px;
+}
+
+.add-workspace-avatar{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: bold;
+  color: grey;
+  line-height: 25px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border: 0.5px dashed grey;
+  place-content: center;
+}
+
+#user-details ::ng-deep .mat-dialog-container{
+  padding: 8px !important;
+}
+
+  .name-css{
+    max-width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-top: 3px;
+    cursor: pointer;
+  }
+
+  .margin-css{
+    margin-left: 10px;
+  }
+
+  .text-css{
+    // font-size: 13px;
+    color: grey;
+    cursor: pointer;
+    margin: 7px 0px 0px 10px;
+    &:hover{
+      color: var(--theme-main-color);
+    }
+  }
+
+  .line-css{
+    padding: 0px 20px;
+  }
+
+  .outline-class{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 0.5px solid green;
+    padding: 0px 0px 1px 0px;
+  }
+
+  .dialog-css{
+    overflow: hidden !important;
+  }
+
+  .count-css{
+    background: var(--theme-accent-color);
+    font-size: 9px;
+    height: 17px;
+    width: 17px;
+    line-height: 17px;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

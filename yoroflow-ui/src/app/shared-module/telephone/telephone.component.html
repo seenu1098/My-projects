@@ -1,0 +1,9 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <ngx-intl-tel-input [preferredCountries]="preferredCountries" style="width: 100%" [enableAutoCountrySelect]="true"
+        [enablePlaceholder]="false" [searchCountryFlag]="true"
+        [searchCountryField]="[SearchCountryField.Iso2, SearchCountryField.Name]" [selectFirstCountry]="false"
+        [selectedCountryISO]="CountryISO.UnitedStates" [phoneValidation]="true" [separateDialCode]="separateDialCode"
+        [numberFormat]="PhoneNumberFormat.International" id="phone" formControlName="phone" placeholder="Phone"
+        type="tel" (click)="onSelect($event)" (change)="checkNumber()">
+    </ngx-intl-tel-input>
+</form>

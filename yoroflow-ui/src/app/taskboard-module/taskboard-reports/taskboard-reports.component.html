@@ -1,0 +1,17 @@
+<div class="mb-5 row w-100 mx-0 px-3">
+    <mat-card class="w-100">
+        <div class="row mx-0 w-100 mb-3">
+            <div class="col-md-6 col-sm-12 pl-0">
+                <mat-card-title>{{'Taskboard Reports' | translate}}</mat-card-title>
+            </div>
+            <div class="col-md-6">
+
+            </div>
+        </div>
+        <div class="row mx-0 mb-3">
+            <highcharts-chart [Highcharts]="highcharts" [options]="getchart" style="height: 500px; display: block;"
+                class="w-100">
+            </highcharts-chart>
+        </div>
+    </mat-card>
+</div>

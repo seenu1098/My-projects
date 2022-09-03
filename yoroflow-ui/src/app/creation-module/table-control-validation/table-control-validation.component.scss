@@ -1,0 +1,27 @@
+.mat-mini-fab {
+  height: 25px!important;
+  width: 25px!important;
+  line-height: 16px!important;
+  padding:1px!important;
+}
+.mat-icon{
+    /* display: block;
+    height:10px !important;
+    width:10px !important; */
+    font-size:16px ;
+}
+.validations_form{
+  margin-bottom: 10px;
+}
+.heading {
+  margin-bottom: 0px;
+  background: #79cff9;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding-left: 5px;
+  color: white;
+  height: 12%;
+}
+#scroll-width::ng-deep .ps--active-x > .ps__rail-x {
+  display: none;
+}

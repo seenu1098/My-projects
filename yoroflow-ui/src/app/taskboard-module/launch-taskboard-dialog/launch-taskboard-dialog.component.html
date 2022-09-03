@@ -1,0 +1,53 @@
+<form [formGroup]="launchForm" #userForm="ngForm">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <h2 class="text-capitalize" i18n="Launch Permission">Launch Permission</h2>
+        <mat-icon id="clear" style="cursor: pointer;font-size: 22px;" fxLayoutAlign="end" (click)="close()">
+            clear</mat-icon>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-checkbox id="loggedInUser" formControlName="allowLoggedInUser" style="margin:2%"
+            (change)="checkSelectedPermissionAllUsers()" i18n="All Logged In Users">All Logged In Users
+        </mat-checkbox>
+        <mat-checkbox id="allowWorkspaceUsers" (change)="checkSelectedPermissionWorkspace()"
+            formControlName="allowWorkspaceUsers" style="margin:2%" i18n="Workspace Users">Workspace Users
+        </mat-checkbox>
+    </div>
+    <!-- [disabled]="launchForm.get('allowLoggedInUser').value === true || launchForm.get('allowWorkspaceUsers').value === true" -->
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-checkbox id="allowTaskboardUser" (change)="checkSelectedPermissionWorkspaceAndAllUser()"
+            formControlName="allowTaskboardUser" style="margin:2%" i18n="Taskboard Users">Taskboard Users
+        </mat-checkbox>
+        <mat-checkbox id="allowTaskboardTeams" (change)="checkSelectedPermissionWorkspaceAndAllUser()"
+            formControlName="allowTaskboardTeams" style="margin:2%" i18n="Taskboard Teams">Taskboard Teams
+        </mat-checkbox>
+    </div>
+    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
+        <mat-form-field appearance="outline" style="width: 45%;">
+            <mat-label i18n="Select Users">Select Users</mat-label>
+            <mat-select (selectionChange)="checkSelectedPermissionWorkspaceAndAllUser()" id="allowUsersList"
+                formControlName="allowUsersList" multiple>
+                <mat-option *ngFor="let user of data.usersList" [value]="user.userId">
+                    {{user.firstName}} {{user.lastName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field style="width: 45%;" appearance="outline">
+            <mat-label i18n="Select Teams">Select Teams</mat-label>
+            <mat-select (selectionChange)="checkSelectedPermissionWorkspaceAndAllUser()" id="allowTeamsList"
+                formControlName="allowTeamsList" multiple>
+                <mat-option *ngFor="let team of data.groupList" [value]="team.groupId">
+                    {{team.groupName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+        <button mat-raised-button color="primary" [disabled]="!userForm.dirty" (click)="saveClose()"
+            i18n="Save Permission">
+            Save Permission
+        </button>
+        <button [mat-dialog-close]="true" mat-raised-button i18n="Cancel" color="accent" class="mr-2">
+            Cancel
+        </button>
+    </div>
+</form>

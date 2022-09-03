@@ -1,0 +1,88 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+    <div fxFlex="100%">
+        <mat-card style="background-color:rgb(154, 199, 212)">
+            <div>
+                <form  #userForm="ngForm">
+                    <mat-card style="margin-top: 1%">
+                     <mat-card-title>Test Case Groups</mat-card-title>
+                    
+                         <div >
+                            <div *ngFor="let test of clmsTestcaseGroupsVOList" style="margin-bottom: 1%">
+                            <h3><mat-checkbox *ngIf="test.claimVO.length>0" value="1" (click)="getvalue(value)">
+                                {{test.testcaseGroupName}}</mat-checkbox></h3>
+                             <div *ngFor="let claim of test.claimVO">   
+                               <mat-card style="background-color:white;margin-left: 1%;margin-bottom: 1%">
+                                <mat-card-subtitle><mat-checkbox style="margin-left: 1%"  >{{claim.claimTestcaseName}}
+                                </mat-checkbox></mat-card-subtitle>
+                                <mat-card-content>
+                                    <p>
+                                         <label>ClaimType : </label>{{claim.claimType}}
+                                    </p>
+                                    <p>
+                                         <label>FormType :</label>{{claim.claimType}}
+                                    </p>
+                                    <p>
+                                         <label>Beneficiary FirstName:</label>{{claim.beneficiary.firstName}}
+                                    </p>
+                                    <p>
+                                         <label>Beneficiary LastName:</label>{{claim.beneficiary.lastName}}
+                                    </p>
+                                    <p>
+                                        <label>Blling ProviderNpi:</label>{{claim.billing.npi}}
+                                    </p>
+                                    <p>
+                                        <label>Blling Taxonomy:</label>{{claim.billing.taxonomy}}
+                                    </p>
+                                    <p>
+                                        <label>Header From Date:</label>{{claim.claimHeader.fromDate | date:'MM/dd/yyyy'}}
+                                    </p>
+                                    <p>
+                                         <label>Header To Date:</label>{{claim.claimHeader.toDate | date:'MM/dd/yyyy'}}
+                                    </p>
+                                    <p>
+                                        <label>Blling Amount:</label>{{claim.claimHeader.billedAmount}}
+                                    </p>
+                                    <p>
+                                        <label>Billed Units:</label>{{claim.claimHeader.billedUnits }}
+                                    </p>
+                                    <p>
+                                        <label>Frequency:</label>{{claim.claimHeader.frequency }}
+                                    </p>
+                                    <p>
+                                        <label>Source:</label>{{claim.claimHeader.source }}
+                                    </p>
+                                    <div *ngFor="let service of claim.services">
+                                    <p>
+                                        <label>Service Line</label>
+                                    </p>
+                                    <p>
+                                        <label>From Date:</label>{{service.fromDate | date:'MM/dd/yyyy'}}
+                                    </p>
+                                    <p>
+                                        <label>To Date:</label>{{service.toDate | date:'MM/dd/yyyy'}}
+                                    </p>
+                                    <p>
+                                        <label>Procedure Code:</label>{{service.procedureCode}}
+                                    </p>
+                                    <p>
+                                        <label>Revenue Code:</label>{{service.revenueCode}}
+                                    </p>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                            </div> 
+                            </div>
+                          </div>
+                     
+                    </mat-card>
+                    <p style="width: 80%;">
+                          
+                        </p>
+                    <div fxLayoutAlign="end start" style="margin-top:1%">
+                        <button mat-raised-button color="primary">Execute</button>
+                    </div>
+                </form>
+            </div>
+        </mat-card>
+    </div>
+</div>

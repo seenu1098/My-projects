@@ -1,0 +1,513 @@
+:host ::ng-deep {
+  display: block;
+  height: inherit;
+  width: inherit;
+
+  .cardContainer {
+    height: 100;
+    width: 150;
+    display: block;
+
+    .name {
+      font-size: 15px;
+    }
+    #export_button ::ng-deep .mat-button-toggle-label-content {
+      line-height: 40px;
+      }
+    label {
+      display: block;
+      text-align: center;
+      font-size: 20px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .linkMidpoint {
+    ellipse {
+      fill: white;
+      stroke: black;
+      stroke-width: 1;
+    }
+
+    text {
+      stroke: transparent;
+      fill: black;
+      text-anchor: middle;
+      font-size: 10px;
+    }
+  }
+}
+
+
+
+.tp-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #eee;
+}
+.tp-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+  width: 300px;
+}
+
+.sidenav {
+  margin-top: 150px;
+  height: 100%;
+  width: 160px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #f9fafb;
+  //   overflow-x: hidden;
+  padding-top: 20px;
+  padding-left: 40px;
+}
+
+
+.main {
+  margin-top: 150px;
+  margin-left: 200px; /* Same as the width of the sidenav */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+.path {
+  fill: #667;
+  fill-opacity: 0.7;
+}
+
+::ng-deep path.link {
+  fill: none;
+  stroke: #000;
+  stroke-width: 10px;
+  cursor: default;
+}
+
+::ng-deep svg:not(.active):not(.ctrl) path.link {
+  cursor: pointer;
+}
+
+::ng-deep path.link.selected {
+   stroke-dasharray: 10, 2;
+}
+
+::ng-deep path.link.dragline {
+  pointer-events: none;
+  stroke-width: 2;
+}
+
+::ng-deep path.link.hidden {
+  stroke-width: 0;
+}
+
+::ng-deep svg {
+  //background-color:brown;
+  cursor: default;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.canvas-container {
+   position: absolute;
+   top: 0;
+   left: 0;
+   bottom: 0;
+   right: 0;
+  background-color: #f9fafb;
+  background-size: 14px 14px;
+  background-image: linear-gradient(
+      to right,
+      rgba(229, 235, 237, 1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(229, 235, 237, 1) 1px, transparent 1px);
+  // z-index: 1;
+  overflow: hidden;
+}
+.tooltip {
+  padding: 10px;
+  display: none;
+  position: absolute;
+  z-index: 1000;
+}
+text.unset {
+  font-style: italic;
+  font-weight: normal;
+  fill: #aaa;
+}
+.moveable {
+  cursor: pointer;
+}
+g.component {
+  font-family: Roboto;
+}
+g.component rect.body {
+  fill: #fff;
+}
+g.component rect.body.unauthorized {
+  fill: #f4f6f7;
+}
+g.component rect.border {
+  stroke: rgba(0, 0, 0, 0.25);
+  stroke-width: 1;
+}
+g.component rect.border.unauthorized {
+  stroke-width: 3;
+  stroke: #ba554a !important;
+  stroke-dasharray: 4;
+}
+g.component rect.border.ghost {
+  stroke-width: 3;
+  stroke: #aaa !important;
+  stroke-dasharray: 4;
+}
+g.component rect.processor-icon-container.unauthorized {
+  fill: #f4f6f7 !important;
+}
+g.component.selected rect.border {
+  stroke: #004849 !important;
+  stroke-width: 3;
+}
+text.stats-label {
+  fill: #262626;
+  font-size: 12px;
+  font-family: Roboto Slab;
+}
+text.stats-value {
+  fill: #775351;
+  font-size: 12px;
+  font-weight: bold;
+}
+text.stats-value tspan.size,
+text.stats-value tspan.size {
+  font-weight: normal;
+}
+text.stats-info {
+  fill: #728e9b;
+  font-size: 12px;
+}
+text.bulletin-icon {
+  font-size: 13px;
+  font-family: FontAwesome;
+  fill: #fff;
+}
+rect.bulletin-background {
+  fill: #ba554a;
+}
+text.active-thread-count-icon {
+  font-family: flowfont;
+  font-size: 12px;
+  fill: #728e9b;
+  text-anchor: end;
+}
+text.active-thread-count {
+  fill: #775351;
+  font-size: 12px;
+  font-weight: bold;
+}
+path.component-comments {
+  fill: #000;
+  stroke: #000;
+}
+g.component.connectable-destination rect.border {
+  stroke: #0f0;
+  stroke-width: 3;
+}
+rect.component-selection,
+rect.drag-selection,
+rect.label-drag {
+  stroke: #444;
+  stroke-opacity: 0.5;
+  fill: transparent;
+}
+text.add-connect {
+  cursor: pointer;
+  font-family: flowfont;
+  font-size: 28px;
+  fill: #004849;
+}
+text.processor-name {
+  fill: #262626;
+  font-size: 10px;
+}
+text.processor-type {
+  fill: #728e9b;
+  font-size: 8px;
+}
+text.processor-bundle {
+  fill: #666;
+  font-size: 10px;
+}
+rect.processor-icon-container {
+  fill: #fff;
+}
+text.processor-icon {
+  font-family: flowfont;
+  font-size: 30px;
+}
+circle.restricted-background,
+circle.is-primary-background {
+  visibility: hidden;
+  fill: rgba(255, 255, 255, 0.9);
+}
+text.restricted {
+  visibility: hidden;
+  font-family: FontAwesome;
+  font-size: 12px;
+  fill: #ba554a;
+}
+text.is-primary {
+  visibility: hidden;
+  font-size: 12px;
+  font-weight: bold;
+}
+text.run-status-icon {
+  font-size: 13px;
+}
+g.connection {
+  font-family: Roboto;
+}
+g.connection rect.body {
+  fill: #fff;
+}
+g.connection rect.body.unauthorized {
+  fill: #f4f6f7;
+}
+g.connection rect.border.unauthorized {
+  stroke-width: 1.5;
+  stroke: #ba554a;
+  stroke-dasharray: 3, 3;
+}
+g.connection rect.border.full {
+  stroke: rgba(186, 85, 74, 0.65);
+  stroke-width: 1;
+}
+g.connection.selected rect.border {
+  stroke: #fc0;
+  stroke-width: 3;
+}
+path.connector {
+  fill: none;
+  pointer-events: none;
+  stroke: #f00;
+  stroke-width: 3;
+  stroke-opacity: 0.5;
+  stroke-dasharray: 2;
+}
+path.connector.connectable {
+  stroke: #0f0;
+  stroke-width: 3;
+  stroke-dasharray: 4;
+}
+g.connection path.connection-path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2;
+  cursor: pointer;
+}
+g.connection path.connection-path.full {
+  stroke: #ba554a;
+}
+g.connection path.connection-path.unauthorized {
+  stroke: #ba554a;
+  stroke-dasharray: 3, 3;
+}
+text.connection-from-run-status,
+text.connection-to-run-status,
+text.expiration-icon {
+  fill: #728e9b;
+  font-family: FontAwesome;
+  font-size: 10px;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 1);
+}
+text.connection-from-run-status.is-missing-port,
+text.connection-to-run-status.is-missing-port {
+  fill: #cf9f5d;
+}
+g.connection rect.backpressure-tick {
+  fill: #3e3e3e;
+}
+g.connection rect.backpressure-tick.not-configured {
+  fill: #acacac;
+}
+g.connection rect.backpressure-object,
+g.connection rect.backpressure-data-size {
+  fill: #d8d8d8;
+}
+g.connection rect.backpressure-object.not-configured,
+g.connection rect.backpressure-data-size.not-configured {
+  fill: transparent;
+}
+g.connection rect.backpressure-percent {
+  fill: #67b796;
+  pointer-events: none;
+}
+g.connection rect.backpressure-percent.warning {
+  fill: #cea958;
+}
+g.connection rect.backpressure-percent.error {
+  fill: #ba554a;
+}
+g.connection.grouped path.connection-path,
+g.connection.grouped rect.connection-label {
+  stroke-width: 3;
+}
+g.connection.ghost path.connection-path,
+g.connection.ghost rect.connection-label {
+  stroke: #aaa;
+  stroke-dasharray: 4;
+}
+g.connection path.connection-selection-path {
+  visibility: hidden;
+  stroke-width: 1;
+  stroke: #fc0;
+  fill: none;
+}
+g.connection path.connection-path-selectable {
+  visibility: hidden;
+  stroke-width: 20;
+  fill: none;
+  cursor: pointer;
+}
+g.connection.selected path.connection-selection-path {
+  visibility: visible;
+}
+g.connection rect.linepoint {
+  visibility: hidden;
+  stroke-width: 1;
+}
+g.connection.selected rect.linepoint {
+  visibility: visible;
+}
+g.connection rect.startpoint {
+  stroke: #f00;
+  fill: #f00;
+}
+g.connection rect.midpoint {
+  stroke: #fc0;
+  fill: #fc0;
+  cursor: pointer;
+}
+g.connection rect.endpoint {
+  stroke: #00f;
+  fill: #00f;
+  cursor: pointer;
+}
+g.label rect.labelpoint {
+  display: none;
+  stroke-width: 1;
+  stroke: #fc0;
+  fill: #fc0;
+  cursor: se-resize;
+}
+g.label.selected rect.labelpoint {
+  display: block;
+}
+text.funnel-icon {
+  fill: #ad9897;
+  font-family: flowfont;
+  font-size: 30px;
+}
+text.port-name {
+  fill: #262626;
+  font-size: 14px;
+}
+text.port-icon {
+  fill: #ad9897;
+  font-family: flowfont;
+  font-size: 30px;
+}
+text.port-transmission-icon {
+  font-size: 15px;
+  fill: #728e9b;
+}
+text.active-thread-count {
+  font-size: 10px;
+}
+text.process-group-name {
+  fill: #262626;
+  font-size: 14px;
+}
+text.version-control {
+  font-family: FontAwesome;
+  font-size: 18px;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 1);
+  visibility: hidden;
+}
+text.process-group-contents-count {
+  fill: #775351;
+  font-size: 15px;
+  font-weight: 500;
+  // font-family: Roboto, sans-serif;
+}
+g.process-group.drop rect.border {
+  stroke: #00f;
+  stroke-width: 3;
+}
+text.process-group-contents-icon {
+  font-size: 15px;
+  fill: #728e9b;
+}
+text.remote-process-group-name {
+  fill: #262626;
+  font-size: 14px;
+}
+text.remote-process-group-uri {
+  fill: #004849;
+  font-size: 12px;
+}
+text.remote-process-group-transmission-status {
+  font-size: 15px;
+  fill: #728e9b;
+}
+text.remote-process-group-transmission-secure {
+  font-family: FontAwesome;
+  font-size: 13px;
+  fill: #004849;
+}
+text.remote-process-group-last-refresh {
+  fill: #728e9b;
+}
+.wrap {
+  width:200px;
+  margin:0;
+  // padding-left:0.5px;
+}
+.left_col {
+  float:left;
+  width:100px;
+}
+.right_col {
+  float:right;
+  width:100px;
+}
+.icon{
+  width:40px;
+  height:40px;
+  padding-left:5px;
+  padding-top: 10px;
+}
+.icon_size{
+  width:40px;
+  height:40px;
+  padding-left:10px;
+  padding-top: 10px;
+}
+
+::ng-deep #exportLabel .mat-button-toggle-label-content {
+  position: relative;
+  margin-top: -4.5px;
+  }
+
+  

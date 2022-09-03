@@ -1,0 +1,10 @@
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+    <div fxFlex="100%">
+        <mat-card>
+            <mat-card-title i18n="Metric Data Details">Metric Data Details</mat-card-title>
+            <app-yorogrid gridId="Metric Data" (messageEvent)="receiveMessage($event)" defaultColumn="sent_timestamp"
+                defaultSortDirection="desc">
+            </app-yorogrid>
+        </mat-card>
+    </div>
+</div>

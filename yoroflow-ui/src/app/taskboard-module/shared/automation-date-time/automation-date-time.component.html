@@ -1,0 +1,70 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;" *ngIf="type === 'startTime'" i18n="Select start time">Select start time</h4>
+    <h4 style="color: #656565;" *ngIf="type === 'endTime'" i18n="Select end time">Select end time</h4>
+    <span class="line-style"></span>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" fxLayoutGap="10px">
+        <ng-container *ngIf="type === 'startTime'" formGroupName="startDate">
+            <div fxLayout="column" style="width: 48%;">
+                <mat-radio-group formControlName="variableType" style="width: 100%;">
+                    <mat-radio-button (change)="radioChange($event,'startTime')" value="fieldType">Page Field
+                    </mat-radio-button>
+                    <mat-radio-button (change)="radioChange($event,'startTime')" value="constant" class="margin-css">
+                        Constant
+                    </mat-radio-button>
+                </mat-radio-group>
+                <mat-form-field *ngIf="form.get('startDate').get('variableType').value==='constant'"
+                    appearance="outline" style="width: 100%;">
+                    <input matInput [ngxMatDatetimePicker]="picker1" placeholder="Choose a start date"
+                        formControlName="dateTime" [min]="minDate" [max]="maxDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #picker1 color="primary" [enableMeridian]="true">
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+                <ng-container *ngIf="form.get('startDate').get('variableType').value==='fieldType'">
+                    <div fxLayout="row wrap" style="width: 100%;">
+                        <ng-container *ngFor="let field of dateFields">
+                            <div [class]="field.isSelected===true?'selected-field-css':'labelList-style'"
+                                (click)="setDateFieldValue(field,'startTime')" [id]="'fields_'+i" appMaterialElevation>
+                                {{field.label.labelName}}
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="type === 'endTime'" formGroupName="endDate">
+            <div fxLayout="column" style="width: 48%;">
+                <mat-radio-group formControlName="variableType" style="width: 100%;">
+                    <mat-radio-button (change)="radioChange($event,'endTime')" value="fieldType">Page Field
+                    </mat-radio-button>
+                    <mat-radio-button (change)="radioChange($event,'endTime')" value="constant" class="margin-css">
+                        Constant
+                    </mat-radio-button>
+                </mat-radio-group>
+                <mat-form-field *ngIf="form.get('endDate').get('variableType').value==='constant'" appearance="outline"
+                    style="width: 100%;">
+                    <input matInput [ngxMatDatetimePicker]="picker2" placeholder="Choose a end date"
+                        formControlName="dateTime" [min]="minDate" [max]="maxDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker #picker2 color="primary" [enableMeridian]="true">
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+                <ng-container *ngIf="form.get('endDate').get('variableType').value==='fieldType'">
+                    <div fxLayout="row wrap" style="width: 100%;">
+                        <ng-container *ngFor="let field of dateFields">
+                            <div [class]="field.isSelected===true?'selected-field-css':'labelList-style'"
+                                (click)="setDateFieldValue(field,'endTime')" [id]="'fields_'+i" appMaterialElevation>
+                                {{field.label.labelName}}
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button color="primary" (click)="apply()">Apply</button>
+    </div>
+</form>

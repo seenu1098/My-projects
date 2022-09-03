@@ -1,0 +1,43 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;width: 150px;" i18n="Enter subject">Enter subject</h4>
+    <span class="line-style"></span>
+</div>
+<!-- <form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" style="margin-bottom: 40px;">
+        <mat-form-field appearance="outline" style="width: 90%;">
+            <mat-label i18n="Subject">Subject</mat-label>
+            <textarea matInput rows="3" cols="4" formControlName="subject"></textarea>
+        </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button color="primary" (click)="apply(userForm)" i18n="Apply">Apply</button>
+    </div>
+</form> -->
+
+
+<form [formGroup]="form" #userForm="ngForm" class="quill-form-css">
+    <quill-editor #quill id="quill" formControlName="subject" placeholder="Enter Text" [modules]="quillConfig"
+        [format]="format">
+    </quill-editor>
+    <div style="margin-top: 10px;">
+        <mat-button class="filter_option align-self-center  mr-2 " *ngFor="let select of systemVariables"
+            (click)="selectChip(select)">
+            {{select?.fieldId}}
+        </mat-button>
+    </div>
+    <div fxLayout="row" class="mt-3">
+        <h4 style="color: #656565;width: 150px;" i18n="Form Fields">Form Fields</h4>
+        <span class="line-style"></span>
+    </div>
+    <div fxLayout="row wrap" class="mt-2">
+        <ng-container *ngFor="let field of fields;let i = index;">
+            <mat-button class="filter_option_field align-self-center  mr-2 " (click)="selectField(field)">
+                {{field.displayName}}</mat-button>
+        </ng-container>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button color="primary"
+            *ngIf="form.get('subject').value!==undefined && form.get('subject').value!==null && form.get('subject').value!==''"
+            class="apply-button-css" (click)="apply(userForm)" i18n="Apply">Apply</button>
+    </div>
+</form>

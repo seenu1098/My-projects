@@ -1,0 +1,44 @@
+.mat-dialog-container {
+  margin: 0px 20px !important;
+}
+
+#toggle-button ::ng-deep .mat-slide-toggle-content {
+  margin-top: 0px !important;
+}
+
+.subStatus_color_css {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  border: 0.5px solid rgb(39, 39, 39);
+}
+
+.remove_subStatus_class{
+  font-size: 15px;
+}
+
+#subStatusForm ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+  padding: 12px 5px 7px 5px !important;
+  border: 5px !important;
+}
+
+#subStatusForm
+  ::ng-deep
+  .mat-form-field-flex
+  > .mat-form-field-infix
+  .mat-form-field-appearance-outline
+  .mat-form-field-suffix {
+  top: 0.45em;
+}
+
+#subStatusForm ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+  margin-top: 4px;
+}
+
+#subStatusForm ::ng-deep .mat-form-field-hide-placeholder .mat-form-field-label-wrapper {
+  top: -17px;
+}
+
+#subStatusForm ::ng-deep .mat-select-arrow {
+  margin-top: 11px !important;
+}

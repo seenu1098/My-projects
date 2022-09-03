@@ -1,0 +1,10 @@
+.toolbar-css{
+    height: 100px;
+    background-color: var(--theme-main-color);
+    color: white;
+}
+
+.main_logo{
+    width: 150px;
+}
+  

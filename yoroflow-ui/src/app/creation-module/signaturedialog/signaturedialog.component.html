@@ -1,0 +1,71 @@
+<ng-container *ngIf="data.type !== 'signature-control'">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h4 style="font-weight: bold;" *ngIf="data.type !== 'edit'" i18n="Add Signature">Add Signature</h4>
+    <h4 style="font-weight: bold;" *ngIf="data.type === 'edit'" i18n="Edit Signature">Edit Signature</h4>
+    <mat-icon id="closeSubStatus" style="margin-top: -20px;cursor: pointer;" (click)="close()">close</mat-icon>
+  </div>
+  <form [formGroup]="signatureForm" #userForm="ngForm" id="signatureForm">
+    <div>
+      <mat-form-field appearance="outline">
+        <input matInput formControlName="name" placeholder="Signature Name" i18n-placeholder="Signature Name" required>
+        <mat-error i18n="Signature is required">Signature is required</mat-error>
+      </mat-form-field>
+      <signature-pad #signature id="signature" [options]="signaturePadOptions" (onEndEvent)="drawComplete()">
+      </signature-pad>
+      <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center">
+        <a class="clear-css" style="color: red;cursor: pointer;" (click)="clear()" i18n="Clear">Clear</a>
+      </div>
+    </div>
+    <div fxLayout="row" style="width:100%">
+      <mat-slide-toggle id="toggle-button" style="width: 100%;" formControlName="defaultSignature"
+        (change)="setDefault($event)" i18n="Default Signature">Default Signature
+      </mat-slide-toggle>
+    </div>
+  </form>
+  <div fxLayout="row" fxLayoutAlign="end end">
+    <button mat-raised-button id="addSubStatus" color="primary" *ngIf="data.type !== 'edit'"
+      [disabled]="!signatureForm.dirty && disable === false" type="button" (click)="saveSign(userForm)"
+      i18n="Save">Save</button>
+    <button mat-raised-button id="addSubStatus" color="primary" *ngIf="data.type === 'edit'" type="button"
+      (click)="saveSign(userForm)" i18n="Update">Update</button>
+    <button mat-raised-button id="addSubStatus" color="accent" style="margin-left: 6px;" type="button" (click)="close()"
+      i18n="Cancel">Cancel</button>
+  </div>
+</ng-container>
+<ng-container *ngIf="data.type === 'signature-control' && allowSave === false">
+  <mat-dialog-content i18n="Do you want to save this signature as user signature">
+    Do you want to save this signature as user signature
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="saveUserSignature()" i18n="Yes">
+      Yes
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">
+      No
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type === 'signature-control' && allowSave === true">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h4 style="font-weight: bold;" i18n="Add Signature">Add Signature</h4>
+  </div>
+  <form [formGroup]="signatureForm" #userForm="ngForm" id="signatureForm">
+    <div>
+      <mat-form-field appearance="outline">
+        <input matInput formControlName="name" placeholder="Signature Name" i18n-placeholder="Signature Name" required>
+        <mat-error i18n="Signature Name is required">Signature Name is required</mat-error>
+      </mat-form-field>
+    </div>
+    <!-- <div fxLayout="row" style="width:100%" >
+      <mat-slide-toggle id="toggle-button" style="width: 100%;" formControlName="defaultSignature"
+        (change)="setDefault($event)">Default Signature
+      </mat-slide-toggle>
+    </div> -->
+  </form>
+  <div fxLayout="row" fxLayoutAlign="end end">
+    <button mat-raised-button id="addSubStatus" color="primary" [disabled]="!signatureForm.dirty" type="button"
+      (click)="allowSaveUserSignature(userForm)" i18n="Save">Save</button>
+    <button mat-raised-button id="addSubStatus" color="accent" style="margin-left: 6px;" type="button"
+      (click)="onNoClick()" i18n="Cancel">Cancel</button>
+  </div>
+</ng-container>

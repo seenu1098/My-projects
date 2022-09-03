@@ -1,0 +1,10 @@
+@Library("yorosis-shared-library") _
+
+standardPipeline {
+    projectType = "java-service"
+    deploymentName = "db-deployment-service-deployment"
+    dockerImageName = "db-deployment-service"
+    canSkipSonarQubeCheck = true
+    canBuildDockerImage = true
+    canDeployImage = true
+}

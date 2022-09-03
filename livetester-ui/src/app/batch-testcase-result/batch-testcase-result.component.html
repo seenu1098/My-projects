@@ -1,0 +1,46 @@
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" >
+  <div fxFill="100">
+    <mat-card style="background-color:rgb(154, 199, 212)">
+      <mat-card-title>Summary
+        <span>
+          <button mat-button type="btn" id="closebtn" class="close" (click)="onNoClick()" aria-label="Close">
+            <mat-icon class="icon" svgIcon="clear"></mat-icon>
+          </button>
+        </span></mat-card-title>
+
+      <mat-card>
+        <p>
+          <mat-label style="font-weight: bold">Batch#: </mat-label>{{batchVO.batchNumber}}
+        </p>
+        <p>
+          <mat-label style="font-weight: bold">Batch Name: </mat-label>{{batchVO.batchName}}
+        </p>
+        <p>
+          <mat-label style="font-weight: bold">Testcase Name: </mat-label>{{batchVO.testCaseName}}
+        </p>
+        <div fxLayout="row" fxLayoutGap="10px">
+          <p>
+            <mat-label style="font-weight: bold">Patient Control No: </mat-label>{{batchVO.pcn}}
+          </p>
+          <p>
+            <mat-label style="font-weight: bold">Claim Reference No: </mat-label>{{batchVO.tcn}}
+          </p>
+        </div>
+        <p>
+            <mat-label style="font-weight: bold;text-align: 10px">Generated EDI: </mat-label>
+            <br><br>
+            <textarea style="width: 100%;" matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="10" readonly>{{batchVO.generateEDI}}</textarea>
+            
+          </p>
+      </mat-card>
+      <br><br>
+      <mat-card-title>Testcase Result</mat-card-title>
+        <app-yorogrid   gridId='batch-testcase-result' filterIdColumn='col7' filterIdColumnValue='{{filterIdColumnValue}}' defaultColumn='status'>
+      </app-yorogrid>
+    </mat-card>
+  </div>
+</div>

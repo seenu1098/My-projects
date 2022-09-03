@@ -1,0 +1,69 @@
+<mat-card>
+    <mat-card-title>{{'Print Fields Configuration' | translate}}</mat-card-title>
+    <div fxLayout="row">
+        <div style="margin-left:71%">{{'Repeatable' | translate}}</div>
+    </div>
+    <form [formGroup]="form" #userForm="ngForm">
+        <div formArrayName="chipProperties" *ngFor="let chipArray of getChipFormArray();let i= index;">
+            <div fxLayout="row" [formGroupName]="i">
+                <div formArrayName="chipValue"
+                    *ngFor="let chipvalue of chipArray['controls'].chipValue['controls'];let k=index"
+                    style="width:70%;">
+                    <div [formGroupName]="k">
+                        <mat-form-field style="margin-top:5px;width: 100%;" appearance="outline">
+                            <mat-label>{{'Label' | translate}}*</mat-label>
+                            <mat-chip-list #chipList aria-label="Label" cdkDropList cdkDropListOrientation="horizontal"
+                                (cdkDropListDropped)="drop($event,placeholder[i])">
+                                <mat-chip *ngFor="let holder of placeholder[i];let j = index"
+                                    style="margin-left:0px;margin-top: -11px;" [selectable]="selectable"
+                                    [removable]="removable" (removed)="removeChip(holder,i)"
+                                    (click)="openProperties(holder,i,j,holder.fieldType)">
+                                    {{ holder.chip }}
+                                    <mat-icon matChipRemove *ngIf="removable">close
+                                    </mat-icon>
+                                </mat-chip>
+                                <input #chipCntl formControlName="chip" [id]="'chip'+k" [matChipInputFor]="chipList"
+                                    [matAutocomplete]="auto" (matChipInputTokenEnd)="add($event,i)"
+                                    (click)="loadOptions($event,i)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" panelWidth="400px"
+                                (optionSelected)="selected($event,i)">
+                                <mat-optgroup *ngFor="let fieldGroup of fieldNameArray" [label]="fieldGroup.name">
+                                    <mat-option *ngFor="let fieldName of fieldGroup.fieldNames" [id]="fieldName"
+                                        [value]="fieldName">
+                                        {{fieldName}}
+                                    </mat-option>
+                                </mat-optgroup>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <mat-slide-toggle [id]="'repeat'+i" color="accent" (change)="repeatable($event,i)"
+                    style="margin-left:10px;margin-right:53px;margin-top: 14px;" formControlName="isRepeatable">
+                </mat-slide-toggle>
+                <!-- <mat-slide-toggle style="margin-right: 60px;margin-top: 14px;" [id]="'horizontalLine'+i" color="accent"
+                    formControlName="horizontalLine">
+                </mat-slide-toggle>
+                <mat-form-field style="width:8%;margin-right:10px;">
+                    <input matInput type="number" [id]="'line_'+i" oninput="this.value = Math.abs(this.value)"
+                        placeholder="Number of Lines" formControlName="numberOfLines">
+                </mat-form-field> -->
+                <div fxLayout="row" fxLayoutGap="15px">
+                    <button mat-mini-fab style="margin-right:10px;" [id]="'btnAdd'+i" type="button" color="primary"
+                        (click)="addChipFormArray(i)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <button [type]="'button'+i" mat-mini-fab color="accent" (click)="removeChipFormArray(i)"
+                        [disabled]="getChipFormArray().length===1">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px">
+            <button id="save" mat-raised-button color="primary" (click)="submit(userForm)">{{'Submit' |
+                translate}}</button>
+            <button id="cancel" mat-raised-button color="accent" (click)="cancel()">{{'Cancel' | translate}}</button>
+        </div>
+    </form>
+</mat-card>

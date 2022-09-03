@@ -1,0 +1,8 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <mat-card-title *ngIf="data.id === null">Create Table Objects</mat-card-title>
+    <mat-card-title *ngIf="data.id !== null">Edit Table Objects</mat-card-title>
+    <mat-icon id="close" (click)="close()" style="font-size: 25px;cursor: pointer;">close</mat-icon>
+</div>
+
+<app-table-objects [tableObjectDbTask]="dbTaskTableObjectVO" (isChanged)="valueChanged($event)"
+    (emitTableId)="getTableId($event)"></app-table-objects>

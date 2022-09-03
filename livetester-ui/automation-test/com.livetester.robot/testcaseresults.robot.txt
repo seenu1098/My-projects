@@ -1,0 +1,60 @@
+*** Settings ***
+Library                          Selenium2Library
+
+
+*** Variable ***
+${URL}                           http://localhost:4200/login
+${Browser}                       chrome
+
+*** Keywords ***
+Start Browser and Maximize
+                                 [Arguments]                                  ${url}                           ${Browser}
+                                 Open browser                                 ${URL}                           ${Browser}
+                                 Maximize Browser Window
+
+
+*** Test Cases ***
+Login Form
+                                 ${res}=                                      Start Browser and Maximize       ${URL}                       ${Browser}
+                                 Wait Until Element Is Visible                id=login
+                                 Click Button                                 id=login
+                                 ${present}=                                  Run Keyword And Return Status    Element Should Be Visible    id=usernameRequired
+                                 Should Be True                               ${present} == ${True}
+                                 ${present}=                                  Run Keyword And Return Status    Element Should Be Visible    id=passwordRequired
+                                 Should Be True                               ${present} == ${True}
+
+                                 #Login with correct username and Password
+                                 Wait Until Element Is Visible                id=username
+                                 Click Element                                id=username
+                                 Input Text                                   id=username                      bob@test.com
+                                 Wait Until Element Is Visible                id=password
+                                 Click Element                                id=password
+                                 Input Text                                   id=password                      123qwe
+                                 Wait Until Element Is Visible                id=login
+                                 Click Button                                 id=login
+
+ExecuteTestCaseResult Service
+
+                                 Sleep                                        1s
+                                 Wait Until Element Is Visible                id=testcaseExecutinMenu
+                                 Click Button                                 id=testcaseExecutinMenu
+                                 Sleep                                        1s
+                                 Wait Until Element Is Visible                id=testcase-results
+                                 Click Button                                 id=testcase-results
+                                 Sleep                                        1s
+                                 Wait Until Element Is Visible                id=3test
+                                 Double Click Element                         id=3test
+                                 Sleep                                        1s
+                                 Wait Until Element Is Visible                id=selectall
+                                 Click Element                                id=selectall
+                                 Wait Until Element Is Visible                id=requeryResult
+                                 Click Button                                 id=requeryResult
+                                 Sleep                                        1s
+                                 Wait Until Element Is Visible                id=responseMessage
+                                 ${requeryResult}=                            Get Text                         id=responseMessage
+                                 Click Button                                 id=closed
+
+
+
+
+

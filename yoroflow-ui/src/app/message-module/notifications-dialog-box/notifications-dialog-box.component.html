@@ -1,0 +1,68 @@
+<mat-spinner [diameter]="40" *ngIf="!show" style="margin-left: 48%;margin-top: 30%;"></mat-spinner>
+<mat-card style="background-color: #e6e6e6;" *ngIf="show">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-card-title>Notifications</mat-card-title>
+        <mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+    </div>
+
+    <div fxLayout="column" fxLayoutGap="20px" style="background-color: #e6e6e6;width: 100%;margin: 0%;"
+        *ngIf="notficationList && show" class="chat-margin user-chat-list-container scrollbar-css">
+
+        <ng-container *ngIf="notficationList && show">
+            <div fxLayout="row" fxLayoutAlign="center center">
+                <span style="font-weight: bold;" *ngIf="showNoNotificationMessage">No Notifications To Display</span>
+            </div>
+            <ng-container *ngFor="let notfication of notficationList">
+                <div>
+                    <div fxLayout="row" fxLayoutGap="15px" class="chat-margin active-user-container"
+                        style="width: 100%;padding: 10px;" fxLayoutAlign="space-between center">
+                        <ng-container *ngIf="notfication.readTime === null">
+                            <div fxLayout="row" fxLayoutGap="15px">
+                                <div *ngIf="notfication.fromUserProfilePicture !==null && notfication.fromUserProfilePicture !==''">
+                                    <img  [src]="transformImage(notfication.fromUserProfilePicture)"
+                                        class="chat-prof-pic" alt="User Avatar">
+                                        
+                                </div>
+                                <div class="circle" *ngIf="notfication.fromUserProfilePicture ===null || notfication.fromUserProfilePicture ===''
+                                || !notfication.fromUserProfilePicture">
+                                    {{userProfile(notfication.fromUserName)}}</div>
+                                <div>
+                                    <p style="font-weight: bolder;">
+                                        {{notfication.message}} is assigned to you</p>
+                                    <a style="cursor: pointer;text-decoration: underline;"
+                                        (click)="anyAction(notfication)">{{notfication.message}}</a>
+                                </div>
+                            </div>
+                            <!-- <button mat-button>View Details</button> -->
+                            <div fxLayout="row" fxLayoutGap="10px">
+                                <button mat-raised-button (click)="markAsRead(notfication)" type="button"
+                                    class="button-css">Mark as read</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="notfication.readTime !== null">
+                            <div fxLayout="row" fxLayoutGap="15px">
+                                <div *ngIf="notfication.fromUserProfilePicture !==null && notfication.fromUserProfilePicture !==''">
+                                    <img  [src]="transformImage(notfication.fromUserProfilePicture)"
+                                        class="chat-prof-pic" alt="User Avatar">
+                                        
+                                </div>
+                                <div class="circle" *ngIf="notfication.fromUserProfilePicture ===null || notfication.fromUserProfilePicture ===''
+                                || !notfication.fromUserProfilePicture">
+                                    {{userProfile(notfication.fromUserName)}}</div>
+                                <div>
+                                    <p style="font-weight: 600;">{{notfication.message}} is assigned to you</p>
+                                    <a style="cursor: pointer;text-decoration: underline;"
+                                        (click)="anyAction(notfication)">{{notfication.message}}
+                                    </a>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                    </div>
+                </div>
+            </ng-container>
+
+        </ng-container>
+
+    </div>
+</mat-card>

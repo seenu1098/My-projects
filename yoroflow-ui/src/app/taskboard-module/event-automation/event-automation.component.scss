@@ -1,0 +1,397 @@
+.header-style {
+    margin: 25px 0px 5px 20px;
+    color: grey;
+    cursor: pointer;
+}
+
+.automation-style {
+    color: grey;
+    cursor: pointer;
+    margin-top: 5px;
+    font-weight: 100;
+    font-size: 18px;
+    // font-family: "Roboto", helvetica, arial, sans-serif;
+}
+
+.primaryList-card {
+    width: 45%;
+    text-align: left;
+    background: white;
+    height: 30px;
+}
+
+.actionsList-style {
+    border: 0.5px solid #a5a5a5;
+    margin-left: 5px;
+    margin-top: 10px;
+    height: 24px;
+    border-radius: 5px;
+    color: grey;
+    cursor: pointer;
+    padding: 0px 2px 0px 2px;
+}
+
+.statusList-style {
+    margin-top: 4px;
+    height: 26px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 0px 6px 0px 6px;
+    border: 0.5px solid #d6d6d6;
+    line-height: 26px;
+    font-weight: 500;
+}
+
+.userList-style {
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 24px;
+    border-radius: 3px;
+    color: grey;
+    cursor: pointer;
+    padding: 2px 6px 0px 6px;
+}
+
+.actions-class {
+    color: black;
+    cursor: pointer;
+    font-family: "Arial";
+    &:hover {
+        color: #039be5;
+    }
+}
+
+.doSomething-class {
+    color: rgb(58, 58, 58);
+    cursor: pointer;
+    &:hover {
+        color: #039be5;
+    }
+}
+
+.container {
+    border: 0.5px solid rgb(230, 230, 230);
+    height: 100px;
+    margin: 10px 0px 0px 10px;
+    font-size: 15px;
+    width: 300px;
+}
+
+.hoverClass {
+    border: 0.5px dotted rgb(192, 192, 192);
+}
+
+#event-automation ::ng-deep .mat-dialog-container {
+    border-radius: 10px;
+}
+
+.actions-css {
+    width: 100%;
+    margin-left: 20px;
+}
+
+#event-automation ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+    background-color: #00e600;
+}
+
+#event-automation ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+    background-color: #80ff80;
+}
+
+.line-style {
+    border-top: 0.5px solid rgb(211, 211, 211);
+    width: 80%;
+    margin: 12px 0px 0px 5px;
+}
+
+.removeIcon-css {
+    font-size: 18px;
+    position: absolute;
+    z-index: 9999;
+}
+
+.removeLabel-css {
+    font-size: 15px;
+    position: absolute;
+    z-index: 9999;
+    margin-top: -10px;
+    margin-left: 30px;
+}
+
+.card-css {
+    margin-top: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    &:hover {
+        color: #039be5;
+    }
+}
+
+.shadow-class {
+    box-shadow: 0px 2px 0px 0px #039be5;
+}
+
+.category-button-css {
+    height: 40px;
+    width: 98%;
+    text-align: left;
+}
+
+.header-css {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.category-label-css {
+    font-size: 15px;
+    font-weight: 600;
+    color: grey;
+    padding: 20px 0px;
+}
+
+#category-column {
+    width: 200px;
+    border-right: 0.5px solid rgb(214, 214, 214);
+    margin-top: 10px;
+    font-family: Arial;
+}
+
+.categoryName-header-css {
+    margin: 20px 15px;
+}
+
+.categoryName-heading-border-css {
+    border-top: 0.5px solid rgb(214, 214, 214);
+    width: 80%;
+    margin-top: 10px;
+    margin-left: 7px;
+}
+
+.category-automation-card {
+    width: 300px;
+    height: 250px;
+    display: inline block;
+    padding: 24px;
+    margin-left: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.category-headerName-css {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#automation ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+    padding: 12px 5px 7px 5px !important;
+    border: 5px !important;
+}
+
+#automation
+    ::ng-deep
+    .mat-form-field-flex
+    > .mat-form-field-infix
+    .mat-form-field-appearance-outline
+    .mat-form-field-suffix {
+    top: 0.45em;
+}
+
+#automation ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+    margin-top: 4px;
+}
+
+#automation ::ng-deep .mat-form-field-hide-placeholder .mat-form-field-label-wrapper {
+    top: -17px;
+}
+
+#automation ::ng-deep .mat-select-arrow {
+    margin-top: 11px !important;
+}
+
+.background-lighten {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: transparent;
+    background-size: 150px;
+    background-position: right bottom;
+}
+
+@keyframes spin-animation {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.animate-class {
+    color: blue;
+    display: block;
+    transform-origin: center center;
+    -webkit-animation: spin-animation 2s linear infinite;
+    animation: spin-animation 10s linear infinite;
+}
+
+.add-button-css {
+    color: green;
+    height: 30px;
+    line-height: 20px;
+}
+
+.remove-button-css {
+    color: red;
+    height: 30px;
+    line-height: 20px;
+}
+
+.img-class {
+    width: 180px;
+    height: 90px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.img-card {
+    width: 180px;
+    height: 120px;
+    margin-left: 15px;
+    border-radius: 10px;
+}
+
+.logo-class {
+    width: 20px;
+    height: 20px;
+}
+
+.automation-css {
+    height: 160px;
+}
+
+.application-name-css {
+    margin: 1px 0px 0px 5px;
+    color: grey;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/**** Start falling dots ****/
+.dot-falling {
+    position: relative;
+    left: -9999px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    box-shadow: 9999px 0 0 0 #9880ff;
+    animation: dotFalling 1s infinite linear;
+    animation-delay: 0.1s;
+}
+
+.dot-falling::before,
+.dot-falling::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
+}
+
+.dot-falling::before {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFallingBefore 1s infinite linear;
+    animation-delay: 0s;
+}
+
+.dot-falling::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFallingAfter 1s infinite linear;
+    animation-delay: 0.2s;
+}
+
+@keyframes dotFalling {
+    0% {
+        box-shadow: 9999px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+    25%,
+    50%,
+    75% {
+        box-shadow: 9999px 0 0 0 #9880ff;
+    }
+    100% {
+        box-shadow: 9999px 15px 0 0 rgba(152, 128, 255, 0);
+    }
+}
+
+@keyframes dotFallingBefore {
+    0% {
+        box-shadow: 9984px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+    25%,
+    50%,
+    75% {
+        box-shadow: 9984px 0 0 0 #9880ff;
+    }
+    100% {
+        box-shadow: 9984px 15px 0 0 rgba(152, 128, 255, 0);
+    }
+}
+
+@keyframes dotFallingAfter {
+    0% {
+        box-shadow: 10014px -15px 0 0 rgba(152, 128, 255, 0);
+    }
+    25%,
+    50%,
+    75% {
+        box-shadow: 10014px 0 0 0 #9880ff;
+    }
+    100% {
+        box-shadow: 10014px 15px 0 0 rgba(152, 128, 255, 0);
+    }
+}
+/*** end falling dots ***/
+
+.warning-css {
+    background: #f4433617;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ff685d;
+}
+
+.logo-selection-class{
+    // border: 0.5px solid rgb(202, 202, 202);
+    background-color: #e1e9ff;
+    color: #6993ff;
+    border-radius: 7px;
+    padding: 2px 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.logo-selection-class-active{
+    background-color: #3f5bff!important;
+    color: #fff!important;
+}
+
+.border-css{
+    border-top: 0.5px solid #d6d6d6;
+    width: 78%;
+    margin-top: 10px;
+    margin-left: 7px;
+}
+
+.app-icon-css{
+    height: 15px;
+    width: 15px;
+    margin: 0px 4px 3px 2px;
+}

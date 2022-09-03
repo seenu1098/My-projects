@@ -1,0 +1,173 @@
+<!-- <mat-card style="width:100%">
+    <mat-card-title>Row Configuration</mat-card-title> -->
+
+<form [formGroup]="form" #userForm="ngForm" (ngSubmit)="updateCoulmn(userForm)" id="workflow_formfield_popup">
+    <div class="row w-100 mx-0">
+        <div class="col-md-5 pl-0">
+            <h2 class="fs_14 font-weight-bold mb-0" i18n="Row Settings">Row Settings</h2>
+        </div>
+        <div class="col-md-7 pr-0">
+            <div class="row w-100 mx-0 justify-content-end">
+                <button mat-raised-button class="mr-2" color="primary" id="btnUpdate" type="submit"
+                    [disabled]="!userForm.dirty" i18n="Update">Update</button>&nbsp;
+                <button mat-raised-button class="mr-2" (click)="cancel()" id="btnCancel" color="accent" type="button"
+                    i18n="Delete">Delete</button>
+                <button mat-raised-button (click)="close()" id="btnClose" color="accent" type="button"
+                    i18n="Close">Close</button>
+            </div>
+        </div>
+    </div>
+    <hr class="mt-1 mx-0 mb-0 b-0">
+    <div class="row mx-0 w-100 mt-1">
+        <div class="col-md-3 border_right_lgray pl-0 pr-2">
+            <span class="category-label-css fs_14" i18n="Settings">Settings</span>
+            <!-- <ng-container *ngFor="let tab of tabs"> -->
+            <!-- <button mat-button class="category-button-css" (click)="changeTab(tab)"
+                    [style.color]="tab.isSelected?'#039be5':'black'"
+                    [style.background]="tab.isSelected?'#e5f4ff':''" [id]="'tab'+i">
+                        <mat-icon [style.color]="tab.color" style="font-size: 20px;margin-right: 10px;">
+                        {{tab.icon}}
+                    </mat-icon>
+                    <span>{{tab.name}}</span>
+                    </button> -->
+
+            <button mat-button class="category-button-css" (click)="changeTab('Configuration')"
+                [style.color]="selectedTab === 'Configuration' ? '#039be5':'black'"
+                [style.background]="selectedTab === 'Configuration' ? '#e5f4ff':''" type="button">
+                <mat-icon style="color: blue;" class="fs_14 h_14 w_14 mt-2">manage_accounts
+                </mat-icon>
+                <span i18n="Configuration">Configuration</span>
+            </button>
+
+            <button mat-button class="category-button-css" (click)="changeTab('Layout')"
+                [style.color]="selectedTab === 'Layout' ? '#039be5':'black'"
+                [style.background]="selectedTab === 'Layout' ? '#e5f4ff':''" type="button">
+                <mat-icon style="color: green;" class="fs_14 h_14 w_14 mt-2">settings
+                </mat-icon>
+                <span i18n="Layout">Layout</span>
+            </button>
+
+            <button mat-button class="category-button-css" (click)="changeTab('Style')"
+                [style.color]="selectedTab === 'Style' ? '#039be5':'black'"
+                [style.background]="selectedTab === 'Style' ? '#e5f4ff':''" type="button">
+                <mat-icon style="color:#ffb100;" class="fs_14 h_14 w_14 mt-2">style
+                </mat-icon>
+                <span i18n="Style">Style</span>
+            </button>
+
+            <!-- </ng-container> -->
+        </div>
+
+        <!-- <mat-tab-group id="columnSideTab"> -->
+        <div *ngIf="selectedTab === 'Configuration'" class="col-md-8 mx-0 px-0">
+            <div fxLayout="column">
+
+                <!-- <ng-template mat-tab-label>
+                    <mat-icon matTooltip="Configuration">manage_accounts</mat-icon>
+                </ng-template> -->
+                <!-- <mat-form-field>
+                        Row <input matInput formControlName="row" readonly>
+                    </mat-form-field> -->
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Row Width in Percentage">Row Width in Percentage</mat-label>
+                    <input matInput min="0" max="100" id="rowWidth" oninput="this.value = Math.abs(this.value)"
+                        formControlName="rowWidth" type="number">
+                    <mat-error i18n="Please enter a value between 0 and 100">Please enter a value between 0 and 100
+                    </mat-error>
+                </mat-form-field>
+                <!-- <mat-form-field appearance="outline">
+                        <mat-label>No of Columns</mat-label>
+                        <input matInput min="1" max="10" id="totalColumns"
+                            oninput="this.value = Math.abs(this.value)" formControlName="totalColumns" type="number">
+                        <mat-error *ngIf="form.get('totalColumns').errors?.required">No of Columns is required</mat-error>
+                        <mat-error *ngIf="form.get('totalColumns').errors?.max">Please enter a value between 0 and 10
+                        </mat-error>
+                        <mat-error *ngIf="form.get('totalColumns').errors?.min">There should be minimum of 1 column
+                        </mat-error>
+                    </mat-form-field> -->
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Row Content Alignment">Row Content Alignment</mat-label>
+                    <mat-select id="alignment" formControlName="alignment">
+                        <mat-option value="start start" i18n="Left">Left</mat-option>
+                        <mat-option value="center center" i18n="Center">Center</mat-option>
+                        <mat-option value="end end" i18n="Right">Right</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="userForm.submitted === true" style="margin:1%">
+                    <mat-error *ngIf="form.get('rowBackground').errors?.required" style="font-size: 12px;" i18n="[Row Background]
+                    required">[Row Background]
+                        required</mat-error>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedTab === 'Layout'" class="col-md-8 mx-0 px-0">
+            <div fxLayout="column">
+
+                <!-- <ng-template mat-tab-label>
+                    <mat-icon matTooltip="Layout">settings</mat-icon>
+                </ng-template> -->
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Layout Direction">Layout Direction</mat-label>
+                    <mat-select id="layoutDirection" formControlName="layoutDirection">
+                        <mat-option value="row" i18n="row"> row </mat-option>
+                        <mat-option value="column" i18n="column"> column </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Layout Responsive Direction">Layout Responsive Direction</mat-label>
+                    <mat-select id="layoutResponsiveDirection" formControlName="layoutResponsiveDirection">
+
+                        <mat-option value="row" i18n="row"> row </mat-option>
+                        <mat-option value="column" i18n="column"> column </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Layout Gap">Layout Gap</mat-label>
+                    <input matInput id="layoutGap" formControlName="layoutGap" type="number">
+                </mat-form-field>
+                <div *ngIf="userForm.submitted === true" style="margin:1%">
+                    <mat-error *ngIf="form.get('totalColumns').errors?.required" style="font-size: 12px;"
+                        i18n="[No of Columns] required">[No of
+                        Columns]
+                        required</mat-error>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedTab === 'Style'" class="col-md-8 mx-0 px-0">
+            <div fxLayout="column">
+
+                <!-- <ng-template mat-tab-label>
+                    <mat-icon matTooltip="Style">style</mat-icon>
+                </ng-template> -->
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Style"> Style</mat-label>
+                    <textarea matInput id="style" formControlName="style" cols="3" rows="4" type="text">
+                                          </textarea>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-95 px-0">
+                    <mat-label i18n="Row Background">Row Background</mat-label>
+                    <input matInput id="backgroundColor" type="color" formControlName="rowBackground" name="colorpicker"
+                        required>
+                    <mat-error i18n="Row Background is required">Row Background is required</mat-error>
+                </mat-form-field>
+                <div *ngIf="userForm.submitted === true" style="margin:1%">
+                    <mat-error *ngIf="form.get('totalColumns').errors?.required" style="font-size: 12px;"
+                        i18n="[No of Columns] required">[No of
+                        Columns]
+                        required</mat-error>
+                </div>
+            </div>
+        </div>
+        <!-- </mat-tab-group> -->
+    </div>
+    <!-- <div *ngIf=!data[0].totalColumns>
+                <button mat-raised-button color="primary" id="btnCreateRow" (click)="createColumn(userForm)">Create
+                    Row</button>&nbsp;
+                <button mat-raised-button (click)="cancel()" id="btnCancel" color="accent">Cancel</button>
+            </div> -->
+    <!-- <div *ngIf=data.totalColumns fxLayout="row" fxLayoutAlign="center">
+            <button mat-raised-button color="primary" id="btnUpdate" type="submit" [disabled]="!userForm.dirty">Update</button>&nbsp;
+            <button mat-raised-button (click)="cancel()" id="btnCancel" color="accent" type="button">Delete</button>
+        </div> -->
+</form>
+<!-- </mat-card> -->

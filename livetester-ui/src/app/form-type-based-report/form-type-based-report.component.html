@@ -1,0 +1,39 @@
+<div fxLayout="row" fxLayout.xs="column" style="margin: 1%">
+  <div fxFill="100">
+    <form [formGroup]="reportGenerateForm" #userForm="ngForm" (ngSubmit)=" onSubmit(userForm)">
+      <mat-card style="margin: 1%">
+        <div class="row">
+          <mat-form-field style="margin-left: 2%">
+            <input formControlName="fromDate" id="fromDate" matInput [matDatepicker]="picker"
+              placeholder="Report From Date*">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker id="datePikerOne"></mat-datepicker>
+            <mat-error id="fromDateError" *ngIf="reportGenerateForm.get('fromDate').errors?.required">
+              Report From Date is Required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field style="margin-left: 2%">
+            <input formControlName="toDate" matInput [matDatepicker]="pickerTwo" id="toDate" placeholder="To Date*">
+            <mat-datepicker-toggle matSuffix [for]="pickerTwo"></mat-datepicker-toggle>
+            <mat-datepicker id="datepicker" #pickerTwo></mat-datepicker>
+            <mat-error id="toDateError" *ngIf="reportGenerateForm.get('toDate').errors?.required">
+              Report To Date is Required
+            </mat-error>
+          </mat-form-field>
+          <mat-error *ngIf="reportGenerateForm.errors && reportGenerateForm.get('toDate').dirty">
+            Report To Date should be greater than or equal to the Report From Date
+          </mat-error>
+          <button style="margin-left: 2%" mat-raised-button color="primary" id="btnsave">Generate Report</button>
+        </div>
+      </mat-card>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="reportGenerated">
+  <mat-card style="margin: 1%">
+    <highcharts-chart [Highcharts]="highcharts" [options]="chartOptions"
+      style="width: 80%; height: 600px; display: block;">
+    </highcharts-chart>
+  </mat-card>
+</div>

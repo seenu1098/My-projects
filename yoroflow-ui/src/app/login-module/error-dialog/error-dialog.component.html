@@ -1,0 +1,36 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutGap="10px">
+        <div style="height: 30px;">
+            <img style="height: 30px;" src="../../../assets/images/Alert-01.svg">
+        </div>
+
+        <h4 class="header-css" *ngIf="data.type==='subscription'">Subscription
+            Expired
+        </h4>
+        <h4 class="header-css" *ngIf="data.type==='trial'">Trial Ended </h4>
+
+
+
+    </div>
+
+
+    <mat-icon style=" cursor: pointer;margin-bottom: 7px;" (click)="close()">close</mat-icon>
+</div>
+
+<div class="row w-100 mx-0">
+
+    <div class="row w-100 mx-0 mt-3">
+        <p>
+            <span>
+                <h2> {{data.data}}</h2>
+            </span>
+        </p>
+
+    </div>
+
+</div>
+
+<div fxLayout="row" fxLayoutAlign="end end">
+    <button class="align-self-center justify-content-end float-right mr-2 clear_filter" mat-raised-button color="accent"
+        type="button" (click)="close()">close</button>
+</div>

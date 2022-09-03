@@ -1,0 +1,230 @@
+<ng-container *ngIf="data.data==='otp-check'">
+    <form [formGroup]="otpForm">
+        <mat-card style="border-bottom: 2px solid #5638ff;">
+            <mat-card-subtitle style="font-weight: bold;">
+                Two-Factor Authentication
+            </mat-card-subtitle>
+        </mat-card>
+        <mat-card>
+            <mat-dialog-content>
+                <div fxLayout="column" fxLayoutGap="3px">
+                    <mat-form-field appearance="outline" style="width: 98%; ">
+                        <mat-label>Enter OTP *</mat-label>
+                        <input matInput id="enterOtp" placeholder="Enter OTP *" formControlName="enterOtp">
+                        <mat-error>OTP is required</mat-error>
+                    </mat-form-field>
+                    <div>
+                        Enter the code from your {{data.otpProvider}} device. If you lost your
+                        device, you may
+                        enter one of your recovery codes.
+                    </div>
+                    <div *ngIf="data.userSetting && data.userSetting === true" class="row my-1">
+                        <hr class="hr_style">
+                        <span>
+                            or
+                        </span>
+                        <hr class="hr_style">
+                    </div>
+                    <div *ngIf="data.userSetting && data.userSetting === true">
+                        If you lost your device and recovery codes, <a (click)="emailCheck()"
+                            style="cursor: pointer; color: blue;">click here</a> to verify using contact email id.
+                    </div>
+                </div>
+            </mat-dialog-content>
+            <mat-dialog-actions align="center">
+                <button mat-raised-button color="primary" id="btnYes" (click)="enteredOtp()">Verify Code</button>
+                <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">Cancel</button>
+            </mat-dialog-actions>
+        </mat-card>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="data.data==='qr-setup'">
+    <mat-spinner [diameter]="40" style="margin-left: 48%;margin-top: 25%;" *ngIf="qrImageUrl === null"></mat-spinner>
+    <mat-card *ngIf="qrImageUrl !== null" style="border-bottom: 2px solid #5638ff;">
+        <mat-card-title>
+            Multifactor Authentication
+        </mat-card-title>
+    </mat-card>
+    <mat-card *ngIf="qrImageUrl !== null">
+        <form [formGroup]="otpForm">
+            <!-- <mat-dialog-content > -->
+            <div fxLayout="row" fxLayoutGap="10px" style="width: 100%;">
+                <div style="width: 40%;">
+                    Scan this QR code
+                </div>
+                <div *ngIf="qrImageUrl !== null">
+                    <img [src]="transformImageQr()" class="logo-qr" />
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" style="width: 100%;">
+                <div style="width: 40%;">
+                    or Enter this secret key into your {{twoFactorMethod}} device.
+                </div>
+                <mat-label style="margin-top: 2%; width: 58%;">{{qrSecret.secret}}</mat-label>
+
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" style="width: 100%; margin-top: 2%;">
+                <div style="width: 40%;">
+                    Next, enter the 6-digit passcode
+                </div>
+                <mat-form-field appearance="outline" style="width: 58%;">
+                    <mat-label>Enter OTP *</mat-label>
+                    <input matInput id="enterOtp" placeholder="Enter OTP *" formControlName="enterOtp">
+                    <mat-error>OTP is required</mat-error>
+                </mat-form-field>
+            </div>
+            <!-- </mat-dialog-content> -->
+            <div fxLayoutAlign="center center" style="margin-right: 2%; margin-top: 1%;">
+                <div [hidden]="!invalidotp" class="error">
+                    Invalid OTP
+                </div>
+            </div>
+            <mat-dialog-actions align="center">
+                <button mat-raised-button color="primary" id="btnYes" [disabled]="qrImageUrl === null"
+                    (click)="enter()">Activate</button>
+                <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">Cancel</button>
+            </mat-dialog-actions>
+        </form>
+    </mat-card>
+</ng-container>
+
+<ng-container *ngIf="data.data==='qr-method'">
+    <form [formGroup]="otpForm">
+        <mat-card style="border-bottom: 2px solid #5638ff;">
+            <mat-card-subtitle style="font-weight: bold;">
+                Select Two-Factor Method
+            </mat-card-subtitle>
+        </mat-card>
+        <mat-card>
+            <mat-dialog-content>
+                <div fxLayout="row" fxLayoutGap="10px" style="width: 100%; margin-bottom: 15px;">
+                    Please select one of Two-Factor method and press continue,
+                </div>
+                <ng-container *ngFor="let twoFactorMethod of twoFactorMethods; let i = index">
+                    <div fxLayout="column">
+                        <button class="filter_option"
+                            [style.background]="twoFactorMethod === this.otpForm.get('otpMethod').value?'#f1fff1':''"
+                            mat-button type="button" (click)="twoFactor(twoFactorMethod)" [id]="i + 'twoFactorMethod'">
+                            <div fxLayout="row" fxLayoutAlign="space-between center">
+                                <div>
+                                    <img src="assets/email-auth.png"
+                                        *ngIf="twoFactorMethod === 'Email Authenticator'" />
+                                    <img src="assets/authy.png" *ngIf="twoFactorMethod === 'Authy Authenticator'" />
+                                    <img src="assets/google-auth.png"
+                                        *ngIf="twoFactorMethod === 'Google Authenticator'" />
+                                    <span>
+                                        {{twoFactorMethod}}
+                                    </span>
+                                </div>
+                                <mat-icon *ngIf="twoFactorMethod === this.otpForm.get('otpMethod').value">done
+                                </mat-icon>
+                            </div>
+                        </button>
+                    </div>
+                </ng-container>
+            </mat-dialog-content>
+            <mat-dialog-actions align="center">
+                <button mat-raised-button color="primary" id="btnYes" [disabled]="otpForm.get('otpMethod').value === ''"
+                    (click)="enterMethod()">Continue</button>
+                <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">Cancel</button>
+            </mat-dialog-actions>
+        </mat-card>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="data.data==='recovery-code'">
+    <mat-card style="border-bottom: 2px solid #5638ff;">
+        <mat-card-title>
+            Recovery Codes
+        </mat-card-title>
+    </mat-card>
+    <mat-card>
+        <div>
+            Recovery codes are used to access your account in case you cannot receive two-factor authentication codes.
+        </div>
+        <div style="background-color: burlywood; margin-top: 2px;">
+            Copy your recovery codes, it will not shown again.
+        </div>
+    </mat-card>
+    <mat-card>
+        <mat-dialog-content>
+            <div fxLayout="row" fxLayoutGap="10px">
+                <div fxLayout="column" fxLayoutGap="10px">
+                    <ng-container *ngFor="let code of data.codes; let i = index">
+                        <ng-container *ngIf="i < 5">
+                            <div fxLayoutGap="5px">
+                                {{code}}
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <div fxLayout="column" fxLayoutGap="10px">
+                    <ng-container *ngFor="let code of data.codes; let i = index">
+                        <ng-container *ngIf="i >= 5">
+                            <div fxLayout="column" fxLayoutGap="5px">
+                                {{code}}
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+            <div fxLayoutAlign="center center" style="margin-right: 2%; margin-top: 1%;">
+                <button mat-stroked-button color="primary" id="copyToClipboard" (click)="copyToClipboard()" ngxClipboard
+                    [cbContent]="data.codes">Copy to clipboard</button>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="center">
+            <button mat-raised-button color="primary" id="btnYes" (click)="enterRecovery()">Continue</button>
+        </mat-dialog-actions>
+    </mat-card>
+</ng-container>
+
+<ng-container *ngIf="data.data==='email-qr'">
+    <form [formGroup]="otpForm">
+        <mat-card style="border-bottom: 2px solid #5638ff;">
+            <mat-card-subtitle style="font-weight: bold;">
+                Two-Factor Authentication
+            </mat-card-subtitle>
+        </mat-card>
+        <mat-card>
+            <mat-dialog-content>
+                <div fxLayout="column" fxLayoutGap="3px">
+                    <div style="width: 100%; margin-top: -2px;">
+                        <span *ngIf="resentOtp === false">Please enter one-time passcode (OTP) sent to your contact
+                            email({{contactEmail}}).</span>
+                        <span *ngIf="resentOtp === true">One-time passcode (OTP) resent to your contact
+                            email({{contactEmail}}).</span>
+                    </div>
+                    <mat-form-field appearance="outline" style="width: 100%; ">
+                        <mat-label>Enter OTP *</mat-label>
+                        <input matInput id="enterOtp" placeholder="Enter OTP *" formControlName="enterOtp">
+                        <mat-error>OTP is required</mat-error>
+                    </mat-form-field>
+                    <button class="resendOtp-css" mat-button type="button" color="primary" id="btnYes"
+                        (click)="resendOtp()">Resend OTP</button>
+                    <div
+                        style="background-color: #fdf3ec; width: 100%; padding: 10px; border: 1px solid orange; border-radius: 5px;">
+                        <span *ngIf="otpInvalid === false">One-time passcode (OTP) is valid only for
+                            {{getDataDiff()}}.</span>
+                        <span *ngIf="otpInvalid === true">One-time passcode (OTP) is invalid, press resend otp to get
+                            new otp.</span>
+                    </div>
+                </div>
+            </mat-dialog-content>
+            <mat-dialog-actions align="center">
+                <button mat-raised-button color="primary" id="btnYes"
+                    [disabled]="otpInvalid || !otpForm.get('enterOtp').dirty" (click)="emailQrCheck()">Continue</button>
+                <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">Cancel</button>
+            </mat-dialog-actions>
+        </mat-card>
+    </form>
+</ng-container>
+
+<mat-menu #menu1="matMenu" class="menu_size">
+    <ng-container *ngFor="let twoFactorMethod of twoFactorMethods; let i = index">
+        <button mat-button type="button" (click)="twoFactor(twoFactorMethod)"
+            [id]="i + 'twoFactorMethod'">{{twoFactorMethod}}
+        </button>
+    </ng-container>
+</mat-menu>

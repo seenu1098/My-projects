@@ -1,0 +1,1208 @@
+<ng-container *ngIf="isFromTaskboard===undefined || isFromTaskboard=== false" style="background-color: #f4f8ff;">
+    <div class="workflow_dashboard">
+        <mat-card class="card">
+            <div class="row mx-0 w-100 mb-3">
+                <div class="col-md-6 col-sm-12 pl-0">
+                    <mat-card-title>{{'Dashboard' | translate}}</mat-card-title>
+                </div>
+            </div>
+            <div *ngIf="showWidgets === false">
+                <div class="my-3" id="card_row">
+                    <div class="row w-100 mx-0" id="card_row">
+                        <div class="card_coloum px-0 ">
+                            <div class="row w-100 mx-0">
+                                <div class="col-md-3 px-2 col-sm-12 mb-2">
+                                    <mat-card class="main_card w-100 all-card px-3 pt-3 pb-4"
+                                        (click)="cardSelect('all')">
+                                        <div class="row w-100 mx-0">
+                                            <div class="col-md-9 col-sm-9 px-0">
+                                                <h3 class="text-white font-weight-bold  card_title fs_12" i18n="all">All
+                                                </h3>
+                                                <p class="text-white mb-0 card_number">{{dashboardVO?.all}}</p>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 pl-0">
+                                                <mat-icon class="card_icon"><span class="material-icons-outlined ">
+                                                        apps
+                                                    </span>
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 px-2 col-sm-12 mb-2">
+                                    <mat-card class="main_card w-100 all-card px-3 pt-3 pb-4 taskboard-card"
+                                        (click)="cardSelect('taskboard')">
+                                        <div class="row w-100 mx-0">
+                                            <div class="col-md-9 col-sm-9 px-0">
+                                                <h3 class="text-white font-weight-bold  card_title fs_12"
+                                                    i18n="@@taskboard">
+                                                    Taskboard</h3>
+                                                <p class="text-white mb-0 card_number">{{dashboardVO?.taskBoard}}</p>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 pl-0">
+                                                <mat-icon class="card_icon"><span class="material-icons-outlined ">
+                                                        dashboard
+                                                    </span>
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 px-2 col-sm-12 mb-2">
+                                    <mat-card class="main_card w-100  px-3 pt-3 pb-4 workflow-card"
+                                        (click)="cardSelect('workflow')">
+                                        <div class="row w-100 mx-0">
+                                            <div class="col-md-9 col-sm-9 px-0">
+                                                <h3 class="text-white font-weight-bold  card_title fs_12"
+                                                    i18n="@@workflow">
+                                                    Workflow</h3>
+                                                <p class="text-white mb-0 card_number">{{dashboardVO?.workflow}}</p>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 pl-0">
+                                                <mat-icon class="card_icon"><span class="material-icons-outlined ">
+                                                        account_tree
+                                                    </span>
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                                <div class="col-md-3 px-2 col-sm-12 mb-2">
+                                    <mat-card class="main_card w-100  px-3 pt-3 pb-4 due-card"
+                                        (click)="cardSelect('pastDue')">
+                                        <div class="row w-100 mx-0">
+                                            <div class="col-md-9 col-sm-9 px-0">
+                                                <h3 class="text-white font-weight-bold  card_title fs_12"
+                                                    i18n="@@Past Due">
+                                                    Past
+                                                    Due</h3>
+                                                <p class="text-white mb-0 card_number">{{dashboardVO?.dueDate}}</p>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 pl-0">
+                                                <mat-icon class="card_icon"><span class="material-icons-outlined ">
+                                                        pending_actions
+                                                    </span>
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table_coloum col-sm-12 pt-0 ">
+                            <h3 class="mb-1 fs_12" id="recent_workflows"><b><i i18n="@@Recent Workflows">Recent
+                                        Workflows</i></b></h3>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <td *ngFor="let workflow of latestWorkflowVO; let i = index" class="fs_12">
+                                            {{workflow?.workflowName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td *ngFor="let workflow of latestWorkflowVO; let i = index">
+                                            <a type="button" class="lanch_button fs_12"
+                                                *ngIf="workflow?.launchButtonName" [id]="workflow.workflowKey"
+                                                (click)="launchWorkflow(workflow, workflow?.workflowKey, workflow?.workflowVersion)"
+                                                i18n="@@launch">
+                                                Launch</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-5 mx-0 w-100" *ngIf="selectedCard === 'all'">
+                    <mat-card class="w-100">
+                        <div class="row mx-0 w-100">
+                            <div class="col-md-4 col-sm-12 pl-0">
+                                <mat-card-title i18n="@@Overview" class="fs_12">Overview</mat-card-title>
+                                <mat-card-subtitle class="fs_12 mb-1" i18n="@@New Vs Closed">New Vs Closed
+                                </mat-card-subtitle>
+                            </div>
+                            <div class="col-md-8 col-sm-12 justify-content-md-end justify-content-sm-start px-0">
+                                <mat-button
+                                    class="filter_option fs_12 align-self-center justify-content-end float-right mr-2 mb-1 mrsm1"
+                                    *ngFor="let overview of overviews"
+                                    [class.active]="overview?.value === selectedOverviewValue"
+                                    (click)="selectedOverview(overview?.value)">
+                                    {{overview?.name}}
+                                </mat-button>
+                            </div>
+                        </div>
+                        <div class="row w-100">
+                            <div class="col-md-7 col-sm-12 mb-2">
+                                <mat-card class="w-100 chart_matcard">
+                                    <highcharts-chart *ngIf="showGraph === true" [Highcharts]="highcharts"
+                                        [options]="getchart" class="highcharts-chart_main">
+                                    </highcharts-chart>
+                                    <div class="highcharts-chart_innerdiv" fxLayoutAlign="center center"
+                                        *ngIf="showGraph === false">
+                                        <mat-spinner [diameter]="50"></mat-spinner>
+                                    </div>
+                                </mat-card>
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                <mat-card class="w-100 mb-3 side_card">
+                                    <mat-card-title i18n="@@Taskboard Card" class="fs_12">Taskboard</mat-card-title>
+                                    <hr>
+                                    <div class="row w-100 mx-0">
+                                        <div class="col-md-4 col-sm-12 taskboard_todo">
+                                            <p class="my-0" class="fs_12"><b i18n="@@Taskboard Todo">Todo</b></p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.taskBoardTodo}}</p>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12 taskboard_inprogress align-self-center">
+                                            <p class="my-0" class="fs_12"><b i18n="@@Taskboard In Progress">In
+                                                    Progress</b></p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.taskBoardProgress}}</p>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12 taskboard_completed">
+                                            <p class="my-0" class="fs_12"><b i18n="@@Taskboard Completed">Completed</b>
+                                            </p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.taskBoardDone}}</p>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                                <mat-card class="w-100 mb-3 side_card">
+                                    <mat-card-title i18n="@@Workflow Card" class="fs_12">Workflow</mat-card-title>
+                                    <hr>
+                                    <div class="row w-100 mx-0">
+                                        <div class="col-md-4 col-sm-12 taskboard_inprogress">
+                                            <p class="my-0" class="fs_12"><b i18n="@@Workflow In Progress">In
+                                                    Progress</b></p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.workflowProcess}}</p>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12 taskboard_completed">
+                                            <p class="my-0" class="fs_12"><b i18n="@@Workflow Completed">Completed </b>
+                                            </p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.workflowCompleted}}</p>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                                <mat-card class="w-100 side_card">
+                                    <mat-card-title i18n="@@Due Card" class="fs_12">Due</mat-card-title>
+                                    <hr>
+                                    <div class="row w-100 mx-0">
+                                        <div class="col-md-4 col-sm-12 due_taskboard">
+                                            <p class="my-0" class="fs_12"><b i18n="@@In Taskboard">In Taskboard</b></p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.taskBoardDueDate}}</p>
+                                        </div>
+                                        <div class="col-md-4 col-sm-12 due_workflow">
+                                            <p class="my-0" class="fs_12"><b i18n="@@In Workflow">In Workflow</b></p>
+                                            <p class="my-0" class="fs_12">{{overviewVO?.workflowDueDate}}</p>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </div>
+                    </mat-card>
+                </div>
+                <div class="mb-5 row w-100 mx-0"
+                    *ngIf="selectedCard === 'all' || selectedCard === 'taskboard' || selectedCard === 'pastDue' ">
+                    <mat-card class="w-100">
+                        <div class="row mx-0 w-100 mb-3">
+                            <div class="col-md-6 col-sm-12 pl-0">
+                                <mat-card-title i18n="@@Taskboard Table" class="fs_12">Taskboard</mat-card-title>
+                            </div>
+                            <div class="col-md-6 col-sm-12 justify-content-md-end justify-content-sm-start px-0">
+                                <button class="align-self-center justify-content-end float-right mr-2 clear_filter "
+                                    mat-raised-button type="button" color="accent" (click)="clearAllFilterTaskboard()"
+                                    *ngIf="filterCountForTaskboard !== 0" i18n="@@Taskboard Clear Filters">Clear
+                                    Filters</button>
+                                <mat-button
+                                    class="filter_option align-self-center justify-content-md-end justify-content-sm-start float-right mb-1 mr-2 mrsm1"
+                                    *ngFor="let due of switchDue" [class.active]="due?.value === taskboardDue"
+                                    (click)="selectedDueForTaskBoard(due?.value)">
+                                    {{due?.name}}
+                                </mat-button>
+                            </div>
+                        </div>
+                        <mat-card-content>
+                            <mat-table [dataSource]="taskboardVO" matSort [matSortDisableClear]="true"
+                                (matSortChange)="sortDataForTaskboard($event)">
+                                <ng-container matColumnDef="task_id">
+                                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                                        <span mat-sort-header i18n="@@Taskboard Task ID">Task ID</span>
+                                        <mat-icon id="taskid" class="icon-css sub_status_filter fs_14 w_14 h_14"
+                                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'task_id'}"
+                                            (click)="setDataTypeForTaskboard('task_id','string')"
+                                            style="cursor: pointer; margin-left: 4px;">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task" style="width:20%">
+                                        <a class="task-id"
+                                            (click)="viewTaskboardTask(task?.taskboardId, task?.taskId)">{{task?.taskId}}</a>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="board_name">
+                                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                                        <span i18n="@@Taskboard Board Name">Board Name</span>
+                                        <mat-icon id="board_name" class="icon-css sub_status_filter"
+                                            [matMenuTriggerFor]="dropdownMenuTwo" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'board_name'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task" style="width:20%">
+                                        <a
+                                            [routerLink]="['/' + workspaceService.getWorkSpaceKey() + '/taskboard' , task?.taskboardKey]">{{task?.boardName}}</a>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="task_name">
+                                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                                        <span mat-sort-header i18n="@@Taskboard Task Name">Task Name </span>
+                                        <mat-icon id="task_name" class="icon-css sub_status_filter"
+                                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                            (click)="setDataTypeForTaskboard('task_name','string')"
+                                            [ngClass]="{'active_filter': selectedItem == 'task_name'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task" style="width:20%">
+                                        {{task?.taskName || '-'}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="subtasks" style="width:20%">
+                                    <mat-header-cell *matHeaderCellDef i18n="@@Taskboard Sub Tasks"> # Subtasks
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task" style="width:20%">
+                                        {{task?.subtasks}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="created_on">
+                                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                                        <span mat-sort-header i18n="@@Taskboard Created Date">Created Date</span>
+                                        <mat-icon class="icon-css sub_status_filter" id="created_date"
+                                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                            (click)="setDataTypeForTaskboard('created_on', 'number')"
+                                            [ngClass]="{'active_filter': selectedItem == 'created_on'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        {{task?.createdDate | date:'medium'}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="due_date">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span mat-sort-header i18n="@@Taskboard Due Date">Due Date </span>
+                                        <mat-icon class="icon-css sub_status_filter" id="due_date"
+                                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                            (click)="setDataTypeForTaskboard('due_date', 'number')"
+                                            [ngClass]="{'active_filter': selectedItem == 'due_date'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        {{task?.dueDate | date:'medium'}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="status">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span mat-sort-header i18n="@@Taskboard Status">Status </span>
+                                        <mat-icon class="icon-css sub_status_filter" id="status"
+                                            [matMenuTriggerFor]="dropdownMenuStatus" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'status'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <mat-button class="filter_option text-white" *ngIf="task?.status"
+                                            [style.background-color]="task?.statusColor">{{task?.status}}</mat-button>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="sub_status">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span mat-sort-header i18n="@@Taskboard Sub Status">Sub Status </span>
+                                        <mat-icon id="substatus" class="icon-css sub_status_filter"
+                                            [matMenuTriggerFor]="dropdownMenuSubStatus" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'sub_status'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <mat-button class="filter_option text-white" *ngIf="task?.subStatus"
+                                            [style.background-color]="task?.subStatusColor">{{task?.subStatus}}
+                                        </mat-button>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="assignedTo">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span i18n="@@Taskboard Assigned To"> Assigned To </span>
+                                        <mat-icon id="assigned_to" class="icon-css sub_status_filter"
+                                            [matMenuTriggerFor]="dropdownMenuAssignedTo" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'assignedTo'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <div fxLayout="row">
+                                            <ng-container *ngFor="let user of task?.assignedTo;let j = index;">
+                                                <div *ngIf="j<=3" class="hover-class round_firstletter"
+                                                    [style.margin-left]="j>0?'-4px':''" [matTooltip]="user"
+                                                    [style.background]="getColor(user)">
+                                                    <span class="text-white round_firstletter_size">
+                                                        {{getUserFirstAndLastNamePrefix(user)}}
+                                                    </span>
+                                                </div>
+                                                <ng-container *ngIf="j===4">
+                                                    <div class="hover_class_plus round_firstletter_count"
+                                                        [matTooltip]="getUserNames(task?.assignedTo)">
+                                                        <span class="text-white round_add_count">
+                                                            +{{getRemainingAssigneeUserCount(task?.assignedTo)}}
+                                                        </span>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="action">
+                                    <mat-header-cell *matHeaderCellDef> &nbsp; </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <button mat-raised-button color="primary" class="mx-auto d-block"
+                                            (click)="viewTaskboardTask(task?.taskboardId, task?.taskId)"
+                                            [id]="task?.taskName" i18n="@@Taskboard View Task">View
+                                            Task</button>
+                                    </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns;">
+                                </mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+                            </mat-table>
+                            <ng-container *ngIf="taskboardVO.length === 0">
+                                <div class="row w-100 mx-0 justify-content-center mt-1">
+                                    <div class="font-weight-bold" i18n="@@Taskboard No Data">No data available</div>
+                                </div>
+                            </ng-container>
+                            <div *ngIf="isPaginator && isLength && taskboardVO.length !== 0"
+                                class="w-100 row justify-content-end ml-2">
+                                <app-paginator id="mat_table_page_selector" [length]="taskboardLength"
+                                    [pageSize]="defaultPageSize"
+                                    [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]"
+                                    (page)="pageEventForTaskboard($event)"></app-paginator>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                    <form [formGroup]="taskboardForm">
+                        <mat-menu #dropdownMenuOne="matMenu" class="remaining-menu" id="operator_menu">
+                            <div class="row w-100 mx-0 justify-content-center" (click)="$event.stopPropagation()">
+                                <mat-form-field class="field-size">
+                                    <mat-label i18n="@@Operator">Operator</mat-label>
+                                    <mat-select formControlName="operator" required>
+                                        <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value"
+                                            selected>
+                                            {{data.description}}</mat-option>
+                                    </mat-select>
+                                    <mat-error i18n="@@OperatorRequired">Operator is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center mt-3" (click)="$event.stopPropagation()">
+                                <mat-form-field class="field-size" *ngIf="isDateField===false">
+                                    <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                                    <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'"
+                                        [type]="type" formControlName="filterValue" required>
+                                    <input matInput *ngIf="filterOperator==='number' && isDateField===false"
+                                        [id]="columnValue" type="number" formControlName="filterValue" required>
+                                    <mat-error i18n="@@Filter Value is Required">
+                                        Filter value is required</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="field-size"
+                                    *ngIf="filterOperator==='number' && isDateField===true">
+                                    <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                                    <input matInput [id]="columnValue" [matDatepicker]="picker"
+                                        formControlName="filterValue" required>
+                                    <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <mat-error i18n="@@Filter Value is Required">
+                                        Filter value is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center mt-2" (click)="$event.stopPropagation()">
+                                <button mat-raised-button type="submit" color="primary"
+                                    (click)="filterApplyForTaskboard()" i18n="@@Apply">Apply</button>
+                                <button mat-raised-button type="button" color="accent"
+                                    (click)="clearFilterForTaskboard()" i18n="@@Clear" class="ml-3">Clear</button>
+                            </div>
+                        </mat-menu>
+                        <mat-menu class="filter-menu" #dropdownMenuTwo="matMenu" id="board_menu">
+                            <div (click)="$event.stopPropagation();">
+                                <div class="input-group mb-3 px-2">
+                                    <input type="text" formControlName="search" class="form-control"
+                                        placeholder="search..." i18n-placeholder="search">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <mat-icon matSuffix>search</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:200px;">
+                                    <ng-container>
+                                        <ng-container *ngFor="let board of boardNamesVO;let j = index;">
+                                            <div class="row w-100 mx-0 ml-3 mt-1">
+                                                <mat-checkbox [checked]="board?.isSelected"
+                                                    (change)="changeFilterValue($event, board?.boardName, 'board_name', 'string', board?.isSelected)">
+                                                    <div class="row w-100 mx-0">
+                                                        {{board?.boardName}}
+                                                    </div>
+                                                </mat-checkbox>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </perfect-scrollbar>
+                            </div>
+                        </mat-menu>
+                        <mat-menu class="filter-menu" #dropdownMenuAssignedTo="matMenu" id="assignedTo-menu">
+                            <div (click)="$event.stopPropagation();">
+                                <div class="input-group mb-3 px-2">
+                                    <input type="text" formControlName="searchForAssignedToTaskboard"
+                                        class="form-control" placeholder="search..." i18n-placeholder="search">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <mat-icon matSuffix>search</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                                    <mat-checkbox [checked]="checkTaskboardAssignedTo == true"
+                                        (change)="changeFilterValue($event, 'unAssigned', 'assignedTo', 'string', checkTaskboardAssignedTo)"
+                                        class="mt-1 ml-3">
+                                        &nbsp;&nbsp;Unassigned
+                                    </mat-checkbox>
+                                    <mat-divider></mat-divider>
+                                    <ng-container *ngFor="let user of usersList;let j = index;">
+                                        <div class="row w-100 mx-0 ml-3 mt-1">
+                                            <mat-checkbox #checkBox [checked]="user?.isSelected"
+                                                (change)="changeFilterValue($event, user?.userId, 'assignedTo', 'string', user?.isSelected)">
+                                                <div class="row w-100 mx-0">
+                                                    <div class="setHighlight "
+                                                        [style.background-color]="user.randomColor">
+                                                        <span [matTooltip]="user.firstName+' '+user.lastName"
+                                                            class="fs_12 text-white">{{user.firstName.charAt(0).toUpperCase()
+                                                            + user.lastName.charAt(0).toUpperCase()}}</span>
+                                                    </div>
+                                                    <div class="user-margin">
+                                                        <div [matTooltip]="user.firstName+' '+user.lastName">
+                                                            {{user.firstName}}
+                                                            {{user.lastName}}</div>
+                                                    </div>
+                                                </div>
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </perfect-scrollbar>
+                            </div>
+                        </mat-menu>
+                        <mat-menu class="filter-menu" #dropdownMenuStatus="matMenu" id="status_menu">
+                            <div (click)="$event.stopPropagation();">
+                                <div class="input-group mb-3 px-2">
+                                    <input type="text" formControlName="searchForStatus" class="form-control"
+                                        placeholder="search..." i18n-placeholder="search">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <mat-icon matSuffix>search</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                                    <ng-container *ngFor="let statusList of statusVO;let j = index;">
+                                        <div class="row ml-3 mt-1">
+                                            <mat-checkbox #checkBox [checked]="statusList?.isSelected"
+                                                (change)="changeFilterValue($event, statusList?.status, 'status', 'string', statusList?.isSelected)">
+                                                <div class="row w-100 mx-0">
+                                                    <mat-button class="filter_option text-white"
+                                                        *ngIf="statusList?.status"
+                                                        [style.background-color]="statusList?.color">
+                                                        {{statusList?.status}}
+                                                    </mat-button>
+                                                </div>
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </perfect-scrollbar>
+                            </div>
+                        </mat-menu>
+                        <mat-menu class="filter-menu" #dropdownMenuSubStatus="matMenu" id="substatus_menu">
+                            <div (click)="$event.stopPropagation();">
+                                <div class="input-group mb-3 px-2">
+                                    <input type="text" formControlName="searchForSubStatus" class="form-control"
+                                        placeholder="search..." i18n-placeholder="search">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <mat-icon matSuffix>search</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                                    <ng-container *ngFor="let subStatusList of subStatusVO;let j = index;">
+                                        <div class="row ml-3 mt-1">
+                                            <mat-checkbox #checkBox [checked]="subStatusList?.isSelected"
+                                                (change)="changeFilterValue($event, subStatusList?.subStatus, 'sub_status', 'string', subStatusList?.isSelected)">
+                                                <div class="row w-100 mx-0">
+                                                    <mat-button class="filter_option text-white"
+                                                        [style.background-color]="subStatusList?.color">
+                                                        {{subStatusList?.subStatus}}</mat-button>
+                                                </div>
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </perfect-scrollbar>
+                            </div>
+                        </mat-menu>
+                    </form>
+
+                </div>
+                <div class=" row w-100 mx-0"
+                    *ngIf="selectedCard === 'all' || selectedCard === 'workflow' || selectedCard === 'pastDue'">
+                    <mat-card class="w-100">
+                        <div class="row mx-0 w-100 mb-3">
+                            <div class="col-md-6 col-sm-12 pl-0">
+                                <mat-card-title i18n="@@Workflow Table" class="fs_12">Workflow</mat-card-title>
+                            </div>
+                            <div class="col-md-6 col-sm-12 justify-content-end">
+                                <button class=" align-self-center float-right mr-2 clear_filter" mat-raised-button
+                                    type="button" color="accent" (click)="clearAllFilterWorkflow()"
+                                    *ngIf="filterCountForWorkflow !== 0" i18n="@@Workflow Clear Filters">
+                                    Clear Filters</button>
+                                <mat-button class="filter_option align-self-center float-right mr-2 mrsm1 "
+                                    [class.active]="due?.value === workflowDue" *ngFor="let due of switchDue"
+                                    (click)="selectedDueForWorkflow(due?.value)">
+                                    {{due?.name}}
+                                </mat-button>
+                            </div>
+                        </div>
+                        <mat-card-content>
+                            <mat-table [dataSource]="workflowVO" matSort [matSortDisableClear]="true"
+                                (matSortChange)="sortDataForWorkflow($event)">
+                                <ng-container matColumnDef="task_name">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span i18n="@@Workflow Task Name">Task Name </span>
+                                        <mat-icon class="icon-css filter_list_css" id="workflow_task"
+                                            [matMenuTriggerFor]="workflowDropDownMenuOne"
+                                            #menuTriggerWorkflow="matMenuTrigger"
+                                            (click)="setDataTypeForWorkflow('Task Name', 'string')"
+                                            [ngClass]="{'active_filter': selectedItem == 'Task Name'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        {{task?.taskName || '-'}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="createdDate">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span mat-sort-header i18n="@@Workflow Created Date"> Created Date </span>
+                                        <mat-icon class="icon-css filter_list_css" id="workflow_date"
+                                            [matMenuTriggerFor]="workflowDropDownMenuOne" #menuTrigger="matMenuTrigger"
+                                            (click)="setDataTypeForWorkflow('Created Date', 'number')"
+                                            [ngClass]="{'active_filter': selectedItem == 'Created Date'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        {{task?.createdDate | date:'medium'}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="dueDate">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <span mat-sort-header i18n="@@Workflow Due Date"> Due Date </span>
+                                        <mat-icon class="icon-css filter_list_css" id="workflow_due"
+                                            [matMenuTriggerFor]="workflowDropDownMenuOne" #menuTrigger="matMenuTrigger"
+                                            (click)="setDataTypeForWorkflow('Due Date', 'number')"
+                                            [ngClass]="{'active_filter': selectedItem == 'Due Date'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        {{task?.dueDate | date:'medium'}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="assigned_to">
+                                    <mat-header-cell *matHeaderCellDef> <span i18n="@@Workflow Assigned To">Assigned To
+                                        </span>
+                                        <mat-icon class="icon-css filter_list_css" id="worflow_assignedto"
+                                            [matMenuTriggerFor]="dropdownMenuThree" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'assignedToUserWorkflow'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <div fxLayout="row">
+                                            <ng-container *ngIf="task?.assignedTo !== null">
+                                                <div class="hover-class round_firstletter"
+                                                    [matTooltip]="task?.assignedTo"
+                                                    [style.background]="getColor(task?.assignedTo)">
+                                                    <span
+                                                        class="text-white round_firstletter_size">{{getUserFirstAndLastNamePrefix(task?.assignedTo)}}</span>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="assigned_to_group">
+                                    <mat-header-cell *matHeaderCellDef> <span
+                                            i18n="@@Workflow Assigned To Group">Assigned
+                                            To Team</span>
+                                        <mat-icon id="workflow_group" class="icon-css filter_list_css"
+                                            [matMenuTriggerFor]="dropdownMenuTwo" #menuTrigger="matMenuTrigger"
+                                            [ngClass]="{'active_filter': selectedItem == 'assignedToGroupWorkflow'}">
+                                            filter_list
+                                        </mat-icon>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <div fxLayout="row">
+                                            <ng-container *ngFor="let user of task?.assignedToGroup;let k = index;">
+                                                <div *ngIf="k<=3" class="hover-class round_firstletter"
+                                                    [style.margin-left]="k>0?'-4px':''" [matTooltip]="user"
+                                                    [style.background]="getTeamColor(user)">
+                                                    <span
+                                                        class="text-white round_firstletter_size">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                                                </div>
+                                                <ng-container *ngIf="k===4">
+                                                    <div class="hover_class_plus round_firstletter_count"
+                                                        [matTooltip]="getUserNames(task?.assignedToGroup)">
+                                                        <span
+                                                            class="text-white round_add_count">+{{getRemainingAssigneeUserCount(task?.assignedToGroup)}}</span>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="action">
+                                    <mat-header-cell *matHeaderCellDef> &nbsp; </mat-header-cell>
+                                    <mat-cell *matCellDef="let task">
+                                        <button mat-raised-button color="primary" class="mx-auto d-block"
+                                            [id]="task.taskName" (click)="openDraft(task?.id)"
+                                            i18n="@@View Details">View
+                                            Details</button>
+                                    </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumnsForWorkflow;"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumnsForWorkflow"></mat-row>
+                            </mat-table>
+                            <ng-container *ngIf="workflowVO.length === 0">
+                                <div class="row w-100 mx-0 justify-content-center">
+                                    <div class="font-weight-bold" i18n="@@Workflow No data" class="fs_12">No data
+                                        available</div>
+                                </div>
+                            </ng-container>
+                            <div *ngIf="isWorkflowPaginator && isWorkFlowLength && workflowVO.length !== 0 "
+                                class="w-100 row justify-content-end mr-2">
+                                <app-paginator id="mat_table_page_selector" [length]="workflowLength"
+                                    [pageSize]="defaultPageSize"
+                                    [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]"
+                                    (page)="pageEventForWorkflow($event)"></app-paginator>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                    <form [formGroup]="workflowForm">
+
+                        <mat-menu #workflowDropDownMenuOne="matMenu" class="remaining-menu" id="workflow_operator">
+                            <div class="row w-100 mx-0 justify-content-center" (click)="$event.stopPropagation()">
+                                <!-- {{workflowForm.get('operator').value}} -->
+                                <mat-form-field class="field-size">
+                                    <mat-label i18n="@@Operator">Operator</mat-label>
+                                    <mat-select formControlName="operator" required>
+                                        <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value">
+                                            <!-- {{data.value}} -->
+                                            {{data.description}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error i18n="@@OperatorRequired">Opeartor is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center mt-3" (click)="$event.stopPropagation()">
+                                <mat-form-field class="field-size" *ngIf="isDateField===false">
+                                    <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                                    <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'"
+                                        [type]="type" formControlName="filterValue" required>
+                                    <input matInput *ngIf="filterOperator==='number' && isDateField===false"
+                                        [id]="columnValue" type="number" formControlName="filterValue" required>
+                                    <mat-error i18n="@@Filter Value is Required">
+                                        Filter value is required</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="field-size"
+                                    *ngIf="filterOperator==='number' && isDateField===true">
+                                    <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                                    <input matInput [id]="columnValue" [matDatepicker]="picker"
+                                        formControlName="filterValue" required>
+                                    <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <mat-error i18n="@@Filter Value is Required">
+                                        Filter value is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center mt-2" (click)="$event.stopPropagation()">
+                                <button mat-raised-button type="submit" color="primary"
+                                    (click)="filterApplyForWorkflow()" i18n="@@Apply">Apply</button>
+                                <button mat-raised-button type="button" color="accent"
+                                    (click)="clearFilterForWorkflow()" i18n="@@Clear" class="ml-3">Clear</button>
+                            </div>
+
+                        </mat-menu>
+                        <mat-menu class="filter-menu" #dropdownMenuTwo="matMenu" id="worflow_assignedto">
+                            <div (click)="$event.stopPropagation();">
+                                <div class="input-group mb-3 px-2">
+                                    <input type="text" formControlName="searchForAssignedToGroup" class="form-control"
+                                        placeholder="search..." i18n-placeholder="search">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <mat-icon matSuffix>search</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:200px;">
+                                    <mat-checkbox [checked]="checkAssignedTo == true"
+                                        (change)="getAssignedToGroup($event, 'unAssigned', 'assignedToGroupWorkflow', 'string', checkAssignedTo)"
+                                        class="ml-3 mt-1">
+                                        &nbsp;&nbsp;Unassigned
+                                    </mat-checkbox>
+                                    <mat-divider></mat-divider>
+                                    <ng-container *ngFor="let group of assignedWorkflowGroup;let j = index;">
+                                        <div class="row w-100 mx-0 ml-3 mt-1">
+                                            <mat-checkbox #checkboxes [checked]="group?.isSelected"
+                                                (change)="getAssignedToGroup($event, group?.groupId, 'assignedToGroupWorkflow', 'string', group?.isSelected)">
+                                                <div class="row w-100 mx-0">
+                                                    <div class="user-margin">
+                                                        <div class="grp_name">
+                                                            {{group?.groupName}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </perfect-scrollbar>
+                            </div>
+                        </mat-menu>
+                        <mat-menu id="workflow_group" class="filter-menu" #dropdownMenuThree="matMenu">
+                            <div (click)="$event.stopPropagation();">
+                                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:200px;">
+                                    <mat-checkbox [checked]="assignedToSelected == true"
+                                        (change)="getAssignedToGroup($event, 'unAssigned', 'assignedToUserWorkflow', 'string', assignedToSelected)"
+                                        class="ml-3">&nbsp;&nbsp;Unassigned</mat-checkbox>
+                                    <mat-divider></mat-divider>
+                                    <ng-container>
+                                        <div class="row w-100 mx-0 ml-3 mt-1">
+                                            <mat-checkbox [checked]='currentUser?.isSelected'
+                                                (change)="getAssignedToGroup($event, currentUserId , 'assignedToUserWorkflow', 'string', current?.isSelected)">
+                                                <div>{{currentUser?.firstName}} {{currentUser?.lastName}}</div>
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </perfect-scrollbar>
+                            </div>
+                        </mat-menu>
+                    </form>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</ng-container>
+<ng-container *ngIf="isFromTaskboard===true">
+    <div class="mb-5 row w-100 mx-0">
+        <mat-card class="w-100">
+            <div class="row mx-0 w-100 mb-3">
+                <div class="col-md-4 col-sm-12 pl-0">
+                    <mat-card-title *ngIf="columnStatus!=='Archived' && columnStatus !== 'deleted'"
+                        i18n="Completed Tasks">Completed Tasks
+                    </mat-card-title>
+                    <mat-card-title *ngIf="columnStatus==='Archived'" i18n="Archived Tasks">Archived Tasks
+                    </mat-card-title>
+                    <mat-card-title *ngIf="columnStatus==='deleted'" i18n="Deleted Tasks">Deleted Tasks</mat-card-title>
+
+                </div>
+                <div class="col-md-8 justify-content-end">
+                    <button class="align-self-center justify-content-end float-right mr-2 clear_filter"
+                        mat-raised-button type="button" color="accent" (click)="clearFilterForTaskboard()"
+                        *ngIf="filterCountForTaskboard !== 0 && filterCountForTaskboard > 0"
+                        i18n="@@isFromTaskboard Clear Filters">Clear
+                        Filters</button>
+                    <button class="align-self-center justify-content-end float-right mr-2 clear_filter "
+                        mat-raised-button type="button" color="primary" (click)="backToTaskboard()"
+                        i18n="@@isFromTaskboard Back to taskboard">Back To
+                        Taskboard</button>
+                    <mat-button class="filter_option align-self-center justify-content-end float-right mr-2"
+                        [ngClass]="{'active': select==='deleted'}" (click)="deletedTasks('deleted')"
+                        i18n="@@isFromTaskboard Deleted Tasks">
+                        Deleted Tasks
+                    </mat-button>
+                    <mat-button class="filter_option align-self-center justify-content-end float-right mr-2"
+                        [ngClass]="{'active': select==='Archived'}" (click)="archivedTasks('Archived')"
+                        i18n="@@isFromTaskboard Archived Tasks">
+                        Archived Tasks
+                    </mat-button>
+                    <mat-button class="filter_option align-self-center justify-content-end float-right mr-2"
+                        [ngClass]="{'active': select==='Completed'}" (click)="completedTasks('Completed')"
+                        i18n="@@isFromTaskboard Completed Tasks">
+                        Completed Tasks
+                    </mat-button>
+                </div>
+            </div>
+            <mat-card-content>
+                <mat-table [dataSource]="taskboardVO" matSort [matSortDisableClear]="true"
+                    (matSortChange)="sortDataForTaskboard($event)" id="completed_id">
+                    <ng-container matColumnDef="task_id">
+                        <mat-header-cell *matHeaderCellDef id="taskid">
+                            <span mat-sort-header i18n="@@isFromTaskboard Task ID">Task ID</span>
+                            <mat-icon id="taskid" class="icon-css sub_status_filter"
+                                [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                (click)="setDataTypeForTaskboard('task_id','string')"
+                                [ngClass]="{'active_filter': selectedItem == 'task_id'}">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            <a class="task-id"
+                                (click)="viewTaskboardTask(task?.taskboardId, task?.taskId)">{{task?.taskId}}</a>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="task_name">
+                        <mat-header-cell *matHeaderCellDef id="taskname">
+                            <span mat-sort-header i18n="@@isFromTaskboard Task Name">Task Name </span>
+                            <mat-icon id="task_name" class="icon-css sub_status_filter"
+                                [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                (click)="setDataTypeForTaskboard('task_name','string')"
+                                [ngClass]="{'active_filter': selectedItem == 'task_name'}">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            {{task?.taskName || '-'}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="subtasks">
+                        <mat-header-cell *matHeaderCellDef i18n="@@isFromTaskboard Sub Tasks"> # Subtasks
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            {{task?.subtasks}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="created_on">
+                        <mat-header-cell *matHeaderCellDef id="created">
+                            <span mat-sort-header i18n="@@isFromTaskboard Created Date">Created Date</span>
+                            <mat-icon class="icon-css sub_status_filter" id="created_date"
+                                [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                (click)="setDataTypeForTaskboard('created_on', 'number')"
+                                [ngClass]="{'active_filter': selectedItem == 'created_on'}">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            {{task?.createdDate | date:'medium'}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="due_date">
+                        <mat-header-cell *matHeaderCellDef>
+                            <span mat-sort-header i18n="@@isFromTaskboard Due Date">Due Date </span>
+                            <mat-icon class="icon-css sub_status_filter" id="due_date"
+                                [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                (click)="setDataTypeForTaskboard('due_date', 'number')"
+                                [ngClass]="{'active_filter': selectedItem == 'due_date'}">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            {{task?.dueDate | date:'medium'}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef>
+                            <span mat-sort-header i18n="@@isFromTaskboard Status">Status </span>
+                            <mat-icon id="status" class="icon-css sub_status_filter" *ngIf="columnStatus === 'deleted'"
+                                [matMenuTriggerFor]="dropdownMenuStatusdeleted" #menuTrigger="matMenuTrigger">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            <mat-button class="filter_option text-white" *ngIf="task?.status"
+                                [style.background-color]="task?.statusColor">{{task?.status}}</mat-button>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="sub_status">
+                        <mat-header-cell *matHeaderCellDef>
+                            <span mat-sort-header i18n="@@isFromTaskboard Sub status">Sub Status </span>
+                            <mat-icon id="substatus" class="icon-css sub_status_filter"
+                                [matMenuTriggerFor]="dropdownMenuSubStatus" #menuTrigger="matMenuTrigger"
+                                [ngClass]="{'active_filter': selectedItem == 'sub_status'}">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            <mat-button class="filter_option text-white" *ngIf="task?.subStatus"
+                                [style.background-color]="task?.subStatusColor">{{task?.subStatus}}</mat-button>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="assignedTo">
+                        <mat-header-cell *matHeaderCellDef>
+                            <span i18n="@@isFromTaskboard Assigned To">Assigned To </span>
+                            <mat-icon id="assigned_to" class="icon-css sub_status_filter"
+                                [matMenuTriggerFor]="dropdownMenuAssignedTo" #menuTrigger="matMenuTrigger"
+                                [ngClass]="{'active_filter': selectedItem == 'assignedTo'}">
+                                filter_list
+                            </mat-icon>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            <div fxLayout="row">
+                                <ng-container *ngFor="let user of task?.assignedTo;let j = index;">
+                                    <div *ngIf="j<=3" class="hover-class round_firstletter"
+                                        [style.margin-left]="j>0?'-8px':''" [matTooltip]="user"
+                                        [style.background]="getColor(user)">
+                                        <span class="text-white round_firstletter_size">
+                                            {{getUserFirstAndLastNamePrefix(user)}}
+                                        </span>
+                                    </div>
+                                    <ng-container *ngIf="j===4">
+                                        <div class="hover-class round_firstletter"
+                                            [matTooltip]="getUserNames(task?.assignedTo)"
+                                            style="background: grey;margin-left:-8px;">
+                                            <span class="text-white round_firstletter_size">
+                                                +{{getRemainingAssigneeUserCount(task?.assignedTo)}}
+                                            </span>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef> &nbsp; </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            <button *ngIf="columnStatus!=='Archived' && columnStatus !== 'deleted' " mat-raised-button
+                                color="primary" class="mx-auto d-block"
+                                (click)="viewTaskboardTask(task?.taskboardId, task?.taskId)"
+                                [id]="'view_'+task?.taskName" i18n="@@isFromTaskboard View Task">View
+                                Task</button>
+                            <button
+                                *ngIf="columnStatus==='Archived' && columnStatus !== 'deleted' && columnStatus !== 'Completed'"
+                                mat-raised-button color="primary" class="mx-auto d-block"
+                                (click)="viewArchivedTaskboardTask(task?.taskboardId, task?.taskId)"
+                                [id]="'view_'+task?.taskName">View
+                                Task</button>
+                            <button
+                                *ngIf="columnStatus==='deleted' && columnStatus !== 'Completed' && columnStatus !== 'Archived'"
+                                mat-raised-button color="primary" class="mx-auto d-block"
+                                (click)="viewDeletedTaskboardTask(task,task?.taskboardId, task?.taskId)"
+                                [id]="'view_'+task?.taskName" i18n="@@isFromTaskboard View Task">View
+                                Task</button>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="archiveAction">
+                        <mat-header-cell *matHeaderCellDef> &nbsp; </mat-header-cell>
+                        <mat-cell *matCellDef="let task">
+                            <button *ngIf="columnStatus==='Archived'" mat-raised-button color="primary"
+                                class="mx-auto d-block" (click)="unArchiveTask(task)" [id]="'unarchive_'+task?.taskName"
+                                i18n="@@isFromTaskboard Unarchive">Unarchive</button>
+                            <button *ngIf="columnStatus==='deleted'" mat-raised-button color="primary"
+                                class="mx-auto d-block" (click)="unDeleteTask(task)" [id]="'unarchive_'+task?.taskName"
+                                i18n="@@isFromTaskboard Undelete">Undelete</button>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedDoneAndArchiveColumns;">
+                    </mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedDoneAndArchiveColumns"></mat-row>
+                </mat-table>
+                <ng-container *ngIf="taskboardVO && taskboardVO.length === 0">
+                    <div class="row w-100 mx-0 justify-content-center mt-1">
+                        <div class="font-weight-bold" i18n="@@isFromTaskboard No data">No data available</div>
+                    </div>
+                </ng-container>
+                <div *ngIf="isPaginator && isLength && taskboardVO.length !== 0" class="w-100 row justify-content-end"
+                    style="margin-right:10px;">
+                    <app-paginator id="mat_table_page_selector" [length]="taskboardLength" pageSize="10"
+                        [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEventForTaskboard($event)">
+                    </app-paginator>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <form [formGroup]="taskboardForm">
+            <mat-menu #dropdownMenuOne="matMenu" class="filter-menu-1" id="operator_menu">
+                <div class="row w-100 mx-0 justify-content-center" (click)="$event.stopPropagation()">
+                    <mat-form-field class="field-size">
+                        <mat-label i18n="@@Operator">Operator</mat-label>
+                        <mat-select formControlName="operator" required>
+                            <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                                {{data.description}}</mat-option>
+                        </mat-select>
+                        <mat-error i18n="@@OperatorRequired">Opeartor is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="row w-100 mx-0 justify-content-center mt-3" (click)="$event.stopPropagation()">
+                    <mat-form-field class="field-size" *ngIf="isDateField===false">
+                        <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                        <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+                            formControlName="filterValue" required>
+                        <input matInput *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue"
+                            type="number" formControlName="filterValue" required>
+                        <mat-error i18n="@@Filter Value is Required">
+                            Filter value is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="field-size" *ngIf="filterOperator==='number' && isDateField===true">
+                        <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                        <input matInput [id]="columnValue" [matDatepicker]="picker" formControlName="filterValue"
+                            required>
+                        <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-error i18n="@@Filter Value is Required">
+                            Filter value is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="row w-100 mx-0 justify-content-center mt-2" (click)="$event.stopPropagation()">
+                    <button mat-raised-button type="submit" color="primary" (click)="filterApplyForTaskboard()"
+                        i18n="@@Apply" class="mr-3">Apply</button>
+                    <button mat-raised-button type="button" color="accent" (click)="clearFilterForTaskboard()"
+                        i18n="@@Clear">Clear</button>
+                </div>
+            </mat-menu>
+            <mat-menu class="filter-menu" #dropdownMenuTwo="matMenu" id="board_menu">
+                <div (click)="$event.stopPropagation();">
+                    <div class="input-group mb-3 px-2">
+                        <input type="text" formControlName="search" class="form-control" placeholder="search..."
+                            i18n-placeholder="search">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <mat-icon matSuffix>search</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:200px;">
+                        <ng-container>
+                            <ng-container *ngFor="let board of boardNamesVO;let j = index;">
+                                <div class="row mx-0 w-100 ml-3 mt-1">
+                                    <mat-checkbox [checked]="board?.isSelected"
+                                        (change)="changeFilterValue($event, board?.boardName, 'board_name', 'string', board?.isSelected)">
+                                        <div class="row mx-0 w-100">
+                                            {{board?.boardName}}
+                                        </div>
+                                    </mat-checkbox>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </perfect-scrollbar>
+                </div>
+            </mat-menu>
+            <mat-menu class="filter-menu" #dropdownMenuAssignedTo="matMenu" id="assignedTo-menu">
+                <div (click)="$event.stopPropagation();">
+                    <div class="input-group mb-3 px-2">
+                        <input type="text" formControlName="searchForAssignedToTaskboard" class="form-control"
+                            placeholder="search..." i18n-placeholder="search">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <mat-icon matSuffix>search</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                        <mat-checkbox [checked]="checkTaskboardAssignedTo == true"
+                            (change)="changeFilterValue($event, 'unAssigned', 'assignedTo', 'string', checkTaskboardAssignedTo)"
+                            class="ml-3">&nbsp;&nbsp;Unassigned
+                        </mat-checkbox>
+                        <mat-divider></mat-divider>
+                        <ng-container *ngFor="let user of usersList;let j = index;">
+                            <div class="row w-100 mx-0 mt-1 ml-3">
+                                <mat-checkbox #checkBox [checked]="user?.isSelected"
+                                    (change)="changeFilterValue($event, user?.userId, 'assignedTo', 'string', user?.isSelected)">
+                                    <div class="row w-100 mx-0">
+                                        <div class="setHighlight" [style.background-color]="user.randomColor">
+                                            <span [matTooltip]="user.firstName+' '+user.lastName"
+                                                class="fs_12 text-white">{{user.firstName.charAt(0).toUpperCase()
+                                                + user.lastName.charAt(0).toUpperCase()}}</span>
+                                        </div>
+                                        <div class="user-margin">
+                                            <div [matTooltip]="user.firstName+' '+user.lastName">
+                                                {{user.firstName}}
+                                                {{user.lastName}}</div>
+                                        </div>
+                                    </div>
+                                </mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </perfect-scrollbar>
+                </div>
+            </mat-menu>
+            <mat-menu class="filter-menu" #dropdownMenuStatus="matMenu" id="status_menu">
+                <div (click)="$event.stopPropagation();">
+                    <div class="input-group mb-3 px-2">
+                        <input type="text" formControlName="searchForStatus" class="form-control"
+                            placeholder="search..." i18n-placeholder="search">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <mat-icon matSuffix>search</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                        <ng-container *ngFor="let statusList of statusVO;let j = index;">
+                            <div class="row w-100 mx-0 ml-3 mt-1">
+                                <mat-checkbox #checkBox [checked]="statusList?.isSelected"
+                                    (change)="changeFilterValue($event, statusList?.status, 'status', 'string', statusList?.isSelected)">
+                                    <div class="row w-100 mx-0">
+                                        <mat-button class="filter_option text-white" *ngIf="statusList?.status"
+                                            [style.background-color]="statusList?.color">{{statusList?.status}}
+                                        </mat-button>
+                                    </div>
+                                </mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </perfect-scrollbar>
+                </div>
+            </mat-menu>
+            <mat-menu class="filter-menu" #dropdownMenuSubStatus="matMenu" id="substatus_menu">
+                <div (click)="$event.stopPropagation();">
+                    <div class="input-group mb-3 px-2">
+                        <input type="text" formControlName="searchForSubStatus" class="form-control"
+                            placeholder="search..." i18n-placeholder="search">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <mat-icon matSuffix>search</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                        <ng-container *ngIf="subStatusVO.length===0">
+                            <span class="ml-5" i18n="@@isFromTaskboard no sub status">There is no sub
+                                status</span>
+                        </ng-container>
+                        <ng-container *ngFor="let subStatusList of subStatusVO;let j = index;">
+                            <div class="row w-100 mx-0 ml-3 mt-1">
+                                <mat-checkbox #checkBox [checked]="subStatusList?.isSelected"
+                                    (change)="changeFilterValue($event, subStatusList?.subStatus, 'sub_status', 'string', subStatusList?.isSelected)">
+                                    <div class="row w-100 mx-0">
+                                        <mat-button class="filter_option text-white"
+                                            [style.background-color]="subStatusList?.color">
+                                            {{subStatusList?.subStatus}}</mat-button>
+                                    </div>
+                                </mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </perfect-scrollbar>
+                </div>
+            </mat-menu>
+            <mat-menu class="filter-menu" #dropdownMenuStatusdeleted="matMenu" id="status_menu">
+                <div (click)="$event.stopPropagation();">
+                    <div class="input-group mb-3 px-2">
+                        <input type="text" formControlName="searchForStatus" class="form-control"
+                            placeholder="search..." i18n-placeholder="search">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <mat-icon matSuffix>search</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                        <ng-container *ngIf="statusList.length===0">
+                            <span class="ml-5" i18n="@@isFromTaskboard no  status">There is no status</span>
+                        </ng-container>
+                        <ng-container *ngFor="let statusList of statusList;let j = index;">
+                            <div class="row w-100 mx-0 ml-3 mt-1">
+                                <mat-checkbox #checkBox [checked]="statusList?.isSelected"
+                                    (change)="changeFilterValue($event, statusList?.status, 'status', 'string', statusList?.isSelected)">
+                                    <div class="row w-100 mx-0">
+                                        <mat-button class="filter_option text-white"
+                                            [style.background-color]="statusList?.color">
+                                            {{statusList?.status}}</mat-button>
+                                    </div>
+                                </mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </perfect-scrollbar>
+                </div>
+            </mat-menu>
+        </form>
+    </div>
+</ng-container>

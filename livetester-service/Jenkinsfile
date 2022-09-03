@@ -1,0 +1,100 @@
+pipeline{
+	agent any
+    environment {
+	    registry = "http://devops.yorosis.com/"
+	    registryCredential = 'nexus-yorosis'
+	}
+
+    stages {
+    	stage('Checkout'){
+            steps{
+                script {
+                    def scmVars = checkout scm
+                    env.IMAGE_TAG = (scmVars.GIT_COMMIT[0..6] + '.' + env.BUILD_NUMBER)
+                }
+			}
+        } 
+        
+        stage("Build and Push to Nexus") {
+			steps {
+                notifyBuild("Build started")
+                
+              	println("Job name: ${JOB_NAME} and branch is: ${BRANCH_NAME}")
+               	withMaven(maven: 'Maven3') {
+               		withSonarQubeEnv('sonarqube-server') {
+               			sh 'mvn -U -Dmaven.test.skip=true clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.branch.name=${BRANCH_NAME}'
+               		}
+                }
+            }
+        }
+        
+        stage("Quality Gate") {
+			steps {
+				timeout(time: 1, unit: 'HOURS') {
+	               	withSonarQubeEnv('sonarqube-server') {
+	               		script {
+		               		def qg = waitForQualityGate()
+	
+		            		if (qg.status != 'OK') {
+		              		   //error "Pipeline aborted due to quality gate failure: ${qg.status}"
+		            		}
+	            		}
+	                }
+                }
+            }
+        }
+        
+        stage("Docker Build") {
+            steps {
+            	script {
+            		if (env.BRANCH_NAME == 'develop') {
+			        	notifyBuild("Creating docker image for ${JOB_NAME}")
+			        	docker.withTool('docker') {
+			                docker.withRegistry('https://devops.yorosis.com', 'nexus-id') {
+					        	def image = docker.build("livetester-service:latest")
+					   	 		image.push()
+			                }
+			            }
+		            }
+	            }
+            }
+   	 	}
+   	 	
+   	 	stage ('Docker Deploy') {
+   	 	    steps {
+   	 	    	script {
+   	 	    		if (env.BRANCH_NAME == 'develop') {
+			   	 		notifyBuild("Deploying LiveTester Service")
+			            docker.withTool('docker') {
+			                docker.withServer('tcp://app.yorosis.com:2375', '') {
+			                    sh "docker stop livetester-service || true"
+			                    sh "docker rm \$(docker ps -a -f=name=livetester-service -q) || true"
+			                    sh "docker rmi \$(docker images -a | awk '\$1 ~ /livetester-service/ { print \$3}') || true"
+								sh "docker login -u jenkins -p '2LEpB35):9j6vHnh' https://devops.yorosis.com"
+								
+			                    def image = docker.image("devops.yorosis.com/livetester-service:latest")
+			                    def container = image.run("--restart=always --name livetester-service -p 8092:8080 -v /home/centos:/license")
+			                }
+			            }
+		            }
+		        }
+            }
+        }
+    }
+    
+    post {
+        success {
+            notifyBuild("==== Build successful ====")  
+        }
+        
+        failure {
+        	notifyBuild("==== Build Failed ====")
+        }
+    }
+}
+
+def notifyBuild(String message) {  
+	office365ConnectorSend message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", status: message, webhookUrl: "${env.TEAMS_CHANNEL_BUILDS_CONNECTOR_365_URL}"
+    // Send notifications
+    //slackSend (color: '#FFFF00', message: message + " - Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+}

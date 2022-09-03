@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskboard-service-deployment
+spec: 
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: taskboard-service
+  template: 
+    metadata:
+      labels:
+        app: taskboard-service
+        tier: backend
+    spec:
+      containers:
+      - name: taskboard-service
+        image: yorosis/taskboard-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          limits: 
+            cpu: 2000m
+            memory: 1Gi
+          requests: 
+            cpu: 100m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /taskboard-service/health/v1/ping
+            port: 8080
+          initialDelaySeconds: 40
+          timeoutSeconds: 1
+          periodSeconds: 15
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /taskboard-service/health/v1/ping
+            port: 8080
+          initialDelaySeconds: 45
+          timeoutSeconds: 1
+          periodSeconds: 15
+          failureThreshold: 3
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: url
+
+        - name: QUEUE_USER
+          valueFrom:
+            secretKeyRef:
+              name: queue-secret
+              key: username
+        - name: QUEUE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: queue-secret
+              key: password
+        - name: QUEUE_SERVICE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: queue-secret
+              key: service_name
+        - name: CONNECTION_POOL_MIN_IDLE
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: connection.pool.min.idle
+        - name: CONNECTION_POOL_MAX_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: connection.pool.max.size
+        - name: ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: salt-secret
+              key: encryptor.password
+        - name: S3_ACCESS_KEY
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: s3.access_key
+              
+        - name: S3_ACCESS_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: s3.access_secret
+
+        - name: S3_URL
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: s3.url
+              
+        - name: S3_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: s3.region
+
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: yoroapps-config
+              key: s3.bucket_name
+            
+      imagePullSecrets:
+      - name: hub-docker-secret

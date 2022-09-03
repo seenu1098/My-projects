@@ -1,0 +1,49 @@
+<form [formGroup]="dateFilterForm" #userDateSearchForm="ngForm">
+    <div fxLayout="column" fxLayoutGap="10px">
+        <mat-form-field id="searchType" appearance="outline" class="mat-outline" style="width: 100%;"
+            *ngIf="data!=='fromTaskboard'">
+            <mat-label i18n="Filter Type">Filter Type</mat-label>
+            <mat-select (selectionChange)="dateSearch($event)" formControlName="searchType">
+                <mat-option value="all" i18n="All">All
+                </mat-option>
+                <mat-option value="betweenDates" i18n="Custom Dates">Custom Dates
+                </mat-option>
+                <mat-option value="today" i18n="Today">Today
+                </mat-option>
+                <mat-option value="yesterday" i18n="Yesterday">Yesterday
+                </mat-option>
+                <mat-option value="lastWeek" i18n="Last 7 Days">Last 7 Days
+                </mat-option>
+                <mat-option value="lastMonth" i18n="Last 30 Days">Last 30 Days
+                </mat-option>
+                <mat-option value="last2Month" i18n="Last 60 Days">Last 60 Days
+                </mat-option>
+
+            </mat-select>
+            <mat-error>Filter Type is required</mat-error>
+        </mat-form-field>
+        <mat-form-field *ngIf="dateFilterForm.get('searchType').value==='betweenDates'" class="example-form-field"
+            appearance="fill">
+            <mat-label i18n="@@Date Range">Date Range</mat-label>
+            <mat-date-range-input [rangePicker]="campaignOnePicker">
+                <input matStartDate placeholder="Start date" formControlName="startDate">
+                <input matEndDate placeholder="End date" formControlName="endDate">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker">
+            </mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            <mat-error i18n="@@Date range is required">
+                Date range is required</mat-error>
+        </mat-form-field>
+
+
+    </div>
+    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
+        <button i18n="@@Apply" class="apply-css" (click)="apply()" mat-raised-button color="primary" type="button">
+            Apply
+        </button>
+        <button i18n="@@Cancel" class="apply-css" (click)="cancel()" mat-raised-button color="accent" type="button">
+            Cancel
+        </button>
+    </div>
+</form>

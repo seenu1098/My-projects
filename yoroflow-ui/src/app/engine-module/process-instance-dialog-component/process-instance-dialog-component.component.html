@@ -1,0 +1,132 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <mat-card>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="column">
+                <mat-card-title>
+                    <span *ngIf="data.taskType==='WEB_SERVICE_TASK'">Web Service Task</span>
+                    <span *ngIf="data.taskType==='DB_TASK'">DB Task</span>
+                    <span *ngIf="data.taskType==='START_TASK'">Start Task</span>
+                    <span *ngIf="data.taskType==='COMPUTE_TASK'">Compute Task</span>
+                    <span *ngIf="data.taskType==='DELAY_TIMER'">Delay Timer</span>
+                    <span *ngIf="data.taskType==='DECISION_TASK'">Decision Task</span>
+                    <span *ngIf="data.taskType==='SMS_TASK'">SMS Task</span>
+                </mat-card-title>
+            </div>
+            <div fxLayout="column">
+                <mat-icon (click)="onClose()">clear</mat-icon>
+            </div>
+        </div>
+        <ng-container *ngIf="data.taskType==='WEB_SERVICE_TASK'">
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <input matInput id="url" type="text" formControlName="url" placeholder="URL" disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <textarea matInput id="responsePayload" placeholder="Response Payload" style="height: 100px;"
+                        formControlName="responsePayload" disabled></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.taskType==='DB_TASK'">
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <input matInput id="sql" type="text" formControlName="sql" placeholder="SQL Type" disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <textarea matInput id="dbResponse" placeholder="Response Payload" style="height: 100px;"
+                        formControlName="dbResponse" disabled></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.taskType==='COMPUTE_TASK'">
+            <div class="mobile-css">
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="name" formControlName="name" placeholder="Name" disabled>
+                </mat-form-field>
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="dataType" formControlName="dataType" placeholder="Type" disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="computeString" formControlName="computeString"
+                        placeholder="Compute Data" disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <textarea matInput id="computePayload" placeholder="Compute Payload" style="height: 100px;"
+                        formControlName="computePayload" disabled></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.taskType==='DELAY_TIMER'">
+            <div class="mobile-css">
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="name" formControlName="name" placeholder="Name" disabled>
+                </mat-form-field>
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="time" formControlName="time" placeholder="Time" disabled>
+                </mat-form-field>
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="units" formControlName="units" placeholder="Units" disabled>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.taskType==='DECISION_TASK'">
+            <div class="mobile-css">
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="name" formControlName="name" placeholder="Name" disabled>
+                </mat-form-field>
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="logic" formControlName="logic" placeholder="Logical Operator"
+                        disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <textarea matInput id="rules" placeholder="Decision Rules" style="height: 200px;"
+                        formControlName="rules" disabled></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.taskType==='START_TASK'">
+            <div class="mobile-css">
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="name" formControlName="name" placeholder="Name" disabled>
+                </mat-form-field>
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="propertyType" formControlName="propertyType"
+                        placeholder="Property Type" disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <textarea matInput id="webservicePayload" placeholder="Webservice Payload" style="height: 100px;"
+                        formControlName="webservicePayload" disabled></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="data.taskType==='SMS_TASK'">
+            <div class="mobile-css">
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="name" formControlName="name" placeholder="Name" disabled>
+                </mat-form-field>
+                <mat-form-field style="width:100%">
+                    <input matInput type="text" id="mobileNumbers" formControlName="mobileNumbers"
+                        placeholder="Mobile Numbers" disabled>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row">
+                <mat-form-field style="width:100%">
+                    <textarea matInput id="messageBody" placeholder="Message Body" style="height: 100px;"
+                        formControlName="messageBody" disabled></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </mat-card>
+</form>

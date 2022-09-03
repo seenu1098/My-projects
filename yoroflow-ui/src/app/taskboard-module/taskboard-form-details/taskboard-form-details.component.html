@@ -1,0 +1,1374 @@
+<form [formGroup]="form" #userForm="ngForm" class="page-style" id="task-details">
+    <ng-container *ngIf="data?.value !== 'task' && data?.value!=='gridView' && data?.value !== 'loadTask'">
+        <div class="row w-100 mx-0 align-self-center" style="height: 12%;">
+            <!-- <div class="w-80 pr-2 pl-0"> -->
+            <div class="row w-100 mx-0" fxLayoutAlign="space-between center">
+                <div class="align-self-center px-0" style="width: 45%;">
+                    <div class="row w-100 mx-0 align-self-center">
+                        <div class="mr-2" *ngIf="taskBoardTaskVO?.taskType==='subtask' && viewSubtask === true">
+                            <mat-icon name="arrow_back" style="cursor: pointer;" (click)="back()">arrow_back
+                            </mat-icon>
+                        </div>
+                        <div class="px-0 mr-2" *ngIf="taskBoardTaskVO?.taskType==='subtask'">
+                            <span class="taskId_badge_css" i18n="SUBTASK">SUBTASK</span>
+                        </div>
+                        <div *ngIf="taskBoardTaskVO?.taskId || taskBoardTaskVO?.taskId !== ''">
+                            <span class="taskId_badge_css">{{taskBoardTaskVO?.taskId}}</span>
+                        </div>
+                        <div class=" px-2 width-css" fxLayout="row" fxLayoutGap="5px"
+                            *ngIf="this.taskBoardTaskVO.taskName && edit === false">
+                            <div fxLayout="column">
+                                <span class="mb-0 font-weight-bold task_name"
+                                    matTooltip="{{taskBoardTaskVO.taskName}}">{{taskBoardTaskVO.taskName |
+                                    slice:0:90}}</span>
+                            </div>
+                            <div fxLayout="column">
+                                <mat-icon class="mt-0 ml-0 edit-desc-css" matTooltip="{{'Edit Title' | translate}}"
+                                    (click)="editTitle()"
+                                    *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false">
+                                    drive_file_rename_outline
+                                </mat-icon>
+                                <mat-icon class="mt-0 ml-0 edit-desc-css" matTooltip="{{'Edit Title' | translate}}"
+                                    *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update===false) || isDoneColumn === true">
+                                    drive_file_rename_outline
+                                </mat-icon>
+                            </div>
+                        </div>
+                        <div class="px-2 ml-0 mr-2" *ngIf="this.taskBoardTaskVO.taskName && edit === true">
+                            <div class="input-group">
+                                <input type="text" class="form-control" formControlName="taskName">
+                                <div class="input-group-append">
+                                    <button class="py-0 px-3 btn btn-outline-primary" type="button"
+                                        (click)="titleChange()">
+                                        <mat-icon>done</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row w-100 ml-2 " *ngIf="showError" style="font-size: 12px;
+                                color: red;">
+                                <p>{{'Task Title should be within 200 characters.' | translate}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="justify-content-end px-0">
+                    <div class="row w-100 mx-0 justify-content-end">
+                        <div class="pt-2 left_vertical">
+                            <div fxLayout="row" class="mx-auto">
+                                <span class="flag-container-css" [matTooltip]="taskBoardTaskVO.priority"
+                                    [matMenuTriggerFor]="flagMenu" #flagMenuTrigger="matMenuTrigger"
+                                    *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false">
+                                    <mat-icon appearance="filled" class="flag-css" [style.color]="getFlagColor()">
+                                        flag
+                                    </mat-icon>
+                                    <mat-icon class="circle-css">add_circle</mat-icon>
+                                </span>
+                                <span class="flag-container-css" [matTooltip]="taskBoardTaskVO.priority"
+                                    *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update===false) || isDoneColumn === true">
+                                    <mat-icon appearance="filled" class="flag-css" [style.color]="getFlagColor()">
+                                        flag
+                                    </mat-icon>
+                                    <mat-icon class="circle-css">add_circle</mat-icon>
+                                </span>
+                            </div>
+                            <mat-menu #flagMenu="matMenu">
+                                <ng-container *ngFor="let priority of priorityArray; let j = index">
+                                    <div fxLayout="row">
+                                        <button mat-button (click)="savePriority(priority)"
+                                            style="width: 100%;text-align: left;" [id]="'priority_option_'+j">
+                                            <mat-icon appearance="filled" [style.color]="priority.color">
+                                                flag
+                                            </mat-icon>
+                                            <span style="margin-left: 10px;">{{priority.name | translate}}</span>
+                                        </button>
+                                    </div>
+                                </ng-container>
+                                <div fxLayout="row" style="border-top: 0.5px solid rgb(182, 182, 182);">
+                                    <button mat-button (click)="savePriority({name:'',color:'grey'})">
+                                        <mat-icon style="color:grey">clear</mat-icon>
+                                        <span style="margin-left: 10px;">{{'Clear'| translate}}</span>
+                                    </button>
+                                </div>
+                            </mat-menu>
+                        </div>
+                        <ng-container *ngIf="taskboardVO?.sprintEnabled">
+                            <div style="padding-left: 15px;">
+                                <ng-container *ngIf="isDoneColumn === false">
+                                    <div fxLayout="row" class="mx-auto pt-2" [matMenuTriggerFor]="hoursMenu"
+                                        #hoursMenuTrigger="matMenuTrigger" (mousedown)="hoursMenuOpen()"
+                                        *ngIf="taskBoardTaskVO?.estimateHours===undefined || taskBoardTaskVO?.estimateHours===null || taskBoardTaskVO?.estimateHours===0">
+                                        <span class="flag-container-css" matTooltip="{{'Estimate Hours' | translate}}">
+                                            <mat-icon class="flag-css">hourglass_empty</mat-icon>
+                                        </span>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="isDoneColumn === true">
+                                    <div fxLayout="row" class="mx-auto pt-2"
+                                        *ngIf="taskBoardTaskVO?.estimateHours===undefined || taskBoardTaskVO?.estimateHours===null || taskBoardTaskVO?.estimateHours===0">
+                                        <span class="flag-container-css" matTooltip="{{'Estimate Hours' | translate}}">
+                                            <mat-icon class="flag-css">hourglass_empty</mat-icon>
+                                        </span>
+                                    </div>
+                                </ng-container>
+                                <div class="left_vertical"
+                                    *ngIf="taskBoardTaskVO?.estimateHours && taskBoardTaskVO?.estimateHours>0">
+                                    <!-- <span class="label-name-css">{{'Estimate Hours' | translate}}</span> -->
+                                    <ng-container *ngIf="isDoneColumn === true">
+                                        <div fxLayout="row" fxLayoutGap="6px" class="dueDate-class mg-top-css"
+                                            matTooltip="{{'Estimate Hours' | translate}}">
+                                            <mat-icon class="point-display-css">
+                                                hourglass_empty</mat-icon>
+                                            <p class="fs_12 margin-class" style="margin-top: 3px !important;">
+                                                {{taskBoardTaskVO?.estimateHours}}h
+                                            </p>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="isDoneColumn === false">
+                                        <div fxLayout="row" fxLayoutGap="6px" class="dueDate-class mg-top-css"
+                                            [matMenuTriggerFor]="hoursMenu" #hoursMenuTrigger="matMenuTrigger"
+                                            (mousedown)="hoursMenuOpen()" matTooltip="{{'Estimate Hours' | translate}}">
+                                            <mat-icon class="point-display-css">
+                                                hourglass_empty</mat-icon>
+                                            <p class="fs_12 margin-class" style="margin-top: 3px !important;">
+                                                {{taskBoardTaskVO?.estimateHours}}h
+                                            </p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <mat-menu #hoursMenu="matMenu" class="point-menu-css">
+                                    <mat-form-field appearance="outline" (click)="$event.stopPropagation()"
+                                        class="px-1">
+                                        <mat-label>Estimate Hours</mat-label>
+                                        <input matInput type="number" min=1 formControlName="estimateHours"
+                                            oninput="this.value=Math.abs(this.value)">
+                                        <mat-error *ngIf="form.get('estimateHours').errors?.min">Estimate hours
+                                            should minimum 1</mat-error>
+                                        <mat-error *ngIf="form.get('estimateHours').errors?.required">Estimate hours
+                                            is required</mat-error>
+                                    </mat-form-field>
+                                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
+                                        <button mat-raised-button color="primary" type="button"
+                                            (click)="saveEstimateHours()">Apply</button>
+                                        <button mat-raised-button color="accent" type="button"
+                                            (click)="closeMenu()">Cancel</button>
+                                    </div>
+                                </mat-menu>
+                            </div>
+                            <div style="padding-left: 15px;padding-right: 10px;"
+                                *ngIf="taskBoardTaskVO?.remainingHours && taskBoardTaskVO?.remainingHours>0 && isDoneColumn === false">
+                                <div class="left_vertical">
+                                    <div fxLayout="row" fxLayoutGap="6px" class="dueDate-class mg-top-css"
+                                        matTooltip="{{'Remaining Hours' | translate}}">
+                                        <mat-icon class="point-display-css">
+                                            hourglass_top</mat-icon>
+                                        <p class="fs_12 margin-class" style="margin-top: 3px !important;">
+                                            {{taskBoardTaskVO?.remainingHours}}h
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding-left: 15px;padding-right: 10px;">
+                                <ng-container *ngIf="isDoneColumn === false">
+                                    <div fxLayout="row" class="mx-auto pt-2" [matMenuTriggerFor]="pointsMenu"
+                                        #pointsMenuTrigger="matMenuTrigger" (mousedown)="pointMenuOpen()"
+                                        *ngIf="taskBoardTaskVO?.originalPoints===undefined || taskBoardTaskVO?.originalPoints===null || taskBoardTaskVO?.originalPoints===0">
+                                        <span class="flag-container-css" matTooltip="{{'Original Points' | translate}}">
+                                            <mat-icon class="flag-css">stars</mat-icon>
+                                        </span>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="isDoneColumn === true">
+                                    <div fxLayout="row" class="mx-auto pt-2"
+                                        *ngIf="taskBoardTaskVO?.originalPoints===undefined || taskBoardTaskVO?.originalPoints===null || taskBoardTaskVO?.originalPoints===0">
+                                        <span class="flag-container-css" matTooltip="{{'Original Points' | translate}}">
+                                            <mat-icon class="flag-css">stars</mat-icon>
+                                        </span>
+                                    </div>
+                                </ng-container>
+                                <div class="left_vertical"
+                                    *ngIf="taskBoardTaskVO?.originalPoints && taskBoardTaskVO?.originalPoints>0">
+                                    <!-- <span class="label-name-css">{{'Original Points' | translate}}</span> -->
+                                    <ng-container *ngIf="isDoneColumn === false">
+                                        <div fxLayout="row" fxLayoutGap="6px" class="dueDate-class mg-top-css"
+                                            [matMenuTriggerFor]="pointsMenu" #pointsMenuTrigger="matMenuTrigger"
+                                            (mousedown)="pointMenuOpen()"
+                                            matTooltip="{{'Original Points' | translate}}">
+                                            <mat-icon class="point-display-css">stars
+                                            </mat-icon>
+                                            <p class="fs_12 margin-class" style="margin-top: 2px !important;">
+                                                {{taskBoardTaskVO?.originalPoints}}
+                                                <span
+                                                    *ngIf="data.sprintSettingsVo?.sprintEstimations==='in-hours'">h</span>
+                                                <span
+                                                    *ngIf="data.sprintSettingsVo?.sprintEstimations!=='in-hours'">pts</span>
+                                            </p>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="isDoneColumn === true">
+                                        <div fxLayout="row" fxLayoutGap="6px" class="dueDate-class mg-top-css"
+                                            matTooltip="{{'Original Points' | translate}}">
+                                            <mat-icon class="point-display-css">stars
+                                            </mat-icon>
+                                            <p class="fs_12 margin-class" style="margin-top: 2px !important;">
+                                                {{taskBoardTaskVO?.originalPoints}}
+                                                <span
+                                                    *ngIf="data.sprintSettingsVo?.sprintEstimations==='in-hours'">h</span>
+                                                <span
+                                                    *ngIf="data.sprintSettingsVo?.sprintEstimations!=='in-hours'">pts</span>
+                                            </p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <mat-menu #pointsMenu="matMenu" class="point-menu-css">
+                                    <ng-container *ngIf="data.sprintSettingsVo?.sprintEstimations==='sp-fib'">
+                                        <button mat-button fxLayout="row" class="w-100 align-self-start" type="button"
+                                            *ngFor="let point of fibPoints"
+                                            (click)="saveEstimatePoint(point)">{{point}}</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="data.sprintSettingsVo?.sprintEstimations==='sp-free'">
+                                        <button mat-button fxLayout="row" class="w-100 align-self-start" type="button"
+                                            *ngFor="let point of freeFlowPoints"
+                                            (click)="saveEstimatePoint(point)">{{point}}</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="data.sprintSettingsVo?.sprintEstimations==='in-hours'">
+                                        <mat-form-field appearance="outline" (click)="$event.stopPropagation()"
+                                            class="px-1">
+                                            <mat-label>Estimate Hours</mat-label>
+                                            <input matInput type="number" min=1 formControlName="estimateHours"
+                                                oninput="this.value=Math.abs(this.value)">
+                                            <mat-error *ngIf="form.get('estimateHours').errors?.min">Estimate hours
+                                                should minimum 1</mat-error>
+                                            <mat-error *ngIf="form.get('estimateHours').errors?.required">Estimate
+                                                hours
+                                                is required</mat-error>
+                                        </mat-form-field>
+                                        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center">
+                                            <button mat-raised-button color="primary" type="button"
+                                                (click)="saveEstimatePoint('hours')">Apply</button>
+                                            <button mat-raised-button color="accent" type="button"
+                                                (click)="closeMenu()">Cancel</button>
+                                        </div>
+                                    </ng-container>
+                                </mat-menu>
+                            </div>
+                        </ng-container>
+                        <div class="px-2 left_vertical">
+                            <!-- <span class="label-name-css">{{'Start Date' | translate}}</span> -->
+                            <div fxLayout="row" *ngIf="!startDate" fxLayoutGap="10px">
+                                <ng-container *ngIf="taskBoardTaskVO?.id">
+                                    <div *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update === true && isDoneColumn === false"
+                                        fxLayout="row" class="dueDate-class mg-top-4">
+                                        <span fxLayout="row" [matMenuTriggerFor]="dropdownMenuTwo"
+                                            #menuTrigger1="matMenuTrigger" style="margin-top: 5px;">
+                                            <mat-icon style="font-size: 15px;margin-top:3px;width:15px!important">
+                                                edit_calendar
+                                            </mat-icon>&nbsp;
+                                            <p class="m-0 fs_12" i18n="Add start date">
+                                                {{'Start date' | translate}}
+                                            </p>
+                                        </span>
+                                    </div>
+                                    <div *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update === false) || isDoneColumn === true"
+                                        fxLayout="row" class="doneDueDate-class" style="margin-top: 5px;">
+                                        <mat-icon style="font-size: 15px;margin-top:3px;width:15px!important">
+                                            edit_calendar
+                                        </mat-icon>&nbsp;
+                                        <p class="m-0 fs_12" i18n="Add start date"> {{'Start date' | translate}}</p>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="!taskBoardTaskVO?.id">
+                                    <div fxLayout="row" class="doneDueDate-class" style="margin-top: 5px;">
+                                        <mat-icon style="font-size: 15px;margin-top:3px;width:15px!important">
+                                            edit_calendar
+                                        </mat-icon>&nbsp;
+                                        <p class="m-0" i18n="Add start date"> {{'Start date' | translate}}</p>
+
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div fxLayout="column" *ngIf="startDate">
+                                <div fxLayout="row" style="width: 100%;" fxLayoutGap="10px">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="startDate"
+                                        style="background:#039703;">
+                                        <span style="margin-left:3px;cursor:pointer;"
+                                            [matMenuTriggerFor]="dropdownMenuTwo" #menuTrigger1="matMenuTrigger"
+                                            matTooltip="{{'Start date' | translate}}">{{startDate}}</span>
+                                        <mat-icon style="width:18px!important;"
+                                            *ngIf="taskboardColumnSecurity&& taskboardColumnSecurity.update === true && isDoneColumn === false"
+                                            class="closeIcon-css1" matTooltip="{{'Remove' | translate}}"
+                                            (click)="removestartDate()">
+                                            highlight_off</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <mat-icon class="right-arrow-css">arrow_right_alt</mat-icon>
+                        <div class="px-2 left_vertical right_vertical">
+                            <!-- <span class="label-name-css">{{'Due Date' | translate}}</span> -->
+                            <div fxLayout="row" *ngIf="!dueDate" fxLayoutGap="10px">
+                                <ng-container *ngIf="taskBoardTaskVO?.id">
+                                    <div *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update === true && isDoneColumn === false"
+                                        fxLayout="row" class="dueDate-class mg-top-4">
+                                        <span fxLayout="row" [matMenuTriggerFor]="dropdownMenufive"
+                                            #menuTrigger3="matMenuTrigger" style="margin-top: 5px;">
+                                            <mat-icon style="font-size: 15px;margin-top:3px;width:15px!important">
+                                                edit_calendar
+                                            </mat-icon> &nbsp; <p class="m-0 fs_12" i18n="Add due date"> {{'Due
+                                                date' |
+                                                translate}}</p>
+                                        </span>
+                                    </div>
+                                    <div *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update === false) || isDoneColumn === true"
+                                        fxLayout="row" class="doneDueDate-class" style="margin-top: 5px;">
+                                        <mat-icon style="font-size: 15px;margin-top:3px;width:15px!important">
+                                            edit_calendar
+                                        </mat-icon> &nbsp; <p class="m-0 fs_12" i18n="Add due date"> {{'Due date' |
+                                            translate}}
+                                        </p>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="!taskBoardTaskVO?.id">
+                                    <div fxLayout="row" class="doneDueDate-class" style="margin-top: 5px;">
+                                        <mat-icon style="font-size: 15px;margin-top:3px;width:15px!important">
+                                            edit_calendar
+                                        </mat-icon> &nbsp; <p class="m-0" i18n="Add due date"> {{'Due date' |
+                                            translate}}
+                                        </p>
+
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div fxLayout="column" *ngIf="dueDate">
+                                <div fxLayout="row" *ngIf="dueDate" fxLayoutGap="10px" style="width: 100%;">
+                                    <div fxLayout="row">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center" class="dueDate"
+                                            [style.background]="dueDateColor">
+                                            <span style="margin-left:3px;cursor:pointer"
+                                                [matMenuTriggerFor]="dropdownMenufive" #menuTrigger3="matMenuTrigger"
+                                                matTooltip="{{'Due date' | translate}}">{{dueDate}}</span>
+                                            <mat-icon style="width:18px!important;"
+                                                *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update === true  && isDoneColumn === false"
+                                                class="closeIcon-css1" matTooltip="{{'Remove' | translate}}"
+                                                (click)="removeDueDate()">
+                                                highlight_off</mat-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row w-100 mx-0 justify-content-end"> -->
+                        <button mat-raised-button color="primary" type="button" class="mr-3 btn-action-css"
+                            (click)="save()" i18n="Close">Save
+                            & Close</button>
+                        <button mat-raised-button color="accent" type="button" class="mr-3 btn-action-css"
+                            (click)="cancelTask()" id="cancel" i18n="Cancel">Cancel</button>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+            <!-- </div>
+            <div class="w-20 pl-0"> -->
+            <!-- <div class="row w-100 mx-0 justify-content-end">
+                <button mat-raised-button color="primary" type="button" class="mr-3" (click)="save()" i18n="Close">Save
+                    & Close</button>
+                <button mat-raised-button color="accent" type="button" class="mr-3" (click)="cancelTask()" id="cancel"
+                    i18n="Cancel">Cancel</button>
+            </div> -->
+            <!-- </div> -->
+        </div>
+        <!-- <hr> -->
+        <div fxLayout="row" style="height: 85%;">
+            <div fxLayout="column" style="width:14%;" id="category-column">
+                <span class="label-name-css fs_14" i18n="Task">Task</span>
+                <ng-conatiner *ngFor="let category of categoriesArray; let i = index;">
+                    <button *ngIf="((taskBoardTaskVO?.taskType==='subtask' && category.name!=='Subtasks') 
+                        || taskBoardTaskVO?.taskType==='parentTask') 
+                        && (category.name !== 'Log work' || 
+                        taskBoardTaskVO?.sprintTaskId !== null)" mat-button class="category-button-css"
+                        [style.color]="category.isSelected?'#039be5':'black'"
+                        [style.background]="category.isSelected?'#e5f4ff':''" (click)="onCategorySelected(category)"
+                        [id]="'catagory_'+i">
+                        <div fxLayout="row" fxLayoutAlign="space-between center"
+                            (click)='category.name === "Activity log" ? getActivity() :" "'>
+                            <div fxLayout="row">
+                                <mat-icon [style.color]="category.color" class="menu_left_icon">
+                                    {{category.icon}}
+                                </mat-icon>
+                                <span>{{category.name | translate}}</span>
+                            </div>
+                            <div fxLayout="column" class="badge-css"
+                                *ngIf="category.name!=='Task form' && category.name!=='Dependencies' && category.name !== 'Log work' && category.name !=='Activity log'">
+
+                                <span *ngIf="category.name==='Comments'"
+                                    style="align-self: center;font-size: 10px;">{{taskBoardTaskVO?.commentsLength}}</span>
+                                <span *ngIf="category.name==='Attachments'"
+                                    style="align-self: center;font-size: 10px;">{{taskBoardTaskVO?.files?.length}}</span>
+                                <span *ngIf="category.name==='Subtasks'"
+                                    style="align-self: center;font-size: 10px;">{{taskBoardTaskVO?.subTasks?.length}}</span>
+                            </div>
+                        </div>
+                    </button>
+                </ng-conatiner>
+            </div>
+            <div fxLayout="column" class="column-css" style="margin-left: 10px;height:100%;overflow-x: hidden;"
+                [style.width]="open===true?'65%':'85%'"
+                [style.overflow-y]="selectedCategory==='Comments'?'hidden':'scroll'">
+                <div fxLayout="row" fxLayoutAlign="end">
+                    <span *ngIf="open===true" class="navigate-close-css" id="expand-icon" appMaterialElevation
+                        defaultElevation=4 raisedElevation=8 (click)="expandOrCollapse('close')">
+                        <mat-icon class="animate-css">navigate_next</mat-icon>
+                    </span>
+                    <span *ngIf="open===false" class="navigate-open-css" id="expand-icon" appMaterialElevation
+                        defaultElevation=4 raisedElevation=8 (click)="expandOrCollapse('open')">
+                        <mat-icon class="animate-css1">chevron_left</mat-icon>
+                    </span>
+                </div>
+                <ng-container *ngIf="selectedCategory === 'Log work'">
+                    <mat-card class="w-100" style="margin-top: 18px;">
+                        <app-work-log-list [taskBoardTaskVO]="taskBoardTaskVO" [userList]="data.usersList">
+                        </app-work-log-list>
+                    </mat-card>
+                </ng-container>
+                <div [hidden]="selectedCategory==='Task form'?false:true">
+                    <div fxLayout="row" class="label-name-css">
+                        <div i18n="Description" class="fs_12">Description</div>
+                        <mat-icon (click)="input_open()" class="edit-desc-css fs_12"
+                            matTooltip="{{'Edit description' | translate}}">
+                            drive_file_rename_outline
+                        </mat-icon>
+                    </div>
+                    <div fxLayout="row" *ngIf="showQuill === true" style="width: 98%;">
+                        <app-quill-editor style="width:100%" class="actions-css" [inputMessage]="message"
+                            [fromTaskboard]="true" (message)="loadMessage($event)" (close)="cancelDescription($event)">
+                        </app-quill-editor>
+                    </div>
+                    <div fxLayout="row" *ngIf="descriptionFieldShow === true && showQuill ==false">
+                        <span class="description-class" [innerHtml]="taskBoardTaskVO?.description"
+                            (click)="input_open()">
+                        </span>
+
+                    </div>
+                    <div class="row w-100 mx-0 fs_12"
+                        *ngIf="descriptionFieldShow === false && isDoneColumn === false && isArchived===false"
+                        (click)="openDescriptionField()" style="margin-top:10px;" id="description-button"
+                        i18n="+ Add description">
+                        + Add description
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end">
+                        <img src="../../../assets/icons/noun_pop out_1406946.png" matTooltip="{{'Pop out' | translate}}"
+                            style="align-self:flex-end!important;margin-right:11px;cursor: pointer;width: 18px;margin-top: 15px;"
+                            (click)="open_fullview()"
+                            *ngIf="taskBoardTaskVO?.taskType !== 'subtask' && isDoneColumn === false">
+                    </div>
+                    <div fxLayout="row" style="margin-top:20px;width:98%;cursor:pointer;margin-top: 0px;"
+                        *ngIf="isTaskData===true && taskBoardTaskVO?.taskType !== 'subtask'" class="icon_box">
+                        <mat-card style="width: 100%;">
+                            <dynamic-page *ngIf="show" [id]="data.formId" [object]="taskComponentObject"
+                                [version]="data.version" (formValues)="getFormValues($event)"
+                                [formData]="taskBoardTaskVO" pageFrom="taskBoard"
+                                [pageSecurity]="data.taskboardColumnSecurity.update === true && isDoneColumn === false  ">
+                            </dynamic-page>
+                        </mat-card>
+                    </div>
+                </div>
+                <ng-container *ngIf="selectedCategory==='Attachments'">
+                    <div fxLayout="column">
+                        <div fxLayout="row" class="category-label-css">
+                            <span i18n="Attachments">Attachments</span>
+                        </div>
+
+                        <ng-container
+                            *ngIf="taskBoardTaskVO?.files!==undefined && taskBoardTaskVO?.files!==null && taskBoardTaskVO?.files.length>0 && taskBoardTaskVO?.files!==[]">
+                            <div style="height: 30%;margin-bottom: 10px;">
+                                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="isFile">
+                                    <mat-spinner [diameter]="50"></mat-spinner>
+                                </div>
+                                <div *ngIf="!isFile"
+                                    style="max-height:100%;border:0.5px solid rgb(224, 224, 224);overflow-y: scroll;margin-left:7px;margin-right: 10px;">
+                                    <ng-container *ngFor="let files of taskBoardTaskVO.files; let i = index">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <span *ngIf="files.fileName" class="file-css"
+                                                [matTooltip]="files.fileName">{{files.fileName}}</span>
+                                            <div fxLayout="row" fxLayoutGap="10px"
+                                                *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true">
+                                                <mat-icon class="download-icon" (click)="downloadFile(files)"
+                                                    matTooltip="{{'Download File' | translate}}">cloud_download
+                                                </mat-icon>
+                                                <mat-icon *ngIf="isDoneColumn === false" class="delete-icon"
+                                                    (click)="deleteFile(files,i)"
+                                                    matTooltip="{{'Delete File' | translate}}">delete
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div fxLayout="column"
+                            *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false">
+                            <h1>You have to upload these formats ( <b>png, jpg, jpeg, bmp, txt, doc, docx, xls, xlsx,
+                                    pdf, ppt, pptx</b>) and allowed file size is <b>10MB</b> maximum.</h1>
+                            <div fxLayout="row" #myIdentifier>
+                                <app-uppy-component [endPoint]="endPoint" [metaData]="metaData"
+                                    [restrictions]="restrictions" [selector]="true" [taskDetailsObject]="this"
+                                    (file)="getFile()"></app-uppy-component>
+                            </div>
+                        </div>
+                        <!-- <div fxLayout="row" fxLayoutAlign="end" style="margin-top:20px;margin-right: 10px;">
+                            <div (click)="onClick()"
+                                *ngIf="(taskBoardTaskVO?.files===undefined || taskBoardTaskVO?.files===null 
+                             || taskBoardTaskVO?.files.length===0) && taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false"
+                                fxLayout="column" class="attachment-button" fxLayoutAlign="end">
+                                + Add Attachments
+                            </div>
+                            <div (click)="onClick()"
+                                *ngIf="(taskBoardTaskVO?.files!==undefined && taskBoardTaskVO?.files!==null
+                             && taskBoardTaskVO?.files.length>0) && taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false"
+                                fxLayout="column" class="attachment-button" fxLayoutAlign="end">
+                                + Add more
+                            </div>
+                        </div> -->
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedCategory==='Comments'">
+                    <!-- <div fxLayout="row" style="margin-top: 10px;margin-right: 10px;" *ngIf="isArchived===false">
+                        <mat-form-field appearance="outline" class="commentsField-style">
+                            <mat-label>Add a comments...</mat-label>
+                            <textarea [disabled]="!taskBoardTaskVO?.id" matInput id="taskComments"
+                                formControlName="taskComments" rows=4></textarea>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end" *ngIf="isArchived===false" style="margin-right: 10px;">
+                        <button mat-raised-button type="button" color="primary" class="commentsSaveButton-style"
+                            (click)="setMessage(form.get('taskComments').value)"
+                            [disabled]="!taskBoardTaskVO?.id || (taskboardColumnSecurity && taskboardColumnSecurity.update===false)">Save</button>
+                    </div> -->
+                    <div fxLayout="row" class="label-name-css">
+                        <div i18n="Comments">Comments</div>
+                    </div>
+                    <div style="margin-right: 10px;width: 100%;" class="comments-container-css"
+                        *ngIf="isUsers && userVo">
+                        <ng-container *ngFor="let comments of taskBoardTaskVO?.taskComments; let i = index">
+                            <div fxLayout="row" fxLayoutAlign="start" style="position: relative;">
+                                <span class="vl"></span>
+                                <app-task-comments style="width: 100%;" [comments]="comments"
+                                    [usersList]="data.usersList" [taskBoardTaskVO]="taskBoardTaskVO"
+                                    [loggedInUser]="userVo" [taskList]="taskList" [users]="boardUsers"
+                                    [isArchived]="isArchived">
+                                </app-task-comments>
+                            </div>
+                        </ng-container>
+                        <div fxLayout="row">
+                            <app-quill-editor
+                                *ngIf="isArchived===false &&  (!taskboardColumnSecurity ||(taskboardColumnSecurity && taskboardColumnSecurity.update===true))"
+                                style="width: 99%;" [taskboardComments]="true" [users]="boardUsers"
+                                (editorValue)="setMessage($event)"></app-quill-editor>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedCategory==='Subtasks' && taskBoardTaskVO?.taskType !== 'subtask'">
+                    <div fxLayout="row" style="height: 18px;">
+                        <h5 class="category-label-css" i18n="Subtasks">Subtasks</h5>
+                        <!-- <span class="border-style-desc col-md-10 px-0 mx-0"></span> -->
+                    </div>
+                    <div fxLayout="row" formArrayName="subtaskArray"
+                        *ngFor="let subtasks of getSubtaskArray();let i= index;" style="width:100%;"
+                        [style.margin-top]="i===0?'25px':'10px'">
+                        <div fxLayout="row" [formGroupName]="i" style="width:100%;">
+                            <span style="width: 20px;margin-top: 5px;">{{i+1}}</span>
+                            <div *ngIf="isDoneColumn === false"
+                                [matTooltip]="form.get('subtaskArray').get(''+i).get('status').value"
+                                [matMenuTriggerFor]="dropdownMenuFour" class="subtaskStatus-class"
+                                #menuTrigger4="matMenuTrigger" (mousedown)="mousedown(i)"
+                                [style.background-color]="form.get('subtaskArray').get(''+i).get('color').value">
+                            </div>
+                            <div *ngIf="isDoneColumn === true"
+                                [matTooltip]="form.get('subtaskArray').get(''+i).get('status').value"
+                                class="subtaskStatus-class" (mousedown)="mousedown(i)"
+                                [style.background-color]="form.get('subtaskArray').get(''+i).get('color').value">
+                            </div>
+                            <div style="width:50%" class="legacy"
+                                [style.border]="form.get('subtaskArray').get(''+i).get('border').value === true && form.get('subtaskArray').get(''+i).get('status').value !== 'Done' ? '0.5px solid rgb(221, 218, 218)':'0.5px solid white'">
+                                <input matInput formControlName="taskName" (click)="setBorder(i)"
+                                    (keydown.enter)="subtaskFocusout(i)"
+                                    [style.text-decoration]="form.get('subtaskArray').get(''+i).get('status').value === 'Done' ? 'line-through':''"
+                                    [readonly]="form.get('subtaskArray').get(''+i).get('status').value === 'Done'
+                                              || (taskboardColumnSecurity && taskboardColumnSecurity.update===false) || isDoneColumn === true">
+                            </div>
+                            <mat-icon
+                                *ngIf="form.get('subtaskArray').get(''+i).get('border').value === true && form.get('subtaskArray').get(''+i).get('status').value !== 'Done' && isDoneColumn === false"
+                                (click)="subtaskFocusout(i)" name="tick" matTooltip="Save Subtask"
+                                [style.background]="themeService.primaryColor"
+                                style=" cursor: pointer;margin-top: 5px;color: white;font-size:20px;border-radius: 7px;border:0.5px solid rgb(221, 218, 218);"
+                                matSuffix>done</mat-icon>
+
+                            <ng-container *ngIf="form.get('subtaskArray').get(''+i).get('showIcons').value === true &&  (taskboardColumnSecurity && taskboardColumnSecurity.update===true)
+                                        && isDoneColumn === false">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" class="dueDate-subtask"
+                                    *ngIf="form.get('subtaskArray').get(''+i).get('showDueDate').value!==null"
+                                    [style.background]="getCurrentSubtaskDueDate(i) > currentDate ? '#039703':'#c90000'">
+                                    <span
+                                        style="margin-left:3px">{{form.get('subtaskArray').get(''+i).get('showDueDate').value}}</span>
+                                    <ng-container
+                                        *ngIf="form.get('subtaskArray').get(''+i).get('status').value !== 'Done' && isDoneColumn === false">
+                                        <mat-icon class="closeIcon-css1"
+                                            matTooltip="{{'Remove Start Date' | translate}}"
+                                            (click)="removeSubtaskDueDate(i)">highlight_off</mat-icon>
+                                    </ng-container>
+
+                                </div>
+                                <mat-icon *ngIf="form.get('subtaskArray').get(''+i).get('status').value !== 'Done'"
+                                    matTooltip="{{'Due Date' | translate}}" [matMenuTriggerFor]="dropdownMenuThree"
+                                    class="dueDate-picker" #menuTrigger2="matMenuTrigger" (mousedown)="mousedown(i)">
+                                    date_range</mat-icon>
+                                <div fxLayout="row"
+                                    [style.margin-left]="form.get('subtaskArray').get(''+i).get('status').value === 'Done'?'10px':''"
+                                    *ngIf="taskBoardTaskVO?.subTasks && taskBoardTaskVO?.subTasks[i]!==undefined && taskBoardTaskVO?.subTasks[i]!==null && taskBoardTaskVO?.subTasks[i].assignTaskVO!==undefined && taskBoardTaskVO?.subTasks[i].assignTaskVO!==null && taskBoardTaskVO?.subTasks[i].assignTaskVO.assigneeUserTaskList && taskBoardTaskVO?.subTasks[i].assignTaskVO.assigneeUserTaskList.length>0">
+                                    <ng-container
+                                        *ngFor="let user of taskBoardTaskVO.subTasks[i].assignTaskVO.assigneeUserTaskList;let j = index;">
+                                        <div (click)="assignSubtask(i)" *ngIf="j<=3" class="subtask-assignee-class"
+                                            [style.margin-left]="j>0?'-8px':''" [matTooltip]="getUserName(user)"
+                                            [style.background]="getUserColor(user)">
+                                            <span
+                                                class="subtask-assigneeName-class">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                                        </div>
+                                        <ng-container *ngIf="j===4">
+                                            <div (click)="assignSubtask(i)"
+                                                style="margin-left:-8px;background-color: grey;"
+                                                class="subtask-assignee-class"
+                                                [matMenuTriggerFor]="remainingSubtaskAssigneeMenu"
+                                                #remainingSubtaskAssigneeMenuTrigger="matMenuTrigger"
+                                                (mouseenter)="remainingSubtaskAssigneeMenuTrigger.openMenu()">
+                                                <span
+                                                    class="subtask-assigneeName-class">+{{getRemainingAssigneeUserCount(taskBoardTaskVO.subTasks[i].assignTaskVO.assigneeUserTaskList)}}</span>
+                                            </div>
+
+                                            <mat-menu class="assignee-menu" #remainingSubtaskAssigneeMenu="matMenu"
+                                                [overlapTrigger]="false">
+                                                <span>
+                                                    <perfect-scrollbar [config]="config" id="menu_with_icon"
+                                                        style="height:250px;">
+                                                        <ng-container
+                                                            *ngFor="let user of getRemainingAssigneeUserList(taskBoardTaskVO.subTasks[i].assignTaskVO.assigneeUserTaskList)">
+                                                            <div style="margin-left: 15px;margin-top: 5px;"
+                                                                fxLayout="row">
+
+                                                                <div fxLayout="row" fxLayoutGap="5px">
+                                                                    <div class="setHighlight"
+                                                                        [style.background-color]="user.color">
+                                                                        <span
+                                                                            [matTooltip]="user.firstName+' '+user.lastName"
+                                                                            style="font-size: 12px; color: white;font-weight: 100;">{{user.firstName.charAt(0).toUpperCase()
+                                                                            +
+                                                                            user.lastName.charAt(0).toUpperCase()}}</span>
+                                                                    </div>
+                                                                    <div class="user-margin">
+                                                                        <div style="width: 196px; overflow: hidden;
+                                                                              text-overflow: ellipsis;
+                                                                              white-space: nowrap;"
+                                                                            [matTooltip]="user.firstName+' '+user.lastName">
+                                                                            {{user.firstName}}
+                                                                            {{user.lastName}}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+                                                    </perfect-scrollbar>
+                                                </span>
+                                            </mat-menu>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+
+                                <mat-icon
+                                    *ngIf="form.get('subtaskArray').get(''+i).get('status').value !== 'Done' && isDoneColumn === false &&
+                                        (!taskBoardTaskVO?.subTasks[i] || (taskBoardTaskVO?.subTasks[i] && !taskBoardTaskVO?.subTasks[i].assignTaskVO) || (taskBoardTaskVO?.subTasks[i] && taskBoardTaskVO?.subTasks[i].assignTaskVO && taskBoardTaskVO?.subTasks[i].assignTaskVO.assigneeUserTaskList.length===0))"
+                                    matTooltip="{{'Assign Task' | translate}}" class="dueDate-picker"
+                                    (click)="assignSubtask(i)">
+                                    person</mat-icon>
+                            </ng-container>
+                            <mat-icon *ngIf="form.get('subtaskArray').get(''+i).get('status').value !== 'Done' && (taskboardColumnSecurity && taskboardColumnSecurity.update===true)
+                                        && isDoneColumn === false" (click)=" removeSubtaskArray(i,subtasks)"
+                                class="subtask-delete" matTooltip="{{'Delete' | translate}}">
+                                delete</mat-icon>
+                            <mat-icon *ngIf="form.get('subtaskArray').get(''+i).get('status').value !== 'Done' && (taskboardColumnSecurity && taskboardColumnSecurity.update===true)
+                                        && isDoneColumn === false " name="visibility" class="preview" style="margin-top: 4px;cursor:pointer;font-size: 22px;
+                                        " (click)="openSubtask(subtasks)" matTooltip="{{'View Subtask' | translate}}">
+                                visibility
+                            </mat-icon>
+
+
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;margin-left:28px;color:red;" *ngIf="!userForm.valid && isClose">
+                        Subtask cannot be empty</div>
+                    <div *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false"
+                        fxLayout="row" style="margin-top:10px;margin-right: 10px;" fxLayoutAlign="end" class>
+                        <div id="subtask-button" (click)="addSubtaskArray()" i18n="+ Add Subtasks"
+                            style="width: 180px;">+
+                            Add subtasks</div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedCategory==='Activity log'">
+                    <div fxLayout="row" class="category-label-css">
+                        <span i18n="Dependencies">Activity log</span>
+                    </div>
+                    <perfect-scrollbar [style.height.px]="screenHeight">
+
+                        <div fxLayout="column" class="notification-body">
+                            <table class="table-css">
+                                <div fxLayout="row" class="primary-row-css" fxLayoutAlign="space-between center">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <span class="select-all-css fs_12 pl-2" i18n="Select All">Activity by
+                                        </span>
+
+                                    </div>
+                                    <div>
+                                        <span class="mark-read-css fs_12" i18n="Mark all as read"
+                                            style="cursor: pointer;" (click)="sort()">Time <mat-icon class="fs_12"
+                                                *ngIf="sortb===true">
+                                                north</mat-icon>
+                                            <mat-icon class="fs_12" *ngIf="sortb===false">south</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <ng-container *ngFor="let activelog of activities;let i = index;">
+                                    <div fxLayout="row" class="secondary-row-css"
+                                        [style.background]="i%2===0?'#f6f8fa':'white'">
+                                        <div fxLayout="row" fxLayoutGap="10px" class="table-column-css col-md-8 pl-0">
+
+                                            <div fxLayout="row" class="notification_msg" fxLayoutAlign="start center">
+                                                <span class="notification_msg_title">
+                                                    <ng-container
+                                                        *ngIf="activity.getUser(activelog.userId).profilePicture !== null">
+                                                        <img class="avatar" alt="User Avatar"
+                                                            [matTooltip]="activity.getUsername(activelog.userId)"
+                                                            src={{activity.getUser(activelog.userId).profilePicture}}>&nbsp;&nbsp;{{activity.getdata(activelog)}}&nbsp;
+                                                    </ng-container>
+                                                    <ng-container
+                                                        *ngIf="activity.getUser(activelog.userId).profilePicture === null">
+                                                        <span class="hover-class round_firstletter ml-2 fs_12"
+                                                            style="color: white;padding:4px 3px 5px 5px!important"
+                                                            [style.background]="activity.getUserColoras(activelog)"
+                                                            [matTooltip]="activity.getUsername(activelog.userId)">
+                                                            {{activity.getAssigner(activelog)}}
+                                                        </span>&nbsp;&nbsp;<span
+                                                            class="fs_12 mr-2">{{activity.getdata(activelog)}}&nbsp;</span>
+                                                    </ng-container>
+                                                </span>
+                                                <ng-container
+                                                    *ngIf="activelog.activityType === 'tb_label_add' || activelog.activityType ==='tb_label_remove'"
+                                                    style="display: flex;">
+                                                    <ng-container
+                                                        *ngFor="let log of activity.getLabelsName(activelog.activityData)">
+                                                        <span [style.background]="activity.getLabels(log)"
+                                                            class="p-1 status_box fs_12 " style="line-height: 13px;border-radius: 5px;  color: #fff;white-space: normal;
+                                        height: auto;margin-left: 5px;">{{log}}</span>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <span *ngIf="activelog.activityType ==='tb_create_task'">
+                                                    {{''}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_comment'">
+                                                    {{''}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_start_date'"
+                                                    style="font-size:12px;">
+                                                    {{activelog.activityData | date:'mediumDate' }}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_due_date'"
+                                                    style="font-size:12px;">
+                                                    {{activelog.activityData | date:'mediumDate' }}
+                                                </span>
+
+
+                                                <ng-container
+                                                    *ngIf="activelog.activityType === 'tb_removed_assignee' || activelog.activityType ==='tb_added_assignee'">
+                                                    <ng-container
+                                                        *ngFor="let assign of activity.getAssigneeName(activelog.activityData);let i =index">
+
+                                                        <div *ngIf="i<=3" class="hover-class round_firstletter fs_12"
+                                                            [style.margin-left]="i>0?'-4px':''"
+                                                            [matTooltip]="activity.getUsername(assign)"
+                                                            [style.background]="getUserColoras(assign)">
+                                                            <span
+                                                                class=" round_firstletter_size">{{getAssigner(assign)}}</span>
+                                                        </div>
+                                                        <ng-container *ngIf="i===4">
+
+                                                            <div class="hover-class round_add_count">
+                                                                <span [matMenuTriggerFor]="activityAssigneeMenu"
+                                                                    #activityMenuTrigger="matMenuTrigger"
+                                                                    (mouseenter)="activityMenuTrigger.openMenu()"
+                                                                    class=" round_firstletter_count">+{{activity.getRemainingAssigneeUserCountas(activelog.activityData)}}</span>
+                                                            </div>
+
+                                                            <mat-menu class="assignee-menu"
+                                                                #activityAssigneeMenu="matMenu"
+                                                                [overlapTrigger]="false">
+                                                                <span>
+                                                                    <perfect-scrollbar [config]="config"
+                                                                        id="menu_with_icon" style="height:250px;">
+                                                                        <ng-container
+                                                                            *ngFor="let user of activity.getReminingUsersList(activelog.activityData)">
+                                                                            <div style="margin-left: 15px;margin-top: 5px;"
+                                                                                fxLayout="row">
+
+                                                                                <div fxLayout="row" fxLayoutGap="5px">
+                                                                                    <div class="setHighlight"
+                                                                                        [style.background-color]="user.color">
+                                                                                        <span
+                                                                                            [matTooltip]="user.firstName+' '+user.lastName"
+                                                                                            style="font-size: 12px; color: white;font-weight: 100;">{{user.firstName.charAt(0).toUpperCase()
+                                                                                            +
+                                                                                            user.lastName.charAt(0).toUpperCase()}}</span>
+                                                                                    </div>
+                                                                                    <div class="user-margin ml-2">
+                                                                                        <div style="width: 196px; overflow: hidden;
+                                                                              text-overflow: ellipsis;
+                                                                              white-space: nowrap;"
+                                                                                            [matTooltip]="user.firstName+' '+user.lastName">
+                                                                                            {{user.firstName}}
+                                                                                            {{user.lastName}}</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </perfect-scrollbar>
+                                                                </span>
+                                                            </mat-menu>
+
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <span *ngIf="activelog.activityType ==='tb_updated_task'">
+                                                    {{''}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_priority'">
+                                                    <mat-icon appearance="filled" [matTooltip]="activelog.activityData"
+                                                        [style.color]="activity.getPriorty(activelog.activityData)"
+                                                        style="margin-top: 13px;">
+                                                        assistant_photo
+                                                    </mat-icon>
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_changed_status'"
+                                                    [style.background]="activity.getStatus(activelog.activityData)"
+                                                    class="p-1 status_box fs_12" style="line-height: 13px;border-radius: 5px;  color: #fff;white-space: normal;
+                                        height: auto;">{{activelog.activityData}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_description'"
+                                                    [innerHTML]="activelog.activityData" style="margin-top: 15px;"
+                                                    class="fs_14">
+                                                </span>
+
+                                                <span *ngIf="activelog.activityType ==='tb_added_sub_task'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_removed_sub_task'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_changed_sub_task_status'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_attachment'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_waiting_on'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span> <span *ngIf="activelog.activityType ==='tb_added_blocking'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span>
+                                                <span *ngIf="activelog.activityType ==='tb_added_related_task'"
+                                                    class="fs_12">
+                                                    {{activelog.activityData}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="assigned-time-css col-md-4 fs_12" fxLayoutAlign="center">
+                                            {{activelog.createdOn | date:'medium'}}
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="length ===0">
+                                    <div fxLayout="row" fxLayoutAlign="center" style="margin-top:10px;">
+                                        <span>
+                                            No Data Found
+                                        </span>
+                                    </div>
+                                </ng-container>
+                            </table>
+                            <div fxLayout="row" fxLayoutAlign="end" style="margin-right:10px;">
+                                <app-paginator *ngIf="length" id="mat_table_page_selector" [length]="length"
+                                    [pageSize]="paginationVO.size"
+                                    [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)">
+                                </app-paginator>
+                            </div>
+                        </div>
+                    </perfect-scrollbar>
+
+
+                </ng-container>
+                <ng-container *ngIf="selectedCategory==='Dependencies'">
+                    <div fxLayout="row" class="category-label-css">
+                        <span i18n="Dependencies">Dependencies</span>
+                    </div>
+                    <ng-container *ngFor="let dependency of dependencyArray;">
+                        <div class="dependency-container" [style.border]="dependency.border"
+                            [style.color]="dependency.color" [style.border-left]="dependency.borderLeft"
+                            [style.background]="dependency.background">
+                            <div class="dependency-title">
+                                <mat-icon class="dependency-container-icon">{{dependency.icon}}</mat-icon>
+                                {{dependency.name | translate}}
+                            </div>
+                            <div class="dependency-description">{{dependency.description | translate}}</div>
+                            <ng-container *ngIf="dependency.value==='waitingOn'">
+                                <ng-container
+                                    *ngFor="let task of taskBoardTaskVO.taskDependenciesVO?.waitingOn; let i=index;">
+                                    <button mat-button style="text-align: left;width: 100%;"
+                                        (mouseenter)="mouseEnter(i,'waitingOn')" (mouseleave)="mouseLeave()"
+                                        [id]="'waiting_'+i">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" class="dependency-container-task">
+                                                <span class="dependency-status-css"
+                                                    [style.background]="getStatusColor(task.status)"
+                                                    [matTooltip]="task.status"></span>
+                                                <span
+                                                    [style.text-decoration]="getDoneColumn(task)?'line-through':'none'">
+                                                    {{loadDependencies(task.id)}}&nbsp;<b *ngIf="task.taskName">-
+                                                        {{task.taskName}}</b>
+                                                </span>
+                                            </div>
+                                            <mat-icon
+                                                *ngIf="dependencyType==='waitingOn' && i===dependencyIndex 
+                                            && taskboardColumnSecurity && taskboardColumnSecurity.update && isDoneColumn === false"
+                                                (click)="removeDependencies(task)" [id]="'waiting_close_'+i">close
+                                            </mat-icon>
+                                        </div>
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="dependency.value==='blocking'">
+                                <ng-container
+                                    *ngFor="let task of taskBoardTaskVO.taskDependenciesVO?.blocking; let i=index;">
+                                    <button mat-button style="text-align: left;width: 100%;"
+                                        (mouseenter)="mouseEnter(i,'blocking')" (mouseleave)="mouseLeave()"
+                                        [id]="'blocking_'+i">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" class="dependency-container-task">
+                                                <span class="dependency-status-css"
+                                                    [style.background]="getStatusColor(task.status)"
+                                                    [matTooltip]="task.status"></span>
+                                                <span
+                                                    [style.text-decoration]="getDoneColumn(task)?'line-through':'none'">
+                                                    {{loadDependencies(task.id)}}&nbsp;<b *ngIf="task.taskName">-
+                                                        {{task.taskName}}</b>
+                                                </span>
+                                            </div>
+                                            <mat-icon
+                                                *ngIf="dependencyType==='blocking' && i===dependencyIndex
+                                            && taskboardColumnSecurity && taskboardColumnSecurity.update && isDoneColumn === false"
+                                                (click)="removeDependencies(task)" [id]="'blocking_close_'+i">close
+                                            </mat-icon>
+                                        </div>
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="dependency.value==='relatedTask'">
+                                <ng-container
+                                    *ngFor="let task of taskBoardTaskVO.taskDependenciesVO?.relatedTasks; let i=index;">
+                                    <button mat-button style="text-align: left;width: 100%;"
+                                        (mouseenter)="mouseEnter(i,'relatedTask')" (mouseleave)="mouseLeave()"
+                                        [id]="'related_'+i">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <div fxLayout="row" class="dependency-container-task">
+                                                <span class="dependency-status-css"
+                                                    [style.background]="getStatusColor(task.status)"
+                                                    [matTooltip]="task.status"></span>
+                                                <span
+                                                    [style.text-decoration]="getDoneColumn(task)?'line-through':'none'">
+                                                    {{loadDependencies(task.id)}}&nbsp;<b *ngIf="task.taskName">-
+                                                        {{task.taskName}}</b>
+                                                </span>
+                                            </div>
+                                            <mat-icon
+                                                *ngIf="dependencyType==='relatedTask' && i===dependencyIndex 
+                                            && taskboardColumnSecurity && taskboardColumnSecurity.update && isDoneColumn === false"
+                                                (click)="removeDependencies(task)" [id]="'related_close_'+i">close
+                                            </mat-icon>
+                                        </div>
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+                            <div class="dependency-container-button"
+                                *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update && isDoneColumn === false">
+                                <span *ngIf="dependency.value==='waitingOn'" (click)="addDependencies('waitingOn')">+
+                                    {{'Add waiting on task' | translate}}</span>
+                                <span *ngIf="dependency.value==='blocking'" (click)="addDependencies('blocking')">+
+                                    {{'Add task that is blocked' | translate}}</span>
+                                <span *ngIf="dependency.value==='relatedTask'"
+                                    (click)="addDependencies('relatedTasks')">+ {{'Add linked task' | translate}}</span>
+                            </div>
+                            <div class="dependency-container-button"
+                                *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update === false) || isDoneColumn === true"
+                                style="color: grey;">
+                                <span *ngIf="dependency.value==='waitingOn'">+
+                                    {{'Add waiting on task' | translate}}</span>
+                                <span *ngIf="dependency.value==='blocking'">+
+                                    Add task that is blocked</span>
+                                <span *ngIf="dependency.value==='relatedTask'">+ {{'Add linked task' |
+                                    translate}}</span>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <div *ngIf="open===true" fxLayout="column" fxLayoutAlign="space-between center"
+                style="margin-left: 10px;width: 20%;height: 100%;">
+                <div class="action-column-css">
+                    <div fxLayout="row" style="width: 100%;">
+                        <div fxLayout="column" style="width: 50%;">
+                            <span class="label-name-css fs_12" i18n="Status">Status</span>
+                            <div fxLayout="row" style="margin-top:10px">
+                                <ng-container *ngIf="taskBoardTaskVO?.id">
+                                    <p *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update && isDoneColumn === false"
+                                        [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                                        [style.background-color]="data.color" class="p-1 status_box" style="line-height: 13px;border-radius: 5px;white-space: normal;
+                            font-size: 12px;color: #fff;height: auto;cursor: pointer;">{{taskBoardTaskVO?.status}}</p>
+                                    <p *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update === false) || isDoneColumn === true"
+                                        [style.background-color]="data.color" class="p-1 status_box" style="line-height: 13px;border-radius: 5px;font-size: 12px;  color: #fff;white-space: normal;
+                                 height: auto;cursor: pointer;">
+                                        {{taskBoardTaskVO?.status}}</p>
+                                </ng-container>
+
+                                <ng-container *ngIf="!taskBoardTaskVO?.id">
+                                    <p [style.background-color]="data.color" class="p-1 status_box" style="line-height: 13px;border-radius: 5px;font-size: 12px;  color: #fff;white-space: normal;
+                                 height: auto;cursor: pointer;">
+                                        {{taskBoardTaskVO?.status}}</p>
+                                </ng-container>
+
+                            </div>
+                        </div>
+                        <div fxLayout="column" style="width: 50%;"
+                            *ngIf="taskBoardTaskVO?.taskType!=='subtask' && taskBoardTaskVO?.subStatus">
+                            <span class="label-name-css fs_12" i18n="Sub Status">Sub Status</span>
+                            <div fxLayout="row" style="margin-top:4px">
+                                <p [style.background-color]="getSubStatusColor()" class="status_box" style="line-height: 13px;border-radius: 5px;font-size: 12px;  color: #fff;
+                            height: auto;cursor: pointer;margin-top: 5px;padding: 4px;white-space: normal;"
+                                    [matMenuTriggerFor]="subStatusMenu" #menuTrigger="matMenuTrigger">
+                                    {{taskBoardTaskVO?.subStatus
+                                    ??taskBoardTaskVO?.subStatus}}</p>
+                                <mat-menu #subStatusMenu="matMenu">
+                                    <ng-container *ngFor="let subStatus of getSubStatus();">
+                                        <button mat-button class="w-100 align-self-start" type="button"
+                                            (click)="setSubStatus(subStatus.name)">
+                                            <div fxLayout="row">
+                                                <div class="circle mr-2" [style.background-color]="subStatus.color">
+                                                </div>
+                                                {{subStatus.name}}
+                                            </div>
+                                        </button>
+                                    </ng-container>
+                                </mat-menu>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div fxLayout="row" style="width: 100%;" fxLayoutGap="10px">
+                    </div> -->
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <div fxLayout="column" style="margin-top:20px;">
+                            <div fxLayout="row">
+                                <span class="label-name-css fs_12" i18n="Assigned To">Assigned To</span>
+                            </div>
+                            <div fxLayout="row" style="margin-top: 10px;"
+                                *ngIf="!taskBoardTaskVO?.assignTaskVO || (taskBoardTaskVO?.assignTaskVO && !taskBoardTaskVO?.assignTaskVO?.assigneeUserTaskList)
+                                || (taskBoardTaskVO?.assignTaskVO && taskBoardTaskVO?.assignTaskVO?.assigneeUserTaskList.length===0)">
+                                <span id="assignTask-button" class="fs_12"
+                                    *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false"
+                                    (click)="openAssignTaskDialog()" style="width: 180px;">+
+                                    {{'Assign the task' | translate}}</span>
+                                <span class="fs_12"
+                                    *ngIf="(taskboardColumnSecurity && taskboardColumnSecurity.update===false) || isDoneColumn === true"
+                                    style="width: 180px;">+
+                                    {{'Assign the task' | translate}}</span>
+                            </div>
+                            <div fxLayout="row" style="margin-top: 10px;"
+                                *ngIf="taskBoardTaskVO?.assignTaskVO && taskBoardTaskVO?.assignTaskVO?.assigneeUserTaskList && taskBoardTaskVO.assignTaskVO.assigneeUserTaskList.length>0">
+                                <ng-container
+                                    *ngFor="let user of taskBoardTaskVO.assignTaskVO.assigneeUserTaskList;let i = index;">
+
+                                    <div *ngIf="i<=3" class="hover-class round_firstletter"
+                                        [style.margin-left]="i>0?'-4px':''" [matTooltip]="getUserName(user)"
+                                        [style.background]="getUserColor(user)">
+                                        <span
+                                            class=" round_firstletter_size">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                                    </div>
+                                    <ng-container *ngIf="i===4">
+                                        <div class="hover-class round_add_count"
+                                            [matMenuTriggerFor]="remainingAssigneeMenu"
+                                            #remainingAssigneeMenuTrigger="matMenuTrigger"
+                                            (mouseenter)="remainingAssigneeMenuTrigger.openMenu()">
+                                            <span
+                                                class=" round_firstletter_count">+{{getRemainingAssigneeUserCount(taskBoardTaskVO.assignTaskVO.assigneeUserTaskList)}}</span>
+                                        </div>
+
+                                        <mat-menu class="assignee-menu" #remainingAssigneeMenu="matMenu"
+                                            [overlapTrigger]="false">
+                                            <span>
+                                                <perfect-scrollbar [config]="config" id="menu_with_icon"
+                                                    style="height:250px;">
+                                                    <ng-container
+                                                        *ngFor="let user of getRemainingAssigneeUserList(taskBoardTaskVO.assignTaskVO.assigneeUserTaskList)">
+                                                        <div style="margin-left: 15px;margin-top: 5px;" fxLayout="row">
+
+                                                            <div fxLayout="row" fxLayoutGap="5px">
+                                                                <div class="setHighlight"
+                                                                    [style.background-color]="user.color">
+                                                                    <span
+                                                                        [matTooltip]="user.firstName+' '+user.lastName"
+                                                                        style="font-size: 12px; color: white;font-weight: 100;">{{user.firstName.charAt(0).toUpperCase()
+                                                                        +
+                                                                        user.lastName.charAt(0).toUpperCase()}}</span>
+                                                                </div>
+                                                                <div class="user-margin">
+                                                                    <div style="width: 196px; overflow: hidden;
+                                                                              text-overflow: ellipsis;
+                                                                              white-space: nowrap;"
+                                                                        [matTooltip]="user.firstName+' '+user.lastName">
+                                                                        {{user.firstName}}
+                                                                        {{user.lastName}}</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </perfect-scrollbar>
+                                            </span>
+                                        </mat-menu>
+                                    </ng-container>
+                                </ng-container>
+                                <mat-icon
+                                    *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true && isDoneColumn === false"
+                                    (click)="openAssignTaskDialog()" style="font-size: 12px;cursor: pointer;margin-top: 4px;
+                        margin-left: 5px;">drive_file_rename_outline
+                                </mat-icon>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div fxLayout="column" style="height: 25%;margin-top: 20px;">
+                        <div fxLayout="row" class="label-name-css">
+                            <!-- <mat-icon style="font-size: 20px;margin-left:3px;">local_offer</mat-icon> -->
+                            <span i18n="Labels" class="fs_12">Labels</span>
+                            <!-- <span
+                        style="border-top: 0.5px solid rgb(212, 212, 212);width: 75%;margin-top: 10px;margin-left: 5px;"></span> -->
+                        </div>
+                        <div fxLayout="row wrap" *ngIf="taskBoardTaskVO?.labels?.length !== 0"
+                            style="display: inline-block;overflow-x: hidden;overflow-y: scroll;" class="label-scroll">
+                            <ng-container *ngFor="let labels of taskBoardTaskVO?.labels; let i = index;">
+                                <div fxLayout="row" class="label-css fs_12" fxLayoutAlign="space-between center"
+                                    [style.background-color]="labels.labelcolor">
+                                    <div fxLayout="column" style="color:white;margin-left: 5px;">
+                                        {{labels.labelName}}
+                                    </div>
+                                    <div fxLayout="column" *ngIf="isArchived===false">
+                                        <mat-icon class="closeIcon-css" matTooltip="{{'Remove label' | translate}}"
+                                            (click)="removeLabel(labels,i)">
+                                            <span
+                                                *ngIf="taskboardColumnSecurity && taskboardColumnSecurity.update===true">highlight_off</span>
+                                        </mat-icon>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div *ngIf="isArchived===false" fxLayout="row" style="margin-top:5px;">
+                            <div (click)="openLabelDialog()"
+                                *ngIf="taskBoardTaskVO?.labels && taskBoardTaskVO?.labels.length===0  && taskboardColumnSecurity && taskboardColumnSecurity.update===true"
+                                fxLayout="column" class="label-button fs_12" fxLayoutAlign="end" i18n="+ Add Labels">
+                                + Add Labels
+                            </div>
+                            <div (click)="openLabelDialog()"
+                                *ngIf="taskBoardTaskVO?.labels && taskBoardTaskVO?.labels.length>0 && taskboardColumnSecurity && taskboardColumnSecurity.update===true"
+                                fxLayout="column" class="label-button fs_12" fxLayoutAlign="end" i18n="+ Add more">
+                                + Add more
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="taskboardVO.sprintEnabled===true && isDoneColumn === false">
+                        <div fxLayout="row" class="label-name-css">
+                            <span i18n="Sprints" class="fs_12">Sprints</span>
+                        </div>
+                        <!-- <div fxLayout="row wrap" *ngIf="sprintsVoList?.length !== 0"
+                            style="display: inline-block;overflow-x: hidden;overflow-y: scroll;margin-top: 10px;"
+                            class="label-scroll">
+                            <ng-container *ngFor="let sprint of sprintsVoList; let i = index;">
+                                <div fxLayout="row" class="label-css fs_12" fxLayoutAlign="space-between center"
+                                    [style.background-color]="getSprintStatusColor(sprint?.sprintStatus)">
+                                    <div [matTooltip]="getSprintStatusName(sprint?.sprintStatus)" fxLayout="column"
+                                        style="color:white;margin-left: 5px;cursor: pointer;">
+                                        {{sprint.sprintName}}
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div> -->
+                        <div class="label-button fs_12" (click)="addTaskToSprint()">+ Add
+                            to sprint</div>
+                    </ng-container>
+                    <!-- <div fxLayout="column" style="margin-top: 20px;height: 25%;"
+                        *ngIf="data?.sprintSettingsVo !== null && sprintsVoList?.length !== 0">
+                        <div fxLayout="row" class="label-name-css">
+                            <span i18n="Sprints" class="fs_12">Sprints</span>
+                        </div> -->
+
+                    <!-- <div fxLayout="row wrap" *ngIf="sprintsVoList?.length !== 0"
+                            style="display: inline-block;overflow-x: hidden;overflow-y: scroll;margin-top: 10px;"
+                            class="label-scroll">
+                            <ng-container *ngFor="let sprint of sprintsVoList; let i = index;">
+                                <div fxLayout="row" class="label-css fs_12" fxLayoutAlign="space-between center"
+                                    [style.background-color]="getSprintStatusColor(sprint?.sprintStatus)">
+                                    <div [matTooltip]="getSprintStatusName(sprint?.sprintStatus)" fxLayout="column"
+                                        style="color:white;margin-left: 5px;cursor: pointer;">
+                                        {{sprint.sprintName}}
+                                    </div>
+                                    <div fxLayout="column" *ngIf="isArchived===false">
+                                        <mat-icon (click)="saveSprintTask(sprint?.sprintId)" class="closeIcon-css"
+                                            matTooltip="Add">
+                                            <span>add</span>
+                                        </mat-icon>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div> -->
+                    <!-- <div *ngIf="isArchived===false" fxLayout="row" style="margin-top:10px;">
+                            <div (click)="openLabelDialog()"
+                                *ngIf="taskBoardTaskVO?.labels && taskBoardTaskVO?.labels.length===0  && taskboardColumnSecurity && taskboardColumnSecurity.update===true"
+                                fxLayout="column" class="label-button fs_12" fxLayoutAlign="end" i18n="+ Add Labels">
+                                + Add Sprint
+                            </div>
+                            <div (click)="openLabelDialog()" class="fs_12"
+                                *ngIf="taskBoardTaskVO?.labels && taskBoardTaskVO?.labels.length>0 && taskboardColumnSecurity && taskboardColumnSecurity.update===true"
+                                fxLayout="column" class="label-button" fxLayoutAlign="end" i18n="+ Add more">
+                                + Add more
+                            </div>
+                        </div> -->
+                    <!-- </div> -->
+                </div>
+                <span>
+                    <div fxLayout="row" fxLayoutGap="10px"
+                        *ngIf="taskBoardTaskVO?.createdBy && taskBoardTaskVO?.createdOn && taskBoardTaskVO?.modifiedBy && taskBoardTaskVO?.modifiedOn">
+                        <div fxLayout="column" style="width: 50%;">
+                            <p class="mb-1 fs_12" style="color: grey;"><b i18n="Created by:"> Created by:</b></p>
+                            <p class="created_by_task">
+                                {{taskBoardTaskVO?.createdBy}} at {{taskBoardTaskVO?.createdOn | date:'medium'}}</p>
+                        </div>
+                        <div fxLayout="column" style="width: 50%;">
+                            <p class="mb-1 fs_12" style="color: grey;"><b i18n="Last modified by:"> Last modified
+                                    by:</b></p>
+                            <p class="updated_by_task">
+                                {{taskBoardTaskVO?.modifiedBy}} at {{taskBoardTaskVO?.modifiedOn | date:'medium'}}</p>
+                        </div>
+                    </div>
+                    <div fxLayout="row" style="margin-top: 10px;" fxLayoutAlign="end">
+                        <p class="updated_by_task" style="font-size: 12px;">
+                            <b i18n="Created">Created</b>&nbsp;{{getDataDiff(taskBoardTaskVO?.createdOn)}}
+                        </p>
+                    </div>
+                </span>
+            </div>
+        </div>
+    </ng-container>
+    <div *ngIf="data?.value === 'task' || data.value==='loadTask'">
+        <div class="row w-100 mx-0">
+            <div class="col-md-9 px-0">
+                <mat-form-field appearance="outline" class="w-50">
+                    <mat-label>{{'Task Title' | translate}}</mat-label>
+                    <input formControlName="taskName" matInput id="taskTitle" placeholder="Task Title"
+                        i18n-placeholder="Task Title" (change)="titleChange()" [disabled]="data.value==='loadTask'">
+                    <mat-error *ngIf="form.get('taskName').errors?.maxError">{{'Task Title should be within 200
+                        characters.' | translate}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3 justify-content-end">
+                <div class="row w-100 mx-0 justify-content-end">
+                    <button *ngIf="data.value!=='loadTask'" mat-raised-button color="primary" [appDebounce]="3000"
+                        type="button" id="create_task" class="mr-3" (click)="save()" i18n="Save & Close">Save &
+                        Close</button>
+                    <button mat-raised-button color="accent" type="button" class="mr-3" (click)="cancelTask()"
+                        id="cancel" i18n="Cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <perfect-scrollbar [style.height]="screenHeight" [config]="config">
+            <dynamic-page *ngIf="show && isLoad" [id]="data.formId" [object]="taskComponentObject"
+                [version]="data.version" (formValues)="getFormValues($event)" [formData]="taskBoardTaskVO"
+                pageFrom="taskBoard" [pageSecurity]="data.value==='loadTask'?false:data.taskboardColumnSecurity.update">
+            </dynamic-page>
+        </perfect-scrollbar>
+    </div>
+
+    <div *ngIf="data?.value === 'gridView'">
+        <div fxLayoutAlign="end">
+            <button mat-raised-button color="primary" [appDebounce]="3000" type="button" id="create_task" class="mr-3"
+                (click)="save()" i18n="Save & close">Save &
+                Close</button>
+            <button mat-raised-button color="accent" type="button" class="mr-3" (click)="cancelTask()" id="cancel"
+                i18n="Cancel">Cancel</button>
+        </div>
+        <perfect-scrollbar [style.height]="screenHeight" [config]="config">
+            <dynamic-page *ngIf="show" [id]="data.formId" [object]="taskComponentObject" [version]="data.version"
+                (formValues)="getFormValues($event)" [formData]="taskBoardTaskVO" pageFrom="taskBoard"
+                [pageSecurity]="data.taskboardColumnSecurity.update === true && isDoneColumn === false">
+            </dynamic-page>
+        </perfect-scrollbar>
+    </div>
+    <ng-container>
+        <mat-menu #dropdownMenuOne="matMenu">
+            <ng-conatiner *ngFor="let status of data.statusList; let i = index;">
+                <div fxLayout="row">
+                    <button mat-button [id]="'status_'+i" (click)="setStatus(status,i)">
+                        <div fxLayout="row">
+                            <div class="circle mr-2" [style.background-color]="status.color"></div>
+                            {{status.name}}
+                        </div>
+                    </button>
+                </div>
+            </ng-conatiner>
+        </mat-menu>
+        <mat-menu #dropdownMenuTwo="matMenu">
+            <mat-calendar (selectedChange)="onSelect_end($event)" [maxDate]="maxDate" [minDate]="minDate"
+                (click)="$event.stopPropagation()"></mat-calendar>
+        </mat-menu>
+        <mat-menu #dropdownMenufive="matMenu">
+            <mat-calendar (selectedChange)="onSelect($event)" [minDate]="mindueDate" (click)="$event.stopPropagation()">
+            </mat-calendar>
+        </mat-menu>
+
+    </ng-container>
+
+
+</form>
+<ng-container>
+    <mat-menu #dropdownMenuThree="matMenu">
+        <mat-calendar (selectedChange)="onSelectSubtask($event)" [minDate]="minSubtaskDate"
+            (click)="$event.stopPropagation()"></mat-calendar>
+    </mat-menu>
+    <mat-menu #dropdownMenuFour="matMenu">
+        <ng-conatiner *ngFor="let status of subtaskStatusList; let i = index;">
+            <div fxLayout="row">
+                <button mat-button [id]="'status_'+i" (click)="setSubtaskStatus(status)">
+                    <div fxLayout="row">
+                        <div class="circle mt-3 mr-2" [style.background-color]="status.statusColor"></div>
+                        {{status.name}}
+                    </div>
+                </button>
+            </div>
+        </ng-conatiner>
+    </mat-menu>
+</ng-container>

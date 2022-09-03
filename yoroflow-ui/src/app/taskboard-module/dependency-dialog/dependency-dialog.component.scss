@@ -1,0 +1,47 @@
+.taskId-css{
+    margin-top: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+#dependency-dialog ::ng-deep .mat-dialog-container{
+    overflow:  hidden !important;
+}
+
+.task-list-container{
+    height: 75%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 0.5px solid rgb(185, 185, 185);
+    padding: 0px 5px 3px 5px;
+    width: 96%;
+    margin-left: 2%;
+}
+
+.taskSelectedIcon-css {
+    color: rgb(0, 128, 0);
+    cursor: pointer;
+  }
+
+.task-details-css{
+    width: 95%;
+    display: block !important;
+    white-space: normal;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: none !important;
+    box-shadow: inset 0 0 5px rgb(254, 255, 255);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10rem;
+    border: 1px solid #fff;
+}

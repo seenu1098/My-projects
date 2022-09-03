@@ -1,0 +1,386 @@
+<form [formGroup]="taskPropertyForm" #userForm="ngForm">
+    <ng-container>
+        <div fxLayout="row">
+            <h4 style="color: #656565;width:130px" i18n="Select data table">Select data table</h4>
+            <span class="line-style"></span>
+        </div>
+        <div fxLayout="row wrap" *ngIf="showList">
+            <ng-container *ngFor="let dataTable of dataTables;let i = index;">
+                <div class="taskboardList-style" (click)="getDataTableName(dataTable)" [id]="'taskboard_'+i"
+                    appMaterialElevation>
+                    {{dataTable.tableName}}
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="showSpinner">
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+            <span i18n="Loading mapping fields">Loading mapping fields</span>
+            <span class="dot-falling"></span>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!showList && !showSpinner && taskPropertyForm.get('actionType').value !== 'delete'">
+        <form [formGroup]="mappingForm" #userForm="ngForm" id="form">
+            <div class="row mx-0 w-100 justify-content-center"
+                *ngIf="taskPropertyForm.get('actionType').value !== 'delete'">
+                <table>
+                    <tr>
+                        <th>
+                            <h4 class="mb-0" i18n="{{dataTableName}} data table">{{dataTableName}} data table</h4>
+                        </th>
+                        <th>
+                            <h4 class="mb-0" i18n="Selection fields">Selection fields</h4>
+                        </th>
+                        <th *ngIf="taskPropertyForm.get('actionType').value === 'update'">
+                            <!-- <h4 class="mb-0" i18n="Selection fields">Selection fields</h4> -->
+                        </th>
+                    </tr>
+                    <ng-container>
+                        <tr *ngFor="let field of fieldsListForMapping;let i = index;">
+                            <ng-container [formGroupName]="getMainSectionFieldGroup(field)">
+                                <td>
+                                    <div fxLayout="row">
+                                        <mat-icon class="mr-1 f_21 pt-1" [style.color]="field.color">{{getIcon(field)}}
+                                        </mat-icon>
+                                        <h4 class="f_12">{{field.columnName}}<a
+                                                *ngIf="mappingForm.get(field.columnIdentifier).get('value').errors?.required"
+                                                style="color: red !important;">*</a></h4>
+                                    </div>
+                                </td>
+                                <td
+                                    [class.error-css]="mappingForm.get(field.columnIdentifier).get('value').errors?.required">
+                                    <div fxLayout="row">
+                                        <ng-container
+                                            *ngIf="field.dataType!=='date' || mappingForm.get(field.columnIdentifier).value.variableType==='pagefield' ||
+                                            mappingForm.get(field.columnIdentifier).value.variableType==='systemVariables' ||
+                                            mappingForm.get(field.columnIdentifier).value.variableType==='customAttributes'">
+                                            <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                                [id]="'fieldName_'+i" readonly class="border-css"
+                                                [value]="getValue(mappingForm.get(field.columnIdentifier).value, field.dataType)">
+                                        </ng-container>
+                                        <ng-container
+                                            *ngIf="field.dataType==='date' && mappingForm.get(field.columnIdentifier).value.variableType==='constant'">
+                                            <input matInput placeholder="Variable" i18n-placeholder="Variable"
+                                                [id]="'fieldName_'+i" readonly [matDatepicker]="picker"
+                                                class="border-css"
+                                                [value]="getValue(mappingForm.get(field.columnIdentifier).value, field.dataType)">
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </ng-container>
+                                        <button mat-icon-button [matMenuTriggerFor]="menu1"
+                                            #menuTrigger1="matMenuTrigger" class="float-right"
+                                            aria-label="Example icon-button with a menu" (mousedown)="mousedown(field)"
+                                            [id]="'field_'+i" (click)="getConstantValue(field)">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td *ngIf="taskPropertyForm.get('actionType').value === 'update'">
+                                    <mat-icon color="accent" style="cursor: pointer;" matTooltip="Delete Field"
+                                        (click)="removeInsertField(field.columnIdentifier, i)">delete</mat-icon>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </ng-container>
+                </table>
+            </div>
+            <mat-menu #menu1="matMenu" class="column-menu">
+                <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                    <div class="col-md-6 pr-1">
+                        <p class="text-dark font-weight-bold mb-2" i18n="Constant">Constant</p>
+                    </div>
+                    <div class="col-md-12 pl-2 pr-1">
+                        <div fxLayout="row" id="search">
+                            <div class="input-group mb-3 px-2">
+                                <ng-container *ngIf="selectedField && selectedField.dataType!=='date'">
+                                    <input [type]="getFieldType()" formControlName="constantValue" class="form-control"
+                                        placeholder="Variable value" i18n-placeholder="Variable value">
+                                </ng-container>
+                                <ng-container *ngIf="selectedField && selectedField.dataType==='date'">
+                                    <input matInput [matDatepicker]="picker" formControlName="constantValue"
+                                        class="form-control" placeholder="Variable value"
+                                        i18n-placeholder="Variable value">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </ng-container>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <mat-icon matSuffix style="cursor: pointer;"
+                                            (click)="setConstantValue(selectedField)">
+                                            done
+                                        </mat-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" (click)="$event.stopPropagation()">
+                    <hr class="hr_style">
+                    <span i18n="OR">
+                        OR
+                    </span>
+                    <hr class="hr_style">
+                </div>
+                <div fxLayout="row" (click)="$event.stopPropagation()">
+                    <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                        Page Field</p>
+                    <hr class="hr_style_pagefield">
+                </div>
+                <button mat-menu-item class="px-0" (click)="setPageFieldValue('','')">
+                    <span fxLayoutAlign="end" style="margin-right: 10px;" i18n="(empty)">(empty)</span>
+                </button>
+                <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                    <div class=" col-md-12 mx-0 w-100" *ngFor="let field of fieldList" style="margin-top:10px;">
+                        <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                        <div *ngFor="let value of field.fieldVO">
+                            <button mat-menu-item class="px-0"
+                                (click)="setPageFieldValue(value.fieldId,field.fieldType)">
+                                <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">{{getIcon(value)}}
+                                </mat-icon>
+                                <span>{{value.fieldName}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </mat-menu>
+            <mat-menu #menu2="matMenu" class="column-menu">
+                <div fxLayout="row" (click)="$event.stopPropagation()">
+                    <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                        Page Field</p>
+                    <hr class="hr_style_pagefield">
+                </div>
+                <button mat-menu-item class="px-0" (click)="setRepeatableFieldValue('')"></button>
+                <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                    <div class=" col-md-12 mx-0 w-100" *ngFor="let field of initialFieldList" style="margin-top:10px;">
+                        <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                        <div *ngFor="let value of field.fieldVO">
+                            <button *ngIf="value.datatype === 'array' || value.controlType ==='shoppingcart'"
+                                mat-menu-item class="px-0" (click)="setRepeatableFieldValue(value.fieldId)">
+                                <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">{{getIcon(value)}}
+                                </mat-icon>
+                                <span>{{value.fieldName}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </mat-menu>
+            <mat-menu #menu3="matMenu" class="column-menu">
+                <div class="row mx-0  w-100" (click)="$event.stopPropagation()"
+                    *ngIf="selectedField && selectedField.datatype !== 'array'">
+                    <div class="col-md-6 pr-1">
+                        <p class="text-dark font-weight-bold mb-2" i18n="Constant">Constant</p>
+                    </div>
+                    <div class="col-md-12 pl-2 pr-1">
+                        <div fxLayout="row" id="search">
+                            <div class="input-group mb-3 px-2">
+                                <ng-container *ngIf="selectedField && selectedField.datatype!=='date'">
+                                    <input [type]="getFieldType()" formControlName="constantValue" class="form-control"
+                                        placeholder="Variable value" i18n-placeholder="Variable value">
+                                </ng-container>
+                                <ng-container *ngIf="selectedField && selectedField.datatype==='date'">
+                                    <input matInput [matDatepicker]="picker" formControlName="constantValue"
+                                        class="form-control" placeholder="Variable value"
+                                        i18n-placeholder="Variable value">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </ng-container>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <mat-icon matSuffix style="cursor: pointer;"
+                                            (click)="setRepetableConstantValue(field)">done
+                                        </mat-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div fxLayout="row" (click)="$event.stopPropagation()"
+                    *ngIf="selectedField && selectedField.datatype !== 'array'">
+                    <hr class="hr_style">
+                    <span i18n="OR">
+                        OR
+                    </span>
+                    <hr class="hr_style">
+                </div>
+                <div fxLayout="row" (click)="$event.stopPropagation()">
+                    <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                        Page Field</p>
+                    <hr class="hr_style_pagefield">
+                </div>
+                <button mat-menu-item class="px-0" (click)="setRepeatablePageFieldValue('')">
+                    <span fxLayoutAlign="end" style="margin-right: 10px;" i18n="(empty)">(empty)</span>
+                </button>
+                <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                    <div class=" col-md-12 mx-0 w-100" *ngFor="let field of fieldList" style="margin-top:10px;">
+                        <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                        <div *ngFor="let value of field.fieldVO">
+                            <button mat-menu-item class="px-0" (click)="setRepeatablePageFieldValue(value.fieldId)">
+                                <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">{{getIcon(value)}}
+                                </mat-icon>
+                                <span>{{value.fieldName}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </mat-menu>
+        </form>
+    </ng-container>
+    <ng-container
+        *ngIf="getDBTaskwhereClauseFormarray() && (taskPropertyForm.get('actionType').value !== 'insert') && !showList && !showSpinner">
+        <div fxLayout="row" class="mt-3">
+            <h4 style="color: #656565;width:130px" i18n="Where clause">Where clause</h4>
+            <span class="line-style"></span>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center center" style="width: 100%;">
+            <div formArrayName="whereClause"
+                *ngFor="let rules of getDBTaskwhereClauseFormarray().controls; let iw = index"
+                style="margin-bottom: 2%;">
+                <div [formGroupName]="iw">
+                    <div fxLayout="row" fxLayoutGap="10px">
+                        <ng-container>
+                            <mat-form-field style="width: 75px;" appearance="outline">
+                                <mat-label>{{'Condition' | translate}}</mat-label>
+                                <mat-select id="filterCondition" formControlName="filterCondition">
+                                    <mat-option value="AND" (onSelectionChange)="filterCondition($event,iw)">AND
+                                    </mat-option>
+                                    <mat-option value="OR" (onSelectionChange)="filterCondition($event,iw)">OR
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+                        <button mat-mini-fab id="btnAdd" class="icon" type="button" color="primary"
+                            (click)="addDBTaskWhereClauseFormGroup()" class="add" style="margin-top: 15px;">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <button mat-mini-fab id="remove" class="icon" type="button" (click)="removeWhereClause(iw)"
+                            class="add" style="margin-top: 15px;">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                    </div>
+                    <div formArrayName="filtersInsideCondition"
+                        *ngFor="let rule of rules['controls'].filtersInsideCondition['controls']; let i = index">
+                        <div [formGroupName]="i">
+                            <div fxLayout="row" fxLayoutGap="10px">
+                                <mat-form-field fxFlexOffset="10" appearance="outline">
+                                    <mat-label>{{'Select Filter Field' | translate}}</mat-label>
+                                    <mat-select id="filterName" formControlName="filterName">
+                                        <mat-option *ngFor="let column of fieldsList"
+                                            value="{{column.columnIdentifier}}"
+                                            (onSelectionChange)="orderFilterName($event,column.dataType,tableName,i, iw ,rule.get('filterFieldVariableType').value)">
+                                            {{column.columnName}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="rule.get('filterName').errors?.req && userForm.submitted">
+                                        {{'Filter Name is required' | translate}}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field style="width: 100px" appearance="outline">
+                                    <mat-label>{{'Filter Operator' | translate}}</mat-label>
+                                    <mat-select id="filterOperator" formControlName="filterOperator">
+                                        <mat-option *ngFor="let operator of filterOperator" [value]="operator.value"
+                                            (onSelectionChange)="orderfilterOperator($event, i, iw)">
+                                            {{operator.description}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="rule.get('filterOperator').errors?.req && userForm.submitted">
+                                        {{'Filter Operator is required' | translate}}</mat-error>
+                                </mat-form-field>
+                                <ng-container>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput id="filterValue" placeholder="{{'Filter Value' | translate}}"
+                                            formControlName="filterValue" (focusout)="orderFilterValue(i, iw)" readonly>
+                                        <button matSuffix mat-icon-button [matMenuTriggerFor]="fieldMenu" type="button"
+                                            #fieldMenuTrigger="matMenuTrigger" class="float-right suffix-button-css"
+                                            aria-label="Example icon-button with a menu"
+                                            (mousedown)="mousedownEventForFilter(rule.value,i,iw,'dbTaskFilterValue')">
+                                            <mat-icon class="suffix-icon-css">more_vert</mat-icon>
+                                        </button>
+                                        <mat-error *ngIf="rule.get('filterValue').errors?.req && userForm.submitted">
+                                            {{'Fields is required' | translate}}</mat-error>
+                                    </mat-form-field>
+                                </ng-container>
+                                <button mat-mini-fab id="btnAdd" class="icon" type="button" color="primary"
+                                    (click)="addDBTaskFiltersInsideConditionFormGroup(i,iw)" class="add"
+                                    style="margin-top: 15px;"
+                                    [disabled]="rule.get('filterName').value === '' || rule.get('filterOperator').value === '' || rule.get('filterValue').value === ''">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button mat-mini-fab class="icon" type="button" id="remove"
+                                    (click)="removeFiltersInsideCondition(i,iw)" class="add" style="margin-top: 15px;">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <mat-menu #fieldMenu="matMenu" class="column-menu">
+        <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+            <div class="col-md-6 pr-1">
+                <p class="text-dark font-weight-bold mb-2" i18n="Constant">Constant</p>
+            </div>
+            <div class="col-md-12 pl-2 pr-1">
+                <div fxLayout="row" id="search">
+                    <div class="input-group mb-3 px-2">
+                        <ng-container *ngIf="selectedField && selectedField.dataType!=='date'">
+                            <input [type]="getFieldType()" formControlName="constantValue" class="form-control"
+                                placeholder="Variable value" i18n-placeholder="Variable value">
+                        </ng-container>
+                        <ng-container *ngIf="selectedField && selectedField.dataType==='date'">
+                            <input matInput [matDatepicker]="picker" formControlName="constantValue"
+                                class="form-control" placeholder="Variable value" i18n-placeholder="Variable value">
+                            <mat-datepicker-toggle matSuffix [for]="picker">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </ng-container>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <mat-icon matSuffix style="cursor: pointer;"
+                                    (click)="setConstantValueForFilter(selectedField)">
+                                    done
+                                </mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" (click)="$event.stopPropagation()">
+            <hr class="hr_style">
+            <span i18n="OR">
+                OR
+            </span>
+            <hr class="hr_style">
+        </div>
+        <div fxLayout="row" (click)="$event.stopPropagation()">
+            <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                Page Field</p>
+            <hr class="hr_style_pagefield">
+        </div>
+        <button mat-menu-item class="px-0" (click)="setPageFieldValueForFilter('','')">
+            <span fxLayoutAlign="end" style="margin-right: 10px;" i18n="(empty)">(empty)</span>
+        </button>
+        <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+            <div class=" col-md-12 mx-0 w-100" *ngFor="let field of fieldList" style="margin-top:10px;">
+                <p class="text-dark font-weight-bold mb-2">{{field.fieldType}}</p>
+                <div *ngFor="let value of field.fieldVO">
+                    <button mat-menu-item class="px-0"
+                        (click)="setPageFieldValueForFilter(value.fieldId,field.fieldType)">
+                        <mat-icon class="mr-1 f_20 pt-1" [style.color]="value.color">
+                            {{getIcon(value)}}
+                        </mat-icon>
+                        <span>{{value.fieldName}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </mat-menu>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px" *ngIf="!showList && !showSpinner">
+        <button mat-raised-button id="apply-button" color="primary" (click)="apply()" i18n="Apply" type="button"
+            [disabled]="!mappingForm.valid || !taskPropertyForm.valid">Apply</button>
+        <button mat-raised-button *ngIf="type!=='create task'" id="previous" color="accent" (click)="change('previous')"
+            i18n="Previous">Previous</button>
+    </div>
+</form>

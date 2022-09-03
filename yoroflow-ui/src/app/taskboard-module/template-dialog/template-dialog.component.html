@@ -1,0 +1,51 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" fxLayoutAlign="space-between center"
+        style="border-bottom: 1px solid #d3d3d3; display: inline-block">
+        <h2 class="mt-3" i18n="Taskboard Configuration">Taskboard Configuration</h2>
+        <mat-icon id="clear" style="cursor: pointer" fxLayoutAlign="end" (click)="closeDialog()">clear</mat-icon>
+    </div>
+    <ng-container style="display: block" fxLayout="column">
+        <mat-dialog-content>
+            <section fxLayout="column" fxLayoutGap="5px" class="topalign">
+                <mat-form-field style="width: 100%" appearance="outline" class="outline-class">
+                    <mat-label i18n="Taskboard Name">Taskboard Name</mat-label>
+                    <input (focusout)="checkTaskboardNameExist()" matInput placeholder="Enter Name"
+                        i18n-placeholder="Enter Name" formControlName="name" id="taskboard_name" />
+                    <mat-error id="nameRequired" *ngIf="form.get('name').errors?.required"
+                        i18n="Taskboard Name is required">
+                        Taskboard Name is required</mat-error>
+                    <mat-error id="nameAlreadyExist" *ngIf="form.get('name').errors?.alreadyExist"
+                        i18n="Taskboard Name is Already Exist">
+                        Taskboard Name is Already Exist</mat-error>
+                </mat-form-field>
+            </section>
+            <section fxLayout="column" fxLayoutGap="5px" class="topalign">
+                <mat-form-field style="width: 100%" class="legacy" appearance="outline">
+                    <mat-label i18n="Taskboard Key">Taskboard Key</mat-label>
+                    <input matInput placeholder="Enter Taskboard Key" i18n-placeholder="Enter Taskboard Key"
+                        formControlName="taskboardKey" id="taskboard_key" #input [value]="input.value.toUpperCase()" />
+                    <mat-error id="taskboardKeyRequired" *ngIf="form.get('taskboardKey').errors?.required"
+                        i18n="Taskboard Key is required">
+                        Taskboard Key is required</mat-error>
+                    <mat-error id="taskboardKeyAlreadyExist" *ngIf="form.get('taskboardKey').errors?.alreadyExist"
+                        i18n="Taskboard Key is Already Exist">
+                        Taskboard Key is Already Exist</mat-error>
+                </mat-form-field>
+            </section>
+            <section fxLayout="column" fxLayoutGap="5px" class="topalign mt-1">
+                <mat-slide-toggle formControlName="sprintEnabled" color="accent" (click)="openSprintSettings()">Enable
+                    Sprint</mat-slide-toggle>
+            </section>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" class="mt-3">
+                <button id="save" mat-raised-button (click)="save()" color="primary" i18n="Save"
+                    [disabled]="!form.valid">
+                    Create Taskboard
+                </button>
+                <button id="save" mat-raised-button (click)="closeDialog()" color="accent" i18n="Save">
+                    Cancel
+                </button>
+            </div>
+        </mat-dialog-content>
+    </ng-container>
+
+</form>

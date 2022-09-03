@@ -1,0 +1,172 @@
+<mat-card>
+    <mat-card-title>Field Properties</mat-card-title>
+    <form [formGroup]="form" #userForm="ngForm">
+        <div fxLayout="row" fxLayoutGap="20px">
+            <div fxLayout="column">
+                <mat-radio-group id="fieldType" formControlName="fieldType" style="margin-top:2%;margin-left:1%">
+                    <div fxLayout="row" fxLayoutGap="20px">
+                        <mat-radio-button value="static" style="margin-top:2%;padding-left: 2%;"
+                            (change)="radioChange($event)" id="static" [disabled]="isDisabled">Static
+                        </mat-radio-button>
+                        <mat-radio-button value="variable" style="margin-top:2%;padding-left: 2%;"
+                            (change)="radioChange($event)" id="variable" [disabled]="isDisabled">Variable
+                        </mat-radio-button>
+                    </div>
+                </mat-radio-group>
+            </div>
+            <div fxLayout="column" style="margin-left:10px;width: 23%;">
+                <mat-form-field style="margin-top: -14px;">
+                    <input matInput type="text" id="label" formControlName="label" placeholder="Label"
+                        [disabled]="form.get('fieldType').value==='static' || data.value.chip === 'Sequence Number'">
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" style="margin-left:10px;width: 23%;">
+                <mat-form-field style="margin-top: -14px;">
+                    <mat-label>Repeatable Section Name</mat-label>
+                    <mat-select id="repeatableSectionName" formControlName="repeatableSectionName"
+                        [disabled]="form.get('fieldType').value==='static' || data.value.chip === 'Sequence Number'">
+                        <mat-option *ngFor="let sectionName of data.repeatableSection" [id]="sectionName"
+                            [value]="sectionName">
+                            {{sectionName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" *ngIf="data.value.chip === 'Current Date'" style="width: 23%;">
+                <mat-form-field style="margin-top: -14px;">
+                    <mat-label>Date Format</mat-label>
+                    <mat-select id="dateFormat" formControlName="dateFormat">
+                        <mat-option value='MM/dd/yyyy' id="MM/dd/yyyy">MM/dd/yyyy</mat-option>
+                        <mat-option value='dd/MM/yyyy' id="dd/MM/yyyy">dd/MM/yyyy</mat-option>
+                        <mat-option value='yyyy-MM-dd' id="yyyy-MM-DD">yyyy-MM-DD</mat-option>
+                        <mat-option value='EEEE, MMMM d, y' id="EEEE, MMMM d, y"> EEEE, MMMM d, y
+                        </mat-option>
+                        <mat-option value='MMM d, y' id="MMM d, y">MMM d, y</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxLayout="column" *ngIf="data.value.chip === 'Current Time'" style="width: 23%;">
+                <mat-form-field style="margin-top: -14px;">
+                    <mat-label>Time Format</mat-label>
+                    <mat-select id="timeFormat" formControlName="timeFormat">
+                        <mat-option value='hh:mm:ss' id="HH:MM:SS">HH:MM:SS</mat-option>
+                        <mat-option value='hh:mm:ss a' id="HH:MM:SS XM">HH:MM:SS XM</mat-option>
+                        <mat-option value='hh:mm' id="HH:MM">HH:MM</mat-option>
+                        <mat-option value='hh:mm a' id="HH:MM XM"> HH:MM XM
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field style="width: 23%;margin-top: 13px;">
+                <mat-label>Match Type</mat-label>
+                <mat-select id="matchType" formControlName="matchType"
+                    [disabled]="form.get('fieldType').value==='static' || data.value.chip === 'Sequence Number'">
+                    <mat-option value="eq" id="eq">equals </mat-option>
+                    <mat-option value="neq" id="neq">not equals </mat-option>
+                    <mat-option value="cn" id="cn">contains</mat-option>
+                    <mat-option value="bw" id="bw">begins with</mat-option>
+                    <mat-option value="ew" id="ew">ends with</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 75%;">
+                <mat-label>Do not print when values are</mat-label>
+                <mat-chip-list #chipList aria-label="Label">
+                    <mat-chip *ngFor="let holder of placeholder;let i = index" [selectable]="selectable"
+                        [removable]="removable" (removed)="removeChip(i)">
+                        {{ holder }}
+                        <mat-icon matChipRemove *ngIf="removable">close
+                        </mat-icon>
+                    </mat-chip>
+                    <input #chipCntl formControlName="chip" id="chip" [matChipInputFor]="chipList"
+                        (matChipInputTokenEnd)="add($event)" [disabled]="data.value.chip === 'Sequence Number'">
+                </mat-chip-list>
+            </mat-form-field>
+            <!-- </div>
+            </div> -->
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field style="width: 23%;">
+                <mat-label>Font Size</mat-label>
+                <mat-select id="fontSize" formControlName="fontSize">
+                    <mat-option value="Small" id="small">Small </mat-option>
+                    <mat-option value="Medium" id="medium">Medium </mat-option>
+                    <mat-option value="Large" id="large">Large</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field style="width: 23%;">
+                <mat-label>Alignment</mat-label>
+                <mat-select id="alignment" formControlName="alignment">
+                    <mat-option value="Left" id="left">Left </mat-option>
+                    <mat-option value="Center" id="center">Center </mat-option>
+                    <mat-option value="Right" id="right">Right</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field style="width: 23%;">
+                <input matInput type="number" id="beforeSpace" placeholder="Before Space" formControlName="beforeSpace">
+            </mat-form-field>
+            <mat-form-field style="width: 23%;">
+                <input matInput type="number" id="afterSpace" placeholder="After Space" formControlName="afterSpace">
+            </mat-form-field>
+            <!-- <div fxLayout="column">
+                <mat-slide-toggle id="bold" color="accent" style="margin-top: 14px;" formControlName="bold">Bold
+                </mat-slide-toggle>
+            </div>
+            <div fxLayout="column">
+                <mat-checkbox style="margin-top: 14px;" id="cutPaper" formControlName="cutPaper">Cut Paper
+                </mat-checkbox>
+            </div> -->
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 14px;">
+
+            <mat-slide-toggle style="margin-top: 14px;" id="horizontalLine" color="accent"
+                formControlName="horizontalLine">Horizontal Line
+            </mat-slide-toggle>
+            <mat-slide-toggle id="bold" color="accent" style="margin-top: 14px;" formControlName="bold">Bold
+            </mat-slide-toggle>
+            <mat-checkbox style="margin-top: 14px;" id="cutPaper" formControlName="cutPaper">Cut Paper
+            </mat-checkbox>
+            <mat-slide-toggle id="addNewLine" style="margin-top: 14px;width: 23%;" color="accent"
+                formControlName="addNewLine">
+                Add
+                New Line
+            </mat-slide-toggle>
+            <div fxLayout="column" style="width: 23%;">
+                <mat-form-field *ngIf="form.get('addNewLine').value===true" style="margin-top: -14px;">
+                    <input matInput type="number" id="lineNumber" placeholder="Number of lines"
+                        oninput="this.value = Math.abs(this.value)" formControlName="lineNumbers">
+                </mat-form-field>
+            </div>
+        </div>
+        <div formArrayName="replaceValues" *ngFor="let replaceValue of getReplaceValueFormArray();let i = index;">
+            <div fxLayout="row" [formGroupName]="i" fxLayoutGap="20px" style="margin-top: 14px;"
+                *ngIf="data.value.chip !== 'Sequence Number' && data.value.chip !== 'Current Time' && data.value.chip !== 'Current Date' && form.get('fieldType').value!=='static'">
+                <mat-form-field>
+                    <input matInput style="margin-right:10px;" type="text" [id]="'replaceWith_'+i"
+                        formControlName="replaceWith" placeholder="Replace With"
+                        [disabled]="data.value.chip === 'Sequence Number' || data.value.chip === 'Current Time' || data.value.chip === 'Current Date'">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="text" [id]="'replaceValue_'+i" formControlName="replaceValue"
+                        placeholder="Replace value"
+                        [disabled]="data.value.chip === 'Sequence Number' || data.value.chip === 'Current Time' || data.value.chip === 'Current Date'">
+                </mat-form-field>
+                <button mat-mini-fab style="margin-right:10px;" [id]="'btnAdd'+i" type="button" color="primary"
+                    (click)="addReplaceValueFormArray()"
+                    [disabled]="data.value.chip === 'Sequence Number' || data.value.chip === 'Current Time' || data.value.chip === 'Current Date'">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button [type]="'button'+i" mat-mini-fab color="accent" (click)="removeReplaceValueFormArray(i)"
+                    [disabled]="getReplaceValueFormArray().length===1">
+                    <mat-icon>remove</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="20px" style="margin-top:10px">
+            <button mat-raised-button id="save" color="primary" (click)="submit(userForm)">Submit</button>
+            <button mat-raised-button id="cancel" color="accent" (click)="close()">Cancel</button>
+        </div>
+    </form>
+</mat-card>

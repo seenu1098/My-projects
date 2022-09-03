@@ -1,0 +1,59 @@
+<div class="p-2">
+    <form [formGroup]="customPageForm" #userForm="ngForm">
+        <mat-card class="w-100">
+            <mat-card-title class="pl-2 pb-2">Custom Page Details</mat-card-title>
+            <div class="row mx-0 w-100">
+                <div class="col-md-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Page Id</mat-label>
+                        <input matInput id="pageId" formControlName="pageId">
+                        <mat-error>Page Id is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Page Name</mat-label>
+                        <input matInput id="pageName" formControlName="pageName">
+                        <mat-error>Page Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Menu Path</mat-label>
+                        <input matInput id="menuPath" formControlName="menuPath">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row mt-3 mx-0">
+                <div class="col-md-6 col-sm-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Give an JSON payload with all possible elements</mat-label>
+                        <textarea matInput id="jsonText" class="w-100 h-100px" formControlName="jsonText"
+                            (focusout)="getJsonText()"></textarea>
+                        <mat-error *ngIf="customPageForm.get('jsonText').errors?.validationError">Invalid json
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row mt-3 mx-0 justify-content-end">
+                <button mat-raised-button color="primary" id="btnsave" class="mr-3 float-center"
+                    (click)="submit(userForm)" *ngIf="customPageForm.get('id').value === null">Save</button>
+                <button mat-raised-button color="primary" id="btnsave" class="mr-3 float-center"
+                    (click)="submit(userForm)" *ngIf="customPageForm.get('id').value !== null">Update</button>
+                <button mat-raised-button color="accent" type="button" id="btnreset" name="btnrset" class="resetbutton mr-3"
+                    (click)="reset(userForm)">Reset</button>
+                <button mat-raised-button color="primary" id="btnsave" class="mr-3 float-center"
+                    (click)="openPagePermissions(customPageForm.get('id').value)"
+                    *ngIf="customPageForm.get('id').value !== null">User Permissions</button>
+            </div>
+            <div class="row mx-0 w-100 mt-3" >
+                    <mat-card class="w-100">
+                        <mat-card-title>Custom Pages List</mat-card-title>
+                        <app-yorogrid #gridConfig gridId="Custom Pages" (messageEvent)="receiveMessage($event)"
+                            defaultColumn="id">
+                        </app-yorogrid>
+                    </mat-card>
+            </div>
+        </mat-card>
+    </form>
+</div>

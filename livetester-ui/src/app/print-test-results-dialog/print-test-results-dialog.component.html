@@ -1,0 +1,33 @@
+<mat-card-title>Print Test Results As:
+    <span>
+        <button mat-button type="btn" id="closebtn" class="close" (click)="onNoClick()" aria-label="Close">
+            <mat-icon class="icon" svgIcon="clear"></mat-icon>
+        </button>
+    </span></mat-card-title>
+<form [formGroup]="form" #userForm="ngForm">
+    <div style="margin-top: 3%">
+        <mat-checkbox id="checkbox" formControlName="pIICheckbox" [checked]="checkBoxControl">Print with PII</mat-checkbox>
+       
+    </div>
+    <div style="margin-top: 3%">
+        <mat-radio-group formControlName="pdfOption" id="option" aria-label="Select an option">
+            <fieldset style="margin-left: -15px;" class="border">
+                <legend>Select an Option *</legend>
+                <div style="margin-top: 3%">
+                    <mat-radio-button id="yes" value="Y">Generate as one PDF with all test cases</mat-radio-button>
+                </div>
+                <div style="margin-top: 3%">
+                    <mat-radio-button id="no" value="N">Individual test case as one PDF</mat-radio-button>
+                </div>
+            </fieldset>
+        </mat-radio-group>
+        <mat-error class="text-danger" id="pdfOptionRequired"
+        *ngIf="form.get('pdfOption').errors?.required
+      &&(userForm.submitted || form.get('pdfOption').touched || form.get('pdfOption').dirty)">
+      Pdf Option is required
+      </mat-error>
+    </div>
+    <div fxLayoutAlign="end start">
+        <button mat-raised-button id="save" color="primary"  (click)="execute(userForm)">Execute</button>
+    </div>
+</form>

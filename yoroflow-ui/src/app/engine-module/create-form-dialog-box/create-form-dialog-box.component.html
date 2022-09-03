@@ -1,0 +1,6 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" >
+<mat-card-title *ngIf="data === null" >Create Form</mat-card-title>
+<mat-card-title *ngIf="data"style="font-weight: bold;">Edit Form</mat-card-title>
+<mat-icon id="close" (click)="close()" style="font-size: 25px;cursor: pointer;">close</mat-icon>
+</div>
+<app-page [yoroflowVO]="formDetails" (emitPageId)="getPageId($event)"></app-page> 

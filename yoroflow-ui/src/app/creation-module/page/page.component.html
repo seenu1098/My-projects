@@ -1,0 +1,632 @@
+<div id="page_form" *ngIf="formBuilder" style="overflow-y: hidden;">
+  <form [formGroup]="form" #userForm="ngForm" style="overflow-y: hidden;">
+    <div cdkDropListGroup style="overflow-y: hidden;">
+      <mat-sidenav-container style="overflow-y: hidden;" [style.min-height]="screenHeight" hasBackdrop=false>
+        <mat-sidenav *ngIf="controlsShow" #sidenav1 mode="side" [opened]="openSidenav" position="start"
+          [style.max-height]="screenHeight" style="width:205px;" appMaterialElevation defaultElevation=8
+          raisedElevation=8>
+          <div fxLayout="column">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class=" p-2" style="background-color: #3699ff;">
+              <p class="text-uppercase font-weight-bold text-center text-white mb-0 fs_12" i18n="page-controls">Controls
+              </p>
+              <mat-icon style="font-size: 18px;cursor:pointer;" class="mt-0" (click)="closeMenu()">close
+              </mat-icon>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center">
+              <div class="input-group px-2 mt-1 " id="border_less">
+                <input type="text" formControlName="searchControls" class="form-control fs_12"
+                  placeholder="{{'Search...' | translate}}">
+                <div class="input-group-append bg-trasparent">
+                  <span class="input-group-text pb-0">
+                    <mat-icon matSuffix class="fs_14 w_14 h_14 pr-2">search</mat-icon>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <perfect-scrollbar [config]="config" [style.height]="formBuilderHeight">
+            <div fxLayout="row" #resizeBox>
+              <div cdkDropList #listOne="cdkDropList" [cdkDropListData]="leftFormFields">
+                <div class="example-box m-2" fxLayoutGap.lt-md="0px" fxLayoutGap="20px" fxLayout.lt-md="column"
+                  *ngFor="let formField of leftFormFields | filter : this.form.value.searchControls :'name'; let i=index;"
+                  cdkDrag cdkDragHandle [cdkDragDisabled]="formField.disabled" appMaterialElevation raisedElevation=16
+                  id="toolbox">
+                  <div class="p-2">
+                    <div>
+                      <mat-icon id="icon" style=" font-size: 19px;">{{formField.iconName}}</mat-icon>
+                    </div>
+                    <div class="text-center">
+                      <p>{{formField.name}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <ng-container *ngIf="!isFromWorkflow && !isWorkflow">
+                  <div cdkDropList [cdkDropListData]="rightFormFields">
+                    <ng-container
+                      *ngFor="let formField of rightFormFields | filter : this.form.value.searchControls :'name'; let i=index;">
+                      <div class="example-box m-2" fxLayoutGap.lt-md="0px" fxLayoutGap="20px" fxLayout.lt-md="column"
+                        cdkDrag cdkDragHandle [cdkDragDisabled]="formField.disabled" appMaterialElevation
+                        raisedElevation=16 id="toolbox">
+                        <div class="p-2">
+                          <div>
+                            <mat-icon id="icon" class="text-center">{{formField.iconName}}
+                            </mat-icon>
+                          </div>
+
+                          <div class="text-center">
+                            <p>{{formField.name}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="isFromWorkflow || isWorkflow">
+                  <div cdkDropList [cdkDropListData]="rightFormFieldsWorkflow">
+                    <div class="example-box m-2" fxLayoutGap.lt-md="0px" fxLayoutGap="20px" fxLayout.lt-md="column"
+                      *ngFor="let formField of rightFormFieldsWorkflow | filter : this.form.value.searchControls :'name'; let i=index;"
+                      cdkDrag cdkDragHandle [cdkDragDisabled]="formField.disabled" appMaterialElevation
+                      raisedElevation=16 id="toolbox">
+                      <div class="p-2">
+                        <div>
+                          <mat-icon id="icon" class="text-center">{{formField.iconName}}
+                          </mat-icon>
+                        </div>
+
+                        <div class="text-center">
+                          <p>{{formField.name}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </perfect-scrollbar>
+        </mat-sidenav>
+        <mat-sidenav *ngIf="fieldSettings" #sidenav2 mode="side" [opened]="openSidenav" position="start"
+          style="width:230px;">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="settings-title">
+            <div fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="8px">
+                <mat-icon class="closemenu-icon" (click)="closeMenu()" matTooltip="Close">menu</mat-icon>
+                <h6 class="heading fs_12">Field Settings</h6>
+              </div>
+            </div>
+            <mat-icon style="font-size: 20px;cursor:pointer;color: #8a8af3;" (click)="openControls()"
+              matTooltip="Controls">app_registration
+            </mat-icon>
+          </div>
+          <perfect-scrollbar [config]="config" [style.height]="formBuilderHeight">
+            <!-- <app-formfield [data]="data" (savedColumn)="getSavedColumn($event)"
+              (deleteColumn)="getDeleteColumn($event)">
+            </app-formfield> -->
+          </perfect-scrollbar>
+        </mat-sidenav>
+        <mat-sidenav *ngIf="sectionSettings" #sidenav3 mode="side" [opened]="openSidenav" position="start"
+          style="width:230px;">
+          <!-- <mat-card style="width:20%;overflow-y: scroll;" [style.height]="formBuilderHeight" appMaterialElevation *ngIf="sectionSettings"> -->
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="settings-title">
+            <div fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="8px">
+                <mat-icon class="closemenu-icon" (click)="closeMenu()" matTooltip="Close">menu</mat-icon>
+                <h6 class="heading">Section Settings</h6>
+              </div>
+            </div>
+            <mat-icon style="font-size: 20px;cursor:pointer;color: #8a8af3;" (click)="openControls()"
+              matTooltip="Controls">app_registration
+            </mat-icon>
+          </div>
+          <perfect-scrollbar [config]="config" [style.height]="formBuilderHeight">
+            <!-- <app-section [data]="newSectionData" (savedSection)="getSavedSection($event)"
+              (deleteSection)="deleteSelectedSection($event)"></app-section> -->
+          </perfect-scrollbar>
+          <!-- </mat-card> -->
+        </mat-sidenav>
+        <mat-sidenav *ngIf="nestedSectionSettings" #sidenav4 mode="side" [opened]="openSidenav" position="start"
+          style="width:260px;">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="settings-title">
+            <div fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="8px">
+                <mat-icon class="closemenu-icon" (click)="closeMenu()" matTooltip="Close">menu</mat-icon>
+                <h6 class="heading">Nested Section Settings</h6>
+              </div>
+            </div>
+            <mat-icon style="font-size: 20px;cursor:pointer;color: #8a8af3;" (click)="openControls()"
+              matTooltip="Controls">app_registration
+            </mat-icon>
+          </div>
+          <perfect-scrollbar [config]="config" [style.height]="formBuilderHeight">
+            <!-- <app-nested-section [data]="newNestedSectionData" (savedNestedSection)="getSavedNestedSection($event)"
+              (deleteNestedSection)="deleteSelectedNestedSection($event)"></app-nested-section> -->
+          </perfect-scrollbar>
+        </mat-sidenav>
+        <mat-sidenav *ngIf="rowSettings" #sidenav4 mode="side" [opened]="openSidenav" position="start"
+          style="width:260px;">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="settings-title">
+            <div fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="8px">
+                <mat-icon class="closemenu-icon" (click)="closeMenu()" matTooltip="Close">menu</mat-icon>
+                <h6 class="heading">Row Settings</h6>
+              </div>
+            </div>
+            <mat-icon style="font-size: 20px;cursor:pointer;color: #8a8af3;" (click)="openControls()"
+              matTooltip="Controls">app_registration
+            </mat-icon>
+          </div>
+          <perfect-scrollbar [config]="config" [style.height]="formBuilderHeight">
+            <!-- <app-column [data]="rowData" (savedRowData)="getSavedRow($event)"
+              (deleteRowData)="deleteSelectedRow($event)"></app-column> -->
+          </perfect-scrollbar>
+        </mat-sidenav>
+        <mat-sidenav *ngIf="pagesettings" #sidenav5 mode="side" [opened]="openSidenav" position="start"
+          style="width:230px;">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="settings-title">
+            <div fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="8px">
+                <mat-icon class="closemenu-icon" (click)="closeMenu()" matTooltip="Close">menu</mat-icon>
+                <h6 class="heading">Page Settings</h6>
+              </div>
+            </div>
+            <!-- <mat-icon style="margin-top:15px;font-size: 18px;cursor:pointer;" (click)="closeMenu()">close
+            </mat-icon> -->
+            <mat-icon style="font-size: 20px;cursor:pointer;color: #8a8af3;" (click)="openControls()"
+              matTooltip="Controls">app_registration
+            </mat-icon>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="center center" style="margin-top:30px">
+            <mat-form-field appearance="outline">
+              <mat-label>Page Id</mat-label>
+              <input matInput formControlName="pageId" readonly>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <input matInput formControlName="description">
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start">
+            <mat-slide-toggle formControlName="exporttoPdf" (change)="allowExporttoPdf($event)">Export to PDF
+            </mat-slide-toggle>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px" style="margin-top:20px">
+            <button mat-raised-button color="primary" style="height: 35px;margin-top:10px"
+              (click)="createPage(userForm)" [disabled]="!submitEnable && !userForm.dirty">Save</button>
+            <button mat-raised-button color="accent" style="height: 35px;margin-top:10px"
+              (click)="resetPageSettings()">Reset</button>
+          </div>
+          <!-- </mat-card> -->
+        </mat-sidenav>
+        <mat-sidenav-content class="p-3">
+          <!-- <mat-toolbar> -->
+          <!-- <div fxLayout="row" fxLayoutGap="20px" style="margin-top:15px;margin-left:10px;width:100%;">
+            <div *ngIf="!openSidenav" fxLayout="column" style="width:15px">
+              <mat-icon (click)="openMenu()" style="cursor:pointer;">menu</mat-icon>
+            </div>
+            <mat-form-field style="width:30%;margin-top:10px">
+              <mat-label>Page Name *</mat-label>
+              <input matInput formControlName="pageName" (focusout)="focusOutForFormElement($event)"
+                (keypress)="omit_number($event)">
+              <mat-error>Page name is required</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Application *</mat-label>
+              <mat-select formControlName="applicationName">
+                <mat-option [value]="app.applicationName" *ngFor="let app of applicationsList"
+                  (onSelectionChange)="setApplicationId($event,app)" [id]="app.applicationName">
+                  {{app.applicationName}}</mat-option>
+              </mat-select>
+              <mat-error>Application is required</mat-error>
+            </mat-form-field>
+            <div fxLayout="column" class="actions-class">
+              <div fxLayout="row" fxLayoutGap="20px">
+                <button mat-raised-button color="primary" style="height: 35px;margin-top:15px"
+                  (click)="createPage(userForm)" [disabled]="!submitEnable">Save</button>
+                <button mat-raised-button color="accent" style="height: 35px;margin-top:10px"
+                  (click)="openUserPermission(userForm)"
+                  [disabled]="!submitEnable && !page.yorosisPageId">Publish</button>
+                <mat-icon matTooltip="Page Settings" style="margin-top:15px;" (click)="openPageSettings()">settings
+                </mat-icon>
+                <mat-icon matTooltip="User Permissions" (click)="userPermissions()" *ngIf="page.yorosisPageId">
+                  manage_accounts</mat-icon>
+                <mat-icon matTooltip="Preview" style="margin-top:15px;" (click)="openPreviewForm($event)">
+                  remove_red_eye</mat-icon>
+                <mat-icon matTooltip="Copy Page" style="margin-top:15px;" (click)="copyPage()">content_copy</mat-icon>
+                <mat-icon matTooltip="Export Page" style="margin-top:15px;" (click)="export()">system_update_alt
+                </mat-icon>
+                <div>
+                  <mat-icon matTooltip="Import Page" style="margin-top:15px;" (click)="fileInput.click()">open_in_new
+                  </mat-icon>
+                  <input type="file" #fileInput (change)="fileImport($event)" style="display:none;" accept="json/*"
+                    id="import" />
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <!-- </mat-toolbar> -->
+          <div fxLayout="row" class="mx-0 w-100" style="overflow-x: hidden;">
+            <div class="col-md-1" *ngIf="!open">
+              <!-- <div  fxLayout="column" > -->
+              <mat-icon (click)="openMenu()" style="cursor:pointer;" matTooltip="Back to controls"
+                i18n-matTooltip="Back to controls">menu</mat-icon>
+              <!-- </div> -->
+            </div>
+            <div class="col-md-3 px-2">
+              <mat-form-field>
+                <mat-label i18n="Page Name *">Page Name *</mat-label>
+                <input matInput formControlName="pageName" (focusout)="focusOutForFormElement($event)"
+                  (keypress)="omit_number($event)">
+                <mat-error *ngIf="form.get('pageName').errors?.required" i18n="Page name is required">Page name is
+                  required</mat-error>
+                <mat-error *ngIf="form.get('pageName').errors?.alreadyExist" i18n="Page name already exist"> Page name
+                  already exist</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 px-2" *ngIf="!isFromWorkflow && isWorkflow===false">
+              <mat-form-field appearance="outline">
+                <mat-label i18n="Application *">Application *</mat-label>
+                <mat-select formControlName="applicationName" [disabled]="page.yorosisPageId">
+                  <mat-option [value]="app.applicationName" *ngFor="let app of applicationsList"
+                    (onSelectionChange)="setApplicationId($event,app)" [id]="app.applicationName">
+                    {{app.applicationName}}</mat-option>
+                </mat-select>
+                <mat-error i18n="Application is required">Application is required</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-1 px-2">
+              <button mat-raised-button color="primary" (click)="createPage(userForm)"
+                [disabled]="!submitEnable &&  !userForm.dirty" i18n="Save">Save</button>
+            </div>
+            <div class="col-md-1 px-2">
+              <button mat-raised-button color="primary" (click)="resetPage(userForm)"
+                [disabled]="!submitEnable && !userForm.dirty" color="accent" i18n="Reset">Reset</button>
+            </div>
+            <div class="col-md-1 px-2" *ngIf="page.yorosisPageId && !isFromWorkflow && isWorkflow===false">
+              <button mat-raised-button color="accent" (click)="openUserPermission(userForm)"
+                i18n="Publish">Publish</button>
+            </div>
+            <div class="col-md-5 px-0">
+              <mat-icon matTooltip="Page Settings" class="mx-1 mt-1 text-secondary fs_18 h_14 w_14"
+                style="cursor: pointer;" (click)="openPageSettings()" i18n-matTooltip="Page Settings">settings
+              </mat-icon>
+              <mat-icon matTooltip="User Permissions" i18n-matTooltip="Page Settings"
+                class="mx-1 mt-1 text-primary fs_18 h_14 w_14" style="cursor: pointer;" (click)="userPermissions()"
+                *ngIf="page.yorosisPageId">manage_accounts
+              </mat-icon>
+              <mat-icon matTooltip="Printer Configuration" i18n-matTooltip="Printer Configuration"
+                class="mx-1 mt-1 text-primary fs_18 h_14 w_14" style="cursor: pointer;" (click)="printConfigur()"
+                *ngIf="page.yorosisPageId">
+                print</mat-icon>
+              <mat-icon matTooltip="Preview" i18n-matTooltip="Preview" class="mx-1 mt-1 text-info fs_18 h_14 w_14"
+                style="cursor: pointer;" (click)="openPreviewForm()">
+                remove_red_eye
+              </mat-icon>
+              <mat-icon matTooltip="Copy Page" i18n-matTooltip="Copy Page" class="mx-1 mt-1 fs_18 h_14 w_14"
+                (click)="copyPage()" style="cursor: pointer;" *ngIf="page.yorosisPageId">content_copy
+              </mat-icon>
+              <mat-icon matTooltip="Import Page" i18n-matTooltip="Import Page" class="mx-1 mt-1 fs_18 h_14 w_14"
+                style="cursor: pointer;" (click)="fileInput.click()">
+                system_update_alt</mat-icon>
+              <input type="file" #fileInput (change)="fileImport($event)" style="display:none;cursor: pointer;"
+                accept="json/*" id="import" />
+              <mat-icon matTooltip="Export Page" i18n-matTooltip="Export Page" class="mx-1 mt-1 fs_18 h_14 w_14"
+                (click)="export()" style="cursor: pointer;" *ngIf="page.yorosisPageId">open_in_new
+              </mat-icon>
+              <!-- <mat-icon matTooltip="Delete" class="m-2 text-danger">delete</mat-icon> -->
+              <!-- </div> -->
+            </div>
+            <div *ngIf="isFromWorkflow || isWorkflow===true" class="col-md-3 my-2 pl-0">
+              <div fxLayout="row">
+                <b i18n="Current version:">Current version:</b>
+                <div [matMenuTriggerFor]="versionMenu" #menuTrigger4="matMenuTrigger" class="version-box-css">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span style="margin-left: 2px;">{{this.page.version}}</span>
+                    <mat-icon>expand_more</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div fxLayout="row" style="width:100%;margin-left:5px;" fxLayoutGap="5px"> -->
+          <!-- <perfect-scrollbar [config]="config" [style.height]="formBuilderHeight" style="width:80%"> -->
+          <!-- <mat-card style="width:100%;" [style.height]="formBuilderHeight" appMaterialElevation> -->
+          <div *ngIf="page.sections.length===0" style="width:100%;">
+            <mat-card appMaterialElevation defaultElevation=16 raisedElevation=16>
+              <!-- <div fxLayout="row" fxLayoutAlign="center center" style="font-size:23px"> -->
+              <h4 class="fs_14 text-center text-black text-uppercase" i18n="Enter page name to continue configuration">
+                Enter page
+                name to continue configuration</h4>
+              <!-- </div> -->
+            </mat-card>
+          </div>
+          <perfect-scrollbar *ngIf="page.sections.length>0" [config]="config" [style.height]="formBuilderHeight">
+            <div *ngFor="let section of page.sections;let i=index" style="padding: 10px;width:100%;overflow-x: hidden;">
+              <div fxLayout="row" style="width:100%;margin:-10px;">
+                <mat-card style="background-color: #ffffff;" [style.width.%]="section.width"
+                  [style.margin-top]="i>0?'35px':''" appMaterialElevation>
+                  <ng-container>
+                    <div style="width:100%;">
+                      <ng-container *ngFor="let row of section.rows;let j=index">
+                        <div fxLayout="row" [fxLayoutAlign]="row.alignment">
+                          <div *ngIf=row.columns [fxLayout]="row.layoutDirection" [fxLayoutAlign]="row.alignment"
+                            [fxLayout.lt-md]="row.layoutResponsiveDirection" [fxLayoutGap]="row.layoutGap+'px'"
+                            [style.width.%]=row.rowWidth style="margin-top: 1%;"
+                            [style.background-color]="row.rowBackground">
+                            <div cdkDropList cdkDropListOrientation="horizontal" [id]="j+'-'+i"
+                              (cdkDropListDropped)="dropped($event,i,j, section , true, row,'column')"
+                              [cdkDropListConnectedTo]="connectedToList" style="width:100%" #myIdentifier>
+                              <!-- [validateResize]="validate" -->
+                              <div fxLayout="row" fxLayoutGap="10px" style="width:100%" [fxLayout]="row.layoutDirection"
+                                [fxLayoutAlign]="row.alignment" [fxLayout.lt-md]="row.layoutResponsiveDirection"
+                                [fxLayoutGap]="row.layoutGap+'px'">
+                                <div *ngFor="let column of row.columns; let k=index" fxLayout="column" mwlResizable
+                                  [resizeEdges]="{ right: true}" [enableGhostResize]="true"
+                                  (resizeEnd)="onResizeEnd($event,section,row,column,k,i,j,'l')"
+                                  [style.width.%]="column.field.fieldWidth"
+                                  [style.background]="column.field.rowBackground" style="margin-top:1% ;"
+                                  class="resize-handle-left" style="border:1px dotted grey;"
+                                  (click)="getColumn(column,i,j,k)" cdkDrag
+                                  (contextmenu)="onRightClickColumn($event,column,i,j,k)">
+                                  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+                                    <div fxLayout="row" style="width: 95%;">
+                                      <mat-icon cdkDragHandle class="drag-indicator"
+                                        (click)="onClickDragHandle(k, column, row)"
+                                        (mousedown)="disallowDrag(j,i, 'section', section, '', k, row)">
+                                        drag_indicator</mat-icon>
+                                      <app-load-controls style="width: 90%;" [column]="column">
+                                      </app-load-controls>
+                                    </div>
+                                    <div>
+                                      <mat-icon class="drag-handle">
+                                        drag_handle</mat-icon>
+                                    </div>
+
+                                    <!-- <div style="width: 5%;" dir="rtl"
+                                                                           *ngIf="row.columns.length>0">
+                                                                            <a style="cursor: default">
+                                                                             <mat-icon [id]="'clear_col'+j+'_'+k"
+                                                                              style="color: #ff4081">clear</mat-icon>
+                                                                               </a>
+                                                                              </div> -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div fxLayout="column" fxLayoutAlign="start center">
+                            <mat-icon [id]="'row_'+i+'_'+j" matTooltip="Row Settings" i18n-matTooltip="Row Settings"
+                              (click)="openRowSettings(section,row,i,j)" class="icon-style">settings</mat-icon>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <div fxLayout="row" fxLayoutGap="10px" cdkDropList [id]="'col'+'_'+i" #done="cdkDropList"
+                        i18n="Drop controls here to create a new row"
+                        style="border:1px dotted rgb(164, 192, 162);height:60px;margin-top:10px;place-content: center;align-items: center;"
+                        (cdkDropListDropped)="createNewRow($event,i, section,j)" class="list-column">
+                        Drop controls here to create a new row
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngFor="let nestedSection of section.sections; let l = index;">
+                    <mat-card style="margin-top:10px;background: whitesmoke;">
+                      <ng-container *ngFor="let row of nestedSection.rows;let m=index">
+                        <div fxLayout="row" [fxLayoutAlign]="row.alignment">
+                          <div *ngIf=row.columns [fxLayout]="row.layoutDirection" [fxLayoutAlign]="row.alignment"
+                            [fxLayout.lt-md]="row.layoutResponsiveDirection" [fxLayoutGap]="row.layoutGap+'px'"
+                            [style.width.%]=row.rowWidth style="margin-top: 1%;"
+                            [style.background-color]="row.rowBackground">
+                            <div cdkDropList cdkDropListOrientation="horizontal"
+                              (cdkDropListDropped)="droppedNestedSection($event,i,l,m, nestedSection ,row)"
+                              style="width:100%" id="row" #resizeBox>
+                              <!-- [validateResize]="validate" -->
+                              <div [fxLayout]="row.layoutDirection" [fxLayoutAlign]="row.alignment"
+                                [fxLayout.lt-md]="row.layoutResponsiveDirection" [fxLayoutGap]="row.layoutGap+'px'"
+                                fxLayoutGap="10px" style="width:100%">
+                                <div *ngFor="let column of row.columns; let n=index" fxLayout="column" mwlResizable
+                                  [resizeEdges]="{ right: true}" [enableGhostResize]="true"
+                                  (resizeEnd)="onResizeEnd($event,section,row,column,n,i,m,l)"
+                                  [style.width.%]="column.field.fieldWidth" style="margin-top:1% ;"
+                                  class="resize-handle-left" style="border:1px dotted grey;"
+                                  (click)="getColumnForNestedSection(column,i,l,m,n)" cdkDrag
+                                  (contextmenu)="onRightClickNestedSectionColumn($event,column, i, l, m, n)">
+                                  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+                                    <div fxLayout="row" style="width: 95%;">
+                                      <mat-icon cdkDragHandle class="drag-indicator"
+                                        (click)="onClickDragHandle(n, column, row)"
+                                        (mousedown)="disallowDrag(m, i, 'nested', nestedSection, l,n)">
+                                        drag_indicator</mat-icon>
+                                      <app-load-controls style="width: 95%;" [column]="column">
+                                      </app-load-controls>
+
+                                    </div>
+                                    <div>
+                                      <mat-icon class="drag-handle">
+                                        drag_handle</mat-icon>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div fxLayout="column" fxLayoutAlign="start center">
+                            <mat-icon [id]="'row_'+i+'_'+l+'_'+m" matTooltip="Row Settings"
+                              i18n-matTooltip="Row Settings"
+                              (click)="openNestedSectionRowSettings(nestedSection,row,i,l,m)" class="icon-style">
+                              settings
+                            </mat-icon>
+                          </div>
+                        </div>
+                      </ng-container>
+                      <div fxLayout="row" fxLayoutGap="10px" cdkDropList [id]="'col'+'_'+l"
+                        style="border:1px dotted rgb(164, 192, 162);height:60px;margin-top:10px;place-content: center;align-items: center;"
+                        (cdkDropListDropped)="createNewRowForNestedSection($event,i,l, nestedSection,m)"
+                        class="list-column" i18n="Drop controls here to create a new row" id="row"> Drop controls here
+                        to create
+                        a new row
+                      </div>
+                      <!-- <div fxLayout="row" fxLayoutAlign="space-between center">
+                          <div fxLayout="row" fxLayoutGap="10px">
+                            <mat-icon matTooltip="Delete Sub Section" color="accent" (click)="deleteNestedSection(i,l)"
+                              class="removeSection-btn">
+                              delete
+                            </mat-icon>
+                            <mat-icon matTooltip="Sub Section Settings" class="sectionSetting-btn" color="primary"
+                              (click)="openNestedSectionSettings(i,l,nestedSection,section,true)">
+                              settings
+                            </mat-icon>
+                          </div>
+                        </div> -->
+
+                      <div fxLayout="row" fxLayoutAlign="center" id="sub-section">
+                        <div fxLayout="row" fxLayoutGap="10px">
+
+                          <div matTooltip="Sub Section Settings" i18n-matTooltip="Sub Section Settings"
+                            class="sectionSetting-btn mt-2" color="primary"
+                            (click)="openNestedSectionSettings(i,l,nestedSection,section,true)">
+                            <mat-icon>settings</mat-icon>
+                          </div>
+                          <div matTooltip="Delete Sub Section" i18n-matTooltip="Delete Sub Section" color="accent"
+                            (click)="deleteNestedSection(i,l)" class="removeSection-btn mt-2">
+                            <mat-icon>delete</mat-icon>
+                          </div>
+                        </div>
+                      </div>
+                    </mat-card>
+                  </ng-container>
+                  <!-- <div fxLayout="row" fxLayoutAlign="space-between center">
+                      <div (click)="createNewSection()" class="newSection-btn">
+                        + add new section
+                      </div>
+                      <div fxLayout="row" fxLayoutGap="10px">
+                        <mat-icon matTooltip="Add new sub section" (click)="createNewSubSection(i)"
+                          class="nested-section-add">
+                          add</mat-icon>
+                        <mat-icon *ngIf="page.sections.length>1" matTooltip="Delete Section" color="accent"
+                          (click)="deleteSection(i)" class="removeSection-btn">
+                          delete
+                        </mat-icon>
+                        <mat-icon matTooltip="Section Settings" class="sectionSetting-btn" color="primary"
+                          (click)="openSectionSettings(i,section)">
+                          settings
+                        </mat-icon>
+                      </div>
+                    </div> -->
+                  <div fxLayout="row" fxLayoutAlign="center" class="p-4 mx-2 " id="add_section">
+
+                    <div (click)="createNewSection(i)" class="newSection-btn  mx-1" matTooltip="Add new section"
+                      i18n-matTooltip="Add new section">
+                      <mat-icon>backup_table</mat-icon>
+                    </div>
+                    <div matTooltip="Add new sub section" i18n-matTooltip="Add new sub section"
+                      class="newsubSection-btn mx-1" (click)="createNewSubSection(i)">
+                      <mat-icon>dashboard_customize</mat-icon>
+                    </div>
+                    <div matTooltip="Section Settings" i18n-matTooltip="Section Settings"
+                      class="newsettingSection-btn mx-1" color="primary" (click)="openSectionSettings(i,section)">
+                      <mat-icon>
+                        settings
+                      </mat-icon>
+                    </div>
+                    <div *ngIf="page.sections.length>1" matTooltip="Delete Section" i18n-matTooltip="Delete Section"
+                      color="accent" (click)="deleteSection(i)" class="newdeleteSection-btn mx-1">
+                      <mat-icon>
+                        delete
+                      </mat-icon>
+                    </div>
+
+                    <!-- </div> -->
+                  </div>
+                </mat-card>
+              </div>
+
+            </div>
+            <!-- </mat-card> -->
+            <!-- </div> -->
+          </perfect-scrollbar>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+    </div>
+    <!-- <mat-menu #dropdownMenuOne="matMenu">
+    <div fxLayout="column" (click)="$event.stopPropagation()">
+      <div fxLayout="row" fxLayoutGap="10px" class="config-field-row">
+        <div fxLayout="column">
+          <div fxLayout="row" class="config-fields">
+            Field Type
+          </div>
+          <div fxLayout="row" class="legacy">
+            <mat-select formControlName="fieldType">
+              <div fxLayout="row">
+                <div *ngIf="column.controlType!=='select' && column.controlType!=='multi'
+                && column.controlType!=='radiobutton' && column.controlType!=='checkbox'
+                 && column.controlType!=='chip'" fxLayout="column">
+                  <ng-container *ngFor="let field of fieldTypeList1">
+                    <div fxLayout="row">
+                      <mat-option [id]="field.value" [value]="field.value">{{field.name}}</mat-option>
+                    </div>
+                  </ng-container>
+                </div>
+                <div fxLayout="column">
+                  <ng-container *ngFor="let field of fieldTypeList2">
+                    <div fxLayout="row">
+                      <mat-option [id]="field.value" [value]="field.value">{{field.name}}</mat-option>
+                    </div>
+                  </ng-container>
+                </div>
+                <div *ngIf="column.controlType!=='select' && column.controlType!=='multi'
+                && column.controlType!=='radiobutton' && column.controlType!=='checkbox'
+                 && column.controlType!=='chip'" fxLayout="column">
+                  <ng-container *ngFor="let field of fieldTypeList3">
+                    <div fxLayout="row">
+                      <mat-option [id]="field.value" [value]="field.value">{{field.name}}</mat-option>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </mat-select>
+          </div>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center" style="margin-top:30px">
+        <button mat-raised-button color="primary" (click)="createColumn()">Save</button>
+        <button mat-raised-button color="accent" (click)="deleteField()">Delete</button>
+      </div>
+    </div>
+  </mat-menu> -->
+  </form>
+</div>
+<div *ngIf="userPermission">
+  <app-global-permission [data]="userPermissionData" (globalPermissionData)="getGlobalPermission($event)">
+  </app-global-permission>
+</div>
+<div *ngIf="sectionSecurity">
+  <lib-section-security [pageSecurity]="pageSecurityVO" [page]="page" [publish]="publish"
+    (finalData)="getSectionPermission($event)"></lib-section-security>
+</div>
+<div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu" #menuTrigger5="matMenuTrigger">
+</div>
+<mat-menu #contextMenu="matMenu">
+  <!-- <ng-template matMenuContent let-item="item"> -->
+  <button mat-menu-item (click)="delete()" i18n="delete">Delete</button>
+  <!-- <button mat-menu-item (click)="onContextMenuAction2(item)">Action 2</button> -->
+  <!-- </ng-template> -->
+</mat-menu>
+
+<ng-container>
+  <mat-menu #versionMenu="matMenu">
+    <div (click)="$event.stopPropagation()">
+      <div *ngFor="let version of pageVersionList">
+        <button (click)="loadSelectedVersion(version.version)" [id]="version.version" mat-menu-item>
+          <span>{{version.version}}</span>
+        </button>
+      </div>
+    </div>
+  </mat-menu>
+</ng-container>
+
+<!-- *ngFor="let section of page.sections;let i=index" [data]="section" [index]="i" [length]="page.sections.length" -->

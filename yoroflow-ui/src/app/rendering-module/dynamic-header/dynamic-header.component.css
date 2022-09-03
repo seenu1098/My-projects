@@ -1,0 +1,27 @@
+.top{
+    margin-top: 12px;
+}
+
+.chat-prof-picture{
+width: 40px;
+height: 40px;
+background-size: cover;
+border-radius: 50%;
+background-repeat: no-repeat;
+background-position: center center;
+}
+
+.circle-class {
+/* margin-top: 4px; */
+width: 30px;
+height: 30px;
+border-radius: 50%;
+font-size: 15px;
+color: #fff;
+line-height: 30px;
+text-align: center center;
+background: #c2c2a3;
+background-position: center center;
+margin-top: 9px;
+}
+

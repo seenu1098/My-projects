@@ -1,0 +1,56 @@
+.mat-slide-toggle-content {
+    width:10%;
+}
+
+.mat-slide-toggle-content-1 {
+    width:20%;
+}
+
+
+  
+  .mat-icon{
+      font-size: 16px;;
+  }
+  .mat-mini-fab {
+    height: 25px!important;
+    width: 25px!important;
+    line-height: 16px!important;
+    padding:1px!important;
+  }
+
+  #list_box{
+    background-color: #f1f5fa;
+  }
+  .dot_icon{
+    font-size: 25px;
+    cursor: pointer;
+  }
+  .main_left_icon{
+    font-size: 23px;
+  }
+  .margin_top_reduce{
+    vertical-align: middle;
+    /* text-overflow: ellipsis;
+white-space: nowrap;
+overflow: hidden;
+width:97%; */
+  }
+  .main_left_icon1{
+    font-size: 23px;
+    color: green;
+  }
+  .main_left_icon2{
+    font-size: 23px;
+    color: blue;
+  }
+  .main_left_icon3{
+    font-size: 23px;
+    color: red;
+  }
+  .main_icon_bg{
+    padding:6px;
+    background-color: rgb(255 249 239);
+    border-radius: 5px;
+    height: 35px;
+    width: 35px;
+  }

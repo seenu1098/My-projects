@@ -1,0 +1,19 @@
+<ng-container *ngIf="showControl">
+    <div [style]="field.style" style="width:100%">
+        <mat-form-field style="width: 100%" [style.background-color]="field.rowBackground" [formGroup]="group"
+            [floatLabel]="field.label.labelOption" appearance="outline">
+            <mat-label>{{field.label.labelName}}{{required}}</mat-label>
+            <mat-select [id]="field.label.labelName" [formControlName]="field.name"
+                [placeholder]="field.label.labelName + required">
+                <input matInput placeholder="{{'Search' | translate}}" autocomplete="off" formControlName="search"
+                    class="search-input input-css">
+                <mat-option *ngFor="let user of filteredUsers" [value]="user.userId" [id]="user.userId">
+                    {{user.firstName}} {{user.lastName}}</mat-option>
+            </mat-select>
+            <ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+                <mat-error *ngIf="group.get(field.name) && group.get(field.name).hasError(validation.type)">
+                    {{formService.getValidationErrorMessage(validation,field.label.labelName)}}</mat-error>
+            </ng-container>
+        </mat-form-field>
+    </div>
+</ng-container>

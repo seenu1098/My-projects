@@ -1,0 +1,230 @@
+<ng-container *ngIf="showControl">
+  <div [fxLayout]="getLayoutBasedOnScreen()" fxLayoutGap="10px" fxLayoutAlign="start">
+    <!-- <div style="width: 50%;"> -->
+    <mat-card style="height: 500px; overflow-y: scroll;" [style.width.px]=getStepperWidth() *ngIf="!mobileQuery.matches || showStepperForMobile">
+      <mat-card-title>Add Items</mat-card-title>
+
+      <mat-vertical-stepper #stepper>
+        <ng-container *ngFor="let step of loadStepValue;let j=index;">
+          <!-- *ngIf="u === stepper.selectedIndex"
+            *ngFor="let step of cardDetailsVO.stepDetails; let u = index" -->
+          <mat-step>
+            <ng-container>
+              <form [formGroup]="stepperFormGroup">
+                <ng-template matStepLabel>{{step.stepLabel}}</ng-template>
+                <ng-container *ngIf="step.controlType.controlType === 'text'">
+                  <mat-form-field appearance="fill">
+                    <mat-label>{{step.controlType.controlTypeLabel}}</mat-label>
+                    <input matInput [placeholder]="step.controlType.controlTypeLabel"
+                      [formControlName]="step.controlType.controlTypeName">
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="step.controlType.controlType === 'textArea'">
+                  <mat-form-field>
+                    <mat-label>{{step.controlType.controlTypeLabel}}</mat-label>
+                    <textarea matInput [placeholder]="step.controlType.controlTypeLabel"
+                      [formControlName]="step.controlType.controlTypeName"></textarea>
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="step.controlType.controlType === 'select'">
+                  <mat-form-field appearance="fill">
+                    <mat-label>{{step.controlType.controlTypeLabel}}</mat-label>
+                    <mat-select [formControlName]="step.controlType.controlTypeName" multiple>
+                      <mat-select-trigger>
+                        {{stepperFormGroup.get(step.controlType.controlTypeName).value ?
+                        stepperFormGroup.get(step.controlType.controlTypeName).value[0] : ''}}
+                        <span *ngIf="stepperFormGroup.get(step.controlType.controlTypeName).value?.length > 1">
+                          (+{{stepperFormGroup.get(step.controlType.controlTypeName).value.length - 1}}
+                          {{stepperFormGroup.get(step.controlType.controlTypeName).value?.length === 2 ? 'other' :
+                          'others'}})
+                        </span>
+                      </mat-select-trigger>
+                      <mat-option *ngFor="let keyValue of step.stepValues" [value]="keyValue.key">{{keyValue.value}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngIf="step.controlType.controlType === 'card'">
+                  <ng-container dynamicField [fieldConfig]="getCardData(step)" [group]="stepperFormGroup">
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="step.controlType.controlType === 'image'">
+                  <ng-container dynamicField [fieldConfig]="getImageCardData(step)" [group]="stepperFormGroup">
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="step.controlType.controlType === 'fileupload' && stepperFormGroup.get(step.controlType.controlTypeName)">
+                  <div dynamicField [fieldConfig]="getFileUploadJson(step)" [group]="stepperFormGroup">
+                  </div>
+                </ng-container>
+                <mat-error *ngIf="stepperFormGroup.get(step.controlType.controlTypeName).errors?.required &&
+                stepperFormGroup.get(step.controlType.controlTypeName).touched">
+                  {{step.controlType.controlTypeLabel}} is required</mat-error>
+                  <mat-error *ngIf="stepperFormGroup.get(step.controlType.controlTypeName).hasError('minlength')">
+                    Select minimum of {{getReqMinLength(stepperFormGroup.get(step.controlType.controlTypeName))}} {{step.controlType.controlTypeLabel}}</mat-error>
+                    <ng-container *ngIf="stepperFormGroup.get(step.controlType.controlTypeName).hasError('maxlength')">
+                      <mat-error>
+                        Select maximum of {{getReqMaxLength(stepperFormGroup.get(step.controlType.controlTypeName))}} {{step.controlType.controlTypeLabel}}</mat-error>
+                    </ng-container>
+                <button mat-raised-button color="primary" matStepperNext
+                  [disabled]="stepperFormGroup.get(step.controlType.controlTypeName).value === ''
+                  || stepperFormGroup.get(step.controlType.controlTypeName).errors?.required
+                  || stepperFormGroup.get(step.controlType.controlTypeName).hasError('minlength')
+                || stepperFormGroup.get(step.controlType.controlTypeName).hasError('maxlength')"
+                  (click)="nextStep(step,stepperFormGroup.get(step.controlType.controlTypeName).value, j, false)">Next</button>
+              </form>
+            </ng-container>
+          </mat-step>
+
+
+        </ng-container>
+        <ng-container>
+          <mat-step>
+            <ng-template matStepLabel *ngIf="showAddItemButton">Add Items</ng-template>
+            <ng-template matStepLabel *ngIf="!showAddItemButton">Update Item</ng-template>
+            <div *ngIf="showAddItemButton" style="color: rgb(4, 123, 221);">
+             Click submit for adding item to cart.
+            </div>
+            <div *ngIf="!showAddItemButton" style="color: rgb(4, 123, 221);">
+              <span>Click Update to update item.</span>
+            </div>
+            <ng-container *ngFor="let errors of groupList">
+              <mat-error *ngIf="stepperFormGroup.get(errors.name).errors?.required">
+                {{errors.label}} is required</mat-error>
+                <mat-error *ngIf="stepperFormGroup.get(errors.name).hasError('minlength')">
+                  Select minimum of {{getReqMinLength(stepperFormGroup.get(errors.name))}} {{errors.label}}</mat-error>
+                  <mat-error *ngIf="stepperFormGroup.get(errors.name).hasError('maxlength')">
+                    Select maximum of {{getReqMaxLength(stepperFormGroup.get(errors.name))}} {{errors.label}}</mat-error>
+            </ng-container>
+            <button mat-raised-button matStepperNext type="button" color="primary" (click)="addToCart()"
+              *ngIf="showAddItemButton">Submit</button>
+            <button mat-raised-button matStepperNext (click)="updateItem(updateItemIndex)" color="primary"
+              *ngIf="!showAddItemButton">Update</button>
+          </mat-step>
+        </ng-container>
+      </mat-vertical-stepper>
+      <button mat-raised-button type="button"
+                color="accent" style="margin-left: 5%;" (click)="resetForm()">Reset</button>
+                <button mat-raised-button type="button" *ngIf="mobileQuery.matches"
+                color="accent" style="margin-left: 2%;" (click)="cancelForMobile()">Cancel</button>
+    </mat-card>
+    <!-- </div> -->
+    <!-- <div style="width: 50%;"> -->
+    <mat-card style="height: 500px; background-color: rgb(240, 240, 240); overflow-y: scroll;"
+    [style.width.px]=getCartWidth() *ngIf="!mobileQuery.matches || showCartForMobile">
+      <mat-card-title>Shopping Cart</mat-card-title>
+      <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="end end">
+        <div>
+          Subtotal ({{totalNumberOfItems}} items): &nbsp; <span style="font-weight: bold;">{{totalPrice | currency: cardDetailsVO.currencyType}} </span> <span *ngIf ="cardDetailsVO.isTaxable === true">
+            (excluding tax)
+          </span>
+        </div>
+        <div *ngIf ="cardDetailsVO.isTaxable === true">
+          <span style="font-weight: bold;"> {{totalPriceWithTax | currency: cardDetailsVO.currencyType}} </span>&nbsp; (including tax) 
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div fxLayout="row wrap" fxLayoutGap="1px" style="width: 100%; margin-top: 2px;">
+        <mat-card style="width: 100%; height: 44%; margin-top: 5px;">
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start">
+          <div style="width: 44%;">
+            <mat-card-subtitle>Product Description</mat-card-subtitle>
+          </div>
+          <div style="width: 14%;">
+            <mat-card-subtitle>{{getQuantityHeader()}}</mat-card-subtitle>
+          </div>
+          <div  [style.width.%]="mobileQuery.matches ? 20 : 12">
+            <mat-card-subtitle>Price</mat-card-subtitle>
+          </div>
+          <div  [style.width.%]="mobileQuery.matches ? 25 : 18">
+            <mat-card-subtitle>Total Price</mat-card-subtitle>
+          </div>
+          <div style="width: 9%;" *ngIf="!mobileQuery.matches">
+            <!-- <mat-icon color="primary" style="cursor: pointer;" (click)="edit(item.index)">create</mat-icon>
+            <mat-icon color="accent" style="cursor: pointer;" (click)="closeItem(item.index,i)">close</mat-icon> -->
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <ng-container *ngIf="cardItems.length === 0">
+          <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="center center" *ngIf="!mobileQuery.matches">
+            Add items to show in cart.
+          </div>
+        </ng-container>
+        <div fxLayout="row wrap" fxLayoutGap="20px" fxLayoutAlign="end end">
+          <button mat-button type="button" *ngIf="mobileQuery.matches"
+          color="primary" (click)="addItemsToCart()">Add Items To Cart</button>
+        </div>
+        <ng-container *ngFor="let item of cardItems;let i=index">       
+            <div fxlayout="row" fxLayoutGap="10px" fxLayoutAlign="start" style="margin-top: 2%;"  [style.background-color]="backgroundColor(item)">
+                  <div style="width: 44%;">
+                    <ng-container *ngFor="let values of item.details; let m = index;">
+                      <ng-container *ngIf="values.controlType === 'image' && values.value !== null && values.value !== ''">
+                    <div fxLayout="column" fxLayoutGap="5px">
+                      <div>
+                        <span style="font-weight: bold;">{{values.label}}:</span>
+                      </div>
+                      <div>
+                        <ng-container *ngFor="let img of values.image;let j=index;">
+                          <ng-container *ngIf="img.name === values.name">
+                            <mat-spinner [diameter]="20" style="margin-left: 1px;margin-top: 1px;"
+                            *ngIf="img.image === ''"></mat-spinner>
+                           <img [id]="i + 'imgValue'" [src]="img.image !== '' ? img.image : getImage(values.image, i, j)"
+                            style="margin-left: 2%;" [hidden]="img.image=== ''" height="60" width="40%">
+                          </ng-container>
+                    </ng-container>
+                    </div>
+                  </div>
+                </ng-container>
+                  <div *ngIf="values.controlType !== 'image' && values.valueLabel !== ''">
+                    <span style="font-weight: bold;">{{values.label}}:</span>&nbsp;&nbsp;{{values.valueLabel}}
+                  </div>
+              </ng-container>
+                  </div>
+                <ng-container *ngFor="let values of item.details; let m = index;">
+                  <ng-container *ngIf="values.hasPricing === true">
+                    <div style="width: 14%;" >
+                       <input matInput [style.width.%]="mobileQuery.matches ? 100 : 62" [id]="m + 'stepsInvolved'" [value]="values.quantity" type="number" min="1"
+                                    oninput="this.value = Math.abs(this.value)"
+                                    (change)="setPriceAndQuantity(i, m, $event)">
+                     </div>
+                     <!-- <div>
+                      <span style="font-weight: bold;">Price Per Quantity:</span>
+                    </div> -->
+                    <div style="width: 12%;" [style.width.%]="mobileQuery.matches ? 20 : 12">
+                      <div>
+                        {{values.pricePerQuantity | currency: cardDetailsVO.currencyType}}
+                      </div>
+                     </div>
+                     <!-- <div>
+                      <span style="font-weight: bold;">Total Price:</span>
+                    </div> -->
+                    <div style="width: 18%;" [style.width.%]="mobileQuery.matches ? 25 : 18">
+                      <div>
+                        {{values.price | currency: cardDetailsVO.currencyType}}
+                      </div>
+                     </div>
+              <!-- </div> -->
+            </ng-container>
+          </ng-container>
+          <div fxLayout="row" fxLayoutGap="5px" style="width: 9%;" *ngIf="!mobileQuery.matches">
+            <mat-icon color="primary" style="cursor: pointer;" (click)="edit(item.index)">create</mat-icon>
+            <mat-icon color="accent" style="cursor: pointer;" (click)="closeItem(item.index,i)">delete_forever</mat-icon>
+          </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="5px"  fxLayoutAlign="end end" *ngIf="mobileQuery.matches">
+              <mat-icon color="primary" style="cursor: pointer;" (click)="edit(item.index)">create</mat-icon>
+              <mat-icon color="accent" style="cursor: pointer;" (click)="closeItem(item.index,i)">delete_forever</mat-icon>
+            </div>
+            <!-- <mat-divider></mat-divider> -->
+            <mat-divider></mat-divider>
+            <!-- <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="center center" style="padding-top: 4px;" >
+              <button mat-button type="button" color="primary" class="edit-button" (click)="edit(item.index)">Edit Item</button>
+              <button mat-button type="button"
+                color="accent" class="delete-button" (click)="closeItem(item.index,i)">Remove Item</button>
+            </div> -->
+        </ng-container>
+      </mat-card>
+      </div>
+    </mat-card>
+    <!-- </div> -->
+  </div>
+</ng-container>

@@ -1,0 +1,641 @@
+<div class="row justify-content-center mx-0 mb-3" *ngIf="isDowngrade===true">
+    <div class="col-md-11">
+        <img src="/assets/logo/newlogo3.svg" class="img-fluid  mt-4" width="13%">
+    </div>
+</div>
+<ng-container *ngIf="isDowngrade===false">
+    <div class="row jutify-content-center mx-0 mt-5 pt-5">
+        <div class="w-50 jutify-content-center mx-auto d-block align-self-center align-middle">
+            <div class="row justify-content-center">
+                <img style="height: 270px;" src="../../../assets/images/Alert-01.svg">
+            </div>
+            <div class="row justify-content-center mt-3">
+                <h2 class="text-center">Your trial has ended, you can upgrade your plan or downgrade to free plan </h2>
+            </div>
+            <div class="row justify-content-center">
+                <button mat-raised-button id="upgradeButton" (click)="upgrade()" class="fs_12 mx-2 button-color">
+                    let me upgrade
+                </button>
+
+                <button mat-raised-button color="primary" id="downgradeButton" (click)="downgrade()" class="fs_12 mx-2">
+                    let me downgrade to free plan
+                </button>
+
+                <button mat-raised-button color="accent" id="logmeoff" (click)="logMeOff()" class="fs_12 mx-2">
+                    I can't decide let me log off
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="isDowngrade===true">
+    <form #userForm="ngForm" [formGroup]="form">
+        <ng-container *ngIf="cardType === 'user'">
+            <ng-container *ngIf="myUserArrayCount>1">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2><b>Free plan allows only 2 users</b></h2>
+                            <div class="row mx-0">
+                                <mat-radio-group formControlName="userOption" aria-label="Select an option"
+                                    (change)="radioChange($event)">
+                                    <mat-radio-button class="mr-3" value="1">You can pick 2
+                                        users
+                                    </mat-radio-button>
+                                    <mat-radio-button class="mr-3" value="2">Pick any random
+                                        users
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="mr-3" color="accent" (click)="userPrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="nextTeam()"
+                                    [disabled]="disableButton === false" id="btnsave" i18n="Save">Next</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="form.get('userOption').value==='1'">
+                    <div class="col-md-11 col-sm-11">
+                        <mat-card class="main_card_user px-0">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    <h3 class="pl-3"><b i18n="Selected Users">Selected Users</b></h3>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedUsers?.length !== 0">
+                                <div class="col-md-11 col-sm-11 justify-content-center">
+                                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                        <mat-chip-list #chipList aria-label="Fruit selection">
+                                            <mat-chip *ngFor="let users of selectedUsers; let i=index"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="remove(users)">
+                                                {{users?.firstName}} {{users?.lastName}}
+                                                <mat-icon matChipRemove *ngIf="removable && !users.isLoggedInUser">
+                                                    cancel
+                                                </mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedUsers?.length === 0">
+                                <span> <b i18n="No Selected Users">No Selected Users</b></span>
+                            </div>
+                        </mat-card>
+                        <mat-card class="w-100 mt-1">
+                            <h3 class="pl-3"><b i18n="Available Users">Available Users</b></h3>
+                            <div class="row w-100 mx-0 ">
+                                <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                    <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                        formControlName="searchUser">
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 ">
+                                <ng-container *ngFor="let user of myUserArray; let i=index">
+                                    <div class="col-md-4 col-sm-12 px-2" *ngIf="user.filter">
+                                        <mat-card class=" inner_card_user" (click)="add(user,i)" appMaterialElevation>
+                                            <div class="row w-100 mx-0">
+                                                <div class="col-md-2 align-self-center">
+                                                    <p class="user_letter" [style.background]="user.color">
+                                                        {{setUserProfilename(user)}}</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-0 text-uppercase font-weight-bold">{{user?.firstName}}
+                                                        {{user?.lastName}}</h5>
+                                                    <h5 class="mb-0" style="word-break:break-all">{{user?.emailId}}</h5>
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </div>
+
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="myUserArrayCount<2">
+                <h3 class="pl-3"><b>Free plan allows only 2 users</b></h3>
+                <div class="pl-3" fxLayout="row" fxLayoutGap="10px">
+                    <p><b>Your account have 2 users, you can skip to teams</b></p>
+                    <div class="next-button">
+                        <button mat-raised-button class="mr-3" color="accent" (click)="userPrevious()" id="btnsave"
+                            i18n="Save">Previous</button>
+                    </div>
+                    <div class="next-button">
+                        <button mat-raised-button class="mr-3" color="primary" (click)="nextTeam()" id="btnsave"
+                            i18n="Skip">Skip</button>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <!----=Free plan allows only 3 teams-->
+        <ng-container *ngIf="cardType === 'teams'">
+            <ng-container *ngIf="myGroupArrayCount>3">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h3 class="pl-3"><b>Free plan allows only 3 teams</b></h3>
+                            <div class="row mx-0">
+                                <mat-radio-group formControlName="teamOption" aria-label="Select an option"
+                                    (change)="groupRadioChange($event)">
+                                    <mat-radio-button class="mr-3" value="1">You can pick
+                                        3 teams
+                                    </mat-radio-button>
+                                    <mat-radio-button class="mr-3" value="2">Pick any
+                                        random teams
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="mr-3" color="accent" (click)="teamsPrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="nextWorkspace()"
+                                    [disabled]="disableGroupButton === false" id="btnsave" i18n="Save">Next</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="form.get('teamOption').value==='1'">
+                    <div class="col-md-11 col-sm-11">
+                        <mat-card class="main_card_user px-0">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    <h3 class="pl-3"><b i18n="Selected Teams">Selected Teams</b></h3>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedTeams?.length !== 0">
+                                <div class="col-md-11 col-sm-11 justify-content-center">
+                                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                        <mat-chip-list #chipList aria-label="Fruit selection">
+                                            <mat-chip *ngFor="let teams of selectedTeams; let i=index"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="removeGroup(teams)">
+                                                {{teams?.name}}
+                                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedTeams?.length === 0">
+                                <span> <b i18n="No Selected Teams">No Selected Teams</b></span>
+                            </div>
+                        </mat-card>
+                        <mat-card class="w-100 mt-1">
+                            <h3 class="pl-3"><b i18n="Available Teams">Available Teams</b></h3>
+                            <div class="row w-100 mx-0 ">
+                                <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                    <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                        formControlName="searchGroup">
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 ">
+                                <ng-container *ngFor="let group of myGroupArray; let i=index">
+                                    <div class="col-md-4 col-sm-12 px-2" *ngIf="group.filter">
+                                        <mat-card class=" inner_card_user" (click)="addGroup(group)"
+                                            appMaterialElevation>
+                                            <div class="row w-100 mx-0">
+                                                <div class="col-md-2 align-self-center">
+                                                    <p class="user_letter" [style.background]="group.color">
+                                                        {{setGroupProfilename(group)}}</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-0 text-uppercase font-weight-bold">{{group?.name}}
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!----=Free plan allows only 3 Teams-->
+            <ng-container *ngIf="myGroupArrayCount<4">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2><b>Free plan allows only 3 Teams</b></h2>
+                            <div class="row mx-0">
+                                <p class="fs_12">Your account have within 3 teams, you can skip to Workflow</p>
+
+                                <div class="next-button">
+                                    <button mat-raised-button class="mr-3" color="accent" (click)="teamsPrevious()"
+                                        id="btnsave" i18n="Save">Previous</button>
+                                </div>
+
+                                <div class="next-button">
+                                    <button mat-raised-button class="mr-3" color="primary" (click)="nextWorkspace()"
+                                        id="btnsave" i18n="Skip">Skip</button>
+                                </div>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="cardType === 'workspace'">
+            <ng-container *ngIf="myWorkspaceArrayCount>1">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2><b>Free plan allows only 2 workspace</b></h2>
+                            <div class="row mx-0">
+                                <mat-radio-group formControlName="workspaceOption" aria-label="Select an option"
+                                    (change)="groupRadioChange($event)">
+                                    <mat-radio-button class="mr-3" value="1">You can pick 2
+                                        workspace
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="mr-3" color="accent" (click)="workspacePrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="nextWorkflow()"
+                                    [disabled]="disableWorkspaceButton === false" id="btnsave" i18n="Save">Next</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="form.get('workspaceOption').value==='1'">
+                    <div class="col-md-11 col-sm-11">
+                        <mat-card class="w-100 ">
+                            <h2 i18n="Selected Workspaces">Selected Workspaces</h2>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedWorkspace?.length !== 0">
+                                <div class="col-md-11 col-sm-11 justify-content-center">
+                                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                        <mat-chip-list #chipList aria-label="Fruit selection">
+                                            <mat-chip *ngFor="let workspace of selectedWorkspace; let i=index"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="removeWorkspace(workspace)">
+                                                {{workspace?.workspaceName}}
+                                                <mat-icon matChipRemove
+                                                    *ngIf="removable && workspace?.workspaceName!=='Default Workspace'">
+                                                    cancel</mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedWorkspace?.length === 0">
+                                <span> <b i18n="No Selected Teams">No Selected Workspace</b></span>
+                            </div>
+                        </mat-card>
+                        <mat-card class="w-100 mt-1">
+                            <h2><b i18n="Available Teams">Available Workspace</b></h2>
+                            <div class="row w-100 mx-0 ">
+                                <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                    <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                        formControlName="searchWorkspace">
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 ">
+                                <ng-container *ngFor="let workspace of myWorkspaceArray; let i=index">
+                                    <div class="col-md-4 col-sm-12 px-2" *ngIf="workspace.filter">
+                                        <mat-card class=" inner_card_user" (click)="addWorkspace(workspace)"
+                                            appMaterialElevation>
+                                            <div class="row w-100 mx-0">
+                                                <div class="col-md-2 align-self-center">
+                                                    <p class="user_letter" [style.background]="workspace.color">
+                                                        {{setWorkspaceProfilename(workspace)}}</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-0 text-uppercase font-weight-bold">
+                                                        {{workspace?.workspaceName}}
+                                                    </h5>
+
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </ng-container>
+
+
+            <ng-container *ngIf="myWorkspaceArrayCount<2">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2>Free plan allows only 2 Workspace112</h2>
+                            <p><b>Your account have within 3 Workspace, you can skip to Workflow</b></p>
+                            <div class="row mx-0 justify-content-end">
+                                <button mat-raised-button class="mr-3" color="accent" (click)="workspacePrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="nextWorkflow()"
+                                    id="btnsave" i18n="Skip">Skip</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="cardType === 'workflow'">
+            <ng-container *ngIf="myWorkflowArrayCount>2">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2>Free plan allows only 2 workflows</h2>
+                            <div class="row mx-0">
+                                <mat-radio-group formControlName="workflowOption" aria-label="Select an option"
+                                    (change)="workflowRadioChange($event)">
+                                    <mat-radio-button class="mr-3" value="1">You can pick 2
+                                        workflows
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="mr-3" color="accent" (click)="workflowPrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="nextTaskboard()"
+                                    [disabled]="disableWorkflowButton === false" id="btnsave" i18n="Save">Next</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="form.get('workflowOption').value==='1'">
+
+                    <div class="col-md-11 col-sm-11">
+                        <mat-card class="main_card_user px-0">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    <h3 class="pl-3"><b i18n="Selected Workflows">Selected Workflows</b></h3>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedWorkflow?.length !== 0">
+                                <div class="col-md-11 col-sm-11 justify-content-center">
+                                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                        <mat-chip-list #chipList aria-label="Fruit selection">
+                                            <mat-chip *ngFor="let workflow of selectedWorkflow; let i=index"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="removeWorkflow(workflow)">
+                                                {{workflow?.processDefinitionName}}
+                                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedWorkflow?.length === 0">
+                                <span> <b i18n="No Selected Teams">No Selected Workflow</b></span>
+                            </div>
+                        </mat-card>
+                        <mat-card class="w-100 mt-1">
+                            <h3 class="pl-3"><b i18n="Available Teams">Available Workflows</b></h3>
+                            <div class="row w-100 mx-0 ">
+                                <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                    <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                        formControlName="searchWorkflow">
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 ">
+                                <ng-container *ngFor="let workflow of myWorkflowArray; let i=index">
+                                    <div class="col-md-4 col-sm-12 px-2" *ngIf="workflow.filter">
+                                        <mat-card class=" inner_card_user" (click)="addWorkflow(workflow)"
+                                            appMaterialElevation>
+                                            <div class="row w-100 mx-0">
+                                                <div class="col-md-2 align-self-center">
+                                                    <p class="user_letter">
+                                                        {{setWorkflowProfilename(workflow)}}</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-0 text-uppercase font-weight-bold">
+                                                        {{workflow?.processDefinitionName}}</h5>
+
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </div>
+
+                </div>
+            </ng-container>
+            <ng-container *ngIf="myWorkflowArrayCount<3">
+                <h3 class="pl-3"><b>Free plan allows only 2 workflow</b></h3>
+                <div class="pl-3" fxLayout="row" fxLayoutGap="10px">
+                    <p><b>Your account have only 2 workflows, you can skip to taskboard</b></p>
+
+                    <div class="next-button">
+                        <button mat-raised-button class="mr-3" color="accent" (click)="workflowPrevious()" id="btnsave"
+                            i18n="Save">Previous</button>
+                    </div>
+
+                    <div class="next-button">
+                        <button mat-raised-button class="mr-3" color="primary" (click)="nextTaskboard()" id="btnsave"
+                            i18n="Skip">Skip</button>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="cardType === 'taskboard'">
+            <ng-container *ngIf="myTaskboardArrayCount>2">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2>Free plan allows only 2 taskboard</h2>
+                            <div class="row mx-0">
+                                <mat-radio-group formControlName="taskboardOption" aria-label="Select an option"
+                                    (change)="taskboardRadioChange($event)">
+                                    <mat-radio-button class="mr-3" value="1">You can pick 2
+                                        taskboards
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="mr-3" color="accent" (click)="taskboardPrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="nextDocument()"
+                                    [disabled]="disableTaskboardButton === false" id="btnsave" i18n="Next">Next</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="form.get('taskboardOption').value==='1'">
+
+                    <div class="col-md-11 col-sm-11">
+                        <mat-card class="main_card_user px-0">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    <h3 class="pl-3"><b i18n="Selected Taskboards">Selected Taskboards</b></h3>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedTaskboard?.length !== 0">
+                                <div class="col-md-11 col-sm-11 justify-content-center">
+                                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                        <mat-chip-list #chipList aria-label="Fruit selection">
+                                            <mat-chip *ngFor="let taskboard of selectedTaskboard; let i=index"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="removeTaskboard(taskboard)">
+                                                {{taskboard?.name}}
+                                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedTaskboard?.length === 0">
+                                <span> <b i18n="No Selected Teams">No Selected Taskboard</b></span>
+                            </div>
+                        </mat-card>
+                        <mat-card class="w-100 mt-1">
+                            <h3 class="pl-3"><b i18n="Available Teams">Available Taskboards</b></h3>
+                            <div class="row w-100 mx-0 ">
+                                <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                    <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                        formControlName="searchTaskboard">
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 ">
+                                <ng-container *ngFor="let taskboard of myTaskboardArray; let i=index">
+                                    <div class="col-md-4 col-sm-12 px-2" *ngIf="taskboard.filter">
+                                        <mat-card class=" inner_card_user" (click)="addTaskboard(taskboard)"
+                                            appMaterialElevation>
+                                            <div class="row w-100 mx-0">
+                                                <div class="col-md-2 align-self-center">
+                                                    <p class="user_letter">
+                                                        {{setTaskboardProfilename(taskboard)}}</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-0 text-uppercase font-weight-bold">
+                                                        {{taskboard?.name}}</h5>
+
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </div>
+
+                </div>
+            </ng-container>
+            <ng-container *ngIf="myTaskboardArrayCount<3">
+                <h3 class="pl-3"><b>Free plan allows only 2 taskboards</b></h3>
+                <div class="pl-3" fxLayout="row" fxLayoutGap="10px">
+                    <p><b>Your account have only 2 taskboards, you can downgrade now</b></p>
+
+                    <div class="next-button">
+                        <button mat-raised-button class="mr-3" color="accent" (click)="taskboardPrevious()" id="btnsave"
+                            i18n="Save">Previous</button>
+                    </div>
+
+                    <div class="next-button">
+                        <button mat-raised-button class="mr-3" color="primary" (click)="nextDocument()" id="btnsave"
+                            i18n="Skip">Skip</button>
+                    </div>
+
+
+                </div>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="cardType === 'document'">
+            <ng-container *ngIf="myDocumentsArrayCount>5">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2>Free plan allows only 5 documents</h2>
+                            <div class="row mx-0">
+                                <mat-radio-group formControlName="documentOption" aria-label="Select an option"
+                                    (change)="documentRadioChange($event)">
+                                    <mat-radio-button class="mr-3" value="1">You can pick 5
+                                        documents
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                                <button mat-raised-button class="mr-3" color="accent" (click)="documentPrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="downgradeToFreePlan()"
+                                    [disabled]="disableDocumentsButton === false" id="btnsave"
+                                    i18n="Downgrade Free Plan">Downgrade Free Plan</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+
+                <div class="row w-100 mx-0 justify-content-center" *ngIf="form.get('documentOption').value==='1'">
+
+                    <div class="col-md-11 col-sm-11">
+                        <mat-card class="main_card_user px-0">
+                            <div class="row w-100">
+                                <div class="col-md-8">
+                                    <h3 class="pl-3"><b i18n="Selected Documents">Selected Documents</b></h3>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedDocuments?.length !== 0">
+                                <div class="col-md-11 col-sm-11 justify-content-center">
+                                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                        <mat-chip-list #chipList aria-label="Fruit selection">
+                                            <mat-chip *ngFor="let documents of selectedDocuments; let i=index"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="removeDocument(documents)">
+                                                {{documents?.documentName}}
+                                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0 justify-content-center" *ngIf="selectedDocuments?.length === 0">
+                                <span> <b i18n="No Selected Documents">No Selected Documents</b></span>
+                            </div>
+                        </mat-card>
+                        <mat-card class="w-100 mt-1">
+                            <h3 class="pl-3"><b i18n="Available Documents">Available Documents</b></h3>
+                            <div class="row w-100 mx-0 ">
+                                <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                                    <input matInput placeholder="Search..." i18n-placeholder="Search..."
+                                        formControlName="searchDocument">
+                                </mat-form-field>
+                            </div>
+                            <div class="row w-100 mx-0 ">
+                                <ng-container *ngFor="let documents of myDocumentsArray; let i=index">
+                                    <div class="col-md-4 col-sm-12 px-2" *ngIf="documents.filter">
+                                        <mat-card class=" inner_card_user" (click)="addDocument(documents)"
+                                            appMaterialElevation>
+                                            <div class="row w-100 mx-0">
+                                                <div class="col-md-2 align-self-center">
+                                                    <p class="user_letter">
+                                                        {{setDocumentProfilename(documents)}}</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 class="mb-0 text-uppercase font-weight-bold">
+                                                        {{documents?.documentName}}</h5>
+
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="myDocumentsArrayCount<6">
+                <div class="row justify-content-center mx-0 mb-3">
+                    <div class="col-md-11">
+                        <mat-card class="w-100 mt-1">
+                            <h2>Free plan allows only 5 documents</h2>
+                            <p>Your account have within 5 documents, you can downgrade now</p>
+                            <div class="row ma-0">
+                                <button mat-raised-button class="mr-3" color="accent" (click)="documentPrevious()"
+                                    id="btnsave" i18n="Save">Previous</button>
+                                <button mat-raised-button class="mr-3" color="primary" (click)="downgradeToFreePlan()"
+                                    id="btnsave" i18n="Downgrade Free Plan">Downgrade Free Plan</button>
+                            </div>
+                        </mat-card>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </form>
+</ng-container>

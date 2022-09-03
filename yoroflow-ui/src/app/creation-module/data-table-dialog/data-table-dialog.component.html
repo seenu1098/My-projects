@@ -1,0 +1,154 @@
+<form #userForm="ngForm" [formGroup]="form">
+    <ng-container *ngIf="data.status === 'column'">
+        <div class="row mx-0">
+            <div class="col-md-10 pl-0">
+                <h2 i18n="Data Table Column" class="fs_14 mb-0">Data Table Column</h2>
+            </div>
+            <div class="col-md-2">
+                <mat-icon style="cursor: pointer;" (click)="cancel()" class="float-right">close</mat-icon>
+            </div>
+        </div>
+        <hr class="mt-0">
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label i18n="Column Name">Column Name</mat-label>
+                <input [id]="'columnName'" formControlName="columnName" (keypress)="omit_number($event)"
+                    (focusout)="setcolumnNameIdentifier()" matInput type="text">
+                <mat-error [id]="'columnNameError'" *ngIf="form.get('columnName').errors?.required"
+                    i18n="Column Name is required">
+                    Column Name is required
+                </mat-error>
+                <mat-error [id]="'uniqueColumnNameError'" *ngIf="form.get('columnName').errors?.unique"
+                    i18n="Give Unique Column Name">
+                    Give Unique Column Name
+                </mat-error>
+                <mat-error [id]="'internalColumnError'" *ngIf="form.get('columnName').errors?.internalColumn"
+                    i18n="Given Column Name will be generated internally">
+                    Given Column Name will be generated internally
+                </mat-error>
+            </mat-form-field>
+            <!-- <div style="width: 250px">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label i18n="Column Identifier *">Column Identifier *</mat-label>
+                <input id="columnIdentifier" formControlName="columnIdentifier" matInput type="text">
+                <mat-error [id]="'columnIdentifierError'" *ngIf="form.get('columnIdentifier').errors?.required"
+                    i18n="Column Identifier is required">
+                    Column Identifier is required
+                </mat-error>
+            </mat-form-field>
+        </div> -->
+            <!-- <div style="width: 120px">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label i18n="Data Type">Data Type</mat-label>
+                    <mat-select [disabled]="data.type === 'edit'" [id]="'dataType'" formControlName="dataType">
+                        <mat-option value="uuid" [id]="'uuid'" *ngIf="data?.data?.type==='uuid'">UUID</mat-option>
+                        <mat-option value="string" [id]="'string'" *ngIf="data?.data?.type==='string'">String
+                        </mat-option>
+                        <mat-option value="float" [id]="'float'"
+                            *ngIf="data?.data?.type==='long' || data?.data?.type==='float'">Float</mat-option>
+                        <mat-option value="long" [id]="'long'" *ngIf="data?.data?.type==='long'">Long</mat-option>
+                        <mat-option value="date" [id]="'date'" *ngIf="data?.data?.type==='date'">Date</mat-option>
+                        <mat-option value="timestamp" [id]="'timestamp'" *ngIf="data?.data?.type==='timestamp'">
+                            TimeStamp
+                        </mat-option>
+                    </mat-select>
+                    <mat-error [id]="'dataTypeError'" *ngIf="form.get('dataType').errors?.required"
+                        i18n="Data Type is required">
+                        Data Type is required
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+            <div *ngIf="form.get('dataType').value === 'string'
+            || form.get('dataType').value === ''" style="width: 25%;">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label i18n="Size *">Size *</mat-label>
+                    <input matInput [id]="'fieldSize'" formControlName="fieldSize"
+                        oninput="this.value = Math.abs(this.value)" type="number">
+                    <mat-error [id]="'fieldSizeError'" *ngIf="form.get('fieldSize').errors?.required"
+                        i18n="Size is required">
+                        Size is required
+                    </mat-error>
+                    <mat-error [id]="'fieldSizeError'" *ngIf="form.get('fieldSize').errors?.min" i18n="Minimum size
+                    can be 1">Minimum size
+                        can be 1</mat-error>
+                    <mat-error [id]="'fieldSizeError'" *ngIf="form.get('fieldSize').errors?.max" i18n="Maximum size
+                    can be 10000">Maximum size
+                        can be 10000</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row mx-0 mt-2 pl-2">
+            <div class="mat-slide-toggle-content" class="mr-2"
+                *ngIf="form.get('dataType').value === 'float' || form.get('dataType').value === 'long'">
+                <mat-slide-toggle id="'decimal'" (change)="changeDataType($event)" formControlName="isDecimal"
+                    i18n="Has decimal">
+                    Has decimal</mat-slide-toggle>
+            </div>
+            <div class="mat-slide-toggle-content" class="mr-2">
+                <mat-slide-toggle id="'unique'" formControlName="isUnique" i18n="Unique">Unique
+                </mat-slide-toggle>
+            </div>
+            <div class="mat-slide-toggle-content">
+                <mat-slide-toggle id="'required'" formControlName="isRequired" i18n="Required">
+                    Required</mat-slide-toggle>
+            </div>
+        </div>
+        <div class="row mx-0 justify-content-end mt-3">
+            <button mat-raised-button color="primary" id="btnsave" (click)="save(userForm)" i18n="Save"
+                [disabled]="userForm.invalid" type="button">Save</button>
+            <!-- <button mat-raised-button color="accent" type="reset" (click)="reset(userForm)" id="btnreset"
+                    i18n="Reset">Reset</button> -->
+        </div>
+    </ng-container>
+    <ng-container *ngIf="data.status === 'table'">
+        <div class="row mx-0">
+            <div class="col-md-4 pl-0">
+                <h2 i18n="Data Table" class="fs_14 mb-0">Data Table</h2>
+            </div>
+            <div class="col-md-8 justify-content-end">
+                <mat-icon style="cursor: pointer;" (click)="cancel()" class="float-right">close</mat-icon>
+            </div>
+        </div>
+        <hr class="mt-0">
+        <div class="row mx-0">
+            <div class="col-md-7">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label i18n="Data Table Name *">Data Table Name *</mat-label>
+                    <input id="tableName" formControlName="tableName" (keypress)="omit_number($event)"
+                        (focusout)="setTableIdentifier()" matInput type="text">
+                    <mat-error id="tableNameError" *ngIf="form.get('tableName').errors?.required"
+                        i18n="Data Table Name is required">
+                        Data Table Name is required
+                    </mat-error>
+                    <mat-error id="tableNameError" *ngIf="form.get('tableName').errors?.alreadyExist"
+                        i18n="Data Table Name is already exist">
+                        Data Table Name is already exist
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md-5 px-0">
+                <mat-slide-toggle id="publicTable" formControlName="publicTable" (change)="openDialog($event)"
+                    color="accent" i18n="is it a public data table?">
+                    Is it a public data table?
+                </mat-slide-toggle>
+            </div>
+        </div>
+        <div class="row mx-0">
+            <div class="col-md-12">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label i18n="Data Table Description">Data Table Description</mat-label>
+                    <textarea id="tableName" formControlName="tableDescription" matInput rows="3" type="text">
+                </textarea>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row mx-0 justify-content-end">
+            <button mat-raised-button color="primary" id="btnsave" type="button" (click)="saveTable(userForm)"
+                i18n="Save" [disabled]="userForm.invalid" class="mr-3">Save</button>
+            <!-- <button mat-raised-button color="accent" type="button" (click)="cancel()" id="btnreset"
+                    i18n="Reset">Cancel</button> -->
+            <button mat-raised-button color="accent" type="button" class="mr-2" (click)="reset(userForm)" id="btnreset"
+                i18n="Reset">Reset</button>
+        </div>
+    </ng-container>
+</form>

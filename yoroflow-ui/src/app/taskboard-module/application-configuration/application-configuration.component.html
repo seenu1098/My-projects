@@ -1,0 +1,72 @@
+<div fxLayout="row" class="border-style" fxLayoutAlign="space-between center">
+    <h2>Configuration</h2>
+    <mat-icon (click)="close()" class="close-icon-css">close</mat-icon>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" style="margin-top:10px;" fxLayoutGap="10px">
+        <span>Authentication Type :</span>
+        <mat-checkbox [checked]="isApi" [disabled]="isApi" (change)="authtypeChange('api')">
+            <span [style.color]="isApi?'#00bc00':'red'">API</span>
+        </mat-checkbox>
+        <mat-checkbox [checked]="isClient" [disabled]="isClient" (change)="authtypeChange('client')">
+            <span [style.color]="isClient?'#00bc00':'red'">Client</span>
+        </mat-checkbox>
+        <mat-checkbox [checked]="isToken" [disabled]="isToken" (change)="authtypeChange('token')">
+            <span [style.color]="isToken?'#00bc00':'red'">Token</span>
+        </mat-checkbox>
+    </div>
+    <div fxLayout="row" style="margin-top:10px;" *ngIf="authType==='token'">
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Authorization token</mat-label>
+            <textarea matInput formControlName="authToken" rows=3 cols=3></textarea>
+            <mat-error *ngIf="form.get('authToken').errors?.required">Authorization token is required</mat-error>
+            <mat-error *ngIf="form.get('authToken').errors?.invalidToken">Authorization token is invalid</mat-error>
+        </mat-form-field>
+    </div>
+    <ng-container *ngIf="authType==='client'">
+        <div fxLayout="row" style="margin-top:10px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Client id</mat-label>
+                <input matInput formControlName="clientId">
+                <mat-error>Client id is required</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" style="margin-top:10px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Client secret</mat-label>
+                <textarea matInput formControlName="clientSecret" rows=3 cols=3></textarea>
+                <mat-error *ngIf="form.get('clientSecret').errors?.required">Client secret is required</mat-error>
+                <mat-error *ngIf="form.get('clientSecret').errors?.invalidClient">Client secret is invalid</mat-error>
+            </mat-form-field>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="authType==='api'">
+        <div fxLayout="row" style="margin-top:10px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>API key</mat-label>
+                <input matInput formControlName="apiKey">
+                <mat-error>API key is required</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" style="margin-top:10px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>API secret</mat-label>
+                <textarea matInput formControlName="apiSecret" rows=3 cols=3></textarea>
+                <mat-error *ngIf="form.get('apiSecret').errors?.required">API secret is required</mat-error>
+                <mat-error *ngIf="form.get('apiSecret').errors?.invalidApi">API secret is invalid</mat-error>
+            </mat-form-field>
+        </div>
+    </ng-container>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px">
+        <button *ngIf="data.type==='org' && data.edit===false" mat-raised-button color="primary"
+            (click)="saveWithoutToken()">Skip and
+            go</button>
+        <button mat-raised-button color="primary" (click)="saveConfiguration(userForm)" [disabled]="!form.dirty">
+            <span *ngIf="data.edit===false">Save
+                Configuration</span>
+            <span *ngIf="data.edit===true">Update
+                Configuration</span>
+        </button>
+        <button mat-raised-button color="accent" (click)="close()">Cancel</button>
+    </div>
+</form>

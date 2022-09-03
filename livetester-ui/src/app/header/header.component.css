@@ -1,0 +1,19 @@
+.header {
+    padding: 5px;
+    padding-left: 7px;
+    background: #0077ffee;
+    color: #fff;
+    margin: 0%;
+  }
+  .menuAlign {
+    direction: ltr;
+    display: flex;
+    justify-content: end-end;
+  }
+  mat-form-field {
+    width: 60%;
+  }
+
+  ::ng-deep .cdk-overlay-pane {
+    min-width:5%;
+}

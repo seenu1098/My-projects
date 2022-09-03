@@ -1,0 +1,16 @@
+.comment {
+    background-color: #5c44ea;
+    line-height: 20px;
+    padding: 5px;
+    span {
+        font-size: 10px;
+    }
+}
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+    height: 0px !important;
+    border: none;
+    outline: none;
+}
+textarea:focus {
+    border: none;
+}

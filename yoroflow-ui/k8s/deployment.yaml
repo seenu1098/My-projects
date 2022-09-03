@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yoroflow-ui-deployment
+spec: 
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: yoroflow-ui
+  template: 
+    metadata:
+      labels:
+        app: yoroflow-ui
+        tier: backend
+    spec:
+      containers:
+      - name: yoroflow-ui
+        image: yorosis/yoroflow-ui:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits: 
+            cpu: 500m
+            memory: 256Mi
+          requests: 
+            cpu: 100m
+            memory: 128Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 20
+          timeoutSeconds: 1
+          periodSeconds: 15
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 25
+          timeoutSeconds: 1
+          periodSeconds: 15
+          failureThreshold: 3
+        
+      imagePullSecrets:
+      - name: hub-docker-secret

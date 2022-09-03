@@ -1,0 +1,7 @@
+<mat-dialog-content>
+  Are you sure want to delete this {{data.displayText}}?
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" id="confirmDelete" (click)="delete()">Delete</button>
+  <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">Cancel</button>
+</mat-dialog-actions>

@@ -1,0 +1,164 @@
+<ng-container *ngIf="data?.type=== 'signature' && data?.type !== 'deactivate' && data?.type !== 'subscription'
+&& data?.type !== 'pay-user'
+&& data?.type !== 'downgrade-plan'">
+  <mat-dialog-content> {{'Are you sure want to delete the signature' | translate}} ({{data?.name}})?
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="delete()">
+      {{'Delete' | translate}}
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">
+      {{'Cancel' | translate}}
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data?.type === 'deactivate'">
+  <mat-dialog-content> {{'Are you sure want to deactivate your account?' | translate}} </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="deactivate()">
+      {{'Delete' | translate}}
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">
+      {{'Cancel' | translate}}
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data?.type === 'subscription'">
+  <mat-dialog-content> {{'Are you sure want to subscribe this free plan?' | translate}} </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="subscribe()">
+      {{'Subscribe' | translate}}
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()">
+      {{'Cancel' | translate}}
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.data==='dragConfirm'">
+  <mat-dialog-content *ngIf="data.update===true">
+    {{'This task is already completed, so start and end date cant be changed.' | translate}} </mat-dialog-content>
+  <mat-dialog-content *ngIf="data.update===false"> {{'You have no permission to update this task' | translate}}
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="onNoClick()">
+      {{'Ok' | translate}}
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='confirmation'">
+  <mat-dialog-content> {{'Changes you made may not be saved' | translate}}</mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="leave()">{{'Leave' | translate}}
+    </button>
+    <button mat-raised-button color="accent" id="btnYes" (click)="onNoClick()">
+      {{'Stay' | translate}}
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data?.type === 'pay-user' && showAdditionalUsers===true">
+  <mat-dialog-content> {{'Are you sure want to add users to this existing plan?' | translate}} </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="btnYes" (click)="confirm()">
+      {{'Yes,confirm' | translate}}
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="cancelUser()">
+      {{'Cancel' | translate}}
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+<div id="subscription" *ngIf="data?.type === 'pay-user' && showAdditionalUsers===false"
+  style="width: 100%;margin-top: 2%;">
+  <form #userForm="ngForm" [formGroup]="form">
+    <div fxLayout="row">
+      <mat-label i18n="Number of users">Amount per user:
+        <span style="font-weight: bold;"
+          *ngIf="data.subscriptionDetails.billingType === 'monthly'">${{orgDetailsVo.amountPerUserMonthly}}</span>
+        <span style="font-weight: bold;"
+          *ngIf="data.subscriptionDetails.billingType === 'yearly'">${{orgDetailsVo.amountPerUserYearly}}</span>
+      </mat-label>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="80px" style="margin-top:3%">
+
+      <mat-form-field class="outline-class" appearance="outline">
+        <mat-label i18n="Number of users">{{'Number of users' | translate}}</mat-label>
+        <input type="number" formControlName="numberOfUsers" matInput placeholder="{{'Number of users' | translate}}">
+      </mat-form-field>
+      <div class="paid-css">
+        <span>{{'Total amount to be paid:' | translate}} <span style="font-weight: bold;">$
+            {{totalAmount}}</span></span>
+      </div>
+    </div>
+    <mat-dialog-actions align="end">
+      <button [disabled]="totalAmount===0" (click)="addUsers()" class="btn-success clear_filter"
+        mat-raised-button>{{'Pay' | translate}}</button>
+      <button (click)="cancelUser()" color="accent" class=" clear_filter" mat-raised-button>{{'Cancel' |
+        translate}}</button>
+    </mat-dialog-actions>
+  </form>
+</div>
+<ng-container *ngIf="data?.type === 'downgrade-plan'">
+  <form #userForm="ngForm" [formGroup]="form">
+    <mat-dialog-content>
+      {{'Your chosen plan will be start from this date' | translate}} ({{data?.date | date:'MMMM d, y'}}),
+      {{'are you sure want to downgrade from current plan?' | translate}}
+      <div class="card-body">
+        <div class="row w-100 mx-0">
+          <p>{{'If you do, you will lose the following features' | translate}}</p>
+        </div>
+
+        <div class="row w-100 mx-0">
+          <mat-icon *ngIf="data?.planType !== 'PRO'" class="text-dark mr-2">fiber_manual_record
+          </mat-icon>
+          <mat-icon *ngIf="data?.planType === 'PRO'" class="text-dark mr-2">
+            fiber_manual_record
+          </mat-icon>
+          <p *ngIf="data?.planType === 'STARTER'">
+            <span>4
+              {{'Workflows' | translate}}</span>
+          </p>
+          <p *ngIf="data?.planType === 'BUSINESS PACK'"> <span>15
+              {{'Workflows' | translate}}</span> </p>
+          <p *ngIf="data?.planType === 'STANDARD'"> <span>30
+              {{'Workflows' | translate}}</span> </p>
+          <p *ngIf="data?.planType === 'PRO'">
+            <span> {{'Unlimited workflows' | translate}}
+            </span>
+          </p>
+        </div>
+        <div class="row w-100 mx-0">
+          <mat-icon *ngIf="data?.planType !== 'PRO'" class="text-dark mr-2">fiber_manual_record
+          </mat-icon>
+          <mat-icon *ngIf="data?.planType === 'PRO'" class="text-dark mr-2">
+            fiber_manual_record
+          </mat-icon>
+          <p> <span *ngIf="data?.planType === 'STARTER'">5
+              {{'Taskboards' | translate}}</span> </p>
+          <p> <span *ngIf="data?.planType === 'BUSINESS PACK'">20
+              {{'Taskboards' | translate}}</span> </p>
+          <p> <span *ngIf="data?.planType === 'STANDARD'">50
+              {{'Taskboards' | translate}}</span> </p>
+          <p> <span *ngIf="data?.planType === 'PRO'">
+              {{'Unlimited Taskboards' | translate}}
+            </span> </p>
+        </div>
+        <div class="row w-100 mx-0">
+          <mat-icon class="text-dark mr-2">fiber_manual_record</mat-icon>
+          <p> <a class="plan_link" style="cursor: pointer;" (click)="explore()">{{'and more advanced tools' |
+              translate}}</a></p>
+        </div>
+      </div>
+      <mat-checkbox formControlName="downgrade" (change)="showOptions($event)">
+        {{'Yes, I want to downgrade from current plan' | translate}}</mat-checkbox>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button [disabled]="form.get('downgrade').value===false" mat-raised-button color="primary" id="btnYes"
+        (click)="downgrade()">
+        {{'confirm' | translate}}
+      </button>
+      <button mat-raised-button color="accent" id="cancel" (click)="cancelDowngrade()">
+        {{'Cancel' | translate}}
+      </button>
+    </mat-dialog-actions>
+  </form>
+</ng-container>

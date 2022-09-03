@@ -1,0 +1,63 @@
+.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 15px;
+    color: #fff;
+    line-height: 50px;
+    text-align: center;
+    background: #c2c2a3;
+  }
+
+  .send-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #fff;
+    line-height: 35px;
+    text-align: center;
+    background: #48b0f7;
+  }
+  .active-user-container{
+    border: 2px solid white;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  .scrollbar-css::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-css::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #909499; }
+
+  .user-chat-list-container{
+height: 485px;
+width: 500px;
+overflow-y: auto;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.button-css{
+  line-height: 26px;
+  padding: 0px 4px;
+  color: white;
+  background-color: #48b0f7;
+}
+
+.chat-prof-pic{
+  height: 50px;
+  width: 50px;
+  background-size: cover;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+

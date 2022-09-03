@@ -1,0 +1,130 @@
+<mat-tab-group #tab (selectedTabChange)="record()" *ngIf="show">
+    <mat-tab label="Marketplace Management" *ngIf="yoroAdmin">
+        <mat-card style="background-color: #e9e9e9;overflow-y: scroll;" [style.height]="height">
+            <div fxLayout="row" fxLayoutAlign="end">
+                <!-- <button mat-button color="primary" class="light-button" (click)="addNewWorkflow()">Add New Marketplace
+                    Application</button> -->
+                <mat-button-toggle-group style="height: 40px;" class="light-button">
+                    <mat-button-toggle style="background-color: #e9e9e9;color:rgb(56, 149, 255);"
+                        class="split-button-1">
+                        Add New Marketplace Application
+                    </mat-button-toggle>
+                    <mat-button-toggle style="background-color: #e9e9e9;color:rgb(56, 149, 255);"
+                        class="split-button-1 drop-down-button" [matMenuTriggerFor]="dropdownMenuOne">
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+                <mat-menu #dropdownMenuOne="matMenu">
+                    <button color="primary" type="button" id="uploadWorkflow" style="height: 40px;padding: 3px 21px;"
+                        mat-menu-item (click)="addNewWorkflow('uploadWorkflow')">Upload Workflow</button>
+                    <button color="primary" type="button" id="selectWorkflow" mat-menu-item
+                        style="height: 40px;padding: 3px 21px;" (click)="addNewWorkflow('selectWorkflow')">Select
+                        Workflow</button>
+                </mat-menu>
+            </div>
+            <ng-container *ngFor="let workFlow of workflowList;let i=index">
+                <mat-card class="available-apps">
+                    <mat-card-header>
+                        <div mat-card-avatar class="header-image">
+                        </div>
+                        <mat-card-title>{{workFlow.processDefinitionName}}</mat-card-title>
+                        <mat-card-subtitle>Version: {{workFlow.workflowVersion}}</mat-card-subtitle>
+                        <mat-card-subtitle *ngIf="workFlow.status === 'published' || workFlow.status === 'old'">Status:
+                            Published
+                        </mat-card-subtitle>
+                        <mat-card-subtitle *ngIf="workFlow.status === 'draft'">Status: {{workFlow.status}}
+                        </mat-card-subtitle>
+                        <!-- <mat-card-subtitle>Published on: {{workFlow.updatedDate | date:'dd/MMM/yyyy hh:mm:ss a'}}
+                        </mat-card-subtitle> -->
+                    </mat-card-header>
+                    <mat-card-actions>
+                        <div fxLayout="column" fxLayoutGap="10px">
+                            <div fxLayout="row" fxLayoutAlign="end">
+                                <button mat-button color="primary" *ngIf="workFlow.install!=='Y'" class="light-button"
+                                    (click)="installApplication(workFlow)">Install</button>
+                                <button mat-button
+                                    *ngIf="workFlow.install==='' || workFlow.install===null || workFlow.install===undefined"
+                                    color="primary" class="disable-button" disabled='true'>In Review</button>
+                                <button mat-button
+                                    *ngIf="(workFlow.approve==='N' || workFlow.approve==='' || workFlow.approve===null || workFlow.approve===undefined) && workFlow.install==='Y'"
+                                    color="primary" class="light-button" (click)="approve(workFlow)">Approve</button>
+                                <button mat-button *ngIf="workFlow.approve==='Y'" color="primary" class="light-button"
+                                    (click)="disable(workFlow)">Disable</button>
+                            </div>
+                        </div>
+                    </mat-card-actions>
+                </mat-card>
+            </ng-container>
+        </mat-card>
+    </mat-tab>
+    <mat-tab label="Marketplace">
+        <mat-card style="background-color: #e9e9e9;" [style.height]="height">
+            <ng-container *ngFor="let workFlow of marketPlaceApps;let i=index">
+                <mat-card class="available-apps" *ngIf="workFlow.approve && workFlow.approve==='Y'">
+                    <mat-card-header>
+                        <div mat-card-avatar class="header-image">
+                        </div>
+                        <!-- <div style="width: 75%;"> -->
+                        <mat-card-title>{{workFlow.uploadWorkflows}}</mat-card-title>
+                        <mat-card-subtitle>Installed Counts: {{workFlow.noOfInstalledCounts}}</mat-card-subtitle>
+                        <mat-card-subtitle>Developer Name: {{workFlow.developerName}}</mat-card-subtitle>
+                        <mat-card-subtitle style="height:50px;overflow-y: scroll;">{{workFlow.description}}
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-actions>
+                        <div fxLayout="column" fxLayoutGap="10px">
+                            <div fxLayout="row" fxLayoutAlign="end">
+                                <button *ngIf="!workFlow.install" mat-button color="primary" class="light-button"
+                                    (click)="installApp(workFlow,i)">Install</button>
+                                <button *ngIf="workFlow.install" mat-button class="disable-button"
+                                    disabled='true'>Installed</button>
+                            </div>
+                        </div>
+                    </mat-card-actions>
+                </mat-card>
+            </ng-container>
+        </mat-card>
+    </mat-tab>
+    <mat-tab label="Installed Apps">
+        <mat-card>
+            <div fxLayout="row" style="background-color: rgb(226, 235, 235);height: 70px;">
+                <div fxLayout="column" fxFlex="25" style="padding-top:25px;padding-left:5px">
+                    <div style="font-weight: bold;">
+                        Workflow Name
+                    </div>
+                </div>
+                <div fxLayout="column" fxFlex="40" style="padding-top:25px">
+                    <div style="font-weight: bold;">
+                        Description
+                    </div>
+                </div>
+                <div fxLayout="column" fxFlex="12" style="padding-top:25px">
+                    <div style="font-weight: bold;">
+                        Application Status
+                    </div>
+                </div>
+            </div>
+            <div class="ng-container pn" *ngFor="let workFlow of installedApps">
+                <div style="margin-top:2px;" fxLayout="row">
+                    <div fxLayout="column" fxFlex="25" style="padding-top:20px;padding-left:5px;">
+                        <div>
+                            {{workFlow.processDefinitionName | uppercase}}
+                        </div>
+                    </div>
+                    <div fxLayout="column" fxFlex="40" style="padding-top:20px;">
+                        <div>
+                            {{workFlow.description}}
+                        </div>
+                    </div>
+                    <div fxLayout="column" fxFlex="12" style="padding-top:20px;">
+                        <div>
+                            <button mat-button color="primary" style="margin-top: -12px;"
+                                (click)="uninstall(workFlow)">Uninstall</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+
+    </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,43 @@
+.logo-qr{
+    width: 170px;
+    height: 120px;
+    position:relative;
+  }
+
+  .error{
+    color: #D8000C;
+  }
+
+ ::ng-deep .menu_size {
+   width: 200px !important;
+  }
+
+  .resendOtp-css {
+    margin: -20px 0px 0px 72%;
+    /* margin-bottom: 20px; */
+    height: 20px;
+    font-size: 12px;
+    line-height: 10px;
+    width: 100px;
+  }
+
+  .filter_option{
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1px solid #797878;
+    /* border-color: black; */
+    background-color: white;
+    color: #797878;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .hr_style {
+    width: 45%;
+    background: #e6e6e6fa;
+    height: 0.5px;
+    margin-top: 10px;
+    display: inline-block;
+  }

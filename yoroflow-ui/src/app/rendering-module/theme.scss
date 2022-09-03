@@ -1,0 +1,116 @@
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
+ 
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+ 
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue.
+// $candy-app-primary: mat.define-palette(mat.$blue-palette);
+// $candy-app-accent:  mat.define-palette(mat.$pink-palette, A200, A100, A400);
+ 
+// // The warn palette is optional (defaults to red).
+// $candy-app-warn:    mat.define-palette(mat.$red-palette);
+ 
+// // Create the theme object (a Sass map containing all of the palettes).
+// $candy-app-theme: mat.define-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+
+$candy-app-primary-dark: mat.define-palette(mat.$blue-palette);
+$candy-app-accent-dark:  mat.define-palette(mat.$pink-palette, A200, A100, A400);
+ 
+// The warn palette is optional (defaults to red).
+$candy-app-warn-dark:    mat.define-palette(mat.$red-palette);
+ 
+// Create the theme object (a Sass map containing all of the palettes).
+$candy-app-theme: mat.define-dark-theme($candy-app-primary-dark, $candy-app-accent-dark, $candy-app-warn-dark);
+ 
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($candy-app-theme);
+.yoro-theme{
+  @include mat.all-component-themes($candy-app-theme);
+  .mat-header-row {
+    // background-color: #0078ff;;
+    background-color: darkgrey;
+    color: white; 
+}
+
+.blue-snackbar {
+  background: #2196F3;
+}
+
+.dynamic-right-sheet-container{
+  position: absolute;
+  max-width: 600px;
+  max-height: 570px;
+  margin: 0;
+  right: 0%;
+  margin-top: 2%;
+  background-color: white;
+}
+
+.right-sheet-container{
+  position: absolute;
+  max-width: 1200px;
+    max-height: 580px;
+  margin: 0;
+  right: 0%;
+  margin-top: 2%;
+  background-color: white;
+}
+ 
+.header {
+background-color: #0078ff;;
+color: white;  
+}
+.scroll{
+  overflow-y: scroll;
+}
+}
+
+.w-100{
+  width: 100%!important;
+}
+.w-10{
+  width: 10%!important;
+}
+.w-80{
+  width: 80%!important;
+}
+.w-90{
+  width: 90%!important;
+}
+.w-45{
+  width: 45%!important;
+}
+.h-100px{
+  height: 100px!important;
+}
+
+/**************=Mat Form Field************/
+::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+  padding: 12px 5px 7px 5px !important;
+  border: 5px !important;
+}
+::ng-deep .mat-form-field-flex
+  > .mat-form-field-infix
+  .mat-form-field-appearance-outline
+  .mat-form-field-suffix {
+  top: 0.45em;
+} 
+ 
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+  margin-top: 4px;
+}
+ 
+::ng-deep .mat-form-field-hide-placeholder .mat-form-field-label-wrapper {
+  top: -17px;
+}
+ 
+::ng-deep .mat-select-arrow {
+  margin-top: 11px !important;
+}

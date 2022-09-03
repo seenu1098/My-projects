@@ -1,0 +1,5 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" >
+    <mat-card-title>Create Page</mat-card-title>
+    <mat-icon (click)="close()" id="close" style="font-size: 25px;cursor: pointer;">close</mat-icon>
+</div>
+<app-page [isApplicationLayout]="isFormApplication"  (emitPageId)="getPageId($event)"></app-page> 

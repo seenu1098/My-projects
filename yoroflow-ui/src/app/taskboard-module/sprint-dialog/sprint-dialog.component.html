@@ -1,0 +1,57 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h1 i18n="Sprint Settings">Sprint Settings</h1>
+    <mat-icon class="close-icon-css" matDialogClose id="close_sprint_dialog">close</mat-icon>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" class="w-100">
+        <div fxLayout="column" class="w-50 fs_12 mt-2">
+            <span i18n="Sprint Duration">Sprint Duration</span>
+            <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field appearance="outline" style="width: 100px;">
+                    <input matInput type="number" formControlName="sprintDuration" id="sprintDuration" min="1"
+                        oninput="this.value = Math.abs(this.value)">
+                    <mat-error class="error-css" i18n="Sprint duration is required"
+                        *ngIf="form.get('sprintDuration').errors?.required">Sprint duration is required
+                    </mat-error>
+                    <mat-error class="error-css" i18n="Sprint duration should minimum 1"
+                        *ngIf="form.get('sprintDuration').errors?.min">Sprint duration should minimum 1
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 100px;">
+                    <mat-select formControlName="sprintDurationType" id="sprintDurationType">
+                        <mat-option value="d" id="days">Day(s)</mat-option>
+                        <mat-option value="w" id="weeks">Week(s)</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxLayout="column" class="w-50 fs_12 mt-2 ml-3">
+            <span i18n="Sprint Start Day">Sprint Start Day</span>
+            <mat-form-field appearance="outline">
+                <mat-select formControlName="sprintStartDay" id="startDay">
+                    <ng-container *ngFor="let day of dayList; let i = index;">
+                        <mat-option [value]="day.toLowerCase()" [id]="'day_'+i">{{day}}</mat-option>
+                    </ng-container>
+                </mat-select>
+                <mat-error i18n="Sprint start day is required">Sprint start day is required</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div fxLayout="row" class="w-100">
+        <div fxLayout="column" class="w-50 fs_12 mt-2">
+            <span i18n="Sprint Estimations">Sprint Estimations</span>
+            <mat-form-field appearance="outline">
+                <mat-select formControlName="sprintEstimations" id="estimation">
+                    <mat-option value="sp-fib" id="fibonacci">Points(Fibonacci)</mat-option>
+                    <mat-option value="sp-free" id="free_flow">Points(Free Flow)</mat-option>
+                    <mat-option value="in-hours" id="hours">Time Estimates(In Hours)</mat-option>
+                </mat-select>
+                <mat-error i18n="Sprint estimations is required">Sprint estimations is required</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px" class="mt-2">
+        <button mat-raised-button color="primary" (click)="save()" id="save">Save</button>
+        <button mat-raised-button color="accent" matDialogClose id="cancel">Cancel</button>
+    </div>
+</form>

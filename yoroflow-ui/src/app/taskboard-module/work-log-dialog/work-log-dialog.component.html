@@ -1,0 +1,120 @@
+<form #userForm="ngForm" [formGroup]="workLogForm" (ngSubmit)="onSubmit(userForm)">
+    <!-- <div class="row w-100 mx-0">
+        <div class="col-md-6">
+            <h2 class="fs_14 font-weight-bold">Work Log Hours</h2>
+        </div>
+        <div class="col-md-6 justify-content-end text-right"><span matDialogClose class="text-right"><b>X</b></span>
+        </div>
+    </div> -->
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+        <h1 i18n="Work Log Hours">Work Log Hours</h1>
+        <mat-icon class="close-icon-css" matDialogClose id="close_sprint_dialog">close</mat-icon>
+    </div>
+    <!-- <hr class="mt-0"> -->
+    <!-- <div class="row w-100 mx-0">
+        <div class="col-md-4 pt-2">
+            <p class="text-dark font-weight-bold">Time Spent</p>
+        </div>
+        <div class="col-md-8 pl-2">
+            <div class="row w-100 mx-0">
+                <div class="col-md-6 px-0">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <input matInput type="number" formControlName="timespent" min="1"
+                            oninput="this.value = Math.abs(this.value)">
+                        <mat-error id="moduleNameError" i18n="Time Spent is required"
+                            *ngIf="workLogForm.get('timespent').errors?.required" class="error_msg">
+                            Time Spent is required
+                        </mat-error>
+                        <mat-error *ngIf="workLogForm.get('timespent').errors?.min" i18n="Minimum Time Spent can be 1"
+                            class="error_msg">
+                            Minimum Time Spent can be 1
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6 pt-2">
+                    <p>hours</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100 mx-0">
+        <div class="col-md-4 pt-2">
+            <p class="text-dark font-weight-bold">Work Date</p>
+        </div>
+        <div class="col-md-8 pl-2">
+            <div class="row w-100 mx-0">
+                <div class="col-md-12 px-0">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <input matInput [matDatepicker]="workDate" required formControlName="workDate">
+                        <mat-datepicker-toggle matSuffix [for]="workDate">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #workDate></mat-datepicker>
+                        <mat-error id="moduleNameError" i18n="Work Date is required" class="error_msg"
+                            *ngIf="workLogForm.get('workDate').errors?.required">
+                            Work Date is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div fxLayout="row" class="w-100">
+        <div fxLayout="column" class="w-50 fs_12 mt-2">
+            <span i18n="Time Spent">Time Spent</span>
+            <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field appearance="outline" style="width: 90px;">
+                    <input matInput type="number" formControlName="timespent" min="1"
+                        oninput="this.value = Math.abs(this.value)">
+                    <mat-error id="moduleNameError" i18n="Time Spent is required"
+                        *ngIf="workLogForm.get('timespent').errors?.required" class="error_msg">
+                        Time Spent is required
+                    </mat-error>
+                    <mat-error *ngIf="workLogForm.get('timespent').errors?.min" i18n="Minimum Time Spent can be 1"
+                        class="error_msg">
+                        Minimum Time Spent can be 1
+                    </mat-error>
+                </mat-form-field>
+                <div class="pt-2 pl-1">
+                    <p>hours</p>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="column" class="w-50 fs_12 mt-2 ml-3">
+            <span i18n="Work Date">Work Date</span>
+            <mat-form-field appearance="outline" class="w-100">
+                <input matInput [matDatepicker]="workDate" [min]="minDate" [max]="maxDate" required
+                    formControlName="workDate">
+                <mat-datepicker-toggle matSuffix [for]="workDate">
+                </mat-datepicker-toggle>
+                <mat-datepicker #workDate></mat-datepicker>
+                <mat-error id="moduleNameError" i18n="Work Date is required" class="error_msg"
+                    *ngIf="workLogForm.get('workDate').errors?.required">
+                    Work Date is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row w-100 mx-0 mt-2">
+        <!-- <div class="col-md-4 pt-2 pr-0">
+            <p class="text-dark font-weight-bold">Work comment</p>
+        </div>
+        <div class="col-md-8 pl-2">
+            <div class="row w-100 mx-0">
+                <div class="col-md-12 px-0">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <textarea matInput placeholder="Work comment" formControlName="description"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div> -->
+        <span i18n="Work comment">Work comment</span>
+        <mat-form-field appearance="outline" class="w-100">
+            <textarea matInput placeholder="Work comment" formControlName="description"></textarea>
+        </mat-form-field>
+    </div>
+    <!-- <hr class="mt-0"> -->
+    <div class="row w-100 mx-0 justify-content-end">
+        <button mat-raised-button color="primary" type="submit" i18n="Save">Save</button>
+        <button mat-raised-button color="accent" type="button" class="ml-3" i18n="Cancel" matDialogClose>Cancel</button>
+    </div>
+</form>

@@ -1,0 +1,5 @@
+<router-outlet *ngIf="!userService.loggedIn() || userService.getSubscriptionExpired() || isPublic === true"
+    class="mat-typography"></router-outlet>
+<app-application *ngIf="userService.loggedIn() && userService.getSubscriptionExpired() === false && isPublic === false"
+    class="mat-typography">
+</app-application>

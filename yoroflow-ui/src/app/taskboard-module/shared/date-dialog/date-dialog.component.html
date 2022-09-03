@@ -1,0 +1,6 @@
+<mat-calendar [selected]="selectedDate" (selectedChange)="onSelect($event)" (click)="$event.stopPropagation()">
+</mat-calendar>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" id="deleteYes" (click)="saveDate()" i18n="Save">Save</button>
+    <button mat-raised-button color="accent" id="deleteNo" (click)="onNoClick()" i18n="Close">Close</button>
+</mat-dialog-actions>

@@ -1,0 +1,82 @@
+<div *ngIf="control.errors && (control.touched || force)">
+    <div *ngIf="control.errors['required']">
+        <span *ngIf="required">{{ required }}</span>
+    </div>
+    <div *ngIf="control.errors['email']">
+        <span *ngIf="email">{{ email }}</span>
+        <span *ngIf="!email" i18n>This field must be an email</span>
+    </div>
+    <div *ngIf="control.errors['pattern']">
+        <span *ngIf="pattern">{{ pattern }}</span>
+        <span *ngIf="!pattern" i18n>This field does not match the required pattern</span>
+    </div>
+    <div *ngIf="control.errors['equalTo']">
+        <span *ngIf="equalTo">{{ equalTo }}</span>
+        <span *ngIf="!equalTo" i18n>This field must be the same</span>
+    </div>
+    <div *ngIf="control.errors['unique']">
+        <span *ngIf="unique">{{ unique }}</span>
+        <span *ngIf="!unique" i18n>This field must be unique</span>
+    </div>
+    <div *ngIf="control.errors['min']">
+        <span *ngIf="min">{{ min }}</span>
+        <span *ngIf="!min" i18n>This must be greater</span>
+    </div>
+    <div *ngIf="control.errors['max']">
+        <span *ngIf="max">{{ max }}</span>
+        <span *ngIf="!max" i18n>This must be lesser</span>
+    </div>
+    <div *ngIf="control.errors['minDate']">
+        <span *ngIf="minDate">{{ minDate }}</span>
+        <span *ngIf="!minDate" i18n>This date must be greater</span>
+    </div>
+    <div *ngIf="control.errors['maxDate']">
+        <span *ngIf="maxDate">{{ maxDate }}</span>
+        <span *ngIf="!maxDate" i18n>This date must be lesser</span>
+    </div>
+    <div *ngIf="control.errors['err_user_inactive']">
+        <span *ngIf="err_user_inactive">{{ err_user_inactive }}</span>
+        <span *ngIf="!err_user_inactive" i18n>No active user found</span>
+    </div>
+    <div *ngIf="control.errors['incorrect']">
+        <span *ngIf="incorrect">{{ incorrect }}</span>
+        <span *ngIf="!incorrect" i18n>This field is incorrect</span>
+    </div>
+    <div *ngIf="control.errors['dateRange']">
+        <span *ngIf="dateRange">{{ dateRange }}</span>
+        <span *ngIf="!dateRange" i18n>Invalid dates: End date cannot be before start date and cannot be in
+            future.</span>
+    </div>
+    <div *ngIf="control.errors['invalid_grant']">
+        <span *ngIf="invalidGrant">{{ invalidGrant }}</span>
+        <span *ngIf="!invalidGrant" i18n>The provided username and password combination does not exist.</span>
+    </div>
+    <div *ngIf="control.errors['banned']">
+        <span *ngIf="banned">{{ banned }}</span>
+        <span *ngIf="!banned" i18n>You are currently banned, please contact customer service.</span>
+    </div>
+    <div *ngIf="control.errors['locked']">
+        <span *ngIf="locked">{{ locked }}</span>
+        <span *ngIf="!locked" i18n>Your account is currently locked, please contact customer service.</span>
+    </div>
+    <div *ngIf="control.errors['inactive']">
+        <span *ngIf="inactive">{{ inactive }}</span>
+        <span *ngIf="!inactive" i18n>Your account has not yet been activated, please activate your account or contact
+            customer support.</span>
+    </div>
+    <div *ngIf="control.errors['logged_in']">
+        <span *ngIf="loggedIn">{{ loggedIn }}</span>
+        <span *ngIf="!loggedIn" i18n>You are already logged in on another session.</span>
+    </div>
+    <div *ngIf="control.errors['minlength']">
+        <span *ngIf="minlength">{{ minlength }}</span>
+        <span *ngIf="!minlength" i18n>Field has to contain more characters.</span>
+    </div>
+    <div *ngIf="control.errors['maxlength']">
+        <span *ngIf="maxlength">{{ maxlength }}</span>
+        <span *ngIf="!maxlength" i18n>Field has to contain less characters.</span>
+    </div>
+    <div>
+        <ng-content></ng-content>
+    </div>
+</div>

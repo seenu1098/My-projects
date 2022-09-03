@@ -1,0 +1,45 @@
+<form>
+    <mat-card>
+        <h3 style="font-weight: bold;">{{"Customize Workspace's Avatar" | translate}}</h3>
+        <div class="row">
+            <div class="col-md-1 px-2">
+                <div class="circle-class-workspace"
+                    [style.background]="list.workspaceAvatar ? list.workspaceAvatar :  'grey'">
+                    {{setUserProfilename(list?.workspaceName)}}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row w-100 mx-0">
+                    <div class="col-md-11">
+                        <div class="row w-100 mx-0">
+                            <div class="mt-2">
+                                <mat-icon (click)="changeAvatarColor('grey')">block</mat-icon>
+                            </div>
+                            <div class="circle-class-avatar" *ngFor="let color of avatarColors"
+                                [style.background]="color" (click)="changeAvatarColor(color)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <mat-card-actions>
+                    <!-- <div class="row w-100 mx-0"> -->
+                    <div style="text-align: right;">
+                        <button mat-raised-button color="primary" type="button" id="save" (click)="create()">{{'Save' |
+                            translate}}</button>
+                        <button mat-raised-button type="button" color="accent" i18n="Cancel" (click)="dialogClose()"
+                            id="close">{{'Close' | translate}}
+                        </button>
+                    </div>
+
+                </mat-card-actions>
+                <!-- </div> -->
+            </div>
+        </div>
+    </mat-card>
+
+</form>

@@ -1,0 +1,117 @@
+<form #userForm="ngForm" [formGroup]="importForm">
+
+    <mat-card>
+        <ng-container *ngIf="isFromTemplate===true">
+            <h2 class="text-uppercase mb-2 font-weight-bold">Create Workflow</h2>
+        </ng-container>
+        <ng-container *ngIf="isFromTemplate===false">
+            <h2 *ngIf="type==='import'" class="text-uppercase mb-2 font-weight-bold">Import Workflow</h2>
+            <h2 *ngIf="type==='copy'" class="text-uppercase mb-2 font-weight-bold">Copy Workflow</h2>
+        </ng-container>
+        <div class="row w-100 mt-2">
+            <mat-form-field appearance="outline" class="col-md-6 pr-2">
+                <input matInput type="text" placeholder="Old Workflow Name" formControlName="oldWorkflowName"
+                    id="oldWorkflowName">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col-md-6 pl-2">
+                <input matInput type="text" placeholder="New Workflow Name" formControlName="newWorkflowName"
+                    id="newWorkflowName" required>
+                <mat-error *ngIf="importForm.get('newWorkflowName').errors?.required">New Workflowname is required
+                </mat-error>
+                <mat-error *ngIf="importForm.get('newWorkflowName').errors?.sameName">New Workflowname is same as
+                    Old
+                    Workflow Name</mat-error>
+                <mat-error *ngIf="importForm.get('newWorkflowName').errors?.alreadyExist">New Workflowname
+                    already
+                    exists</mat-error>
+            </mat-form-field>
+        </div>
+    </mat-card>
+    <mat-card class="w-100 mt-2">
+        <ng-container *ngIf="isFromTemplate===true">
+            <h2 class="text-uppercase mb-2 font-weight-bold">Create Workflow Form</h2>
+        </ng-container>
+        <ng-container *ngIf="isFromTemplate===false">
+            <h2 *ngIf="type==='import'" class="text-uppercase font-weight-bold">Import Workflow Form</h2>
+            <h2 *ngIf="type==='copy'" class="text-uppercase font-weight-bold">Copy Workflow Form</h2>
+        </ng-container>
+        <div formArrayName="importFieldsArray" *ngFor="let importFields of getImportFieldsFormArray();let i = index;">
+            <div class="row w-100 justify-content-center" [formGroupName]="i">
+                <mat-form-field appearance="outline" class="col-md-3 pr-2">
+                    <input matInput type="text" [id]="'taskType_'+i" placeholder="Task type" formControlName="taskType">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-md-3 px-2">
+                    <input matInput type="text" [id]="'oldPageName_'+i" placeholder="Old Page Name"
+                        formControlName="oldPageName">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-md-3 px-2">
+                    <mat-label>Import as</mat-label>
+                    <mat-select [id]="'importType_'+i" formControlName="importType"
+                        (selectionChange)="selectChange($event,i)">
+                        <mat-option [id]="'asItIs_'+i" value="asItIs">As It Is</mat-option>
+                        <mat-option [id]="'copy_'+i" value="copy">Create New</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-md-3 px-2">
+                    <input matInput type="text" [id]="'newPageName_'+i" placeholder="New Page Name"
+                        formControlName="newPageName" (focusout)="checkPageName(i)">
+                    <mat-error
+                        *ngIf="importForm.get('importFieldsArray').get(''+i).get('newPageName').errors?.required">
+                        New
+                        Page Name is required</mat-error>
+                    <mat-error
+                        *ngIf="importForm.get('importFieldsArray').get(''+i).get('newPageName').errors?.alreadyExist">
+                        New
+                        Page Name is already exist</mat-error>
+                    <mat-error
+                        *ngIf="importForm.get('importFieldsArray').get(''+i).get('newPageName').errors?.sameName">
+                        New
+                        Page Name is same as Old Page Name</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-card>
+    <mat-card class="w-100 mt-2" *ngIf="tableShow">
+        <h2 *ngIf="type==='import'" class="text-uppercase font-weight-bold">Import Table Objects
+        </h2>
+        <h2 *ngIf="type==='copy'" class="text-uppercase font-weight-bold">Copy Table Objects
+        </h2>
+        <div formArrayName="tableObjectsArray" *ngFor="let tableObjects of getImportTablesFormArray();let i = index;">
+            <div fxLayout="row" fxLayoutGap="20px" [formGroupName]="i">
+                <mat-form-field appearance="outline" style="width:30%">
+                    <input matInput type="text" [id]="'oldTableName_'+i" placeholder="Old Table Name"
+                        formControlName="oldTableName">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width:30%">
+                    <mat-label>Import as</mat-label>
+                    <mat-select [id]="'importAs_'+i" formControlName="importType"
+                        (selectionChange)="selectChangeForTable($event,i)">
+                        <mat-option [id]="'asItIs1_'+i" value="asItIs">As It Is</mat-option>
+                        <mat-option [id]="'copy1_'+i" value="copy">Create New</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width:30%">
+                    <input matInput type="text" [id]="'newTableName_'+i" placeholder="New Table Name"
+                        formControlName="newTableName" (focusout)="checkTableName(i)">
+                    <mat-error
+                        *ngIf="importForm.get('tableObjectsArray').get(''+i).get('newTableName').errors?.required">
+                        New
+                        Table Name is required</mat-error>
+                    <mat-error
+                        *ngIf="importForm.get('tableObjectsArray').get(''+i).get('newTableName').errors?.alreadyExist">
+                        New
+                        Table Name is already exist</mat-error>
+                    <mat-error
+                        *ngIf="importForm.get('tableObjectsArray').get(''+i).get('newTableName').errors?.sameName">
+                        New
+                        Table Name is same as Old Table Name</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-card>
+    <div class="row w-100 justify-content-end mt-3">
+        <button mat-raised-button color="primary" id="save" type="button" (click)="submit(userForm)" class="mr-3">Create
+            Workflow</button>
+        <button mat-raised-button color="accent" id="cancel" type="button" (click)="cancel()">Cancel</button>
+    </div>
+</form>

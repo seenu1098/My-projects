@@ -1,0 +1,50 @@
+<div *ngIf="show">
+    <div [formGroup]="group">
+        <div [formArrayName]="name" style="width: 50%;display: inline-block;"
+            *ngFor="let filer of getFilterFormArray().controls; let i = index">
+            <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px" style="margin: 2%;">
+                <input class="legacy" matInput type="text" formControlName="filterName" id="filterName"
+                    placeholder="Filter Name">
+                <mat-select class="legacy" formControlName="operator" placeholder="Operator">
+                    <mat-option value="eq" selected>equals</mat-option>
+                    <mat-option value="ne">not equals</mat-option>
+                    <mat-option value="bw">begins with</mat-option>
+                    <mat-option value="ew">ends with</mat-option>
+                    <mat-option value="cn">contains</mat-option>
+                    <mat-option value="gt">greater than </mat-option>
+                    <mat-option value="ge">greater than or equal to</mat-option>
+                    <mat-option value="lt">less than</mat-option>
+                    <mat-option value="le">less than or equal to</mat-option>
+                </mat-select>
+                <div class="legacy">
+                    <input matInput placeholder="Filter Value" id="filterValue" formControlName="filterValue"
+                        change="checkValidation($event.value, i)">
+                </div>
+                <button mat-mini-fab type="button" id="btnAdd" (click)="addAnotherFilter($event)" color="primary"
+                    *ngIf="getFilterFormArray().length === i+1">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button mat-mini-fab type="button" id="btnRemove" *ngIf="getFilterFormArray().length > 1"
+                    (click)="removeThisService(i)">
+                    <mat-icon>remove</mat-icon>
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- <div fxLayoutAlign="end center">
+            <button mat-raised-button color="primary" (click)="searchFilter(userForm)">Search</button>&nbsp;
+            <button mat-raised-button color="accent" type="reset" (click)="reset()">Reset</button>
+        </div> -->
+
+<!-- <ng-template #datepicker>
+            <mat-form-field>
+                <input matInput formControlName="filterValue" change="checkValidation($event.value, i)"
+                    [matDatepicker]="i" placeholder="Choose a date">
+                <mat-datepicker-toggle matSuffix [for]="i"></mat-datepicker-toggle>
+                <mat-datepicker #i></mat-datepicker>
+            </mat-form-field>
+        </ng-template> -->

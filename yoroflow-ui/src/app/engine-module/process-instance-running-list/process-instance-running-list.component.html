@@ -1,0 +1,11 @@
+<!-- <app-process-instance-list status="IN_PROCESS"></app-process-instance-list> -->
+<!-- <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%"> -->
+<div fxFlex="100%">
+    <mat-card>
+        <mat-card-title i18n="Running Process">Running Process</mat-card-title>
+        <app-yorogrid gridId="Running Tasks" (messageEvent)="receiveMessage($event)"
+            defaultColumn="b.start_time" defaultSortDirection="desc">
+        </app-yorogrid>
+    </mat-card>
+</div>
+<!-- </div> -->

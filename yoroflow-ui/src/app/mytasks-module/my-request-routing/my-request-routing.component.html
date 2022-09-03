@@ -1,0 +1,65 @@
+<div class="p-0" [style.height.px]="screenHeight"
+    [style.overflow-y]="selectedTab==='data-table' || selectedTab==='my-request'?'hidden!important':'scroll!important'">
+    <div class="row mx-0 w-100 pt-0 pl-0 pr-3" id="task-route" fxLayoutAlign="space-between center">
+        <div fxLayout="row" class="mt-2">
+            <ng-container *ngFor="let tab of tabList;let i = index;">
+                <!-- <mat-button-toggle-group name="fontStyle" aria-label="Font Style" id="tab_my_request" class="mb-0">
+                    <mat-button-toggle mat-button type="button" [id]="'tab_'+i" [checked]="tab.isSelected"
+                        [class.color-btn]="tab.isSelected" (click)="tabChange(tab)" class="fs_12 p-0 mb-0">
+                        <div fxLayout="row">
+                            <mat-icon class="icon-css">{{tab.icon}}</mat-icon>
+                            <span>{{tab.name | translate}}</span>
+                            <div *ngIf="tab.value==='my-task'" class="task-count-css ml-3">
+                                {{taskListService.myTasksCount}}
+                            </div>
+                        </div>
+                    </mat-button-toggle>
+                </mat-button-toggle-group> -->
+                <div fxLayout="row" (click)="tabChange(tab)" [class]="tab.isSelected?'color-btn':'tab-css'">
+                    <mat-icon class="icon-css" fontSet="material-icons-outlined">{{tab.icon}}</mat-icon>
+                    <span class="tab-label-css">{{tab.name | translate}}</span>
+                    <div *ngIf="tab.value==='my-task'" class="task-count-css ml-2">
+                        {{taskListService.myTasksCount}}
+                    </div>
+                    <span class="vl"></span>
+                </div>
+            </ng-container>
+        </div>
+        <div>
+            <div class="row mx-0 group_by_css fs_12">
+                <b class="fs_12">Show by: </b>
+                <span [matMenuTriggerFor]="groupByMenu" #groupByMenuTrigger="matMenuTrigger"
+                    class="group_by_name_css fs_12">{{groupByName}}</span>
+                <mat-icon [matMenuTriggerFor]="groupByMenu" #groupByMenuTrigger="matMenuTrigger"
+                    style="font-size: 20px;cursor:pointer;">arrow_drop_down
+                </mat-icon>
+                <mat-menu class="groupByMenu" #groupByMenu="matMenu">
+                    <ng-container *ngFor="let groupBy of groupByList;let groupByIndex = index;">
+                        <button mat-button [id]="'group_by_'+groupByIndex" (click)="workspaceSelect(groupBy)"
+                            class="fs_12 w-100">
+                            <div fxLayout="row" fxLayoutGap="10px">
+                                <span>{{groupBy.name | translate}}</span>
+                            </div>
+                        </button>
+                    </ng-container>
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+    <mat-card class="w-100 bg-css">
+        <ng-congtainer *ngIf="show">
+            <div [hidden]="selectedTab==='my-request'?false:true">
+                <app-my-requests></app-my-requests>
+            </div>
+            <div [hidden]="selectedTab==='my-task'?false:true">
+                <app-mytasks status="pending" [object]="this"></app-mytasks>
+            </div>
+            <div [hidden]="selectedTab==='my-submitted-request'?false:true" class="pt-3">
+                <app-my-submitted-requests></app-my-submitted-requests>
+            </div>
+            <div *ngIf="selectedTab==='data-table'" class="pt-3">
+                <app-data-table-page from="my-task"></app-data-table-page>
+            </div>
+        </ng-congtainer>
+    </mat-card>
+</div>

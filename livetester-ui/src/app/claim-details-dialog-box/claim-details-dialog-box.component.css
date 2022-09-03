@@ -1,0 +1,49 @@
+mat-form-field {
+    width: 60%;
+    font-size: 15px;
+    
+    
+}
+::ng-deep .mat-card{
+   border:#0078ff ;
+ 
+  }
+  
+.accordion-form-section p {
+    width: 24%;
+    display: inline-block;
+    margin: 0.5em 0 0 0;
+    vertical-align: top;
+}
+
+mat-panel-title{
+    border-radius: 4px 4px 4px 4px;
+    margin-left:0;
+    width: 100%;
+    padding: 0.5rem;
+    background-color:rgb(118, 167, 170);
+    color: white;
+}
+
+.mat-expansion-panel {
+    width: 100%;
+  }
+
+  .loader {
+    left: 50%;
+    margin-left: -4em;
+    margin-top: 25%;
+}
+.close{
+    float: right;
+    margin-top: 0%;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   margin: 0;
+}
+

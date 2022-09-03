@@ -1,0 +1,53 @@
+<form #userForm="ngForm" [formGroup]="form" class="team-css" id="team-list">
+    <div class="row w-100 mx-0">
+        <div class="col-md-8">
+            <h3 style="font-weight: bold;text-transform: uppercase;">{{'Select Team(s)' | translate}}</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="row w-100 mx-0 justify-content-end space-between">
+                <button mat-raised-button type="button" color="primary" i18n="Confirm" [disabled]="show === false"
+                    (click)="confirm()" class="mr-3" id="save">{{'Save' | translate}}
+                </button>
+                <button mat-raised-button type="button" color="accent" i18n="Cancel" (click)="dialogClose()"
+                    id="close">{{'Close' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100 mx-0 mt-2">
+        <div fxLayout="row" style="width: 100%;">
+            <mat-form-field class="example-chip-list" appearance="outline" style="width: 100%;">
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                    <ng-container *ngFor="let user of groupList; let i = index;">
+                        <mat-chip *ngIf="user.isSelected" [selectable]="selectable" [removable]="removable"
+                            (removed)="removedAssigneeUser(user, i)">
+                            <span>{{user?.name}}</span>
+                            <mat-icon matChipRemove *ngIf="removable" id="cancel">cancel</mat-icon>
+                        </mat-chip>
+                    </ng-container>
+                    <input placeholder="{{'Search' | translate}}" #fruitInput formControlName="searchTeam" id="search"
+                        [matChipInputFor]="chipList">
+                </mat-chip-list>
+                <mat-icon matSuffix class="mat-icon-color">groups</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+    <div fxLayout="row wrap" style="height:70%;overflow-y: scroll;" fxLayoutGap="10px">
+        <ng-container *ngFor="let user of groupList; let i = index;">
+            <div style="width: 31.5%;display: inline-block;" *ngIf="user?.isSelected === false && user?.filter">
+                <mat-card class="inner_card_user" (click)="selectAssigneeUser(user)" appMaterialElevation>
+                    <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="10px" style="padding: 10px 0px;">
+                        <div fxLayout="column" style="width: 20%;display: inline-block;">
+                            <p class="user_letter" [style.background]="user?.color">
+                                {{setUserProfilename(user)}}</p>
+                        </div>
+                        <div fxLayout="column" style="width: 72%;display: inline-block;">
+                            <h5 class="text-uppercase font-weight-bold margin-class">{{user?.name}}
+                            </h5>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </ng-container>
+    </div>
+</form>

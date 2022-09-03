@@ -1,0 +1,218 @@
+<div [style.height]="screenHeight1" style="overflow: hidden;" id="task-configur">
+    <form [formGroup]="form" #userForm="ngForm">
+        <div class="row w-100 mb-4 mx-0">
+            <div class="col-md-2 px-0 tree">
+                <div class="row w-100 mx-0 mt-2">
+                    <div class="col-md-6 col-sm-8">
+                        <h4 class="fs_14 font-weight-bold">{{'Documents' | translate}}</h4>
+                    </div>
+                    <div class="col-md-6 col-sm-4 text-right">
+                        <mat-icon class="text-right" fontSet="material-icons-outlined"
+                            matTooltip="{{'Add New Document' | translate}}" (click)="newDocument()"
+                            class="text-info add-new ">note_add</mat-icon>
+                    </div>
+                </div>
+                <div fxLayout="row" id="search" *ngIf="listData?.length !== 0">
+                    <div class="input-group mx-1" id="border_less">
+                        <input type="text" formControlName="search" class="form-control fs_12"
+                            placeholder="{{'Search...' | translate}}">
+                        <div class="input-group-append bg-trasparent">
+                            <span class="input-group-text pb-0 pr-2">
+                                <mat-icon matSuffix class="fs_14 w_14 h_14">search</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <perfect-scrollbar [style.height]="screenHeight" style="width:100%">
+                    <mat-tree [dataSource]="dataSource" class="w-100 px-0 py-3 mt-1 bg-transparent example-tree "
+                        [treeControl]="treeControl" id="doc_tree">
+                        <mat-tree-node [ngClass]="{ 'background_node': activeIndex === node }"
+                            *matTreeNodeDef="let node" matTreeNodeToggle style="align-items: top!important;"
+                            (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()">
+                            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name"
+                                class="m-0 p-0 " style="visibility: hidden;">
+                                <mat-icon class="mat-icon-rtl-mirror" style="font-size: 15px;">
+                                    {{treeControl.isExpanded(node) ? 'arrow_drop_down' : 'arrow_right'}}
+                                </mat-icon>
+                            </button>
+                            <mat-icon fontSet="material-icons-outlined"
+                                style="font-size: 14px;align-items: top!important;" class="align-self-top mt-2">
+                                description
+                            </mat-icon>
+                            <span (click)="viewDocument(node)" class="doc_name fs_12"
+                                [ngClass]="{ 'background-highlight': activeNode === node?.documentId}">{{node.documentName}}</span>
+                            <mat-icon matTooltip="{{'Add Child' | translate}}"
+                                [ngClass]="{ 'icon_background': activeIndex === node }" *ngIf="activeIndex === node"
+                                class="doc_add_btn" (click)="openEditor(node)">
+                                add</mat-icon>
+                        </mat-tree-node>
+                        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" (mouseenter)="dragHover(node)"
+                            (mouseleave)="dragHoverEnd()">
+                            <div class="mat-tree-node" [ngClass]="{ 'background_node': activeIndex === node}"
+                                style="align-items: top!important;">
+                                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name"
+                                    class="m-0 px-0">
+                                    <mat-icon class="mat-icon-rtl-mirror"
+                                        style="font-size: 15px;width:13px;height:10px;margin-left:-8px;">
+                                        {{treeControl.isExpanded(node) ? 'arrow_drop_down' : 'arrow_right'}}
+                                    </mat-icon>
+                                </button>
+                                <mat-icon class="align-self-top mt-2" fontSet="material-icons-outlined"
+                                    style="font-size: 14px;align-items: top!important;">description</mat-icon>
+                                <span class="doc_name fs_12" (click)="viewDocument(node)"
+                                    [ngClass]="{ 'background-highlight': activeNode === node?.documentId }">{{node.documentName}}</span>
+                                <mat-icon matTooltip="{{'Add Child' | translate}}"
+                                    [ngClass]="{ 'icon_background': activeIndex === node }" *ngIf="activeIndex === node"
+                                    class=" doc_add_btn" (click)="openEditor(node)">
+                                    add</mat-icon>
+                            </div>
+                            <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group"
+                                class="w-100">
+                                <ng-container matTreeNodeOutlet>
+                                </ng-container>
+                            </div>
+                        </mat-nested-tree-node>
+                    </mat-tree>
+                </perfect-scrollbar>
+            </div>
+            <div class="col-md-10 px-0 py-3 bg-white descktop_document" style=" overflow-y: scroll;"
+                [style.height]="screenHeight1">
+                <div class="row w-100 mx-0" *ngIf="viewRender === true" [style.width]="screenWidth">
+                    <div class=" mt-2 col-md-6 pr-0" *ngIf="editTitle === false">
+                        <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
+                            <span
+                                class="mb-0 font-weight-bold doc_title_name fs_15 font-weight-bold">{{form.get('title').value}}</span>
+                            <span class="mt-2">
+                                <mat-icon class="fs_14 h_14 w_14 mt-1 ml-1" matTooltip="{{'Edit Title' | translate}}"
+                                    *ngIf="documentOwnerList?.updateAllowed === true" (click)="editName()">
+                                    drive_file_rename_outline
+                                </mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                    <div class=" mt-2 col-md-6 pr-0 justify-content-end" *ngIf="editTitle === true">
+                        <div class="input-group">
+                            <input type="text" class="form-control" formControlName="title">
+                            <div class="input-group-append">
+                                <button class="py-0 px-0  btn btn-success done_btn" matTooltip="{{'Save' | translate}}"
+                                    type="button" (click)="saveTitle(this.form.get('title').value)">
+                                    <mat-icon>done</mat-icon>
+                                </button>
+                                <button class="px-0 py-0 btn btn-danger close_btn" matTooltip="{{'Cancel' | translate}}"
+                                    type="button" (click)="cancel()">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row w-100 ml-2 " *ngIf="showError" style="font-size: 12px;
+                        color: red;">
+                            <p>{{'Document Name should be within 100 characters.' | translate}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pr-0 justify-content-end">
+                        <div fxLayout="row" class="row w-100 mx-0 justify-content-end">
+                            <div fxLayout="column" class="pr-0 col-sm-6 col-md-3">
+                                <div fxLayout="row" *ngIf="documentOwnerList?.yoroDocsOwner?.length>0">
+                                    Owners
+                                </div>
+                                <div fxLayout="row" class="mt-1">
+                                    <ng-container
+                                        *ngFor="let userId of documentOwnerList?.yoroDocsOwner;let i = index;">
+                                        <div *ngIf="i<=3" class="hover-class round_firstletter"
+                                            [style.margin-left]="i>0?'-4px':''" [matTooltip]="getUserName(userId)"
+                                            [style.background]="getUserColor(userId)">
+                                            <span
+                                                class=" round_firstletter_size">{{getUserFirstAndLastNamePrefix(userId)}}</span>
+                                        </div>
+                                        <ng-container *ngIf="i===4">
+                                            <div class="hover-class round_add_count"
+                                                [matTooltip]="getUserNames(documentOwnerList?.yoroDocsOwner)">
+                                                <span
+                                                    class=" round_firstletter_count">+{{getRemainingAssigneeUserCount(documentOwnerList?.yoroDocsOwner)}}</span>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div fxLayout="column" class="pr-0 col-sm-6 col-md-3">
+                                <div fxLayout="row" *ngIf="documentOwnerList?.securityVOList?.length>0">
+                                    Teams
+                                </div>
+                                <div fxLayout="row" class="mt-1">
+                                    <ng-container
+                                        *ngFor="let group of documentOwnerList?.securityVOList;let i = index;">
+                                        <div *ngIf="i<=3" class="hover-class round_firstletter"
+                                            [style.margin-left]="i>0?'-4px':''"
+                                            [matTooltip]="getGroupName(group.groupId)"
+                                            [style.background]="getGroupColor(group.groupId)">
+                                            <span
+                                                class=" round_firstletter_size">{{getGroupFirstAndLastNamePrefix(group.groupId)}}</span>
+                                        </div>
+                                        <ng-container *ngIf="i===4">
+                                            <div class="hover-class round_add_count"
+                                                [matTooltip]="getGroupNames(documentOwnerList?.securityVOList)">
+                                                <span
+                                                    class=" round_firstletter_count">+{{getRemainingAssigneeGroupCount(documentOwnerList?.securityVOList)}}</span>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <span class="flag-container-css mr-3  mt-4 mb-0" (click)="readDialog()"
+                                matTooltip="{{'Add permissions' | translate}}" *ngIf="checkLoggedInUser()">
+                                <mat-icon appearance="filled" class="flag-css">person</mat-icon>
+                                <mat-icon class="circle-css">add_circle</mat-icon>
+                            </span>
+                            <button [matMenuTriggerFor]="dropdownMenuOne" class="mr-3 mt-3"
+                                *ngIf="documentOwnerList?.readAllowed === true" style="line-height: 20px;height: 30px;"
+                                #menuTrigger="matMenuTrigger" mat-raised-button type="button" color="primary"
+                                id="save">{{'Export as' |
+                                translate}}</button>
+                            <button mat-raised-button class="float-right mt-3" color="primary"
+                                style="line-height: 20px;height: 30px;" (click)="edit()"
+                                *ngIf="documentOwnerList?.updateAllowed === true">
+                                <mat-icon class="text-white">edit_note</mat-icon>
+                            </button>
+                            <mat-icon [matMenuTriggerFor]="dropdownMenuFour" #menuTrigger="matMenuTrigger"
+                                class="icon-align mt-4" style="cursor: pointer;" *ngIf="checkLoggedInUser()">
+                                more_vert</mat-icon>
+                            <mat-menu #dropdownMenuOne="matMenu" class="p-0">
+                                <div fxLayout="column" class=" menu_icon">
+                                    <button mat-button id="changeColumnColor" (click)="exportPdf()" class="px-0">
+                                        <div fxLayout="row" fxLayoutGap="10px">
+                                            <mat-icon class="mt-2 fs_20" style="color: blue;"
+                                                fontSet="material-icons-outlined">picture_as_pdf</mat-icon>
+                                            <span i18n="PDF"> {{'PDF' | translate}}</span>
+                                        </div>
+                                    </button>
+                                    <button mat-button (click)="exportWord()" class="px-0">
+                                        <div fxLayout="row" fxLayoutGap="10px">
+                                            <mat-icon style="color: darkgreen;" class="mt-2 fs_20"
+                                                fontSet="material-icons-outlined">article</mat-icon>
+                                            <span i18n="WORD"> {{'WORD' | translate}}</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </mat-menu>
+                            <mat-menu #dropdownMenuFour="matMenu" class="p-0 doc-menu-css">
+                                <div fxLayout="column" class="menu_icon" class="p-0">
+                                    <button mat-button id="changeColumnColor" (click)="deleteNode()" class="px-0">
+                                        <div fxLayout="row" fxLayoutGap="10px">
+                                            <mat-icon fontSet="material-icons-outlined" style="color: red;"
+                                                class="mt-css fs_20">delete</mat-icon>
+                                            <span i18n="Delete"> {{'Delete' | translate}}</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </mat-menu>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 px-3 blog-post">
+                        <div [innerHtml]="sanitizeHtml"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div #quillEditor id="quillEditor" style="display: none;"></div>
+</div>

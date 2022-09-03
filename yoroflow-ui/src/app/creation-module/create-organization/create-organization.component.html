@@ -1,0 +1,2404 @@
+<div *ngIf="isSubscription === false" fxLayout.xs="column" fxLayoutAlign="start none"
+    [style.overflow-y]="showUpdateOrg ? 'hidden' : 'scroll'">
+    <div fxFill="100">
+        <form #userForm="ngForm" id="org" [formGroup]="form" [style.height]="screenHeight">
+            <mat-card *ngIf="!customerInfo">
+                <mat-card>
+                    <mat-card-title i18n="Create Your Organization" class="fs_14">Create Your Organization
+                    </mat-card-title>
+                    <mat-card-title i18n="Update Your Organization" *ngIf="customerInfo" class="fs_14">Update Your
+                        Organization
+                    </mat-card-title>
+
+                    <!----=yoroadmin -> Creat Organization-->
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Organization Name">Organization Name</mat-label>
+                                <input matInput type="text" id="organizationName" placeholder="Organization Name *"
+                                    i18n-placeholder="Organization Name *" formControlName="orgName">
+                                <mat-error *ngIf="form.get('orgName').errors?.required"
+                                    i18n="Organization Name is Required">
+                                    Organization Name is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-8 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-chip-list #chipList aria-label="Allowed Domain Names">
+                                    <mat-chip id="chipNameList" *ngFor="let nameList of allowedDomainNamesList"
+                                        [selectable]="selectable" [removable]="removable"
+                                        (removed)="removeAllowedDomainNames(nameList)">
+                                        {{nameList.name}}
+                                        <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                    </mat-chip>
+                                    <input formControlName="allowedDomainNames" id="allowedDomainName"
+                                        placeholder="{{'Allowed Domain Name' | translate}}" [matChipInputFor]="chipList"
+                                        i18n-placeholder="Allowed Domain Name"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur"
+                                        (matChipInputTokenEnd)="addAllowedDomainNames($event)">
+                                </mat-chip-list>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Actual Domain Name">Actual Domain Name</mat-label>
+                                <input matInput type="text" id="actualDomainName" placeholder="Actual Domain Name"
+                                    i18n-placeholder="Actual Domain Name" formControlName="actualDomainName">
+                                <mat-error *ngIf="form.get('actualDomainName').errors?.required"
+                                    i18n="Actual Domain Name is Required">
+                                    Actual Domain Name is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label id="defaultLanguage">
+                                    {{'Default Language *' | translate}}
+                                </mat-label>
+                                <mat-select id="defaultLanguage" formControlName="defaultLanguge">
+                                    <mat-optgroup label="Default Language">
+                                        <mat-option value="en">English</mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                                <mat-error *ngIf="form.get('defaultLanguge').errors?.required">
+                                    {{'Default Language is Required' | translate}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <app-timezone [inputMessage]="templateData" [fromCreate]="true" [templateObject]="this"
+                                (orgValue)="getData($event,userForm)"></app-timezone>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 px-0">
+                        <p class="col-md-4 px-2 fs_12"> {{'Your URL would be' | translate}}: <mat-form-field
+                                class="col-md-3 px-0 w-100">
+                                <mat-label i18n="Subdomain Name *">Subdomain Name *</mat-label>
+                                <input matInput id="subdomainName" placeholder="{{'Subdomain Name *' | translate}}"
+                                    type="text" i18n-placeholder="Subdomain Name *" formControlName="subdomainName"
+                                    (focusout)="validateSubdomainName()">
+                                <!-- <mat-error *ngIf="form.get('subdomainName').errors?.required" i18n="Preferred Subdomain Name is Required">
+                                    Preferred Subdomain Name is Required
+                                </mat-error>
+                                <mat-error *ngIf="form.get('subdomainName').errors?.alreadyExist" i18n="This subdomain name is not available">
+                                    This subdomain name is not available
+                                </mat-error> -->
+                            </mat-form-field>.yoroflow.com
+                        </p>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label>{{'Organization Url' | translate}}</mat-label>
+                                <input matInput id="orgUrl" placeholder="{{'Organization Url' | translate}}"
+                                    formControlName="organizationUrl">
+                                <!-- <mat-error>{{'Organization Url is required' | translate}}</mat-error> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label id="selectOrganizationTheme">
+                                    {{'Select Organization Theme' | translate}}</mat-label>
+                                <mat-select formControlName="themeId">
+                                    <mat-option value="yoroflow-theme">Yoroflow Theme
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="form.get('timezone').errors?.required">
+                                    {{'Time Zone is Required' | translate}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="!adminUpdate" class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Server Farm *">Server Farm *</mat-label>
+                                <mat-select id="serverFarm" formControlName="serverFarm">
+                                    <mat-option id="us_farm" value="US">US
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error i18n="Server Farm is required">Server Farm is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label id="dataSourceName" i18n="Datasource Name *">Datasource Name *</mat-label>
+                                <mat-select id="dataSource" formControlName="dataSourceName">
+                                    <mat-option id="us" value="US">US
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error i18n="Datasource Name is required">Datasource Name is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label>Default number of users</mat-label>
+                                <input matInput id="maximumUsers" type="number" min="5"
+                                    oninput="this.value = Math.abs(this.value)" placeholder="Default number of users"
+                                    formControlName="maximumUsers" required>
+                                <mat-error *ngIf="form.get('maximumUsers').errors?.required"
+                                    i18n="Default number of users is required">Default number of users is required
+                                </mat-error>
+                                <mat-error *ngIf="form.get('maximumUsers').errors?.min"
+                                    i18n="Default users should be minimum 5">Default users should be minimum 5
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-2">
+                            <div class="row w-100 mx-0 px-0">
+                                <upload-logo #uploadLogo [action]="uploadAction" (uploaded)="getUploaded($event)"
+                                    buttonName="Upload Organization Logo">
+                                </upload-logo>
+                                <load-logo [base64Image]="loadLogo.previewUrl" *ngIf="loadLogo.previewUrl && logo"
+                                    class="ml-2">
+                                </load-logo>
+                            </div>
+                            <span class="mt-1 text-danger" i18n="Note : Maximum image 110px X 35px, Size : 150kb">Note :
+                                Maximum image 110px X 35px, Size : 150kb</span>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <div class="row w-100 mx-0 px-0">
+                                <button mat-raised-button color="primary" type="button" style="width:200px"
+                                    (click)="fileInput.click()">
+                                    <span i18n="Upload Background Image">Upload Background Image</span>
+                                    <input #fileInput id="backgroundImage" type="file" (change)="onFileInput($event)"
+                                        style="display:none;" accept="image/*" />
+                                </button>
+                                <img [src]="transform()" class="ml-2"
+                                    *ngIf="previewBackgroundImageUrl && isBackgroundLoad" class="logo">
+                            </div>
+                        </div>
+                        <div *ngIf="adminUpdate" class="col-md-4 px-2">
+                            <mat-form-field appearance="outline">
+                                <mat-label id="selectOrganizationTheme">
+                                    {{'Select Organization Theme' | translate}}</mat-label>
+                                <mat-select formControlName="themeId">
+                                    <mat-option value="yoroflow-theme">Yoroflow Theme
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="form.get('timezone').errors?.required">
+                                    {{'Time Zone is Required' | translate}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-card>
+                <mat-card class="mt-3">
+                    <mat-card-title i18n="Package Details">Package Details</mat-card-title>
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-3 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Trial Start Date">Trial Start Date</mat-label>
+                                <input matInput id="startDate" formControlName="startDate" [matDatepicker]="startPicker"
+                                    required>
+                                <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #startPicker></mat-datepicker>
+                                <mat-error i18n="Start date is required">Start date is required</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Trial End Date">Trial End Date</mat-label>
+                                <input matInput id="endDate" formControlName="endDate" [matDatepicker]="endPicker"
+                                    required>
+                                <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #endPicker></mat-datepicker>
+                                <mat-error *ngIf="form.get('endDate').errors?.required" i18n="End date is required">End
+                                    date
+                                    is required</mat-error>
+                                <mat-error *ngIf="form.get('endDate').errors?.greaterThan" i18n="End date should be greater than
+                            start date">End date should be greater than
+                                    start date</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 px-2">
+                            <mat-form-field (focusout)="setPackageDetails()" class="w-100" appearance="outline">
+                                <mat-label id="defaultLanguage">
+                                    {{'Select Package' | translate}}
+                                </mat-label>
+                                <mat-select id="planType" formControlName="orgPlanType">
+                                    <mat-optgroup label="{{'Select Package' | translate}}">
+
+                                        <mat-option value="STARTER">
+                                            STARTER</mat-option>
+                                        <mat-option value="BUSINESS PACK">
+                                            BUSINESS PACK</mat-option>
+                                        <mat-option value="STANDARD">
+                                            STANDARD</mat-option>
+                                        <mat-option value="PRO">
+                                            PRO</mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                                <mat-error *ngIf="form.get('orgPlanType').errors?.required">
+                                    {{'Package is Required' | translate}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 px-2">
+                            <mat-form-field (focusout)="setPackageDetails()" class="w-100" appearance="outline">
+                                <mat-label id="defaultLanguage">
+                                    {{'Select Billing Type' | translate}}
+                                </mat-label>
+                                <mat-select id="billingType" formControlName="orgBillingType">
+                                    <mat-optgroup label="{{'Select billing type' | translate}}">
+                                        <mat-option value="monthly" i18n="Monthly">Monthly</mat-option>
+                                        <mat-option value="yearly" i18n="Yearly">Yearly</mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                                <mat-error *ngIf="form.get('orgBillingType').errors?.required">
+                                    {{'Billing Type is Required' | translate}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-card>
+                <mat-card *ngIf="!customerInfo" class="mt-3">
+                    <mat-card-title i18n="First User Details">First User Details</mat-card-title>
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <input matInput type="text" id="firstName" placeholder="First Name *"
+                                    i18n-placeholder="First Name *" formControlName="firstName">
+                                <mat-error *ngIf="form.get('firstName').errors?.required" i18n="First Name is Required">
+                                    First Name is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <input matInput type="text" id="lastName" placeholder="Last Name *"
+                                    i18n-placeholder="Last Name *" formControlName="lastName">
+                                <mat-error *ngIf="form.get('lastName').errors?.required" i18n="Last Name is Required">
+                                    Last Name is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <input matInput type="text" id="loginEmail" placeholder="Login Email *"
+                                    i18n-placeholder="Login Email *" formControlName="userEmailId">
+                                <mat-error *ngIf="form.get('userEmailId').hasError('email')"
+                                    i18n="Please enter a valid email address">
+                                    Please enter a valid email address
+                                </mat-error>
+                                <mat-error *ngIf="form.get('userEmailId').errors?.required" i18n="Email is Required">
+                                    Email is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <input matInput type="text" id="contactEmail" placeholder="Contact Email *"
+                                    i18n-placeholder="Contact Email *" formControlName="contactEmailId"
+                                    name="contactEmail" id="contactEmail">
+                                <mat-error class="text-danger" id="emailRequired" *ngIf="form.get('contactEmailId').errors?.required
+        &&(userForm.submitted || form.get('contactEmailId').touched || form.get('contactEmailId').dirty)"
+                                    i18n="Contact Email is required">
+                                    Contact Email is required
+                                </mat-error>
+                                <mat-error class="text-danger" id="emailValid" *ngIf="form.get('contactEmailId').errors?.email
+        &&(userForm.submitted || form.get('contactEmailId').touched || form.get('contactEmailId').dirty)"
+                                    i18n="Contact Email is not valid">
+                                    Contact Email is not valid
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <input matInput [type]="hideNew ? 'password' : 'text'" id="password"
+                                    i18n-placeholder="Password *" placeholder="Password *" formControlName="password">
+                                <button type="button" mat-icon-button matSuffix (click)="hideNew = !hideNew"
+                                    [attr.aria-label]="'Hide password'" id="passwordButton">
+                                    <mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                </button>
+                                <mat-error *ngIf="form.get('password').errors?.required" id="passwordRequired"
+                                    i18n="Password is Required">
+                                    Password is Required
+                                </mat-error>
+                                <mat-error *ngIf="form.get('password').errors?.lower
+                            &&(userForm.submitted || form.get('password').touched 
+                            || form.get('password').dirty)" id="passwordLowerCase"
+                                    i18n="Password must contain atleast one lowercase letter">
+                                    Password must contain atleast one lowercase letter
+                                </mat-error>
+                                <mat-error *ngIf="form.get('password').errors?.upper
+                                          &&(userForm.submitted || form.get('password').touched 
+                                          || form.get('password').dirty)" id="passwordUpperCase"
+                                    i18n="Password must contain atleast one uppercase letter">
+                                    Password must contain atleast one uppercase letter
+                                </mat-error>
+                                <mat-error *ngIf="form.get('password').errors?.number
+                                                        &&(userForm.submitted || form.get('password').touched 
+                                                        || form.get('password').dirty)" id="passwordNumber"
+                                    i18n="Password must contain atleast one number">
+                                    Password must contain atleast one number
+                                </mat-error>
+                                <mat-error *ngIf="form.get('password').errors?.splChar
+                                                                      &&(userForm.submitted || form.get('password').touched 
+                                                                      || form.get('password').dirty)"
+                                    id="passwordSpecialChar" i18n="Password must contain atleast one special character">
+                                    Password must contain atleast one special character
+                                </mat-error>
+                                <mat-error *ngIf="form.get('password').errors?.min
+                                                                      &&(userForm.submitted || form.get('password').touched 
+                                                                      || form.get('password').dirty)"
+                                    id="passwordMinSix" i18n="Password must contain minimum 6 character">
+                                    Password must contain minimum 6 character
+                                </mat-error>
+                                <mat-error *ngIf="form.get('password').errors?.max
+                                                                      &&(userForm.submitted || form.get('password').touched 
+                                                                      || form.get('password').dirty)"
+                                    id="passwordMaxFifty" i18n="Password must contain maximum 50 character">
+                                    Password must contain maximum 50 character
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <input id="confirmPassword" placeholder="Confirm Password *" matInput
+                                    i18n-placeholder="Confirm Password *" [type]="hideConfirm ? 'password' : 'text'"
+                                    formControlName="confirmPassword">
+                                <button type="button" mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm"
+                                    [attr.aria-label]="'Hide password'" id="buttonHide">
+                                    <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                </button>
+                                <mat-error *ngIf="form.get('confirmPassword').errors?.required"
+                                    id="confirmPasswordRequired" i18n="Confirm Password is Required">
+                                    Confirm Password is Required
+                                </mat-error>
+                                <mat-error id="confirmPasswordNotMatch"
+                                    *ngIf="form.get('confirmPassword').errors?.notEqual && form.get('confirmPassword').touched"
+                                    i18n="Password and Confirm Password does not match">
+                                    Password and Confirm Password does not match
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-card>
+                <mat-card class="mt-3">
+                    <mat-card-title i18n="Pricing Details">Pricing Details</mat-card-title>
+                    <!-- <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-2 pl-0 pr-2 ">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Base Price">Base Price</mat-label>
+                                <input oninput="this.value = Math.abs(this.value)" matInput type="number"
+                                    [id]="'basePrice'+i" formControlName="basePrice" placeholder="Base Price"
+                                    i18n-placeholder="Base Price">
+                                <mat-icon matPrefix>attach_money</mat-icon>
+                            </mat-form-field>
+                        </div>
+                    </div> -->
+                    <div class="row w-100 mx-0 px-0">
+                        <div class="col-md-4 px-0" formArrayName="pricingDiscount"
+                            *ngFor="let item of form.get('pricingDiscount').controls;let i = index;">
+                            <h4 style="width: 130px;margin-top: 20px !important;margin-left: 10px;" class="fs_12">
+                                <b>{{item.get('planName').value |
+                                    translate}}</b>
+                            </h4>
+                            <div class="row w-100 mx-0 px-0" [formGroupName]="i">
+                                <div class="col-md-12 px-2">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Base Price">Base Price</mat-label>
+                                        <input oninput="this.value = Math.abs(this.value)" matInput type="number"
+                                            [id]="'basePrice'+i" formControlName="basePrice" placeholder="Base Price"
+                                            i18n-placeholder="Base Price">
+                                        <mat-icon matPrefix>attach_money</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-12 px-2 ">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Amount per user">Amount per user billing type monthly
+                                        </mat-label>
+                                        <input oninput="this.value = Math.abs(this.value)" matInput type="number"
+                                            [id]="'amountPerUserMonthly'+i" formControlName="amountPerUserMonthly"
+                                            placeholder="Amount per user billing type monthly"
+                                            i18n-placeholder="Amount per user">
+                                        <mat-icon matPrefix>attach_money</mat-icon>
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-md-12 px-2 ">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Amount per user">Amount per user billing type yearly
+                                        </mat-label>
+                                        <input oninput="this.value = Math.abs(this.value)" matInput type="number"
+                                            [id]="'amountPerUserYearly'+i" formControlName="amountPerUserYearly"
+                                            placeholder="Amount per user billing type yearly"
+                                            i18n-placeholder="Amount per user">
+                                        <mat-icon matPrefix>attach_money</mat-icon>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <span class="mt-1 text-danger" i18n="Note : Maximum image 110px X 35px, Size : 150kb">
+                        Note: Enter the price for amount per user
+                    </span> -->
+                </mat-card>
+                <mat-card-actions>
+                    <div fxLayoutAlign="end end">
+                        <button mat-raised-button color="primary" id="btnsave" type="submit" (click)="save(userForm)"
+                            [disabled]="isDisable"><span *ngIf="!isDisable" i18n="Save">Save</span><span
+                                *ngIf="isDisable">Saving...</span></button>
+                        <button mat-raised-button color="accent" type="button" (click)="reset(userForm,'create')"
+                            id="btnreset" i18n="Reset">Reset</button>
+                    </div>
+                </mat-card-actions>
+            </mat-card>
+            <!----=yoroadmin -> Creat Organization-----=End--->
+            <div *ngIf="customerInfo && yoroAdminUpdate && !showUpdateOrg" aria-colspan="row w-100 mx-0 px-0"
+                class="mt-2">
+                <mat-card class="w-100">
+                    <mat-card-title id="organizationList" i18n="Organization List">Organization List
+                    </mat-card-title>
+                    <app-yorogrid #updateOrg gridId="Customer" (messageEvent)="receiveMessage($event)"
+                        defaultColumn="created_on" defaultSortDirection="desc">
+                    </app-yorogrid>
+                </mat-card>
+            </div>
+            <ng-conteiner *ngIf="showUpdateOrg">
+                <div class="row w-100 mx-0 px-0" style="overflow-y: hidden !important;">
+                    <mat-nav-list class="matNavStyle w_18 desktop_side_menu" [style.height]="screenHeight">
+                        <a mat-list-item id="updateOrg" (click)="updateYourOrg()" [ngClass]="{'list-item': isUpdateOrg}"
+                            class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1">groups</mat-icon>
+                            <span class="fs_12" i18n="Update Your Organization">Update Your
+                                Organization</span>
+                        </a>
+                        <a mat-list-item id="smsKey" (click)="smsKeyMenagement()" [ngClass]="{'list-item': isSmsKey}"
+                            class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1">textsms</mat-icon>
+                            <span class="fs_12" i18n="SMS Key Management">SMS Key
+                                Management</span>
+                        </a>
+                        <a mat-list-item id="customAttributeList" (click)="customAttributeList()"
+                            [ngClass]="{'list-item': isCustomAttribute}" class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1">view_list</mat-icon>
+                            <span class="fs_12" i18n="Custom Attribute List">Custom
+                                Attribute List</span>
+                        </a>
+                        <a mat-list-item id="updateOrg" (click)="allowAuthentication()"
+                            [ngClass]="{'list-item': isAllowAuthentication}" class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1">domain</mat-icon>
+                            <span class="fs_12" i18n="Authentication Methods">Authentication Methods</span>
+                        </a>
+                        <a mat-list-item id="updateOrg" (click)="allowTwoFactorAuthetication()"
+                            [ngClass]="{'list-item': isTwoFactorAuth}" class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1">phonelink_setup</mat-icon>
+                            <span class="fs_12" i18n="Two Factor Authentication">Two Factor
+                                Authentication</span>
+                        </a>
+                        <a mat-list-item id="updateOrg" (click)="emailSetting()"
+                            [ngClass]="{'list-item': isEmailSettings}" class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1" style="font-size:16px;margin-top:7px">email</mat-icon>
+                            <span class="fs_12" i18n="Email Settings">Email Settings</span>
+                        </a>
+                        <a mat-list-item *ngIf="isShowSummary" id="updateOrg" (click)="summaryReport()"
+                            [ngClass]="{'list-item': isSummaryReport}" class="menu-list-item">
+                            <mat-icon class="routeIcon mt-1" style="font-size:16px;margin-top:7px">summarize</mat-icon>
+                            <span class="fs_12" i18n="Consolidated View">Consolidated View</span>
+                        </a>
+                    </mat-nav-list>
+                    <ng-container class=" mt-4 float-right justify-content-end ">
+                        <div class="row justify-content-end float-right mobile_side_menu">
+                            <button mat-raised-button color="accent" type="button" class="float-right">
+                                <mat-icon [matMenuTriggerFor]="dropdownMenuTwo" #menuTrigger="matMenuTrigger"
+                                    id="taskboard_menu" class="icon-align">
+                                    more_vert</mat-icon>
+                            </button>
+                        </div>
+                        <mat-menu #dropdownMenuTwo="matMenu">
+                            <div fxLayout="column">
+                                <button mat-button (click)="updateYourOrg()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css  mt-2">
+                                            groups</mat-icon>
+                                        <span i18n="Update Your Organization">Update Your
+                                            Organization</span>
+                                    </div>
+                                </button>
+                                <button mat-button (click)="smsKeyMenagement()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css  mt-2">
+                                            textsms</mat-icon>
+                                        <span i18n="SMS Key Management"> SMS Key Management</span>
+                                    </div>
+                                </button>
+                                <button mat-button (click)="customAttributeList()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css  mt-2">
+                                            view_list</mat-icon>
+                                        <span i18n="Custom Attribute List">Custom
+                                            Attribute List</span>
+                                    </div>
+                                </button>
+                                <button mat-button (click)="allowAuthentication()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css  mt-2">domain</mat-icon>
+                                        <span i18n="Authentication Methods"> Authentication Methods</span>
+                                    </div>
+                                </button>
+                                <button mat-button (click)="allowTwoFactorAuthetication()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css  mt-2">phonelink_setup
+                                        </mat-icon>
+                                        <span i18n="Two Factor Authentication">Two Factor Authentication</span>
+                                    </div>
+                                </button>
+                                <button mat-button (click)="emailSetting()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css mt-2">email
+                                        </mat-icon>
+                                        <span i18n="Email Settings">Email Settings</span>
+                                    </div>
+                                </button>
+                                <button *ngIf="isShowSummary" mat-button (click)="summaryReport()">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css mt-2">summarize
+                                        </mat-icon>
+                                        <span i18n="Consolidated View">Consolidated View</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </mat-menu>
+                    </ng-container>
+                    <div class="p-3 w_82 full_width_mobile">
+                        <perfect-scrollbar style="width:100%" id="menu_with_icon" [style.height]="screenHeight1">
+                            <ng-container *ngIf="!isPaymentSubscription">
+                                <!----=Administation -> Update Your Organization / Create
+                                    Your Organization-->
+                                <mat-card *ngIf="isUpdateOrg" class="w-100">
+                                    <mat-card-title *ngIf="!customerInfo" i18n="Create Your Organization">Create
+                                        Your Organization
+                                    </mat-card-title>
+                                    <div class="row w-100 mx-0 mb-2">
+                                        <div class="col-md-6 col-sm-12 pl-0">
+                                            <mat-card-title *ngIf="customerInfo" i18n="Update Your Organization">
+                                                Update Your Organization
+                                            </mat-card-title>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 justify-content-end" *ngIf="yoroAdminUpdate">
+                                            <button class="float-right" mat-raised-button color="primary"
+                                                id="listButton" type="button" (click)="listRoute()">{{'Back to List' |
+                                                translate}}</button>
+                                        </div>
+                                    </div>
+                                    <div class="row w-100 mx-0 px-0">
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label id="defaultLanguage">
+                                                    {{'Organization Name *' | translate}}
+                                                </mat-label>
+                                                <input matInput type="text" id="organizationName"
+                                                    placeholder="{{'Organization Name *' | translate}}"
+                                                    formControlName="orgName">
+                                                <mat-error *ngIf="form.get('orgName').errors?.required">
+                                                    Organization Name is Required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-8 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-chip-list #chipList aria-label="Allowed Domain Names">
+                                                    <mat-chip *ngFor="let nameList of allowedDomainNamesList"
+                                                        [selectable]="selectable" [removable]="removable"
+                                                        (removed)="removeAllowedDomainNames(nameList)" id="nameList">
+                                                        {{nameList.name}}
+                                                        <mat-icon matChipRemove *ngIf="removable">close
+                                                        </mat-icon>
+                                                    </mat-chip>
+                                                    <input formControlName="allowedDomainNames" id="allowedDomainName"
+                                                        placeholder="{{'Allowed Domain Name'| translate}}"
+                                                        [matChipInputFor]="chipList"
+                                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                        [matChipInputAddOnBlur]="addOnBlur"
+                                                        (matChipInputTokenEnd)="addAllowedDomainNames($event)">
+                                                </mat-chip-list>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row w-100 mx-0 px-0">
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label id="defaultLanguage">
+                                                    {{'Actual Domain Name' | translate}}
+                                                </mat-label>
+                                                <input matInput type="text" id="actualDomainName"
+                                                    placeholder="{{'Actual Domain Name' | translate}}"
+                                                    formControlName="actualDomainName">
+                                                <mat-error *ngIf="form.get('actualDomainName').errors?.required">
+                                                    {{'Actual Domain Name is Required' | translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label id="defaultLanguage">
+                                                    {{'Default Language *' | translate}}
+                                                </mat-label>
+                                                <mat-select id="defaultLanguage" formControlName="defaultLanguge">
+                                                    <mat-optgroup label="Default Language">
+                                                        <mat-option value="en">English</mat-option>
+                                                    </mat-optgroup>
+                                                </mat-select>
+                                                <mat-error *ngIf="form.get('defaultLanguge').errors?.required">
+                                                    {{'Default Language is Required' | translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 px-2">
+                                            <div class="w-100">
+                                                <app-timezone [inputMessage1]="templateData1" [fromUpdate]="true"
+                                                    [templateObject1]="this" (orgValue1)="getData1($event,userForm)">
+                                                </app-timezone>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row w-100 mx-0 px-0">
+                                        <p class="col-md-4 px-2 fs_12"> {{'Your URL would be:' | translate}}
+                                            <mat-form-field class="col-md-4 p-0 w-100">
+                                                <input matInput id="subdomainName"
+                                                    placeholder="{{'Subdomain Name *' | translate}}" type="text"
+                                                    formControlName="subdomainName"
+                                                    (focusout)="validateSubdomainName()">
+                                                <mat-error *ngIf="form.get('subdomainName').errors?.required">
+                                                    {{'Preferred Subdomain Name is Required' | translate}}
+                                                </mat-error>
+                                                <mat-error *ngIf="form.get('subdomainName').errors?.alreadyExist">
+                                                    {{'This subdomain name is not available' | translate}}
+                                                </mat-error>
+                                            </mat-form-field>.yoroflow.com
+                                        </p>
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label>{{'Organization Url' | translate}}</mat-label>
+                                                <input matInput id="orgUrl"
+                                                    placeholder="{{'Organization Url' | translate}}"
+                                                    formControlName="organizationUrl">
+                                                <!-- <mat-error>{{'Organization Url is required' | translate}}</mat-error> -->
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 px-2" *ngIf="adminUpdate">
+                                            <mat-form-field appearance="outline" class="w-100">
+                                                <mat-label id="selectOrganizationTheme">{{'Select Organization Theme' |
+                                                    translate}}
+                                                </mat-label>
+                                                <mat-select formControlName="themeId">
+                                                    <mat-option value="yoroflow-theme">Yoroflow Theme
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="form.get('timezone').errors?.required">
+                                                    {{'Time Zone is Required' | translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <!----=May Be Not Used-->
+                                    <div class="row w-100 mx-0 px-0" *ngIf="!adminUpdate">
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label>{{'Server Farm *' | translate}}</mat-label>
+                                                <mat-select id="serverFarm" formControlName="serverFarm">
+                                                    <mat-option id="us_farm" value="US">US
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>{{'Server Farm is required' | translate}}</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label id="dataSourceName">{{'Datasource Name *' | translate}}
+                                                </mat-label>
+                                                <mat-select id="dataSource" formControlName="dataSourceName">
+                                                    <mat-option id="us" value="US">US
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>{{'Datasource Name is required' | translate}}</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 px-2">
+                                            <mat-form-field class="w-100" appearance="outline">
+                                                <mat-label id="selectOrganizationTheme">{{'Select Organization Theme' |
+                                                    translate}}
+                                                </mat-label>
+                                                <mat-select formControlName="themeId">
+                                                    <mat-option value="yoroflow-theme">Yoroflow Theme
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="form.get('timezone').errors?.required">
+                                                    {{'Time Zone is Required' | translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!adminUpdate" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+                                        fxLayoutGap.lt-md="0px">
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <mat-label>{{'Start Date' | translate}}</mat-label>
+                                            <input matInput id="startDate" formControlName="startDate"
+                                                [matDatepicker]="startPicker" required>
+                                            <mat-datepicker-toggle matSuffix [for]="startPicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #startPicker></mat-datepicker>
+                                            <mat-error>{{'Start date is required' | translate}}</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <mat-label>{{'End Date' | translate}}</mat-label>
+                                            <input matInput id="endDate" formControlName="endDate"
+                                                [matDatepicker]="endPicker">
+                                            <mat-datepicker-toggle matSuffix [for]="endPicker" required>
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #endPicker></mat-datepicker>
+                                            <mat-error *ngIf="form.get('endDate').errors?.required">
+                                                {{'End date is required'
+                                                | translate}}</mat-error>
+                                            <mat-error *ngIf="form.get('endDate').errors?.greaterThan">
+                                                {{'End date should be greater than start date' | translate}}</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <input matInput id="maximumUsers" type="number" min="5"
+                                                oninput="this.value = Math.abs(this.value)"
+                                                placeholder="{{'Default number of users *' | translate}}"
+                                                formControlName="maximumUsers" required>
+                                            <mat-error *ngIf="form.get('maximumUsers').errors?.required">
+                                                {{'Default number of users is required' | translate}}</mat-error>
+                                            <mat-error *ngIf="form.get('maximumUsers').errors?.min">
+                                                {{'Minimum Users should be 5 ' | translate}}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <!----=May Be Not Used-->
+                                    <div class="row w-100 mx-0 px-0">
+                                        <div class="col-md-5 px-0">
+                                            <div class="row w-100 mx-0 px-0">
+                                                <upload-logo #uploadLogo [action]="uploadAction"
+                                                    (uploaded)="getUploaded($event)"
+                                                    buttonName="Upload Organization Logo">
+                                                </upload-logo>
+
+                                                <load-logo [base64Image]="loadLogo.previewUrl"
+                                                    *ngIf="loadLogo.previewUrl && logo" class="ml-2">
+                                                </load-logo>
+                                            </div>
+                                            <span class="mt-1 text-danger">
+                                                {{'Note : Maximum image 110px X 35px,Size:150kb'| translate}}</span>
+                                        </div>
+                                        <div class="col-md-6 pl-2 pr-2">
+                                            <div class="row w-100 mx-0 px-0">
+                                                <button mat-raised-button color="primary" type="button"
+                                                    style="width:200px" (click)="fileInput.click()">
+                                                    <span>{{'Upload Background Image' | translate}}</span>
+                                                    <input #fileInput id="backgroundImage" type="file"
+                                                        (change)="onFileInput($event)" style="display:none;"
+                                                        accept="image/*" />
+                                                </button>
+                                                <img [src]="transform()" class="ml-2 "
+                                                    *ngIf="previewBackgroundImageUrl && isBackgroundLoad" class="logo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <mat-card-actions>
+                                        <div fxLayoutAlign="end end">
+                                            <button mat-raised-button color="primary" id="btnsave" type="submit"
+                                                (click)="update(userForm)"
+                                                [disabled]="disableBackground === true && disableLogo &&disabletimeZone === true && !form.get('orgName').dirty && !form.get('actualDomainName').dirty && !form.get('subdomainName').dirty && !form.get('defaultLanguge').dirty && !form.get('organizationUrl').dirty && !form.get('allowedDomainNames').dirty && !form.get('themeId').dirty   "><span
+                                                    *ngIf="!isDisable">{{'Update' | translate}}</span><span
+                                                    *ngIf="isDisable">{{'Updating...' | translate}}</span></button>
+                                            <button *ngIf="!isAllowAuthentication" mat-raised-button color="accent"
+                                                type="button" (click)="resetOrg(userForm,'update')"
+                                                id="orgreset">{{'Reset'
+                                                | translate}}</button>
+                                        </div>
+                                    </mat-card-actions>
+                                    <!-- <div style="margin-top: 3%;" fxLayout="row" fxLayoutGap="15px">
+                                                    <button mat-raised-button color="primary" id="btnsave" type="submit"
+                                                        (click)="deactivate()">
+                                                        Deactivate account
+                                                    </button>
+                                                </div> -->
+                                </mat-card>
+                                <!----=Administation -> Update Your Organization / Create
+                                    Your Organization----------------=End-->
+
+
+
+                                <mat-card
+                                    *ngIf="showUpdateOrg  && yoroAdminUpdate && !isAllowAuthentication && !isSmsKey  && !isPrferences && !isCustomAttribute && !isEmailSettings && !isTwoFactorAuth && !isSummaryReport"
+                                    class="mt-2">
+                                    <mat-card-title>{{'Package Details' | translate}}</mat-card-title>
+                                    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+                                        fxLayoutGap.lt-md="0px">
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <mat-label>{{'Trial Start Date' | translate}}</mat-label>
+                                            <input matInput id="startDate" [max]="form.get('endDate').value"
+                                                formControlName="startDate" [matDatepicker]="startPicker" required>
+                                            <mat-datepicker-toggle matSuffix [for]="startPicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #startPicker></mat-datepicker>
+                                            <mat-error>{{'Start date is required' | translate}}</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <mat-label>{{'Trial End Date' | translate}}</mat-label>
+                                            <input matInput id="endDate" [min]="form.get('startDate').value"
+                                                formControlName="endDate" [matDatepicker]="endPicker" required>
+                                            <mat-datepicker-toggle matSuffix [for]="endPicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #endPicker></mat-datepicker>
+                                            <mat-error *ngIf="form.get('endDate').errors?.required">
+                                                {{'End date is required'
+                                                | translate}}</mat-error>
+                                            <mat-error *ngIf="form.get('endDate').errors?.greaterThan">
+                                                {{'End date should be greater than start date' | translate}}</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <mat-label id="defaultLanguage">
+                                                {{'Select Package' | translate}}
+                                            </mat-label>
+                                            <mat-select id="planType" formControlName="orgPlanType">
+                                                <mat-optgroup label="{{'Select Package' | translate}}">
+                                                    <mat-option value="STARTER">
+                                                        STARTER</mat-option>
+                                                    <mat-option value="BUSINESS PACK">
+                                                        BUSINESS PACK</mat-option>
+                                                    <mat-option value="STANDARD">
+                                                        STANDARD</mat-option>
+                                                    <mat-option value="PRO">
+                                                        PRO</mat-option>
+                                                </mat-optgroup>
+                                            </mat-select>
+                                            <mat-error *ngIf="form.get('orgPlanType').errors?.required">
+                                                {{'Package is Required' | translate}}
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field style="width:33%" appearance="outline">
+                                            <mat-label id="orgBillingType">
+                                                {{'Select Billing Type' | translate}}
+                                            </mat-label>
+                                            <mat-select id="billingType" formControlName="orgBillingType">
+                                                <mat-optgroup label="{{'Select billing type' | translate}}">
+                                                    <mat-option value="monthly">{{'Monthly' | translate}}</mat-option>
+                                                    <mat-option value="yearly">{{'Yearly' | translate}}</mat-option>
+
+                                                </mat-optgroup>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <mat-card-actions>
+                                        <div fxLayoutAlign="end end">
+                                            <button mat-raised-button color="primary" id="packagesave" type="submit"
+                                                (click)="updatePackage(userForm)"
+                                                [disabled]="!form.get('startDate').dirty && !form.get('endDate').dirty && !form.get('orgPlanType').dirty && !form.get('orgBillingType').dirty "><span
+                                                    *ngIf="!isDisable">{{'Update' | translate}}</span><span
+                                                    *ngIf="isDisable">{{'Updating...' | translate}}</span></button>
+                                            <button mat-raised-button color="accent" type="button"
+                                                (click)="resetPackage(userForm)" id="packagereset">{{'Reset' |
+                                                translate}}</button>
+                                        </div>
+                                    </mat-card-actions>
+                                </mat-card>
+                                <mat-card
+                                    *ngIf="showUpdateOrg  && yoroAdminUpdate && !isAllowAuthentication && !isSmsKey  && !isPrferences && !isCustomAttribute && !isEmailSettings && !isTwoFactorAuth && !isSummaryReport"
+                                    style="margin-top: 1%;">
+                                    <mat-card-title>{{'Pricing Details' | translate}}</mat-card-title>
+                                    <div class="row w-100">
+                                        <div class="col-md-4 px-0" formArrayName="pricingDiscount"
+                                            *ngFor="let item of form.get('pricingDiscount').controls;let i = index;">
+                                            <h4 style="width: 130px;margin-top: 20px !important;margin-left: 10px;">
+                                                <b>{{item.get('planName').value |
+                                                    translate}}</b>
+                                            </h4>
+                                            <div class="row w-100 mx-0 px-0" [formGroupName]="i">
+                                                <div class="col-md-5 pl-0 pr-2" style="margin-left: 9px;">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <mat-label i18n="Base Price">Base Price</mat-label>
+                                                        <input oninput="this.value = Math.abs(this.value)" matInput
+                                                            (input)="valuechange($event)" type="number"
+                                                            [id]="'basePrice'+i" formControlName="basePrice"
+                                                            placeholder="Base Price" i18n-placeholder="Base Price">
+                                                        <mat-icon matPrefix>attach_money</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-md-8 pl-2 pr-2 ">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <mat-label i18n="Amount per user">Amount per user billing type
+                                                            monthly
+                                                        </mat-label>
+                                                        <input oninput="this.value = Math.abs(this.value)" matInput
+                                                            (input)="valuechange($event)" type="number"
+                                                            [id]="'amountPerUserMonthly'+i"
+                                                            formControlName="amountPerUserMonthly"
+                                                            placeholder="Amount per user billing type monthly"
+                                                            i18n-placeholder="Amount per user">
+                                                        <mat-icon matPrefix>attach_money</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+
+                                                <div class="col-md-8 pl-2 pr-2 ">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <mat-label i18n="Amount per user">Amount per user billing type
+                                                            yearly
+                                                        </mat-label>
+                                                        <input oninput="this.value = Math.abs(this.value)" matInput
+                                                            (input)="valuechange($event)" type="number"
+                                                            [id]="'amountPerUserYearly'+i"
+                                                            formControlName="amountPerUserYearly"
+                                                            placeholder="Amount per user billing type yearly"
+                                                            i18n-placeholder="Amount per user">
+                                                        <mat-icon matPrefix>attach_money</mat-icon>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <mat-card-actions>
+                                        <div fxLayoutAlign="end end">
+                                            <button mat-raised-button color="primary" id="pricingsave" type="submit"
+                                                (click)="updatePricing(userForm)"
+                                                [disabled]="disablePricing === true"><span *ngIf="!isDisable">{{'Update'
+                                                    | translate}}</span><span *ngIf="isDisable">{{'Updating...' |
+                                                    translate}}</span></button>
+                                            <button *ngIf="!isAllowAuthentication" mat-raised-button color="accent"
+                                                type="button" (click)="resetDiscount(userForm)"
+                                                id="discountreset">{{'Reset'
+                                                | translate}}</button>
+                                        </div>
+                                    </mat-card-actions>
+                                </mat-card>
+                                <mat-card *ngIf="isMobileMenuPreference" style="width: 100%;">
+                                    <mat-card-title>{{'Mobile Menu Preferences' | translate}}</mat-card-title>
+                                    <div formArrayName="customMenuList"
+                                        *ngFor="let customMenu of getCustomMenuFormGroup();let i = index">
+                                        <div fxLayout="row" fxLayoutGap="20px" [formGroupName]="i">
+                                            <div fxLayout="column" style="width: 13%;">
+                                                <mat-label style="font-weight: bold;margin-top: 15px;">
+                                                    {{menuList[i]}}
+                                                </mat-label>
+                                            </div>
+                                            <mat-form-field appearance="outline">
+                                                <input matInput [id]="'customMenuName_'+i" type="text"
+                                                    formControlName="customMenuName"
+                                                    placeholder="{{'Custom Menu Name' | translate}}">
+                                                <mat-error>{{'Custom Menu Name is required' | translate}}</mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline">
+                                                <input matInput [id]="'displayName_'+i" type="text"
+                                                    formControlName="displayName"
+                                                    placeholder="{{'Display Name' | translate}}">
+                                                <mat-error>{{'Display Name is required' | translate}}</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                                <!----=Administation -> SMS Key Management------------------>
+                                <mat-card *ngIf="isSmsKey && isFreePlan===false" class="w-100">
+                                    <h1>{{'SMS Key Management' | translate}}</h1>
+                                    <div formArrayName="organizationSmsKeys"
+                                        *ngFor="let smsSection of getSMSSectionFormArray();let i = index">
+                                        <mat-card [formGroupName]="i" class="mt-2 p-2">
+                                            <div class="row w-100 mx-0 px-0">
+                                                <div class="w_22 px-2 sm_w_100 ">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <mat-label>{{'Provider Name' | translate}}</mat-label>
+                                                        <mat-select [id]="'providerName_'+i"
+                                                            formControlName="providerName"
+                                                            (selectionChange)="providerNameSelect($event,i)">
+                                                            <mat-option value="aws" [id]="'aws_'+i" [disabled]="!show">
+                                                                AWS
+                                                            </mat-option>
+                                                            <mat-option value="twilio" [id]="'twilio_'+i">Twilio
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="w_22 px-2 sm_w_100">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <mat-label>{{'SMS From' | translate}}</mat-label>
+                                                        <mat-select [id]="'smsFrom_'+i" formControlName="smsFrom"
+                                                            (selectionChange)="smsFromSelect($event,i)">
+                                                            <mat-option value="phoneNumber">{{'Phone Number' |
+                                                                translate}}
+                                                            </mat-option>
+                                                            <mat-option value="serviceName">{{'Service Name' |
+                                                                translate}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('smsFrom').errors?.required">
+                                                            {{'SMS From is required' | translate}}</mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="w_22 px-2 sm_w_100">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <input matInput type="text" [id]="'phoneNumber_'+i"
+                                                            placeholder="{{'Phone Number' | translate}}"
+                                                            formControlName="fromPhoneNumber"
+                                                            (focusout)="alreadyExistCheckForPhoneNumber(i)">
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('fromPhoneNumber').errors?.required">
+                                                            {{'From Phone Number is required' | translate}}</mat-error>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('fromPhoneNumber').errors?.alreadyExistNumber">
+                                                            {{'From Phone Number is already exist' | translate}}
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="w_22 px-2 sm_w_100">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <input matInput type="text" [id]="'serviceName_'+i"
+                                                            placeholder="{{'Service Name' | translate}}"
+                                                            formControlName="serviceName"
+                                                            (focusout)="alreadyExistCheckForServiceName(i)">
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('serviceName').errors?.required">
+                                                            {{'Service Name is required' | translate}}</mat-error>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('serviceName').errors?.alreadyExistServiceName">
+                                                            Service Name is already exist
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="w_12 px-2 pt-3 mobile_hide">
+                                                    <div
+                                                        class="row w-100 mx-0 px-0 align-self-center justify-content-end">
+                                                        <button mat-mini-fab [id]="'addSMSSection_'+i" type="button"
+                                                            color="primary" (click)="addSmsFormArray(i+1)" class="mr-1">
+                                                            <mat-icon>add</mat-icon>
+                                                        </button>
+                                                        <button type="button" mat-mini-fab color="accent"
+                                                            [id]="'removeSMSSection_'+i" (click)="removeSmsFormArray(i)"
+                                                            [disabled]="getSMSSectionFormArray().length === 1">
+                                                            <mat-icon>remove</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row w-100 mx-0 px-0">
+                                                <div class="col-md-12 px-2">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <textarea matInput type="text" [id]="'secretKey_'+i"
+                                                            placeholder="{{'Secret Key' | translate}}"
+                                                            formControlName="secretKey" cols="2" rows="2"></textarea>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('secretKey').errors?.required">
+                                                            {{'Secret Key is required' | translate}}
+                                                        </mat-error>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('secretKey').errors?.invalidSecretKey">
+                                                            {{'You need to update secret key' | translate}}
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div class="row w-100 mx-0 px-0">
+                                                <div class="col-md-12 px-2">
+                                                    <mat-form-field class="w-100" appearance="outline">
+                                                        <textarea matInput type="text" [id]="'secretToken_'+i"
+                                                            placeholder="{{'Secret Token' | translate}}"
+                                                            formControlName="secretToken" cols="2" rows="2"></textarea>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('secretToken').errors?.required">
+                                                            {{'Secret Token is required' | translate}}</mat-error>
+                                                        <mat-error
+                                                            *ngIf="form.get('organizationSmsKeys').get(''+i).get('secretToken').errors?.invalidSecretToken">
+                                                            {{'You need to update Secret Token' | translate}}
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="row w-100 mx-0 px-0 align-self-center justify-content-end desktop_hide">
+                                                <button mat-mini-fab [id]="'addSMSSection_'+i" type="button"
+                                                    color="primary" (click)="addSmsFormArray(i+1)" class="mr-1">
+                                                    <mat-icon>add</mat-icon>
+                                                </button>
+                                                <button type="button" mat-mini-fab color="accent"
+                                                    [id]="'removeSMSSection_'+i" (click)="removeSmsFormArray(i)"
+                                                    [disabled]="getSMSSectionFormArray().length === 1">
+                                                    <mat-icon>remove</mat-icon>
+                                                </button>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </mat-card>
+                                <mat-card *ngIf="isSmsKey===true && isFreePlan===true" class="w-100">
+                                    <app-expire-dialog></app-expire-dialog>
+                                </mat-card>
+                                <!----=Administation -> SMS Key Management------------=End-->
+                                <!----=Administation -> Custom Attribute List------------------>
+                                <mat-card *ngIf="isCustomAttribute && isFreePlan===false" class="w-100">
+                                    <mat-checkbox id="addCustomAttribute" class="mat-checkbox mobile_hide"
+                                        formControlName="addCustomAttribute" (change)="addOrgAttributes($event)">
+                                        {{'Define what are the attributes, do you like to get input from users.' |
+                                        translate}}
+                                    </mat-checkbox>
+                                    <div class="row w-100 mx-0 desktop_hide">
+                                        <div class="sm_w_20">
+                                            <mat-checkbox id="addCustomAttribute" class="mat-checkbox "
+                                                formControlName="addCustomAttribute"
+                                                (change)="addOrgAttributes($event)">
+                                            </mat-checkbox>
+                                        </div>
+                                        <div class="sm_w_80">
+                                            <p>{{'Define what are the attributes, do you like to get input from users.'
+                                                |
+                                                translate}}</p>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="form.get('addCustomAttribute').value === true">
+                                        <mat-card-title class="mt-2">{{'Custom Attribute List' | translate}}
+                                        </mat-card-title>
+                                        <div formArrayName="customAttributeListVo"
+                                            *ngFor="let attribute of getCustomAtrributeFormArray().controls; let i = index">
+                                            <mat-card class="w-100 my-2 px-0 py-3" id="attribute_list">
+                                                <div [formGroupName]="i" class="row w-100 mx-0 px-0">
+                                                    <div class="col-md-10 px-0">
+                                                        <div class="row w-100 mx-0 px-0">
+                                                            <div class="col-md-3 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label i18n="Attribute Name">{{'Attribute Name'
+                                                                        | translate}}</mat-label>
+                                                                    <input matInput [id]="'attributeName_'+i"
+                                                                        type="text" formControlName="name"
+                                                                        placeholder="Attribute Name"
+                                                                        i18n-placeholder="Attribute Name"
+                                                                        (focusout)="checkDuplicateAttribute(i)">
+                                                                    <mat-error
+                                                                        *ngIf="attribute.get('name').errors?.required"
+                                                                        i18n="Attribute Name is
+                                                                                required">
+                                                                        Attribute Name is
+                                                                        required</mat-error>
+                                                                    <mat-error
+                                                                        *ngIf="attribute.get('name').errors?.unique"
+                                                                        i18n="Attribute Name is
+                                                                                unique">
+                                                                        Attribute Name is
+                                                                        unique</mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-2 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label>{{'Data Type' | translate}}</mat-label>
+                                                                    <mat-select [id]="'dataType_'+i"
+                                                                        formControlName="dataType">
+                                                                        <mat-option value='string'
+                                                                            (onSelectionChange)="setSizeRequired(attribute.get('size'), attribute.get('dataType').value)">
+                                                                            String</mat-option>
+                                                                        <mat-option value='long'
+                                                                            (onSelectionChange)="setSizeRequired(attribute.get('size'), attribute.get('dataType').value)">
+                                                                            Number</mat-option>
+                                                                        <mat-option value='float'
+                                                                            (onSelectionChange)="setSizeRequired(attribute.get('size'), attribute.get('dataType').value)">
+                                                                            Float</mat-option>
+                                                                        <mat-option value='date'
+                                                                            (onSelectionChange)="setSizeRequired(attribute.get('size'), attribute.get('dataType').value)">
+                                                                            Date</mat-option>
+                                                                    </mat-select>
+                                                                    <mat-error>{{'Data Type is required' | translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-2 px-2"
+                                                                *ngIf="attribute.get('dataType').value !== 'date'">
+                                                                <mat-form-field class="w-100"
+                                                                    *ngIf="attribute.get('dataType').value !== 'date'"
+                                                                    appearance="outline">
+                                                                    <mat-label>{{'Attribute Size' | translate}}
+                                                                    </mat-label>
+                                                                    <input matInput [id]="'size_'+i"
+                                                                        placeholder="{{'Attribute Size' | translate}}"
+                                                                        type="number" formControlName="size" min="0"
+                                                                        oninput="this.value = Math.abs(this.value)"
+                                                                        required>
+                                                                    <mat-error>{{'Attribute Size is required' |
+                                                                        translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-3 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label>{{'Attribute Type' | translate}}
+                                                                    </mat-label>
+                                                                    <mat-select [id]="'attributeType_'+i"
+                                                                        formControlName="attributeType">
+                                                                        <mat-option value='org'
+                                                                            (onSelectionChange)="setValueRequired(attribute.get('attributeType').value, attribute.get('required').value, attribute.get('value'))">
+                                                                            {{'Organization Level' | translate}}
+                                                                        </mat-option>
+                                                                        <mat-option value='user'
+                                                                            (onSelectionChange)="setValueRequired(attribute.get('attributeType').value, attribute.get('required').value, attribute.get('value'))">
+                                                                            {{'User Level' | translate}}</mat-option>
+                                                                    </mat-select>
+                                                                    <mat-error>{{'Attribute Type is required' |
+                                                                        translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-2 px-2"
+                                                                *ngIf="attribute.get('attributeType').value === 'org'">
+                                                                <mat-form-field class="w-100"
+                                                                    *ngIf="attribute.get('dataType').value !== 'long' &&
+                                                                     attribute.get('dataType').value !== 'float' && attribute.get('dataType').value !== 'date'"
+                                                                    appearance="outline">
+                                                                    <mat-label i18n="Attribute Value">
+                                                                        Attribute Value
+                                                                    </mat-label>
+                                                                    <input matInput type="text" formControlName="value"
+                                                                        placeholder="Attribute Value"
+                                                                        i18n-placeholder="Attribute Value"
+                                                                        [id]="'attributeValue_'+i">
+                                                                    <mat-error i18n="Attribute Value is
+                                                                                required">Attribute Value is
+                                                                        required
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                                <mat-form-field class="w-100"
+                                                                    *ngIf="attribute.get('dataType').value === 'long' || attribute.get('dataType').value === 'float'"
+                                                                    appearance="outline">
+                                                                    <mat-label i18n="Attribute Value">
+                                                                        Attribute Value
+                                                                    </mat-label>
+                                                                    <input matInput type="number"
+                                                                        formControlName="value"
+                                                                        placeholder="Attribute Value"
+                                                                        i18n-placeholder="Attribute Value"
+                                                                        [id]="'attributeValue_'+i">
+                                                                    <mat-error i18n="Attribute Value is
+                                                                                required">Attribute Value is
+                                                                        required
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                                <mat-form-field class="w-100"
+                                                                    *ngIf="attribute.get('dataType').value === 'date'"
+                                                                    appearance="outline">
+                                                                    <mat-label i18n="Attribute Value">
+                                                                        Attribute Value
+                                                                    </mat-label>
+                                                                    <input matInput [id]="'attributeValue_'+i"
+                                                                        [matDatepicker]="picker" formControlName="value"
+                                                                        placeholder="Attribute Value"
+                                                                        i18n-placeholder="Attribute Value">
+                                                                    <mat-datepicker-toggle matSuffix [for]="picker">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #picker>
+                                                                    </mat-datepicker>
+                                                                    <mat-error i18n="Attribute Value is
+                                                                                required">Attribute Value is
+                                                                        required
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <!-- <div class="col-md-3">
+                                                        <div class="row w-100 mx-0 px-0 justify-content-end">
+                                                            <div fxLayout="column pt-3 mr-3">
+                                                                {{'Required' | translate}}
+                                                                <mat-slide-toggle color="accent"
+                                                                    formControlName="required" [id]="'required_'+i"
+                                                                    (change)="setValueRequired(attribute.get('attributeType').value, attribute.get('required').value, attribute.get('value'))">
+                                                                </mat-slide-toggle>
+                                                            </div>
+                                                            <button mat-mini-fab [id]="'addAttributes_'+i" type="button"
+                                                                class="add " color="primary" (click)="addAttributes()"
+                                                                class="icon mr-1" style="margin-top: 15px;">
+                                                                <mat-icon>add</mat-icon>
+                                                            </button>
+                                                            <button type="button" mat-mini-fab color="accent"
+                                                                class="add" [id]="'removeAttributes_'+i"
+                                                                (click)="removeAttributes(i)" class="icon"
+                                                                style="margin-top: 15px;">
+                                                                <mat-icon>remove</mat-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div> -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 px-0">
+                                                        <div class="row w-100 mx-0 pl-0 pr-2 justify-content-end">
+                                                            <div fxLayout="column pt-3 mr-3">
+                                                                <span class="fs_10">{{'Required' | translate}}</span>
+                                                                <mat-slide-toggle color="accent"
+                                                                    formControlName="required" [id]="'required_'+i"
+                                                                    (change)="setValueRequired(attribute.get('attributeType').value, attribute.get('required').value, attribute.get('value'))">
+                                                                </mat-slide-toggle>
+                                                            </div>
+                                                            <button mat-mini-fab [id]="'addAttributes_'+i" type="button"
+                                                                class="add " color="primary" (click)="addAttributes()"
+                                                                class="icon mr-1" style="margin-top: 15px;">
+                                                                <mat-icon>add</mat-icon>
+                                                            </button>
+                                                            <button type="button" mat-mini-fab color="accent"
+                                                                class="add" [id]="'removeAttributes_'+i"
+                                                                (click)="removeAttributes(i)" class="icon"
+                                                                style="margin-top: 15px;">
+                                                                <mat-icon>remove</mat-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </mat-card>
+                                        </div>
+                                    </ng-container>
+                                </mat-card>
+                                <mat-card *ngIf="isCustomAttribute===true && isFreePlan===true" class="w-100">
+                                    <app-expire-dialog></app-expire-dialog>
+                                </mat-card>
+                                <!----=Administation -> Custom Attribute List-----------=End------->
+                                <!----=Administation -> Authentication Methods------------------>
+                                <mat-card *ngIf="isAllowAuthentication && isFreePlan===false" class="w-100">
+                                    <mat-card-title>{{'Authentication Methods' | translate}}</mat-card-title>
+                                    <div formArrayName="allowAuthentication"
+                                        *ngFor="let authentication of getAuthenticationFormArray().controls;let i = index">
+                                        <mat-card class="w-100 mt-2 bg-light">
+                                            <div [formGroupName]="i" class="w-100 mt-2 row mx-0">
+                                                <div class="row w-100 mx-0">
+                                                    <mat-checkbox formControlName="isAuthProvider"
+                                                        [disabled]="authentication.get('authProvider').value === 'Yoroflow sign in'"
+                                                        [id]="'authProvider_' + i"
+                                                        (change)="authProviderChange($event, i, authentication.get('authProvider').value)"
+                                                        class="example-margin">
+                                                        {{authentication.get('authProvider').value | translate}}
+                                                    </mat-checkbox>
+                                                </div>
+                                                <ng-container
+                                                    *ngIf="authentication.get('isAuthProvider').value === true && authentication.get('authProvider').value === 'Sign in with Microsoft Azure'">
+                                                    <div class="row w-100 mx-0">
+                                                        <mat-form-field class="col-md-6 w-100" appearance="outline">
+                                                            <input matInput formControlName="clientId"
+                                                                [type]="curnHide ? 'password' : 'text'"
+                                                                placeholder="Client Id *" i18n-placeholder="Client Id *"
+                                                                [id]="'clientId_'+i" required>
+                                                            <mat-icon class="pointer" matSuffix
+                                                                (click)="curnHide = !curnHide">{{curnHide ?
+                                                                'visibility_off' : 'visibility'}}</mat-icon>
+                                                            <mat-error i18n="Client Id is
+                                                            required">Client Id is
+                                                                required
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                        <div *ngIf="clientId !==null && change===false"
+                                                            class=" col-md-6 w-100 row justify-content-center text-center">
+                                                            <mat-label class="text-center"> Secret Id:&nbsp;
+                                                                <a mat-button id="button" color="primary"
+                                                                    (click)="changeSecret()">Change
+                                                                </a>
+                                                            </mat-label>
+                                                        </div>
+                                                        <div class="col-md-6 w-100"
+                                                            *ngIf="clientId ===null || change ===true">
+                                                            <div class="row">
+                                                                <div class="col-10">
+                                                                    <mat-form-field appearance="outline" class="w-100">
+                                                                        <input matInput
+                                                                            [type]="newnHide ? 'password' : 'text'"
+                                                                            formControlName="secretId"
+                                                                            placeholder="Secret Id *"
+                                                                            i18n-placeholder="Secret Id *"
+                                                                            [id]="'secretId_'+i" required>
+                                                                        <mat-icon class="pointer" matSuffix
+                                                                            (click)="newnHide = !newnHide">{{newnHide ?
+                                                                            'visibility_off' : 'visibility'}}</mat-icon>
+
+                                                                        <mat-error i18n="Secret Id is
+   required">Secret Id is
+                                                                            required
+                                                                        </mat-error>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <button *ngIf="clientId !== null"
+                                                                    style="background:#F8F9FA;" mat-button matSuffix
+                                                                    mat-icon-button aria-label="Clear"
+                                                                    (click)="closeSecret()">
+                                                                    <mat-icon style="background: lightgray;">close
+                                                                    </mat-icon>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </div>
+                                                    <div class="row w-100 mx-0">
+                                                        <div class="col-md-12">
+                                                            <mat-form-field class="w-100" appearance="outline">
+                                                                <input matInput formControlName="tenantId"
+                                                                    placeholder="Tenant Id" i18n-placeholder="Tenant Id"
+                                                                    [id]="'tenantId_'+i">
+                                                                <mat-error i18n="Tenant Id is
+                                                        required">Tenant Id is
+                                                                    required
+                                                                </mat-error>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </div>
+                                                    <mat-radio-group formControlName="allowedGroupType"
+                                                        aria-label="Select an option" [id]="'groupType_' + i">
+                                                        <div class="row w-100 mx-0">
+                                                            <div class="col-md-6 px-2">
+                                                                <mat-radio-button class="pt-3" [id]="'all_' + i"
+                                                                    value="all">{{'Allow all groups' |
+                                                                    translate}}
+                                                                </mat-radio-button>
+                                                            </div>
+                                                            <div class="col-md-6 px-2">
+                                                                <mat-radio-button class="pt-3" [id]="'specific_' + i"
+                                                                    value="specific">{{'Allow specific groups' |
+                                                                    translate}}</mat-radio-button>
+                                                            </div>
+                                                        </div>
+                                                    </mat-radio-group>
+                                                    <ng-container
+                                                        *ngIf="authentication.get('allowedGroupType').value === 'specific'">
+                                                        <div class="row w-100 mx-0">
+                                                            <div class="col-md-12 px-2">
+                                                                <mat-form-field style="width:100%" appearance="outline">
+                                                                    <mat-label [id]="'groupName' + i">
+                                                                        {{'Allowed Group Name *' | translate}}
+                                                                    </mat-label>
+                                                                    <mat-chip-list #chipListAuth
+                                                                        style="padding: 0; margin: 0;"
+                                                                        aria-label="Allowed Group Names">
+                                                                        <ng-container
+                                                                            *ngFor="let nameList of allowedDomainNamesAuthList">
+                                                                            <mat-chip [id]="'nameList' + i"
+                                                                                *ngIf="nameList.index === i"
+                                                                                [selectable]="selectable"
+                                                                                [removable]="removable"
+                                                                                (removed)="removeAllowedDomainAuthNames(nameList, i)">
+                                                                                {{nameList.name}}
+                                                                                <mat-icon matChipRemove
+                                                                                    *ngIf="removable">
+                                                                                    close</mat-icon>
+                                                                            </mat-chip>
+                                                                        </ng-container>
+                                                                        <input [id]="'allowedGroup' + i"
+                                                                            formControlName="allowedGroup"
+                                                                            [id]="i + 'allowedGroupName'"
+                                                                            [matChipInputFor]="chipListAuth"
+                                                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                                            [matChipInputAddOnBlur]="addOnBlur"
+                                                                            (matChipInputTokenEnd)="addAllowedDomainAuthNames($event, i)">
+                                                                    </mat-chip-list>
+                                                                </mat-form-field>
+                                                                <div [id]="'allowedGroupRequired' + i"
+                                                                    *ngIf="authentication.get('allowedGroup').errors?.required"
+                                                                    class="error">{{'Allowed group name is required' |
+                                                                    translate}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="authentication.get('isAuthProvider').value === true && authentication.get('authProvider').value !== 'Yoroflow sign in'
+                                                    && authentication.get('authProvider').value !== 'Sign in with Microsoft Azure'">
+                                                    <mat-radio-group formControlName="selectDomainType"
+                                                        aria-label="Select an option" [id]="'domainType_' + i">
+                                                        <div class="row w-100 mx-0">
+                                                            <div class="col-md-6 px-2">
+                                                                <mat-radio-button class="pt-3" [id]="'all_' + i"
+                                                                    value="all">{{'Allow all domain emails' |
+                                                                    translate}}
+                                                                </mat-radio-button>
+                                                            </div>
+                                                            <div class="col-md-6 px-2">
+                                                                <mat-radio-button class="pt-3" [id]="'specific_' + i"
+                                                                    value="specific">{{'Allow specific domain emails' |
+                                                                    translate}}</mat-radio-button>
+                                                            </div>
+                                                            <div class="col-md-6 px-2">
+                                                                <mat-form-field appearance="outline" class="w-100">
+                                                                    <mat-label>{{'Associate Team' | translate}}
+                                                                    </mat-label>
+                                                                    <mat-select [id]="i + 'associateGroups'"
+                                                                        formControlName="associateGroups" multiple>
+                                                                        <mat-option *ngFor="let group of groupList"
+                                                                            [id]="group.groupName"
+                                                                            [value]="group.groupId">
+                                                                            {{group.groupName}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                    <mat-error>{{'Associate Team is required' |
+                                                                        translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-6 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label>{{'Associate user with roles' |
+                                                                        translate}}
+                                                                    </mat-label>
+                                                                    <mat-select [id]="'roleId_'+i"
+                                                                        formControlName="associateRoles" multiple
+                                                                        [disabled]="isLoadUser">
+                                                                        <mat-option *ngFor="let role of rolesList"
+                                                                            [value]="role.id">
+                                                                            {{role.rolesNames}}
+                                                                        </mat-option>
+                                                                    </mat-select>
+                                                                </mat-form-field>
+                                                            </div>
+                                                        </div>
+                                                    </mat-radio-group>
+                                                    <ng-container
+                                                        *ngIf="authentication.get('selectDomainType').value === 'specific'">
+                                                        <div class="row w-100 mx-0">
+                                                            <div class="col-md-12 px-2">
+                                                                <mat-form-field style="width:100%" appearance="outline">
+                                                                    <mat-label [id]="'domainName' + i">
+                                                                        {{'Allowed Domain Name *' | translate}}
+                                                                    </mat-label>
+                                                                    <mat-chip-list #chipListAuth
+                                                                        style="padding: 0; margin: 0;"
+                                                                        aria-label="Allowed Domain Names">
+                                                                        <ng-container
+                                                                            *ngFor="let nameList of allowedDomainNamesAuthList">
+                                                                            <mat-chip [id]="'nameList' + i"
+                                                                                *ngIf="nameList.index === i"
+                                                                                [selectable]="selectable"
+                                                                                [removable]="removable"
+                                                                                (removed)="removeAllowedDomainAuthNames(nameList, i)">
+                                                                                {{nameList.name}}
+                                                                                <mat-icon matChipRemove
+                                                                                    *ngIf="removable">
+                                                                                    close</mat-icon>
+                                                                            </mat-chip>
+                                                                        </ng-container>
+                                                                        <input [id]="'allowedDomain' + i"
+                                                                            formControlName="allowedDomain"
+                                                                            [id]="i + 'allowedDomainName'"
+                                                                            [matChipInputFor]="chipListAuth"
+                                                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                                            [matChipInputAddOnBlur]="addOnBlur"
+                                                                            (matChipInputTokenEnd)="addAllowedDomainAuthNames($event, i)">
+                                                                    </mat-chip-list>
+                                                                </mat-form-field>
+                                                                <div [id]="'allowedDomainRequired' + i"
+                                                                    *ngIf="authentication.get('allowedDomain').errors?.required"
+                                                                    class="error">{{'Allow domain name is required' |
+                                                                    translate}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </mat-card>
+                                <!----=Administation -> Authentication Methods-----------=End------->
+
+                                <!----=Administation -> Two Factor Authentication------------------>
+                                <mat-card *ngIf="isAllowAuthentication===true && isFreePlan===true" class="w-100">
+                                    <app-expire-dialog></app-expire-dialog>
+                                </mat-card>
+                                <mat-card *ngIf="isTwoFactorAuth && isFreePlan===false" class="w-100">
+                                    <mat-card-title>{{'Two Factor Authentication' | translate}}</mat-card-title>
+                                    <mat-checkbox id="enableTwoFactor" class="mat-checkbox"
+                                        formControlName="enableTwoFactor">
+                                        {{'Enforce two factor authentication for all users in the organization' |
+                                        translate}}
+                                    </mat-checkbox>
+                                    <div class="mt-2">
+                                        {{'Allowed two factor methods' | translate}}
+                                    </div>
+                                    <div class="row w-100 mx-0 mt-2 ">
+                                        <ng-container
+                                            *ngFor="let twoFactorMethod of twoFactorVo.twoFactorsList; let i = index">
+                                            <button class="filter_option p-0 mr-2"
+                                                [style.background]="twoFactorVo.selectedTwofactorsList.includes(twoFactorMethod)?'#f1fff1':''"
+                                                mat-button type="button" (click)="twoFactor(twoFactorMethod)"
+                                                [id]="i + 'twoFactorMethod'">
+                                                <div class="row w-100 mx-0 ">
+                                                    <div class="col-md-10 for_sm_width_name">
+                                                        <img src="assets/email-auth.png"
+                                                            *ngIf="twoFactorMethod === 'Email Authenticator'" />
+                                                        <img src="assets/authy.png"
+                                                            *ngIf="twoFactorMethod === 'Authy Authenticator'" />
+                                                        <img src="assets/google-auth.png"
+                                                            *ngIf="twoFactorMethod === 'Google Authenticator'" />
+                                                        <span>
+                                                            {{twoFactorMethod}}
+                                                        </span>
+                                                    </div>
+                                                    <mat-icon class="col-md-2 px-0 pt-2 for_sm_width_icon"
+                                                        *ngIf="twoFactorVo.selectedTwofactorsList.includes(twoFactorMethod)">
+                                                        done
+                                                    </mat-icon>
+                                                </div>
+                                            </button>
+                                        </ng-container>
+                                    </div>
+                                    <div *ngIf="!allowTwoFactorSave" class="fs_12 text-danger">
+                                        {{'Select atleast one two factor methods' | translate}}
+                                    </div>
+                                </mat-card>
+                                <mat-card *ngIf="isTwoFactorAuth===true && isFreePlan===true" class="w-100">
+                                    <app-expire-dialog></app-expire-dialog>
+                                </mat-card>
+                                <!----=Administation -> Two Factor Authentication-------------=End----->
+                                <!----=Administation -> Email Settings------------------>
+                                <mat-card *ngIf="isEmailSettings && isFreePlan===false" class="w-100">
+                                    <div class="row w-100 mx-0 mt-2">
+                                        <div class="col-md-10 px-0 sm_w_60">
+                                            <mat-card-title>{{'Email Settings' | translate}}</mat-card-title>
+                                        </div>
+                                        <div class="col-md-2 justify-content-end  sm_w_40">
+                                            <button mat-raised-button color="primary" id="addEmailSettings"
+                                                class="float-right" (click)="addEmailSettings()">
+                                                + {{'Add new' | translate}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div formArrayName="orgEmailsettingsArray"
+                                        *ngFor="let email of getEmailSettingsFormArray().controls; let i = index">
+                                        <mat-card class="w-100 my-2 py-2 px-0" id="attribute_list">
+                                            <div [formGroupName]="i" class="row w-100 mx-0 px-0">
+                                                <div class="col-md-11 px-0">
+                                                    <div class="row w-100 mx-0 ">
+                                                        <div class="col-md-4 px-2">
+                                                            <mat-form-field class="w-100" appearance="outline">
+                                                                <mat-label>{{'Setting Name *' | translate}}</mat-label>
+                                                                <input matInput [id]="'settingName_'+i" disabled=true
+                                                                    type="text" formControlName="settingName"
+                                                                    placeholder="{{'Setting Name *' | translate}}">
+                                                                <mat-error
+                                                                    *ngIf="email.get('settingName').errors?.required">
+                                                                    {{'Setting Name is required' | translate}}
+                                                                </mat-error>
+                                                                <mat-error
+                                                                    *ngIf="email.get('settingName').errors?.unique">
+                                                                    {{'Setting Name is unique' | translate}}</mat-error>
+                                                            </mat-form-field>
+                                                        </div>
+                                                        <ng-container formGroupName="settingData">
+                                                            <div class="col-md-4 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label>{{'Host Name *' | translate}}</mat-label>
+                                                                    <input matInput disabled=true [id]="'hostName_'+i"
+                                                                        type="text" formControlName="hostName"
+                                                                        placeholder="{{'Host Name *' | translate}}">
+                                                                    <mat-error>{{'Host Name is required' | translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-4 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label>{{'Username *' | translate}}</mat-label>
+                                                                    <input matInput [id]="'username_'+i"
+                                                                        placeholder="{{'Username *' | translate}}"
+                                                                        disabled=true type="text"
+                                                                        formControlName="username">
+                                                                    <mat-error>{{'Username is required' | translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-4 px-2">
+                                                                <mat-form-field class="w-100" appearance="outline">
+                                                                    <mat-label>{{'Port Number *' | translate}}
+                                                                    </mat-label>
+                                                                    <input matInput disabled=true formControlName="port"
+                                                                        placeholder="{{'Port Number *' | translate}}"
+                                                                        [id]="'port_'+i" type="number">
+                                                                    <mat-error>{{'Port Number is required' | translate}}
+                                                                    </mat-error>
+                                                                </mat-form-field>
+                                                            </div>
+                                                            <div class="col-md-4 px-2 sm_w_50">
+                                                                <mat-slide-toggle class="mt-2" color="primary"
+                                                                    formControlName="smtpAuth" disabled=true
+                                                                    [id]="'smtpAuth_'+i">
+
+                                                                </mat-slide-toggle>
+                                                                <span class="ml-1 fs_12">{{'SMTP Auth'
+                                                                    |translate}}</span>
+                                                            </div>
+                                                            <div class="col-md-4 px-2 sm_w_50">
+                                                                <mat-slide-toggle class="mt-2" color="primary"
+                                                                    formControlName="starttlsEnable" disabled=true
+                                                                    [id]="'starttlsEnable_'+i">
+                                                                </mat-slide-toggle>
+                                                                <span class="ml-1 fs_12">{{'Enable TLS'
+                                                                    |translate}}</span>
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1 px-0">
+                                                    <div fclass="row w-100 mx-0 justify-content-end float-right">
+                                                        <button mat-mini-fab [id]="'addemailSetting_'+i" type="button"
+                                                            class="add" color="primary" (click)="editEmailSetting(i)"
+                                                            class="icon mr-1 sm_right_btn">
+                                                            <mat-icon>edit</mat-icon>
+                                                        </button>
+                                                        <button type="button" mat-mini-fab color="accent" class="add"
+                                                            [id]="'removeemailSetting_'+i"
+                                                            (click)="removeEmailSetting(i)" class="icon sm_right_btn">
+                                                            <mat-icon>remove</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                </mat-card>
+                                <mat-card *ngIf="isEmailSettings===true && isFreePlan===true" class="w-100">
+                                    <app-expire-dialog></app-expire-dialog>
+                                </mat-card>
+                                <ng-container>
+                                    <app-summary-report [subdomainName]="customerVO.subdomainName"
+                                        [hidden]="isSummaryReport===false"></app-summary-report>
+                                </ng-container>
+                                <div class="row w-100 mx-0 justify-content-end mt-2"
+                                    *ngIf="isFreePlan === false && !isAutoSubscription && !isEmailSettings && !isSummaryReport && ( isSmsKey  || isAllowAuthentication || isCustomAttribute || isPrferences || isTwoFactorAuth)">
+                                    <!-- <div fxLayoutAlign="end end"> -->
+                                    <button mat-raised-button class="mr-3" color="primary" id="btnsave" type="submit"
+                                        (click)="update(userForm)" [disabled]="isDisable"><span *ngIf="!isDisable"
+                                            i18n="Update">Update</span><span i18n="Updating..."
+                                            *ngIf="isDisable">Updating...</span></button>
+                                    <button *ngIf="!isAllowAuthentication" class="mr-3" mat-raised-button color="accent"
+                                        type="button" (click)="reset(userForm,'update')" id="btnreset">{{'Reset' |
+                                        translate}}</button>
+                                    <!-- </div> -->
+                                </div>
+                            </ng-container>
+                            <!----=Administation -> Email Settings-------------=End----->
+                            <ng-container *ngIf="isPaymentSubscription">
+                                <lib-payment-settings></lib-payment-settings>
+                            </ng-container>
+                        </perfect-scrollbar>
+                    </div>
+                </div>
+                <!----=end Update Your Organization-->
+            </ng-conteiner>
+        </form>
+    </div>
+</div>
+<ng-container *ngIf="isSubscription === true">
+    <form #userForm="ngForm" [formGroup]="form">
+        <div *ngIf="showPayHistory===false &&  isAutoSubscription && showPayment===true" style="width: 100%;">
+            <div fxLayout="row" *ngIf="subscriptionScreenType!=='done'" fxLayoutAlign="space-between center">
+                <mat-card-title class="card-title" i18n="Subscription">
+                    Subscription
+                </mat-card-title>
+                <button mat-raised-button style="margin-right:15px;" (click)="goBack()" i18n="Go Back"
+                    color="primary">Go
+                    Back</button>
+            </div>
+            <ng-container>
+                <ng-container *ngIf="subscriptionScreenType==='plan'">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-button-toggle-group id="billingType" formControlName="billingType" name="fontStyle"
+                            aria-label="Font Style">
+                            <mat-button-toggle value="monthly" (change)="billingTypeChange($event)">
+                                <div style="margin-top: 6px;"
+                                    [style.color]="form.get('billingType').value==='monthly'?'white':'grey'"
+                                    i18n="Monthly Billing">Monthly Billing</div>
+                            </mat-button-toggle>
+                            <mat-button-toggle value="yearly" (change)="billingTypeChange($event)">
+                                <div style="margin-top: 6px;"
+                                    [style.color]="form.get('billingType').value==='yearly'?'white':'grey'"
+                                    i18n="Yearly Billing">Yearly Billing</div>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <div fxLayout="column" fxLayoutGap="10px"
+                        style="margin-top: 3%;background-image: url('../../../assets/pricingbg.png');background-size: cover;background-repeat: no-repeat;">
+                        <ng-container>
+                            <div class="row w-100 " *ngIf="form.get('billingType').value === 'monthly'">
+                                <div class="col-md-3 px-3"
+                                    *ngFor="let month of paymentSubscriptionDetails;let i= index;">
+                                    <mat-card class="p-4  plan" [style.margin-left]="i===0?'20px':''"
+                                        [style.border]="subscribedPlanType === month.planName && billingType === 'monthly'?'2px solid #01c001':none">
+                                        <mat-icon>person</mat-icon>
+                                        <mat-icon style="float: right;color: #01c001;font-size: 35px;"
+                                            *ngIf="subscribedPlanType === month.planName && billingType === form.get('billingType').value ">
+                                            done_all</mat-icon>
+                                        <h1 class="text-center py-5" style="font-weight: bold;">{{month?.planName}}
+                                        </h1>
+                                        <p style="font-size: 17px;color: #1d56b691;height: 60px;">
+                                            <ng-container
+                                                i18n="For teams wanting to try out Yoroflow free for collaborating and visualizing their work!">
+                                                For
+                                                teams wanting to try out Yoroflow free for collaborating and
+                                                visualizing their work!
+                                            </ng-container>
+                                        </p>
+                                        <h1 *ngIf="month?.monthlyPrice!==0" class="text-center">US $
+                                            {{month?.monthlyPrice}} per month</h1>
+                                        <h1 *ngIf="month?.monthlyPrice===0" class="text-center">Free</h1>
+                                        <button *ngIf="month.planName!=='STARTER' && selectMonthPlanIndex!==i"
+                                            (click)="goPayment(month,i);"
+                                            class="filter_option  align-self-center justify-content-end float-right mr-2 btn-block">
+
+                                            <span i18n="Buy Plan">Buy
+                                                plan</span>
+                                        </button>
+
+                                        <button
+                                            *ngIf="month.planName==='STARTER' && (form.get('billingType').value === 'monthly' || billingType === 'monthly') "
+                                            (click)="goPayment(month,i);"
+                                            class="filter_option  align-self-center justify-content-end float-right mr-2 btn-block">
+
+                                            <span i18n="Buy Plan">Get free
+                                                plan</span>
+                                        </button>
+
+                                        <button *ngIf="selectMonthPlanIndex!==i && subscribedPlanType === month.planName  
+                                        && billingType === form.get('billingType').value"
+                                            [disabled]="subscribedPlanType === month.planName && billingType === 'monthly'"
+                                            class="current_plan_option  align-self-center justify-content-end float-right mr-2 btn-block">
+
+                                            <span i18n="Current Plan">
+                                                Current plan</span>
+                                        </button>
+                                        <div fxLayout="row" fxLayoutAlign="center"
+                                            *ngIf="buttonDisabled===true && selectMonthPlanIndex===i">
+                                            <span class="dot-falling"></span>
+                                        </div><br><br><br>
+                                    </mat-card>
+                                </div>
+                                <div fxLayout="row" style="margin-top: 45px;border-radius: 5px;"
+                                    class="mx-auto d-block">
+                                    <button mat-raised-button (click)="explore()" i18n="Explore More"
+                                        color="primary">Explore More</button>
+                                </div>
+                            </div>
+                            <div *ngIf="form.get('billingType').value === 'yearly'" class="row w-100">
+                                <div class="col-md-3 px-3"
+                                    *ngFor="let month of paymentSubscriptionDetails;let i= index;">
+                                    <mat-card class="p-4  plan" [style.margin-left]="i===0?'20px':''"
+                                        [style.border]="subscribedPlanType === month.planName && billingType === 'yearly'?'2px solid #01c001':none">
+                                        <mat-icon style="float: right;color: #01c001;font-size: 35px;"
+                                            *ngIf="subscribedPlanType === month.planName && billingType === form.get('billingType').value  ">
+                                            done_all</mat-icon>
+                                        <mat-icon>person</mat-icon>
+                                        <h1 class="text-center py-5" style="font-weight: bold;">{{month?.planName}}
+                                        </h1>
+                                        <p style="font-size: 17px;color: #1d56b691;height:  60px;">
+                                            <ng-container i18n="For teams wanting to try out Yoroflow free for collaborating and
+                                            visualizing their work!">For
+                                                teams wanting to try out Yoroflow free for collaborating and
+                                                visualizing their work!
+                                            </ng-container>
+                                        </p>
+
+                                        <h1 *ngIf="month.yearlyPrice!==0" class="text-center">US $ {{month.yearlyPrice}}
+                                            per year</h1>
+                                        <h1 *ngIf="month.yearlyPrice===0" class="text-center"> Free </h1>
+
+                                        <button *ngIf="month.planName!=='STARTER' && selectYearPlanIndex!==i"
+                                            (click)="goPayment(month)"
+                                            [disabled]="subscribedPlanType === month.planName && billingType === 'yearly'"
+                                            class="filter_option  align-self-center justify-content-end float-right mr-2 btn-block">
+                                            <span i18n="Buy Plan">
+                                                Buy plan</span>
+
+                                        </button>
+
+                                        <button
+                                            *ngIf="month.planName==='STARTER' && (form.get('billingType').value === 'yearly' || billingType === 'yearly')"
+                                            (click)="goPayment(month)"
+                                            class="filter_option  align-self-center justify-content-end float-right mr-2 btn-block">
+                                            <span i18n="Buy Plan">
+                                                Get free plan</span>
+
+                                        </button>
+
+                                        <button
+                                            *ngIf="selectYearPlanIndex!==i && subscribedPlanType === month.planName && billingType === form.get('billingType').value"
+                                            [disabled]="subscribedPlanType === month.planName && billingType === 'yearly'"
+                                            class="filter_option  align-self-center justify-content-end float-right mr-2 btn-block">
+                                            <span i18n="Current Plan">Current
+                                                Plan</span>
+                                        </button>
+                                        <div fxLayout="row" fxLayoutAlign="center"
+                                            *ngIf="buttonDisabled===true && selectYearPlanIndex===i">
+                                            <span class="dot-falling"></span>
+                                        </div>
+                                        <br><br><br>
+                                    </mat-card>
+                                </div>
+                                <div fxLayout="row" style="margin-top: 45px;border-radius: 5px;"
+                                    class="mx-auto d-block">
+                                    <button mat-raised-button (click)="explore()" i18n="Explore More"
+                                        color="primary">Explore More</button>
+                                </div>
+                            </div>
+                            <div></div>
+                            <div></div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="subscriptionScreenType==='payment'">
+                    <app-payment-process (PaymentSuccess)="paymentSuccess($event)" (previous)="previous()"
+                        [subscriptionDetails]="form.value" [showPayment]="showPayment" [isUpgradeSubscription]="false">
+                    </app-payment-process>
+                    <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 4%;">
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="subscriptionScreenType==='done'">
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" style="margin-top: 100px;">
+                        <img src="../../../assets/gif/Subscription_GIF.gif">
+
+                    </div>
+                    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" style="margin-top: 60px;">
+                        <button mat-button style="color: white;margin-right:15px;" (click)="goBack()" i18n="Go Back"
+                            class="background-color-css">Go
+                            Back</button>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </form>
+    <ng-container *ngIf="showPayHistory===false && subscriptionDetails && showPayment===false" id="subscription">
+        <div *ngIf="subscriptionScreenType==='paymentDetails'" class="row w-100 mx-0 justify-content-center">
+            <div class="col-md-7 col-sm-12 my-3">
+                <div class="row mt-2 w-100 mx-0 justify-content-center">
+                    <div class="col-md-4 col-sm-12 pl-1 pr-2">
+                        <div class="plan_box dotFalling">
+                            <p class="text-gray fs_12">
+                                <span *ngIf="subscriptionDetails && subscriptionDetails.billingType === 'monthly'">
+                                    {{'Current monthly bill' | translate}} </span>
+                                <span *ngIf="subscriptionDetails && subscriptionDetails.billingType === 'yearly'">
+                                    {{'Current yearly bill' | translate}}</span>
+                            </p>
+                            <h1 *ngIf="subscriptionDetails.planType !== 'STARTER' && customerVO.isPayingCustomer==='Y'"
+                                class="font-weight-bold"> $
+                                {{subscriptionDetails?.subscriptionAmount}}</h1>
+                            <h1 *ngIf="customerVO.isPayingCustomer==='N' || subscriptionDetails.planType === 'STARTER'"
+                                class="font-weight-bold"> $ 0</h1>
+                            <a class="plan_link fs_12">
+                                <span (click)="switchPlan('yearly')"
+                                    *ngIf="subscriptionDetails && subscriptionDetails.billingType === 'monthly'">
+                                    {{'Switch to yearly plan' | translate}}</span>
+                                <span (click)="switchPlan('monthly')"
+                                    *ngIf="subscriptionDetails && subscriptionDetails.billingType === 'yearly'">
+                                    {{'Switch to monthly plan' | translate}}
+                                </span></a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4  col-sm-12 px-1">
+                        <div class="plan_box dotFalling">
+                            <p class="text-gray fs_12"> {{'Next payment due' | translate}}</p>
+                            <h1 *ngIf="subscriptionDetails && subscriptionDetails.planType !== 'STARTER' && customerVO.isPayingCustomer==='Y'"
+                                class="font-weight-bold"> {{subscriptionDetails?.subscriptionEndDate | date:'MMMM d'}}
+                            </h1>
+                            <h1 *ngIf="(subscriptionDetails && subscriptionDetails.planType === 'STARTER') || customerVO.isPayingCustomer==='N'"
+                                class="font-weight-bold">
+                                <mat-icon style="font-size: 24px;">minimize</mat-icon>
+                            </h1>
+                            <a (click)="viewPaymentHistory()" class="plan_link fs_12">{{'View payment history' |
+                                translate}}</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4  col-sm-12 pr-1 pl-2">
+                        <div class="plan_box dotFallingBefore">
+                            <p class="text-gray fs_12"> {{'Payment information' | translate}}</p>
+                            <h1 class="font-weight-bold">Card</h1>
+                            <a (click)="getPaymentCardDetails()" class="plan_link fs_12">{{'Update payment method' |
+                                translate}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="customerVO.isPayingCustomer==='N'"
+                    class="row w-100 mx-0 justify-content-center my-2 align-self-center">
+                    <mat-card>
+                        <h2>
+                            Your current plan is on trial, your
+                            trial will end on {{customerVO.endDate | date:'MMMM d,y'}}
+                        </h2>
+                    </mat-card>
+
+                </div>
+                <div class="row w-100 mx-0 justify-content-center my-2 align-self-center">
+                    <div class="col-md-6 col-sm-12 px-1 align-self-center">
+                        <h1 class="text-dark mb-0 font-weight-bold">
+                            {{'Current Plan' | translate}}</h1>
+                    </div>
+                    <div class="col-md-6 col-sm-12 px-1">
+                        <div class="row w-100 mx-0 justify-content-end">
+                            <button (click)="compareAllPlans()" class="mr-2 fs_12" color="primary"
+                                mat-raised-button>{{'Compare all plans' | translate}}</button>
+                            <button (click)="upgradePlan()" class=" fs_12" mat-raised-button>{{'Upgrade' |
+                                translate}}</button>
+                        </div>
+                    </div>
+                </div>
+                <hr class="m-0 p-0">
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h2 class="text-dark font-weight-bold mb-0 fs_12">
+                            <span *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'" class="fs_12">
+                                {{'PRO PLAN' |
+                                translate}}
+                            </span>
+                            <span *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'"
+                                class="fs_12">
+                                {{'STARTER PLAN' | translate}}
+                            </span>
+                            <span *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                class="fs_12">
+                                {{'BUSINESS PACK' | translate}} </span>
+                            <span *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'"
+                                class="fs_12">
+                                {{'STANDARD PLAN' | translate}}
+                            </span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row w-100 mx-0">
+                            <mat-icon *ngIf="subscriptionDetails && subscriptionDetails.planType !== 'PRO'"
+                                class="text-success mr-2">done</mat-icon>
+                            <mat-icon *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'"
+                                class="text-success mr-2">
+                                all_inclusive
+                            </mat-icon>
+                            <p *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'" class="fs_12">
+                                <span>4
+                                    {{'Workflows' | translate}}</span>
+                            </p>
+                            <p *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                class="fs_12"> <span>15
+                                    {{'Workflows' | translate}}</span> </p>
+                            <p *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'" class="fs_12">
+                                <span>30
+                                    {{'Workflows' | translate}}</span>
+                            </p>
+                            <p *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'" class="fs_12">
+                                <span>
+                                    {{'Unlimited workflows' | translate}}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="row w-100 mx-0">
+                            <mat-icon *ngIf="subscriptionDetails && subscriptionDetails.planType !== 'PRO'"
+                                class="text-success mr-2">done</mat-icon>
+                            <mat-icon *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'"
+                                class="text-success mr-2">
+                                all_inclusive
+                            </mat-icon>
+                            <p class="fs_12"> <span
+                                    *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'">5
+                                    {{'Taskboards' | translate}}</span> </p>
+                            <p class="fs_12"> <span
+                                    *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'">20
+                                    {{'Taskboards' | translate}}</span> </p>
+                            <p class="fs_12"> <span
+                                    *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'">50
+                                    {{'Taskboards' | translate}}</span> </p>
+                            <p class="fs_12"> <span
+                                    *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'">
+                                    {{'Unlimited Taskboards' | translate}}
+                                </span> </p>
+                        </div>
+                        <div class="row w-100 mx-0">
+                            <mat-icon class="text-success mr-2">done</mat-icon>
+                            <p class="fs_12">{{'Drag & Drop Workflow Designer and more' | translate}} <a
+                                    class="plan_link fs_12" (click)="explore()">{{'advanced tools' | translate}}</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 mx-0 justify-content-center my-2 align-self-center">
+                    <div class="col-md-6 col-sm-12 px-1 align-self-center">
+                        <h1 class="text-dark mb-0 font-weight-bold">{{'Usage this month' | translate}}</h1>
+                    </div>
+                    <div class="col-md-6 col-sm-12 px-1">
+                        <div class="row w-100 mx-0 justify-content-end">
+                        </div>
+                    </div>
+                </div>
+                <hr class="m-0 p-0">
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h2 class="text-dark font-weight-bold mb-0">{{'Actions' | translate}}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row w-100 mx-0 mt-2">
+                            <div class="col-md-12 col-sm-9">
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <div class="row mx-0">
+                                            <p class="mb-1 fs_12">{{'Users' | translate}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                        <p *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO' && (subscriptionDetails.quantity && subscriptionDetails.quantity >0)"
+                                            class="text-right fs_12">
+                                            {{totalLicense}} {{'out of' | translate}} {{subscriptionDetails.quantity}}
+                                            {{'users added' | translate}}
+                                        </p>
+                                        <p *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO' && (subscriptionDetails.quantity === null || subscriptionDetails.quantity === 0)"
+                                            class="text-right fs_12">
+                                            {{totalLicense}} {{'out of' | translate}} 50
+                                            {{'users added' | translate}}
+                                        </p>
+                                        <p *ngIf="subscriptionDetails && (subscriptionDetails.quantity && subscriptionDetails.quantity >0) && subscriptionDetails.planType === 'STANDARD'"
+                                            class="text-right fs_12">{{totalLicense}} <span>
+                                                {{'out of' | translate}} {{subscriptionDetails.quantity}} {{'users
+                                                added' | translate}}
+                                            </span></p>
+                                        <p *ngIf="subscriptionDetails && (subscriptionDetails.quantity === null || subscriptionDetails.quantity === 0) && subscriptionDetails.planType === 'STANDARD'"
+                                            class="text-right fs_12">{{totalLicense}} <span>
+                                                {{'out of' | translate}} 20 {{'users added' | translate}}
+                                            </span></p>
+                                        <p *ngIf="subscriptionDetails &&  (subscriptionDetails.quantity && subscriptionDetails.quantity >0) && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                            class="text-right fs_12">{{totalLicense}} <span>
+                                                {{'out of' | translate}} {{subscriptionDetails.quantity}} {{'users
+                                                added' | translate}}
+                                            </span></p>
+                                        <p *ngIf="subscriptionDetails && (subscriptionDetails.quantity === null || subscriptionDetails.quantity === 0) && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                            class="text-right fs_12">{{totalLicense}} <span>
+                                                {{'out of' | translate}} 10 {{'users added' | translate}}
+                                            </span></p>
+                                        <p *ngIf="subscriptionDetails &&  (subscriptionDetails.quantity && subscriptionDetails.quantity >0) && subscriptionDetails.planType === 'STARTER'"
+                                            class="text-right fs_12">{{totalLicense}} <span>
+                                                {{'out of' | translate}} {{subscriptionDetails.quantity}} {{'users
+                                                added' | translate}}
+                                            </span></p>
+                                        <p *ngIf="subscriptionDetails && (subscriptionDetails.quantity === null || subscriptionDetails.quantity === 0) && subscriptionDetails.planType === 'STARTER'"
+                                            class="text-right fs_12">{{totalLicense}} <span>
+                                                {{'out of' | translate}} 3 {{'users added' | translate}}
+                                            </span></p>
+                                    </div>
+
+                                </div>
+                                <div class="progress">
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'"
+                                        class="progress-bar" [style.width.%]="((totalLicense/3)*100).toFixed(2)"></div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                        class="progress-bar" [style.width.%]="((totalLicense/10)*100).toFixed(2)"></div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'"
+                                        class="progress-bar" [style.width.%]="((totalLicense/20)*100).toFixed(2)"></div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'"
+                                        class="progress-bar" [style.width.%]="((totalLicense/50)*100).toFixed(2)"></div>
+
+
+                                </div>
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <small>{{totalLicense}}
+                                            {{'users' | translate}}</small>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0 mt-2">
+                                        <button
+                                            *ngIf="subscriptionDetails && subscriptionDetails.planType !== 'STARTER' && customerVO.isPayingCustomer==='Y'"
+                                            (click)="buyAdditionalUser()" class="btn-success clear_filter"
+                                            mat-raised-button>{{'Buy additional users' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row w-100 mx-0 mt-2">
+                            <div class="col-md-12 col-sm-9">
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <p class="mb-1 fs_12">{{'License Split' | translate}}</p>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                    </div>
+                                </div>
+                                <div class="progress">
+                                    <div fxLayout="row" fxLayoutGap="1px" style="width: 100%">
+                                        <div [fxFlex]="((totalLicense/75)*100)" class="div1">
+                                        </div>
+                                        <div [fxFlex]=" guestUsersCount" class="div2"></div>
+                                    </div>
+                                </div>
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-3 col-sm-6 px-0">
+                                        <div class="row w-100 mx-0 mt-1">
+                                            <div style="background-color: #4ec19e;width: 17px;height: 17px;">
+                                            </div>
+                                            <small style="margin-left: 10px;">
+                                                {{'Active License Users is' | translate}} {{nonGuestUsersCount}}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 px-0">
+                                        <div class="row w-100 mx-0 mt-1">
+                                            <div style="background-color: #ff7156;width: 17px;height: 17px;">
+                                            </div>
+                                            <small style="margin-left: 10px;">
+                                                {{guestUsersCount}} {{'Guest Users is' | translate}}
+                                                {{guestLicenseCount}} {{'License' | translate}}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 px-0">
+                                        <div class="row w-100 mx-0 mt-1">
+
+                                            <small>
+                                                {{'Total License is' | translate}} {{totalLicense}}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row w-100 mx-0 mt-2">
+                            <div class="col-md-12 col-sm-9">
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <p class="mb-1 fs_12">{{'Teams' | translate}}</p>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                        <p class="text-right fs_12">{{subscriptionDetails.teamsCount}} {{'out of' |
+                                            translate}}
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType !== 'STARTER'">{{'unlimited'
+                                                | translate}}</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'">6</span>
+                                            {{'Teams' | translate}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="progress">
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType !== 'STARTER'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.teamsCount/10000)*100).toFixed(2)"></div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.teamsCount/6)*100).toFixed(2)"></div>
+                                </div>
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <small>{{subscriptionDetails.teamsCount}}
+                                            {{'Teams' | translate}}</small>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row w-100 mx-0 mt-2">
+                            <div class="col-md-12 col-sm-9">
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <p class="mb-1 fs_12">{{'Wokflow' | translate}}</p>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                        <p class="text-right fs_12">{{subscriptionDetails.workflowCount}} {{'out of' |
+                                            translate}}
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'">{{'unlimited'
+                                                | translate}}</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'">4</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'">15</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'">30</span>
+                                            {{'workflows created' | translate}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="progress">
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.workflowCount/3)*100).toFixed(2)"></div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.workflowCount/20)*100).toFixed(2)">
+                                    </div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.workflowCount/50)*100).toFixed(2)">
+                                    </div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.workflowCount/10000)*100).toFixed(2)">
+                                    </div>
+                                </div>
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <small>{{subscriptionDetails.workflowCount}} {{'workflows' | translate}}</small>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row w-100 mx-0 mt-2">
+                            <div class="col-md-12 col-sm-9">
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <p class="mb-1 fs_12">{{'Taskboards' | translate}}</p>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                        <p class="text-right fs_12">{{subscriptionDetails.taskboardCount}} {{'out of' |
+                                            translate}}
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'">{{'unlimited'
+                                                | translate}}</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'">5</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'">20</span>
+                                            <span
+                                                *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'">50</span>
+                                            {{'taskboards added' | translate}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="progress">
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STARTER'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.taskboardCount/3)*100).toFixed(2)"></div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'BUSINESS PACK'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.taskboardCount/20)*100).toFixed(2)">
+                                    </div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'STANDARD'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.taskboardCount/50)*100).toFixed(2)">
+                                    </div>
+                                    <div *ngIf="subscriptionDetails && subscriptionDetails.planType === 'PRO'"
+                                        class="progress-bar"
+                                        [style.width.%]="((subscriptionDetails.taskboardCount/10000)*100).toFixed(2)">
+                                    </div>
+                                </div>
+                                <div class="row w-100 mx-0">
+                                    <div class="col-md-6 col-sm-6 px-0">
+                                        <small>{{subscriptionDetails.taskboardCount}} {{'taskboards' |
+                                            translate}}</small>
+                                    </div>
+                                    <div class="justify-content-end text-right col-md-6 col-sm-6 px-0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="subscriptionScreenType==='payment'">
+            <app-payment-process (PaymentSuccess)="paymentSuccess($event)" (previous)="previous()"
+                [subscriptionDetails]="form.value" [showPayment]="showPayment" [paymentProcessVO]="paymentProcessVO"
+                [isUpgradeSubscription]="false">
+            </app-payment-process>
+            <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 4%;">
+            </div>
+        </ng-container>
+        <ng-container *ngIf="subscriptionScreenType==='done'">
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" style="margin-top: 100px;">
+                <img src="../../../assets/gif/Subscription_GIF.gif">
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" style="margin-top: 60px;">
+                <button mat-button style="color: white;margin-right:15px;" (click)="goBack()" i18n="Go Back"
+                    class="background-color-css">{{'Go Back' | translate}}</button>
+            </div>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="showPayHistory === true">
+        <app-payment-history [id]="custPaymentId" (previous)="previous()"></app-payment-history>
+    </ng-container>
+</ng-container>

@@ -1,0 +1,154 @@
+.userProfile-css {
+    width: 22px;
+    height: 22px;
+    background: #c2185b;
+    color: white;
+    margin-top: 8px;
+    line-height: normal;
+    border-radius: 3px;
+    font-size: 15px;
+    padding-top: 2px;
+  }
+  
+  .assigneeUserButton-css {
+    width: 100%;
+    height: 45px;
+    margin-top: 3px;
+  }
+  
+  .userSelectedIcon-css {
+    color: rgb(0, 128, 0);
+  }
+  
+  #task-configur ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0px !important;
+  }
+  
+  .heading {
+    margin-bottom: 0px;
+    background: #79cff9;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-left: 5px;
+    color: white;
+  }
+  
+  .heading1 {
+    margin-bottom: 0px;
+    background: #79cff9;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-left: 5px;
+    color: white;
+    margin-top: 10px;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: none !important;
+    box-shadow: inset 0 0 5px rgb(254, 255, 255);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10rem;
+    border: 1px solid #fff;
+  }
+  
+  #task-configur ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+    padding: 12px 5px 7px 5px !important;
+    border: 5px !important;
+  }
+  
+  #task-configur
+    ::ng-deep
+    .mat-form-field-flex
+    > .mat-form-field-infix
+    .mat-form-field-appearance-outline
+    .mat-form-field-suffix {
+    top: 0.45em;
+  }
+  
+  #task-configur ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+    margin-top: 4px;
+  }
+  
+  #task-configur ::ng-deep .mat-form-field-hide-placeholder .mat-form-field-label-wrapper {
+    top: -17px;
+  }
+  
+
+  #column-color ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+    background-color: #0bbf00;
+  }
+  
+  #column-color ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+    background-color:#44ea44
+ 
+  }
+
+
+
+.margin-class{
+  margin-bottom:0px;
+  margin-top: 5px;
+  word-break: break-word;
+}
+
+
+.inner_card_user{
+  padding:10px;
+  background-color: #fff;
+  margin-bottom: 5px!important;
+  cursor: pointer;
+  width: 100% !important;
+  display: inline-block;
+  &:hover{
+    background-color: rgb(239, 241, 255);
+  }
+}
+  .user_letter{
+    width: 30px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      padding: 0px;
+      background-color: #c2185b;
+      color: white;
+      margin-bottom:0px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+      -webkit-box-shadow: none !important;
+      box-shadow: inset 0 0 5px rgb(254, 255, 255);
+      border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 10rem;
+      border: 1px solid #fff;
+  }
+
+  .owner-list-css{
+    overflow: hidden !important;
+    height: 100%;
+  }
+  .text-style {
+    font-size: 14px;
+    font-weight: 600;
+    color: #888c94;
+    height: 10px;
+  }

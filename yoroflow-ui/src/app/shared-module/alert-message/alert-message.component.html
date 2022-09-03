@@ -1,0 +1,47 @@
+<ng-container *ngIf="!data.message">
+  <mat-dialog-content>
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-icon style="color: yellow;">
+        warning</mat-icon>
+      <span style="font-weight: bold;" i18n="License Limit Reached !!!!">License Limit Reached !!!!</span>
+    </div>
+
+    <div fxLayout="row" style="margin-top: 10px;">
+      <p i18n="Your current plan only allows {{data.licenseVO.allowedLimit}}
+      ({{data.pageName}}/{{data.licenseVO.allowedLimit}}/{{data.licenseVO.allowedLimit}}), Please upgrade your plan to
+      increase the limit.">Your current plan only allows {{data.licenseVO.allowedLimit}}
+        ({{data.pageName}}/{{data.licenseVO.allowedLimit}}/{{data.licenseVO.allowedLimit}}), Please upgrade your plan to
+        increase the limit. </p>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button (click)="upgrade()" mat-raised-button color="primary" id="cancel" i18n="Upgrade">
+      Upgrade
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="close()" i18n="Cancel">
+      Cancel
+    </button>
+  </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.message">
+  <mat-dialog-content>
+    <div fxLayout="row" fxLayoutGap="10px">
+      <mat-icon style="color: yellow;">
+        warning</mat-icon>
+      <span style="font-weight: bold;margin-top: 1%;" i18n="Alert !!!!">Alert !!!!</span>
+    </div>
+
+    <div fxLayout="row" style="margin-top: 10px;">
+      <p>{{data.message}}</p>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button (click)="upgrade()" mat-raised-button color="primary" id="cancel" i18n="Upgrade">
+      Upgrade
+    </button>
+    <button mat-raised-button color="accent" id="cancel" (click)="close()" i18n="Cancel">
+      Cancel
+    </button>
+  </mat-dialog-actions>
+</ng-container>

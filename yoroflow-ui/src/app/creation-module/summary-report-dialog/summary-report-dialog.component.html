@@ -1,0 +1,55 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h1>{{title | translate}}</h1>
+    <mat-icon class="close-icon-css" matDialogClose>close</mat-icon>
+</div>
+<div class="mat_ui" *ngIf="data.type==='taskboard' || data.type==='workflow'">
+    <mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true">
+        <ng-container *ngFor="let column of columnHeaders;let i = index;" matColumnDef="{{column.headerId}}">
+            <mat-header-cell mat-header-cell *matHeaderCellDef>
+                <div fxLayout="row" class="w-100">
+                    <div class="pl-3 text-black">
+                        {{ column.headerName | translate}}
+                    </div>
+                </div>
+            </mat-header-cell>
+            <mat-cell id="data" mat-cell *matCellDef="let data" [matTooltip]="data[column.headerId]"
+                matTooltipPosition="below" (click)="onRowClicked(data)">
+                <div class="col-md-12 mat_font">{{data[column.headerId]}}</div>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row class="ripple-row" *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <div fxLayout="row" *ngIf="!dataSource" fxLayoutAlign="center" class="w-100 mt-2">
+        <mat-spinner diameter="50"></mat-spinner>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" class="mx-2 my-3">
+        <app-paginator id="mat_table_page_selector" *ngIf="dataSource?.length" [length]="length" pageSize="10"
+            [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)">
+        </app-paginator>
+    </div>
+</div>
+<div *ngIf="data.type==='group' || data.type==='user'">
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-chip-list #chipList>
+            <ng-container *ngIf="data.type==='user'">
+                <mat-chip *ngFor="let user of users">
+                    <div fxLayout="row" fxLayoutGap="5px">
+                        <span class="round_firstletter margin-css"
+                            [style.background]="getOwnersBackground(user.id)">{{getPrefix(user.name)}}</span>
+                        <span class="chip-name-css">{{user?.name}}</span>
+                    </div>
+                </mat-chip>
+            </ng-container>
+            <ng-container *ngIf="data.type==='group'">
+                <mat-chip *ngFor="let team of data.workspaceVO?.workspaceSecurityVO?.assignTeamList">
+                    <div fxLayout="row" fxLayoutGap="5px">
+                        <span class="round_firstletter margin-css"
+                            [style.background]="getGroupBackground(team.id)">{{getPrefix(team.name)}}</span>
+                        <span class="chip-name-css">{{team?.name}}</span>
+                    </div>
+                </mat-chip>
+            </ng-container>
+        </mat-chip-list>
+    </mat-form-field>
+</div>

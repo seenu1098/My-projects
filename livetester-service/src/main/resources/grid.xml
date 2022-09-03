@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grids>
+   <grid id="claims" moduleId="claims" widthPercentage="190" filterable="false" >
+      <columns>
+         <column name="createdBy" objectFieldName="createdBy" displayname="Created By" sortable="true"  width="30"/>
+         <column name="testcaseName" objectFieldName="testcaseName" displayname="Testcase Name" sortable="true" width="30"/>
+         <column name="template.templateName" objectFieldName="templateName" displayname="Template Name" sortable="true" width="30"/>
+         <column name="FormType" objectFieldName="FormType" displayname="Form Type" width="30"/>
+         <column name="BeneficiaryIdentifier" objectFieldName="BeneficiaryIdentifier" displayname="Beneficiary Identifier" width="30"/>
+         <column name="BeneficiaryFirstName" objectFieldName="BeneficiaryFirstName" displayname="Beneficiary FirstName" width="30"/>
+         <column name="BeneficiaryLastName" objectFieldName="BeneficiaryLastName" displayname="Beneficiary LastName" width="30"/>
+         <column name="BillingNpi" objectFieldName="BillingNpi" displayname="Billing NPI" width="30"/>
+         <column name="BillingTaxonomy" objectFieldName="BillingTaxonomy" displayname="Billing Taxonomy" width="30"/>
+         <column name="ServicingNpi" objectFieldName="ServicingNpi" displayname="Servicing NPI" width="30"/>
+         <column name="ServicingTaxonomy" objectFieldName="ServicingTaxonomy" displayname="Servicing Taxonomy" width="30"/>
+         <column name="ClaimHeaderFromDate" objectFieldName="ClaimHeaderFromDate" displayname="From Date" width="30"/>
+         <column name="ClaimHeaderToDate" objectFieldName="ClaimHeaderToDate" displayname="To Date" width="30"/>
+         <column name="ClaimHeaderFrequency" objectFieldName="ClaimHeaderFrequency" displayname="Frequency" width="30"/>
+         <column name="ClaimHeaderSource" objectFieldName="ClaimHeaderSource" displayname="Source" width="30"/>
+         <column name="ClaimHeaderBilledAmount" objectFieldName="ClaimHeaderBilledAmount" displayname="Billed Amount" width="30"/>
+         <column name="ClaimHeaderBilledUnits" objectFieldName="ClaimHeaderBilledUnits" displayname="Billed Units" width="30"/>
+      </columns>
+   </grid>
+
+   <grid id="batch" moduleId="batch" widthPercentage="100" filterable="true">
+      <columns>
+         <column name="batchName" objectFieldName="batchName" displayname="Batch Name" sortable="true" width="10"  filterable="true" fieldType="string"/>
+         <column name="environment.environmentName" objectFieldName="Environment Name" displayname="Environment Name" sortable="true" width="10" filterable="true" fieldType="string"/>
+         <column name="startTime" objectFieldName="startTime" displayname="Start Time" width="20" fieldType="date" sortable="true" filterable="true"/>
+         <column name="endTime" objectFieldName="endTime" displayname="End Time" width="15" fieldType="date" sortable="true" filterable="true"/>
+         <column name="status" objectFieldName="status" displayname="Status" width="15"  fieldType="string" sortable="true" filterable="true"/>
+         <column name="totalTestCase" objectFieldName="totalTestCase" displayname="Total Testcases" width="5"  sortable="true" fieldType="number" filterable="true"/>
+         <column name="passPercentage" objectFieldName="passPercentage" displayname="Total Pass" width="10" sortable="true" fieldType="number" filterable="true"/>
+         <column name="failPercentage" objectFieldName="failPercentage" displayname="Total Fail" width="10" sortable="true" fieldType="number" filterable="true"/>
+      </columns>
+   </grid>
+   
+   <grid id="batchtestcases" moduleId="batchtestcasesModule" widthPercentage="100" filterable="false">
+      <columns>
+      <column name="select" objectFieldName="select" displayname="select" width="5" sortable="false"/>
+         <column name="batch.claims.testcaseName" objectFieldName="batch.claims.testcaseName" displayname="Testcase Name" width="40" sortable="true"/>
+         <column name="status" objectFieldName="status" displayname="Status" width="10" sortable="true"/>
+         <column name="claimtype" objectFieldName="claimtype" displayname="Invoice Type" width="10" sortable="true"/>
+         <column name="claimsource" objectFieldName="claimsource" displayname="Claim Source" width="10" sortable="true"/>
+         <column name="frequency" objectFieldName="frequency" displayname="Frequency" width="10" sortable="true"/>
+         <column name="billingnpi" objectFieldName="billingnpi" displayname="Billing NPI" width="10" sortable="true"/>
+      </columns>
+   </grid>
+   
+   <grid id="batch-testcase-result" moduleId="batch-testcase-result" widthPercentage="100" filterable="false">
+      <columns>
+         <column name="elementsConfiguration.applicableAt" objectFieldName="elementsConfiguration.applicableAt" displayname="Header/Line" sortable="true" width="10"/>
+         <column name="elementsConfiguration.elementLabel" objectFieldName="elementsConfiguration.elementLabel" displayname="Element Name" sortable="true" width="10"/>
+         <column name="expectedValue" objectFieldName="expectedValue" displayname="Expected Value" sortable="true" width="10"/>
+         <column name="actualValue" objectFieldName="actualValue" displayname="Actual Value" sortable="true" width="10"/>
+         <column name="status" objectFieldName="status" displayname="Status" sortable="true" width="10"/>
+      </columns>
+   </grid>
+   
+   <grid id="user" moduleId="user" widthPercentage="100" filterable="false">
+      <columns>
+          <column name="emailId" objectFieldName="emailId" displayname="Email" sortable="true" width="10"/>
+         <column name="firstName" objectFieldName="firstName" displayname="First Name" sortable="true" width="10"/>
+         <column name="lastName" objectFieldName="lastName" displayname="Last Name" sortable="true" width="10"/>
+         <column name="userRole.roles.roleName" objectFieldName="userRole.roles.roleName" displayname="Roles" sortable="true" width="10"/>
+         <column name="globalSpecification" objectFieldName="globalSpecification" displayname="Global Specification" sortable="true" width="10"/>
+      </columns>
+   </grid>
+   
+   <grid id="provider" moduleId="provider" widthPercentage="100" filterable="false">
+      <columns>
+         <column name="environment.environmentName" objectFieldName="environmentName" displayname="Environment Name" sortable="true" width="10"/>
+         <column name="billingProviderNpi" objectFieldName="billingProviderNpi" displayname="Billing Provider NPI" sortable="true" width="10"/>
+         <column name="description" objectFieldName="description" displayname="Description" sortable="true" width="15"/>
+         <column name="billingProviderTaxonomy" objectFieldName="billingProviderTaxonomy" displayname="Billing Provider Taxonomy" sortable="true" width="10"/>
+         <column name="firstName" objectFieldName="firstName" displayname="First Name" sortable="true" width="10"/>
+         <column name="lastName" objectFieldName="lastName" displayname="Last Name" sortable="true" width="10"/>
+         <column name="organizationName" objectFieldName="organizationName" displayname="Organization Name" sortable="true" width="10"/>
+         <column name="tax" objectFieldName="tax" displayname="SSN / EIN" sortable="true" width="10"/>
+         <column name="type" objectFieldName="type" displayname="Type" sortable="true" width="10"/>
+          <column name="serviceFacility" objectFieldName="serviceFacility" displayname="Service Facility" sortable="true" width="10"/>
+         <column name="address" objectFieldName="address" displayname="Address" sortable="true" width="10"/>
+         <column name="city" objectFieldName="city" displayname="City" sortable="true" width="10"/>
+         <column name="state" objectFieldName="state" displayname="State" sortable="true" width="10"/>
+         <column name="zipcode" objectFieldName="zipcode" displayname="Zipcode" sortable="true" width="10"/>
+      </columns>
+   </grid>
+   
+   
+   <grid id="beneficiary" moduleId="beneficiary" widthPercentage="100" filterable="false">
+      <columns>
+         <column name="environment.environmentName" objectFieldName="environmentName" displayname="Environment Name" sortable="true" width="10"/>
+         <column name="beneficiaryIdentifier" objectFieldName="beneficiaryIdentifier" displayname="Identifier" sortable="true" width="10"/>
+         <column name="description" objectFieldName="description" displayname="Description" sortable="true" width="15"/>
+         <column name="firstName" objectFieldName="firstName" displayname="First Name" sortable="true" width="10"/>
+         <column name="lastName" objectFieldName="lastName" displayname="Last Name" sortable="true" width="10"/>
+         <column name="dob" objectFieldName="dob" displayname="DOB" sortable="true" width="10"/>
+         <column name="gender" objectFieldName="gender" displayname="Gender" sortable="true" width="10"/>
+         <column name="address" objectFieldName="address" displayname="Address" sortable="true" width="10"/>
+         <column name="city" objectFieldName="city" displayname="City" sortable="true" width="10"/>
+         <column name="state" objectFieldName="state" displayname="State" sortable="true" width="10"/>
+         <column name="zipcode" objectFieldName="zipcode" displayname="Zipcode" sortable="true" width="10"/>
+      </columns>
+   </grid>
+   
+   <grid id="payor" moduleId="payor" widthPercentage="100" filterable="false">
+      <columns>
+         <column name="environment.environmentName" objectFieldName="environmentName" displayname="Environment Name" sortable="true" width="10"/>
+         <column name="payorIdentifier" objectFieldName="payorIdentifier" displayname="Payor Identifier" sortable="true" width="10"/>
+         <column name="payorName" objectFieldName="payorName" displayname="Payor Name" sortable="true" width="10"/>
+         <column name="description" objectFieldName="description" displayname="Description" sortable="true" width="15"/>
+         <column name="address" objectFieldName="address" displayname="Address" sortable="true" width="10"/>
+         <column name="city" objectFieldName="city" displayname="City" sortable="true" width="10"/>
+         <column name="state" objectFieldName="state" displayname="State" sortable="true" width="10"/>
+         <column name="zipcode" objectFieldName="zipcode" displayname="Zipcode" sortable="true" width="10"/>
+      </columns>
+   </grid>
+   
+    <grid id="pa" moduleId="pa" widthPercentage="100" filterable="false">
+      <columns>
+       	 <column name="environment.environmentName" objectFieldName="environmentName" displayname="Environment Name" sortable="true" width="10"/>
+         <column name="paNumber" objectFieldName="paNumber" displayname="PA Number" sortable="true" width="10"/>
+         <column name="paDescription" objectFieldName="paDescription" displayname="PA Description" sortable="true" width="10"/>
+      </columns>
+   </grid>
+   
+    
+</grids>

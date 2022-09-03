@@ -1,0 +1,61 @@
+<form [formGroup]="form">
+    <mat-card>
+        <div class="row w-100 mx-0">
+            <div class="col-md-3">
+                <div class="float-right">
+                    <h3 style="font-weight: bold;">{{'Allow All Teams' | translate}}</h3>
+                    <mat-slide-toggle formControlName="allowAll" (change)="allowAllTeamChange($event)" id="allow_all">
+                        {{'Allow All' | translate}}
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <div class="col-md-1" *ngIf="form.get('allowAll').value === false">
+                <p class="mt-3 float-right">{{'(or)' | translate}}</p>
+            </div>
+            <div class="col-md-4 float-right ml-4" *ngIf="form.get('allowAll').value === false">
+                <h3 style="font-weight: bold;">{{'Allow Teams to your Workspace' | translate}} </h3>
+                <div class="flag-container-css" (click)="openTeamsDialog()" *ngIf="teamList.length === 0">
+                    <mat-icon appearance="filled" class="flag-css" id="person_icon"> person
+                    </mat-icon>
+                    <mat-icon class="circle-css">add_circle</mat-icon>
+                </div>
+                <div class="row w-100 mx-0" *ngIf="teamList.length > 0">
+                    <div *ngFor="let user of teamList;let i = index;">
+                        <div *ngIf="i<=3" (click)="openTeamsDialog()"
+                            style="width: 30px; height: 30px; line-height: 30px; border-radius: 50%;text-align: center; padding: 0px;cursor: pointer;"
+                            class="hover-class" [style.margin-left]="i>0?'-8px':''" [matTooltip]="user?.name"
+                            [style.background]="assigneeUserColorArray[i]">
+                            <span
+                                style="font-size: 12px; color: white;font-weight: 100;">{{getUserFirstAndLastNamePrefix(user?.name)}}</span>
+                        </div>
+                        <ng-container *ngIf="i===4" (click)="openTeamsDialog()">
+                            <div style=" width: 30px; height: 30px; line-height: 30px; border-radius: 50%;  background-color: rgb(192, 192, 192); text-align: center; padding: 0px;cursor: pointer; margin-left:-8px;"
+                                class="hover-class">
+                                <span
+                                    style="font-size: 12px; color: grey;font-weight: 100;">+{{getRemainingAssigneeUserCount(user?.name)}}</span>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <mat-card-actions>
+                    <!-- <div class="row w-100 mx-0"> -->
+                    <div style="text-align: right;">
+                        <button mat-raised-button color="primary" type="button" id="save" (click)="create()">{{'Save' |
+                            translate}}</button>
+                        <button mat-raised-button type="button" color="accent" i18n="Cancel" (click)="dialogClose()"
+                            id="close">{{'Close' | translate}}
+                        </button>
+                    </div>
+
+                </mat-card-actions>
+                <!-- </div> -->
+            </div>
+        </div>
+    </mat-card>
+
+</form>

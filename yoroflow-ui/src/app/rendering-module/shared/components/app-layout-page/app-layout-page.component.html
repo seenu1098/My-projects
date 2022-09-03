@@ -1,0 +1,13 @@
+<div *ngIf="show" style="margin: 1%;">
+    <!-- <app-warning type="authorize" *ngIf="!page.security.read"></app-warning> -->
+    <mat-card>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-card-title>{{page.pageName}}</mat-card-title>
+        </div>
+        <ng-container>
+            <dynamic-form [page]="page" [form]="form" (submit)="formSubmit($event)"
+                [loadFormInfo]="loadFormInfo" [yoroflowInfo]="yoroflowInfo">
+            </dynamic-form>
+        </ng-container>
+    </mat-card>
+</div>

@@ -1,0 +1,17 @@
+#toggle-button ::ng-deep .mat-button-toggle-appearance-standard 
+.mat-button-toggle-label-content{
+    line-height: 32px;
+}
+
+#toggle-button ::ng-deep .mat-button-toggle-appearance-standard{
+    background: whitesmoke !important;
+    color: grey;
+    border: 1px solid var(--theme-main-color);
+}
+
+#toggle-button ::ng-deep .mat-button-toggle-checked{
+    background-color: whitesmoke !important;
+}
+
+
+::ng-deep .html2canvas-container { width: 3000px !important; height: 3000px !important; }

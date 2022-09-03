@@ -1,0 +1,53 @@
+body{
+  background-image: url('../assets/undraw_prototyping_process_rswj.png');
+background-repeat: no-repeat;
+background-position: center; 
+background-size: 100% 100%;
+}
+
+.backGround{
+
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+
+}
+.domain_logo{
+  margin-top: 45%;
+}
+#right_half{
+  border-left:1px solid light-gray
+}
+::ng-deep .mat-form-field-suffix{
+  padding-bottom: 5px;
+}
+
+::ng-deep .mat-form-field-input{
+  padding-bottom: 5px !important
+}
+
+label.dmn-plchdr {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+
+.image{
+width: 140px;
+  height: 60px;
+}
+#main-container{
+  background-color:rgb(17, 0, 248);
+  background:url('/assets/fullbg.jpg');
+  background-size: cover;
+  overflow-y: hidden!important;
+}
+
+
+mat-form-field-flex {
+display: inline-flex;
+align-items: baseline;
+box-sizing: border-box;
+width: 144%;
+}

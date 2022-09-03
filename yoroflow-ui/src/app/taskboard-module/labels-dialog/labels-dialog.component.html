@@ -1,0 +1,43 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h3 style="margin-top:10px;" i18n="Apply Labels">Apply Labels</h3>
+    <button mat-raised-button color="accent" id="label_close" (click)="close()" style="height:25px;line-height: 25px;"
+        i18n="Close">Close</button>
+</div>
+<div style="overflow-y: scroll; height: 400px;">
+    <ng-container *ngFor="let label of labelsVO; let i = index;">
+        <a [id]="'labelButton_'+i" class="labelButton-css" type="button" (click)="onClick(label,i)"
+            [style.background]="label.isSelected?'#f1fff1':''">
+            <div class="row w-100 mx-0">
+                <div class="col-md-1">
+                    <mat-icon [style.color]="label.labelcolor" class="labelIcon-css">label</mat-icon>
+                </div>
+                <div class="col-md-10 pt-2">
+                    <span style="width: 25px; word-break: break-all;">{{label.labelName}}</span>
+                </div>
+
+                <div class="col-md-1 align-self-center" *ngIf="label.isSelected">
+                    <mat-icon class="labelSelectedIcon-css">done</mat-icon>
+                </div>
+            </div>
+        </a>
+    </ng-container>
+</div>
+<form [formGroup]="form" #userForm="ngForm" id="task-details">
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px" style="margin-top:10px">
+        <mat-form-field *ngIf="addNewLabel" appearance="outline">
+            <input matInput type="text" formControlName="label" placeholder="Create a new label">
+            <mat-error *ngIf="form.get('label').errors?.unique" i18n="Label is already exist">Label is already exist
+            </mat-error>
+            <mat-error *ngIf="form.get('label').errors?.maxError">Label should be within 50 characters
+            </mat-error>
+        </mat-form-field>
+        <button mat-raised-button class="createLabel-button" color="primary" type="button" id="createLabel"
+            (click)="saveLabels($event)" *ngIf="form.get('label').value !== undefined && form.get('label').value !== null 
+            && form.get('label').value !== '' && !form.get('label').errors" i18n="Create">Create</button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center">
+        <button mat-button id="addLabel" type="button" color="primary" (click)="addLabels()" [disabled]="addNewLabel"
+            i18n="Add New Labels">Add
+            New Labels</button>
+    </div>
+</form>

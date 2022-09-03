@@ -1,0 +1,92 @@
+<!-- <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>Create Application</h2>
+    <mat-icon style="cursor: pointer;" (click)="closeDialog()">cancel</mat-icon>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" fxLayoutGap="10px">
+        <mat-form-field appearance="outline" style="width: 50%;">
+            <mat-label>Template Name</mat-label>
+            <input matInput formControlName="templateName" disabled="true">
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 50%;">
+            <mat-label>Workspace</mat-label>
+            <mat-select formControlName="workspace">
+                <mat-option *ngFor="let workspace of workspaceList" [value]="workspace.workspaceId">
+                    {{workspace.workspaceName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div fxLayout="row">
+        <span>Teams</span>
+    </div>
+    <div fxLayout="row" class="team-container">
+        <div fxLayout="row wrap" style="width: 98%;">
+            <mat-chip-list #chipList style="width: 100%;">
+                <ng-container *ngFor="let user of teamList; let i = index;">
+                    <mat-chip [selectable]="selectable" [removable]="removable" (removed)="removedAssigneeUser(i)">
+                        <span>{{user?.name}}</span>
+                        <mat-icon matChipRemove id="cancel">cancel</mat-icon>
+                    </mat-chip>
+                </ng-container>
+            </mat-chip-list>
+        </div>
+        <div>
+            <mat-icon (click)="openTeamDialog()" class="add-icon-css">add</mat-icon>
+        </div>
+    </div>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="save" (click)="save()">Save</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="closeDialog()">Cancel</button>
+    </mat-dialog-actions>
+</form> -->
+
+<ng-container *ngIf="!showMsg">
+    <form [formGroup]="form" #userForm="ngForm" id="application">
+        <mat-dialog-content>
+            Where you want to install this application ( <b>{{data.template.templateName}}</b> )?
+            <div fxLayout="row" style="margin-top: 10px;" fxLayoutGap="10px">
+                <button mat-raised-button color="primary" (click)="createWorkspace()" class="button-css">Create new
+                    workspace</button>
+                <hr class="horizontal-line-css">
+                <span class="text-css">OR</span>
+                <hr class="horizontal-line-css">
+                <mat-form-field appearance="outline">
+                    <mat-label>Workspace</mat-label>
+                    <mat-select formControlName="workspace">
+                        <ng-container *ngFor="let workspace of workspaceList">
+                            <mat-option *ngIf="!workspace.managedWorkspace" [value]="workspace.workspaceId">
+                                {{workspace.workspaceName}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error>Workspace is required</mat-error>
+                </mat-form-field>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" (click)="save(userForm,'existing')" id="save">Save</button>
+            <button mat-raised-button color="accent" (click)="closeDialog()" id="close">Cancel</button>
+        </mat-dialog-actions>
+    </form>
+</ng-container>
+<ng-container *ngIf="showMsg">
+    <mat-horizontal-stepper #stepper id="taskboard-horizontalStepper">
+        <mat-step>
+            <mat-dialog-content>
+                Do you want to install this application ( <b>{{data.template.templateName}}</b> )?
+            </mat-dialog-content>
+            <mat-dialog-actions align="end">
+                <button mat-raised-button color="primary" (click)="save(userForm,'new')" id="yes">Yes, Install</button>
+                <button mat-raised-button color="accent" matStepperNext id="no">No</button>
+            </mat-dialog-actions>
+        </mat-step>
+        <mat-step>
+            <mat-dialog-content>
+                Do you want to delete this workspace ( <b>{{workspace.workspaceName}}</b> )?
+            </mat-dialog-content>
+            <mat-dialog-actions align="end">
+                <button mat-raised-button color="primary" (click)="deleteWorkspace()" id="delete">Yes, Delete</button>
+                <button mat-raised-button color="accent" (click)="closeDialog()" id="no">No</button>
+            </mat-dialog-actions>
+        </mat-step>
+    </mat-horizontal-stepper>
+</ng-container>

@@ -1,0 +1,52 @@
+<form [formGroup]="form" #userForm="ngForm" [class]="themeService.fontSizeClass">
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="margin-bottom: 0px;">
+        <div class="fs_14" i18n="Themes">Themes</div>
+    </div>
+    <div fxLayout="row wrap">
+        <ng-container *ngFor="let theme of themeService.themes;let i = index;">
+            <div fxLayout="column" (click)="changeTheme(theme.themeName)" class="theme-column-css"
+                fxLayoutAlign="center center"
+                [style.border-color]="themeService.themeName===theme.themeName?themeService.primaryColor:'rgb(192, 192, 192)'">
+                <span class="theme-name-css fs_13"
+                    [style.background]="themeService.themeName===theme.themeName?themeService.primaryColor:'white'"
+                    [style.color]="themeService.themeName===theme.themeName?'white':'grey'">{{theme.displayName |
+                    translate}}</span>
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <span class="theme-color-bar-css" [style.background]="theme.primaryColor"
+                        i18n="Primary">Primary</span>
+                    <span class="theme-color-bar-css" [style.background]="theme.accentColor" i18n="Accent">Accent</span>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div style="margin: 20px 0px 0px 0px;" i18n="Layouts" class="fs_13">Layouts</div>
+    <div fxLayout="row wrap">
+        <ng-container *ngFor="let layout of themeService.layouts;let i = index;">
+            <div fxLayout="column" (click)="changeLayout(layout.name)" class="layout-column-css"
+                fxLayoutAlign="center center"
+                [style.border-color]="themeService.layoutName===layout.name?themeService.primaryColor:'rgb(192, 192, 192)'">
+                <span class="theme-name-css fs_13"
+                    [style.background]="themeService.layoutName===layout.name?themeService.primaryColor:'white'"
+                    [style.color]="themeService.layoutName===layout.name?'white':'grey'">{{layout.name |
+                    translate}}</span>
+            </div>
+        </ng-container>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="fs_13">
+        <div fxLayout="column">
+            <div style="margin: 20px 0px 0px 0px;" i18n="Font Size">Font Size</div>
+            <div fxLayout="row" fxLayoutGap="10px">
+                <ng-container *ngFor="let font of themeService.fonts;let i = index;">
+                    <span [style.font-size.px]="font.fontSize"
+                        [style.color]="font.isSelected?themeService.primaryColor:'grey'" class="font-css"
+                        (click)="fontSizeUpdate(font)">aA</span>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px" style="margin-top: 10px;">
+        <button mat-raised-button color="primary" (click)="save()" i18n="Save & close" class="fs_12">Save &
+            close</button>
+        <button mat-raised-button color="accent" (click)="close()" i18n="Cancel" class="fs_12">Cancel</button>
+    </div>
+</form>

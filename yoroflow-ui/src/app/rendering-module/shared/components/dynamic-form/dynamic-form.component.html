@@ -1,0 +1,114 @@
+<form [formGroup]="form" autocomplete="off" #dynamicForm="ngForm" (ngSubmit)="onSubmit($event,dynamicForm)"
+    *ngIf="create">
+    <!-- [style.width]="fromTaskboard?'95%':''"  -->
+    <ng-container *ngFor="let pageSection of page.sections;let sectionIndex=index">
+        <app-dynamic-section [group]="form" [section]="pageSection" [page]="page" [preview]="preview"
+            (getChipComponent)="getChipComponentInstance($event)" [isAllowEdit]="pageSecurity?.create">
+        </app-dynamic-section>
+        <ng-container *ngIf="showGroupErrorMessage">
+            <mat-error>{{groupErrorMessage}}</mat-error>
+        </ng-container>
+    </ng-container>
+    <!-- <ng-container
+        *ngIf="!isMobile.matches && yoroflowInfo && yoroflowInfo.status!=='COMPLETED' && yoroflowInfo.status!=='LAUNCH' && !yoroflowInfo.isApproveRejectForm">
+        <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px" *ngIf="yoroflowInfo">
+            <ng-container *ngIf="yoroflowInfo.enableSaveAsDraft">
+                <button mat-raised-button id="Save As Draft" type="button" color="primary" (click)="saveAsDraft()">Save
+                    As
+                    Draft</button>
+            </ng-container>
+            <ng-container *ngIf="yoroflowInfo.approveButtonName">
+                <button mat-raised-button id="Submit" type="button" color="primary" (click)="submitTask(yoroflowInfo)"
+                    style="background-color: #40bf80">{{yoroflowInfo.approveButtonName}}</button>
+            </ng-container>
+            <button mat-raised-button id="Assign To Someone" type="button" color="primary" (click)="assignToSomeone()"
+                style="background-color: #3f51b5;">Assign To
+                Someone</button>
+            <button mat-raised-button id="Cancel Workflow" *ngIf="yoroflowInfo.isCancelWorkflow" type="button"
+                color="accent" (click)="cancelTask()">{{yoroflowInfo.cancelButtonName}}</button>
+            <button mat-raised-button id="Cancel Workflow"  type="button"
+                color="accent" (click)="closeDialog()">Close</button>   
+        </div>
+    </ng-container> -->
+
+    <ng-container
+        *ngIf="isMobile.matches && yoroflowInfo && yoroflowInfo.status!=='COMPLETED' && yoroflowInfo.status!=='LAUNCH' && !yoroflowInfo.isApproveRejectForm">
+
+        <mat-button-toggle-group>
+            <mat-button-toggle style="width: 130px;color: white;background-color: #2196f3;" class="split-button-1">
+                Save/Assign
+            </mat-button-toggle>
+            <mat-button-toggle class="split-button-1 drop-down-button" [matMenuTriggerFor]="dropdownMenuOne">
+                <mat-icon>arrow_drop_down</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        <mat-menu #dropdownMenuOne="matMenu">
+            <button *ngIf="yoroflowInfo.enableSaveAsDraft" mat-menu-item (click)="saveAsDraft()">Save As
+                Draft</button>
+            <button *ngIf="yoroflowInfo.approveButtonName" mat-menu-item
+                (click)="submitTask(yoroflowInfo)">{{yoroflowInfo.approveButtonName}}</button>
+            <button mat-menu-item (click)="assignToSomeone()">Assign To Someone</button>
+            <button *ngIf="yoroflowInfo.isCancelWorkflow" mat-menu-item
+                (click)="cancelTask()">{{yoroflowInfo.cancelButtonName}}</button>
+            <button mat-raised-button id="Cancel Workflow" type="button" color="accent"
+                (click)="closeDialog()">Close</button>
+        </mat-menu>
+    </ng-container>
+    <ng-container *ngIf="yoroflowInfo && yoroflowInfo.status==='LAUNCH'">
+        <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px" *ngIf="yoroflowInfo" style="margin-top: 1%;">
+            <ng-container>
+                <button mat-raised-button id="Launch" type="button" color="primary"
+                    (click)="submitTask(yoroflowInfo.status)">Launch</button>
+            </ng-container>
+        </div>
+    </ng-container>
+    <!-- <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px" 
+        *ngIf="!isMobile.matches && yoroflowInfo && yoroflowInfo.status!=='COMPLETED' && yoroflowInfo.status!=='LAUNCH'">
+        <ng-container *ngIf="yoroflowInfo.isApproveRejectForm" style="margin-top: 1%;">
+            <ng-container *ngIf="yoroflowInfo.enableSaveAsDraft">
+                <button mat-raised-button id="Save As Draft" type="button" color="primary" (click)="saveAsDraft()">Save
+                    As
+                    Draft</button>
+            </ng-container>
+            <button mat-raised-button id="Approve" type="button" color="primary" style="background-color: #40bf80;"
+                (click)="approve(yoroflowInfo)">{{yoroflowInfo.approvalButtonName}}</button>
+            <button *ngIf="yoroflowInfo.isReject" mat-raised-button id="Reject" type="button" color="accent"
+                (click)="reject()">{{yoroflowInfo.rejectButtonName}}</button>
+            <button mat-raised-button id="Send Back" type="button" color="primary" (click)="sendBack()"
+                *ngIf="yoroflowInfo.isSendBack">{{yoroflowInfo.sendBackButtonName}}</button>
+            <button mat-raised-button id="Assign To Someone" type="button" color="primary" (click)="assignToSomeone()"
+                style="background-color: #3f51b5;">Assign To
+                Someone</button>
+            <button mat-raised-button id="Cancel Workflow"  type="button"
+                color="accent" (click)="closeDialog()">Close</button>
+        </ng-container>
+    </div> -->
+    <div fxLayout="column" fxLayoutAlign="end end" fxLayoutGap="10px"
+        *ngIf="isMobile.matches && yoroflowInfo && yoroflowInfo.status!=='COMPLETED' && yoroflowInfo.status!=='LAUNCH'">
+        <ng-container *ngIf="yoroflowInfo.isApproveRejectForm" style="margin-top: 1%;">
+            <mat-button-toggle-group>
+                <mat-button-toggle style="width: 130px;color: white;background-color: #2196f3;" class="split-button-1">
+                    Save/Assign
+                </mat-button-toggle>
+                <mat-button-toggle class="split-button-1 drop-down-button" [matMenuTriggerFor]="dropdownMenuOne">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-menu #dropdownMenuOne="matMenu">
+                <button *ngIf="yoroflowInfo.enableSaveAsDraft" mat-menu-item (click)="saveAsDraft()"
+                    id="Save As Draft">Save As
+                    Draft</button>
+                <button mat-menu-item (click)="approve(yoroflowInfo)"
+                    [id]="yoroflowInfo.approvalButtonName">{{yoroflowInfo.approvalButtonName}}</button>
+                <button *ngIf="yoroflowInfo.isReject" mat-menu-item (click)="reject()"
+                    [id]="yoroflowInfo.rejectButtonName">{{yoroflowInfo.rejectButtonName}}</button>
+                <button *ngIf="yoroflowInfo.isSendBack" mat-menu-item (click)="sendBack()"
+                    [id]="yoroflowInfo.sendBackButtonName">{{yoroflowInfo.sendBackButtonName}}</button>
+                <button mat-menu-item (click)="assignToSomeone()">Assign To Someone</button>
+                <button mat-raised-button id="Cancel Workflow" type="button" color="accent"
+                    (click)="closeDialog()">Close</button>
+
+            </mat-menu>
+        </ng-container>
+    </div>
+</form>

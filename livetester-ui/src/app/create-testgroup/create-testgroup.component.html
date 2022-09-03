@@ -1,0 +1,62 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+    <div fxFlex="100%">
+        <mat-card style="background-color:rgb(154, 199, 212)">
+            <mat-card-title>Test Group Creation</mat-card-title>
+            <div class="accordion-form-section">
+                <form [formGroup]="testGroupForm" #userForm="ngForm">
+                    <mat-card style="margin-top: 1%">
+                        <input type="hidden" formControlName="id" />
+                        <div fxLayoutAlign="space-between center" style="margin-top:1%">
+                           
+                        <p style="width: 60%">
+                             <mat-form-field>
+                                <mat-label>Test Group</mat-label>
+                                <mat-select [(value)]="selected" id="testGroupList">
+                                    <mat-option id="testGroupOption" [value]="test.id" (onSelectionChange)="loadTestGroupInfo($event, userForm)"
+                                    *ngFor="let test of testGroupVOList">
+                                        {{test.description}} </mat-option>
+                                </mat-select>
+
+                            </mat-form-field> 
+                        </p>
+                        <div fxLayoutAlign="end center">
+                        <button  *ngIf="deleteButtonVisible" mat-raised-button color="primary" (click)="editTestGroup()" style="margin-right:5%" id="editBtn">Edit</button>
+                        <button  *ngIf="deleteButtonVisible" mat-raised-button color="warn" (click)="deleteTestGroup(userForm)" id="deleteBtn">Delete</button>
+                        </div>  
+                    </div>
+                    </mat-card>
+                    <mat-card style="margin-top: 1%">
+                        <p>
+                            <mat-form-field>
+                                <mat-label>Test Group Name</mat-label>
+                                <input matInput type="text" placeholder="Test Group Name"
+                                    formControlName="testcaseGroupName" readonly="{{readOnly}}" id="testcaseGroupName">
+                                <mat-error class="text-danger" id="testcaseGroupNameRequired"
+                                    *ngIf="testGroupForm.get('testcaseGroupName').errors?.required
+                              &&(userForm.submitted || testGroupForm.get('testcaseGroupName').touched || testGroupForm.get('testcaseGroupName').dirty)">
+                                    Test Group Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </p>
+                        <p style="width: 80%;">
+                            <mat-form-field>
+                                <mat-label>Description</mat-label>
+                                <input matInput type="text" placeholder="Description" formControlName="description" id="description">
+                                <mat-error class="text-danger" id="descriptionRequired"
+                                    *ngIf="testGroupForm.get('description').errors?.required
+                              &&(userForm.submitted || testGroupForm.get('description').touched || testGroupForm.get('description').dirty)">
+                                    Description is required
+                                </mat-error>
+                            </mat-form-field>
+                        </p>
+                        <div fxLayoutAlign="end start" style="margin-top:1%">
+                            <button mat-raised-button color="primary" style="margin-right: 1%"   (click)="save(userForm)" id="btnSave">Save</button>
+                            <button mat-raised-button type="reset"  color="accent" (click)="clearSearch('reset')" id="btnreset">Reset</button>
+                        </div>
+                    </mat-card>
+
+                </form>
+            </div>
+        </mat-card>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+<nav mat-tab-nav-bar *ngIf="menuType === 'horizontal'">
+  <ng-container *ngFor="let menu of menuOptions;let i=index">
+    <a [id]=menu.menuName mat-tab-link [active]="rla.isActive" routerLinkActive #rla="routerLinkActive"
+      routerLink="load-info/{{menu.pageId}}/{{menu.version}}/{{parameterControlName}}/{{parameterControlValue}}"
+      *ngIf="menu.dynamicMenus===null && menu.pageId!==null && parameterControlName !==null && parameterControlValue!==null"
+      (click)="checkParametersExist()"> {{ menu.menuName }} </a>
+    <a [id]=menu.menuName mat-tab-link [active]="rla.isActive" routerLinkActive #rla="routerLinkActive"
+      routerLink="{{menu.menuPath}}/{{parameterControlValue}}"
+      *ngIf="menu.menuPath !==null && menu.dynamicMenus===null && menu.pageId===null && parameterControlName===null"
+      (click)="checkParametersExist()">
+      {{ menu.menuName }} </a>
+    <a [id]=menu.menuName *ngIf="menu.dynamicMenus===null && menu.pageId!==null && parameterControlName===null 
+    &&  parameterControlValue===null" mat-button routerLink="page/{{menu.pageId}}/{{menu.version}}">
+      {{ menu.menuName }}</a>
+  </ng-container>
+</nav>
+<!-- <div >
+  <ng-container *ngFor="let menu of menuOptions;let i=index">
+  <a routerLink="load-info/{{menu.pageId}}/{{controlName}}/{{uuid}}"
+  *ngIf="menu.dynamicMenus===null && menu.pageId!==null" (click)="checkParametersExist()"> {{ menu.menuName }} </a>
+<a  routerLink="{{menu.menuPath}}"
+  *ngIf="menu.menuPath !==null && menu.dynamicMenus===null && menu.pageId===null" (click)="checkParametersExist()"> {{ menu.menuName }} </a>
+</ng-container>
+</div> -->
+
+<mat-card *ngIf="menuType === 'vertical'">
+  <div fxLayout="row" style="width: 100%;">
+    <mat-nav-list style="width: 20%;margin: 0;">
+      <ng-container *ngFor="let menu of menuOptions;let i=index">
+        <mat-list-item routerLinkActive="active-list-item" *ngIf="menu.dynamicMenus===null && menu.pageId!==null">
+          <a [id]=menu.menuName
+            routerLink="load-info/{{menu.pageId}}/{{menu.version}}/{{parameterControlName}}/{{parameterControlValue}}"
+            (click)="checkParametersExist()">{{ menu.menuName }}</a>
+        </mat-list-item>
+        <mat-list-item routerLinkActive="active-list-item"
+          *ngIf="menu.menuPath !==null && menu.dynamicMenus===null && menu.pageId===null">
+          <a [id]=menu.menuName routerLink="{{menu.menuPath}}/{{parameterControlValue}}"
+            (click)="checkParametersExist()">{{ menu.menuName }}</a>
+        </mat-list-item>
+        <mat-list-item routerLinkActive="active-list-item" *ngIf="menu.dynamicMenus===null && menu.pageId!==null && parameterControlName===null 
+        &&  parameterControlValue===null">
+          <a [id]=menu.menuName mat-button routerLink="page/{{menu.pageId}}/{{menu.version}}">
+            {{ menu.menuName }}</a>
+        </mat-list-item>
+      </ng-container>
+    </mat-nav-list>
+    <div style="width: 100%;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</mat-card>
+
+<!-- <mat-tab-group>
+  <ng-container *ngFor="let menu of menuOptions;let i=index">
+    <mat-tab [label]="menu.menuName" *ngIf="menu.dynamicMenus===null && menu.pageId!==null">
+         <dynamic-page [id]="menu.pageId"></dynamic-page> 
+        {{menu.pageId}}
+    </mat-tab>
+  </ng-container>
+</mat-tab-group> -->

@@ -1,0 +1,286 @@
+<form [formGroup]="form" fxLayout="row">
+	<section tabindex="-1"
+		[class]="collapseUserListWindow===false?'message-overlay-list':'message-overlay-list-collapse'">
+		<div fxLayout="row" fxLayoutAlign="space-between center" (click)="collapseMessage()" class="br-css"
+			[style.background]="unreadMessageCount>0?'#4169e1':'white'">
+			<div fxLayout="row" fxLayoutGap="5px">
+				<div
+					*ngIf="userVO.profilePicture!==undefined && userVO.profilePicture !==null && userVO.profilePicture !==''">
+					<img mat-card-avatar [src]="transformImage(userVO.profilePicture)" class="chat-prof-pic"
+						alt="User Avatar">
+				</div>
+				<div class="chat-prof-name" [style.background]="userVO.color" fxLayoutAlign="center center"
+					*ngIf="userVO.profilePicture ===null || userVO.profilePicture ==='' || !userVO.profilePicture">
+					{{userProfile(userVO.firstName)}}
+				</div>
+				<h4 class="message-header-name" [style.color]="unreadMessageCount>0?'white':'black'">Messaging</h4>
+				<p *ngIf="unreadMessageCount>0" class="user-list-count">{{unreadMessageCount}}</p>
+			</div>
+			<div fxLayout="row">
+				<button *ngIf="collapseUserListWindow===false" (click)="$event.stopPropagation()"
+					[matMenuTriggerFor]="editMenu" #editMenuTrigger="matMenuTrigger" class="circle-button" type="button"
+					mat-button id="edit">
+					<mat-icon [style.color]="unreadMessageCount>0?'white':'black'">more_horiz
+					</mat-icon>
+					<mat-menu #editMenu="matMenu" class="message-menu-css">
+						<button mat-button (click)="openGroupCreation()">
+							<div fxLayout="row" fxLayoutGap="10px">
+								<mat-icon color="primary" class="mt-1">group_add</mat-icon>
+								<span>Create new group</span>
+							</div>
+						</button>
+					</mat-menu>
+				</button>
+				<button class="circle-button" type="button" mat-button id="collapse-message">
+					<mat-icon [@indicatorRotate]="collapseUserListWindow===false?'expanded':'collapsed'"
+						[style.color]="unreadMessageCount>0?'white':'black'">expand_more
+					</mat-icon>
+				</button>
+			</div>
+		</div>
+		<ng-container *ngIf="collapseUserListWindow===false">
+			<div fxLayout="row">
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<mat-icon class="input-group-text search-icon-css" id="basic-addon1">search</mat-icon>
+					</div>
+					<input type="text" class="form-control border-input" placeholder="Search" formControlName="search">
+				</div>
+			</div>
+			<section class="user-list-content">
+				<div fxLayout="row" class="message-container-1">
+					<div class="user-list-container">
+						<ng-container *ngIf="userVOList">
+							<ng-container *ngFor="let user of filterUserList">
+								<div fxLayout="row" class="user-card" (click)="loadChatDetails(user,0)">
+									<div fxLayout="column" class="user-profile-column" fxLayoutAlign="center">
+										<div
+											*ngIf="user.profilePicture!==undefined && user.profilePicture !==null && user.profilePicture !==''">
+											<img mat-card-avatar [src]="transformImage(user.profilePicture)"
+												class="user-prof-pic" alt="User Avatar">
+										</div>
+										<div class="user-prof-name" fxLayoutAlign="center center"
+											[style.background]="user.color"
+											*ngIf="user.profilePicture ===null || user.profilePicture ==='' || !user.profilePicture">
+											{{userProfile(user.firstName)}}
+										</div>
+									</div>
+									<div fxLayout="row" class="user-list-item">
+										<h4 class="user-list-name-css">{{user.firstName}} {{user.lastName}}</h4>
+										<ng-container *ngIf="user.unReadMessageCount>0">
+											<p class="user-list-count-1">{{user.unReadMessageCount}}</p>
+										</ng-container>
+									</div>
+								</div>
+							</ng-container>
+						</ng-container>
+						<ng-container *ngIf="messageGroupVOList">
+							<ng-container *ngFor="let messageGroup of filterGroupList">
+								<div fxLayout="row" class="user-card" (click)="loadGroupChatDetails(messageGroup,0)">
+									<div fxLayout="column" class="user-profile-column" fxLayoutAlign="center">
+										<div class="user-prof-name" fxLayoutAlign="center center"
+											[style.background]="'grey'">
+											{{userProfile(messageGroup.groupName)}}
+										</div>
+									</div>
+									<div fxLayout="row" class="user-list-item">
+										<h4 class="user-list-name-css">{{messageGroup.groupName}}</h4>
+										<ng-container *ngIf="messageGroup.groupUnreadMessageCount>0">
+											<p class="user-list-count-1">{{messageGroup.groupUnreadMessageCount}}</p>
+										</ng-container>
+									</div>
+								</div>
+							</ng-container>
+						</ng-container>
+					</div>
+				</div>
+			</section>
+		</ng-container>
+	</section>
+</form>
+<form [formGroup]="messageGroupForm" *ngIf="groupCreation">
+	<section tabindex="-1"
+		[class]="collapseMessageGroupWindow===false?messageGroupWindowClass:'message-overlay-list-collapse'">
+		<div fxLayout="row" fxLayoutAlign="space-between center" (click)="collapseMessageGroup()" class="br-css">
+			<div fxLayout="row" fxLayoutGap="5px" style="margin-left: 10px;">
+				<h4 class="message-header-name">New group conversation</h4>
+			</div>
+			<div fxLayout="row" (click)="$event.stopPropagation()">
+				<button *ngIf="collapseMessageGroupWindow===false" class="circle-button" type="button" mat-button
+					id="collapse-group-conv" (click)="maximizeWindow()">
+					<mat-icon>{{maximizeMessageGroupWindow===true?'close_fullscreen':'open_in_full'}}</mat-icon>
+				</button>
+				<button class="circle-button" type="button" mat-button id="collapse-group-conv"
+					(click)="closeGroupWindow()">
+					<mat-icon>close
+					</mat-icon>
+				</button>
+			</div>
+		</div>
+		<ng-container *ngIf="collapseMessageGroupWindow===false">
+			<div fxLayout="row" fxLayoutAlign="center">
+				<mat-form-field class="example-chip-list" appearance="outline" class="w-90">
+					<!-- <mat-chip-list #chipList>
+						<ng-container *ngFor="let user of filterUsersForGroup; let i = index;">
+							<mat-chip *ngIf="user.isSelected" [selectable]="selectable" [removable]="removable"
+								(removed)="removeUser(user)">
+								<span>{{user?.firstName}} {{user?.lastName}}</span>
+								<mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+							</mat-chip>
+						</ng-container> -->
+					<input matInput placeholder="{{'Search...' | translate}}" formControlName="user"
+						class="input-color">
+					<!-- </mat-chip-list> -->
+				</mat-form-field>
+			</div>
+			<section class="user-list-content">
+				<div fxLayout="row" class="message-container-1">
+					<div class="user-list-container">
+						<ng-container *ngFor="let user of filterUsersForGroup">
+							<div fxLayout="row" fxLayoutAlign="space-between center" class="user-card"
+								(click)="setGroupUsers(user)"
+								[style.background]="user.isSelected===true?'#e4fff4':'white'">
+								<div fxLayout="row">
+									<div fxLayout="column" class="user-profile-column" fxLayoutAlign="center">
+										<div
+											*ngIf="user.profilePicture!==undefined && user.profilePicture !==null && user.profilePicture !==''">
+											<img mat-card-avatar [src]="transformImage(user.profilePicture)"
+												class="user-prof-pic" alt="User Avatar">
+										</div>
+										<div class="user-prof-name" fxLayoutAlign="center center"
+											[style.background]="user.color"
+											*ngIf="user.profilePicture ===null || user.profilePicture ==='' || !user.profilePicture">
+											{{userProfile(user.firstName)}}
+										</div>
+									</div>
+									<div fxLayout="row" class="user-list-item">
+										<h4 class="user-list-name-css">{{user.firstName}} {{user.lastName}}</h4>
+									</div>
+								</div>
+								<div fxLayout="column">
+									<mat-icon *ngIf="user.isSelected===true" class="done-icon-css">done</mat-icon>
+								</div>
+							</div>
+						</ng-container>
+					</div>
+				</div>
+			</section>
+			<div fxLayout="column">
+				<div fxLayout="row" fxLayoutAlign="center">
+					<mat-form-field appearance="outline" class="w-90">
+						<input matInput formControlName="groupName" placeholder="Group Name" #groupName maxlength="200"
+							class="input-color">
+						<mat-hint align="start"><strong>Characters remaining</strong> </mat-hint>
+						<mat-hint align="end">{{groupName.value.length}} / 200</mat-hint>
+						<mat-error>Group name is required</mat-error>
+					</mat-form-field>
+				</div>
+				<div fxLayout="row" fxLayoutAlign="end end" style="margin-top: 10px;">
+					<button mat-raised-button type="button" color="primary"
+						[disabled]="!messageGroupForm.valid || !checkUsersSelected()"
+						(click)="saveMessageGroup()">Create
+						Group</button>
+				</div>
+			</div>
+		</ng-container>
+	</section>
+</form>
+<form [formGroup]="messagePassingForm" fxLayout="row" fxLayoutAlign="start end">
+	<ng-container *ngIf="selectedChatUsers.length>0">
+		<ng-container *ngFor="let messageHistory of selectedChatUsers; let i = index;">
+			<div tabindex="-1" fxLayout="column" fxLayoutAlign="end"
+				[class]="!messageHistory.isSelected?'messge-window':'messge-window-collapse'">
+				<div fxLayout="row" fxLayoutAlign="space-between center" (click)="chatWindowCollapse(messageHistory)"
+					class="border-css">
+					<div fxLayout="row" fxLayoutGap="5px">
+						<div
+							*ngIf="messageHistory.profilePicture!==undefined && messageHistory.profilePicture !==null && messageHistory.profilePicture !==''">
+							<img mat-card-avatar [src]="transformImage(messageHistory.profilePicture)"
+								class="chat-prof-pic" alt="User Avatar">
+						</div>
+						<div class="chat-prof-name" [style.background]="messageHistory.color"
+							fxLayoutAlign="center center"
+							*ngIf="messageHistory.profilePicture ===null || messageHistory.profilePicture ==='' || !messageHistory.profilePicture">
+							{{userProfile(messageHistory.firstName)}}
+						</div>
+						<h4 class="message-header-name">{{messageHistory.firstName}} {{messageHistory.lastName}}</h4>
+					</div>
+					<div fxLayout="row">
+						<!-- <button *ngIf="!messageHistory.isSelected && !messageHistory.toId" (click)="$event.stopPropagation()"
+							[matMenuTriggerFor]="groupMenu" #groupMenuTrigger="matMenuTrigger" class="circle-button"
+							type="button" mat-button id="edit">
+							<mat-icon [style.color]="unreadMessageCount>0?'white':'black'">more_horiz
+							</mat-icon>
+							<mat-menu #groupMenu="matMenu" class="message-menu-css">
+								<button mat-button (click)="addUserToExistGroup(messageHistory)">
+									<div fxLayout="row" fxLayoutGap="10px">
+										<mat-icon color="primary" class="mt-1">group_add</mat-icon>
+										<span>Create new group</span>
+									</div>
+								</button>
+							</mat-menu>
+						</button> -->
+						<button class="circle-button" type="button" mat-button (click)="closeChatWindow(messageHistory)"
+							id="collapse-message">
+							<mat-icon>close</mat-icon>
+						</button>
+					</div>
+				</div>
+				<ng-container *ngIf="!messageHistory.isSelected">
+					<div #messageBody class="message-container-css" id="messageBody"
+						(mouseover)="setMessageHistory(messageHistory)" (scroll)="onScroll($event,messageVOList)">
+						<ng-container *ngFor="let message of messageHistory.messageVOList;let i=index;">
+							<div fxLayout="row" fxLayoutAlign="start start" class="margin"
+								*ngIf="message.fromId !== userVO.userId" fxLayoutGap="10px">
+								<div class="message-container" fxLayout="column">
+									<div style="font-size: 15px;" fxLayout="row" fxLayoutAlign="start start"
+										fxLayoutGap="10px">
+										<div>
+											{{message.fromUserName}}
+										</div>
+										<div style="font-size: smaller;">
+											{{message.createdOn | date :'M/d h:mm a'}}
+										</div>
+									</div>
+									<div style="font-size: small;">{{message.message}}</div>
+								</div>
+							</div>
+							<div fxLayout="row" fxLayoutAlign="end end" class="margin"
+								*ngIf="message.fromId === userVO.userId">
+								<div class="right-message-container" fxLayout="column">
+									<div style="font-size: 15px;" fxLayout="row" fxLayoutAlign="start start"
+										fxLayoutGap="10px">
+										<div style="font-size: smaller;">
+											{{message.createdOn | date :'M/d h:mm a'}}
+										</div>
+									</div>
+									<div style="font-size: small;">{{message.message}}</div>
+								</div>
+								<mat-spinner strokeWidth="3" [diameter]="18" class="loader-margin"
+									*ngIf="showMessageLoader&& i===messageHistoryVO.messageVOList.length-1">
+								</mat-spinner>
+							</div>
+						</ng-container>
+					</div>
+					<ng-container formArrayName="messageDetailsArray"
+						*ngFor="let messageControl of getMessageDetailsFormArray().controls;let arrayIndex = index;">
+						<div [formGroupName]="arrayIndex">
+							<div *ngIf="arrayIndex===i" fxLayout="row" fxLayoutGap="10px"
+								style="margin-top: 2px;background:#e7e7e7;">
+								<div style="width: 92%;">
+									<input matInput (keydown.enter)="keydown($event,arrayIndex)"
+										placeholder="Write your message..." formControlName="message"
+										class="enter-message">
+								</div>
+								<div>
+									<mat-icon style="font-size: 20px;cursor: pointer;" class="send-circle"
+										(click)="sendMessageUsingSocket(arrayIndex)">send</mat-icon>
+								</div>
+							</div>
+						</div>
+					</ng-container>
+				</ng-container>
+			</div>
+		</ng-container>
+	</ng-container>
+</form>

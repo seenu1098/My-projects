@@ -1,0 +1,400 @@
+<mat-card style="background-color: #f7fbff;">
+  <div fxLayout="row" fxLayoutGap.lt-md="0px" fxLayoutGap="10px" cdkDropListGroup fxLayout.lt-md="column"
+    style="margin: 0;">
+    <div *ngIf="!controlsShow">
+      <mat-icon (click)="open()" id="open" style="cursor: pointer;">double_arrow</mat-icon>
+    </div>
+    <div fxLayout="column" fxLayoutGap.lt-md="0px" fxLayout.lt-md="column" *ngIf="controlsShow"
+      style="background-color: #f7fbff;width: 17%;" fxLayoutAlign="left left">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-card-title style="margin-left: 6%;margin-bottom: 0;margin-top: 1%;" i18n="@@appLayout-controls"> Controls
+        </mat-card-title>
+        <mat-icon (click)="close()" id="close" style="cursor: pointer;">close</mat-icon>
+      </div>
+      <div fxLayout="row">
+        <div cdkDropList [cdkDropListData]="leftFormFields">
+          <div class="example-box" fxLayoutGap.lt-md="0px" fxLayoutGap="20px" fxLayout.lt-md="column"
+            *ngFor="let formField of leftFormFields;let i=index;" cdkDrag cdkDragHandle
+            [cdkDragDisabled]="formField.disabled">
+            <div style="padding: 10%">
+              <div>
+                <mat-icon style=" font-size: 19px;">{{formField.iconName}}</mat-icon>
+              </div>
+              <div style=" font-size: 12px;">
+                {{formField.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="!isFromWorkflow && !isWorkflow">
+          <div cdkDropList [cdkDropListData]="rightFormFields">
+            <div class="example-box" fxLayoutGap.lt-md="0px" fxLayoutGap="20px" fxLayout.lt-md="column"
+              *ngFor="let formField of rightFormFields;let i=index;" cdkDrag cdkDragHandle
+              [cdkDragDisabled]="formField.disabled">
+              <div style="padding: 10%">
+                <div>
+                  <mat-icon style=" font-size: 19px;">{{formField.iconName}}</mat-icon>
+                </div>
+
+                <div style=" font-size: 12px;">
+                  {{formField.name}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isFromWorkflow || isWorkflow">
+          <div cdkDropList [cdkDropListData]="rightFormFieldsWorkflow">
+            <div class="example-box" fxLayoutGap.lt-md="0px" fxLayoutGap="20px" fxLayout.lt-md="column"
+              *ngFor="let formField of rightFormFieldsWorkflow;let i=index;" cdkDrag cdkDragHandle
+              [cdkDragDisabled]="formField.disabled">
+              <div style="padding: 10%">
+                <div>
+                  <mat-icon style=" font-size: 19px;">{{formField.iconName}}</mat-icon>
+                </div>
+                <div style=" font-size: 12px;">
+                  {{formField.name}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div style="width: 90%;margin: 0">
+      <mat-card style="margin: 0%;background-color: #f7fbff;" class="page-content" [style.width]="width"
+        [style.height]="screenHeight">
+        <div *ngIf=manageFlag>
+          <mat-card-title i18n="@@appLayout-title"> Application Layout Page </mat-card-title>
+        </div>
+        <div *ngIf=!manageFlag>
+          <mat-card-title *ngIf=!manageFlag i18n="Page for External Table">Page for External Table</mat-card-title>
+        </div>
+
+        <form [formGroup]="form" #userForm="ngForm">
+          <div fxLayout="row">
+            <mat-form-field style="width: 52%">
+              <input matInput type="text" placeholder="Page Name *" id="pageName" formControlName="pageName"
+                (focusout)="focusOutForFormElement($event)" (keypress)="omit_number($event)"
+                i18n-placeholder="Page Name *">
+              <mat-error *ngIf="form.get('pageName').errors?.required" i18n="Page Name is required">
+                Page Name is required</mat-error>
+              <input matInput type="text" id="manageFlag" formControlName="manageFlag" hidden>
+            </mat-form-field>
+            <ng-container *ngIf="isWorkflow && isLoadForm">
+              <mat-form-field style="width: 10%;">
+                <input matInput type="number" id="version" placeholder="Version" [value]="versionValue" readonly
+                  i18n-placeholder="Version">
+              </mat-form-field>
+            </ng-container>
+            <!-- <ng-container *ngIf ="isFromWorkflow">
+                <mat-form-field style="width: 25%;">
+                  <input matInput type="text" placeholder="Application Name *" formControlName="applicationName" readonly>
+                  <mat-error *ngIf="form.get('applicationName').errors?.required">
+                    Application Name is required</mat-error>
+                </mat-form-field>
+              </ng-container> -->
+            <ng-container *ngIf="!isFromWorkflow && isWorkflow===false">
+              <mat-form-field style="width:24%">
+                <mat-label i18n="Application Name">Application Name *</mat-label>
+                <mat-select formControlName="applicationName" id="applicationName">
+                  <mat-option [value]="app.applicationName" *ngFor="let app of applicationsList"
+                    [id]="app.applicationName" (onSelectionChange)="setApplicationId($event,app.id)">
+                    {{app.applicationName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('applicationName').errors?.required" i18n="Application Name is required">
+                  Application Name is required</mat-error>
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="button" [disabled]="publishOptionEnable"
+                style="margin-top: 25px; margin-bottom: 25px; margin-left: 5px;" (click)="publishPage()" i18n="Publish
+                Page"> Publish
+                Page </button>
+            </ng-container>
+          </div>
+          <div fxLayout="row">
+            <mat-form-field style="width: 25%;">
+              <input matInput type="text" id="pageId" placeholder="Page Id" formControlName="pageId" readonly
+                i18n-placeholder="Page Id">
+            </mat-form-field>
+            <mat-form-field style="width: 25%">
+              <textarea matInput id="description" placeholder="Description" formControlName="description"
+                i18n-placeholder="Description"></textarea>
+            </mat-form-field>
+            <button mat-raised-button style="margin-left:3%;margin: 40px;" color="primary" type="button"
+              (click)="openPagePermissions()" id="security" [disabled]="securityOptionEnable" i18n="User Permissions">
+              User Permissions
+            </button>
+            <!-- <button *ngIf="showSectionAddIcon" style="margin-left:13%;margin: 40px;" mat-raised-button type="button"
+              color="primary" id="addSection" (click)="addSection()">Add Section
+            </button> -->
+          </div>
+          <!-- starts here-->
+          <mat-card>
+            <mat-card-title>{{form.get('pageName').value}}</mat-card-title>
+            <div *ngFor="let section of page.sections;let i=index" style="padding: 10px;">
+              <div *ngIf="showDiv[i]">
+                <mat-card style="padding: 1%" [style.box-shadow]="showBorder(section)" [style.width.%]="section.width">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <div>
+                      <mat-card-title>
+                        <ng-container *ngIf=section.name>
+                          <a (click)="sectionUpdate(section,i)" [id]="'update_section'+i">{{section.name}}</a>
+                        </ng-container>
+                      </mat-card-title>
+                    </div>
+                    <div fxLayoutAlign="center" *ngIf="showButtons[i]">
+                      <button mat-mini-fab type="button" style=" height: 40px; width: 40px;margin-left: 43px;"
+                        color="accent" (click)="rowAdd(section,0)" [id]="'createRow_at'+i">
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </div>
+                    <div fxLayoutAlign="end start">
+                      <!-- <button mat-button color="primary" type="button" [id]="'createRowAtFirst'+i"
+                        (click)="rowAdd(section,0)">Create Row At
+                        First</button> -->
+                      <button mat-button color="primary" type="button" [id]="'editSection'+i"
+                        (click)="sectionUpdate(section,i)" i18n="Edit Section">Edit Section
+                      </button>
+                      <button mat-mini-fab type="button" style=" height: 30px; width: 30px;" color="primary"
+                        [id]="'remove'+i" (click)="removeSection(i,page.sections)">
+                        <mat-icon style="font-size: 16px;">remove</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="center" *ngIf="showButtons[i]">
+                    <a style="margin-top: 10px;margin-right: 85px;" i18n="Click here to add a row">Click here to add a
+                      row</a>
+                  </div>
+                  <!-- Rows and & columns-->
+                  <ng-container>
+                    <!-- rows in section-->
+                    <div *ngFor="let row of section.rows;let j=index">
+                      <ng-container>
+                        <div [fxLayoutAlign]="row.alignment">
+                          <div *ngIf=row.columns [fxLayout]="row.layoutDirection" [fxLayoutAlign]="row.alignment"
+                            [fxLayout.lt-md]="row.layoutResponsiveDirection" [fxLayoutGap]="row.layoutGap+'px'"
+                            [style.width.%]=row.rowWidth style="margin-top: 1%;"
+                            [style.background-color]="row.rowBackground">
+                            <ng-container *ngFor="let column of row.columns; let k=index">
+                              <div cdkDropList [id]="'col'+'_'+i+'_'+j+'_'+k"
+                                (cdkDropListDropped)="dropped($event,j,k , section , column , true)"
+                                [style.border]="getColumnBoxProperty(column,userForm)"
+                                [style.width.%]="column.field.fieldWidth ==0 ? (row.rowWidth/row.columns.length) : column.field.fieldWidth"
+                                class="list-column" [cdkDropListData]=row.columns
+                                [style.background-color]="column.field.rowBackground"
+                                (click)="createFormField(column, j ,k, section,true)">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                  style="width: 100%;margin-top:1% ;">
+                                  <app-load-controls [column]="column"></app-load-controls>
+                                  <div *ngIf="row.columns.length>0">
+                                    <a (click)="removeColumn(k,row.columns, j , section )" [id]="'clear_col'+j+'_'+k"
+                                      style="cursor: default">
+                                      <mat-icon style="color: #ff4081" [id]="'clear_col'+j+'_'+k">clear</mat-icon>
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+                            <div fxLayout="row" fxLayoutGap="2px" *ngIf="row.totalColumns">
+                              <mat-icon style="cursor: pointer;font-size: 21px;" (click)="rowAddAbove(section,j)"
+                                [id]="'add_row'+'_'+i+'_'+j">
+                                add</mat-icon>
+                              <mat-icon style="cursor: pointer;font-size: 21px;" (click)="rowUpdate(section, row , j)"
+                                [id]="'update_row'+i+'_'+j">
+                                create</mat-icon>
+                              <mat-icon style="cursor: pointer;color:#f05a5a;font-size: 21px;"
+                                (click)="removeRowFormSection(j,section.rows)" [id]="'remove_row'+i+'_'+j">delete_sweep
+                              </mat-icon>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                  <!-- Sub Section starts here -->
+                  <!-- <ng-container *ngIf="section.sections;">
+                        <div *ngFor="let nestedSection of section.sections; let l=index" style="padding: 15px;">
+                          <mat-card style="padding: 1%" [style.box-shadow]="showBorder(nestedSection)"
+                            [style.width.%]="nestedSection.width">
+                            <div fxLayout="row" fxLayoutAlign="space-between center">
+                              <mat-card-title>
+                                <ng-container *ngIf=nestedSection.name>
+                                  <a
+                                    (click)="nestedSectionUpdate(nestedSection , section ,false)">{{nestedSection.name}}</a>
+                                </ng-container>
+  
+                              </mat-card-title>
+                            </div>
+                            <div fxLayoutAlign="end end">
+                              <button mat-button color="primary" (click)="rowAdd(nestedSection,0)">Create Row At
+                                First</button>
+                              <button mat-button color="primary"
+                                (click)="nestedSectionUpdate(nestedSection, section, false)">Edit Sub
+                                Section </button>
+                              <button mat-mini-fab type="button" style=" height: 30px; width: 30px;" color="primary"
+                                (click)="removeSection(l
+                              ,section.sections)">
+                                <mat-icon style="font-size: 16px;">remove</mat-icon>
+                              </button>
+                            </div>
+                            <div *ngFor="let sections of nestedSection.rows; let m=index">
+                              <div>
+                                <ng-container>
+                                  <div *ngIf="sections.columns && sections.alignment"
+                                    [fxLayout]="sections.layoutDirection"
+                                    [fxLayout.lt-md]="sections.layoutResponsiveDirection"
+                                    [fxLayoutAlign]="sections.alignment" [fxLayoutGap]="sections.layoutGap+'px'"
+                                    [style.width.%]=sections.rowWidth style="margin-top: 1%;">
+                                    <ng-container *ngFor="let column of sections.columns; let n=index">
+                                      <div class="list-column" cdkDropList
+                                        (cdkDropListDropped)="dropped($event,m,n,nestedSection,column,false )"
+                                        [cdkDropListData]=sections.columns
+                                        [style.border]="getColumnBoxProperty(column,userForm)"
+                                        [style.width.%]="column.field.fieldWidth =='0' ? (sections.rowWidth/sections.columns.length) : column.field.fieldWidth"
+                                        (click)="createFormField(column,m,n,nestedSection,false)">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                          style="width: 100%;">
+                                          <app-load-controls [column]="column"></app-load-controls>
+  
+                                          <div *ngIf="sections.columns.length>0">
+                                            <a (click)="removeColumn(n,sections.columns, m , nestedSection)"
+                                              style="cursor: default">
+                                              <mat-icon style="color: #ff4081">clear</mat-icon>
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-container>
+                                    <div fxLayout="row" fxLayoutGap="2px" *ngIf="sections.totalColumns">
+                                      <mat-icon style="cursor: pointer;font-size: 21px;"
+                                        (click)="rowAddAbove(nestedSection,m)">add</mat-icon>
+                                      <mat-icon style="cursor: pointer;font-size: 21px;"
+                                        (click)="rowUpdate(nestedSection,sections, m)">create</mat-icon>
+                                      <mat-icon style="cursor: pointer;color:#f05a5a;font-size: 21px;"
+                                        (click)="removeRowFormSection(m,nestedSection.rows)">delete_sweep</mat-icon>
+                                    </div>
+                                  </div>
+                                </ng-container>
+                              </div>
+                            </div>
+                            <ng-container *ngIf="nestedSection.name">
+                              <button style="padding-left: -10px" mat-button color="primary"
+                                (click)="nestedSectionAdd(nestedSection , true)">Add SubSection of
+                                {{nestedSection.name}}</button>
+                            </ng-container>
+                            <ng-container *ngIf="nestedSection.sections">
+                              <div *ngFor="let nestedSubSection of nestedSection.sections;let o=index"
+                                style="padding: 20px;">
+                                <mat-card style="padding-left: 1%" [style.box-shadow]="showBorder(nestedSubSection)"
+                                  [style.width.%]="nestedSubSection.width">
+                                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                                    <mat-card-title>
+                                      <ng-container *ngIf=nestedSubSection.name>
+                                        <a
+                                          (click)="nestedSectionUpdate(nestedSubSection, nestedSection , true)">{{nestedSubSection.name}}</a>
+                                      </ng-container>
+                                    </mat-card-title>
+                                  </div>
+                                  <div fxLayoutAlign="end end">
+                                    <button mat-button color="primary" (click)="rowAdd(nestedSubSection)">Create
+                                      Row</button>
+                                    <button mat-button color="primary"
+                                      (click)="nestedSectionUpdate(nestedSubSection , nestedSection , true)">Edit Sub
+                                      Sub
+                                      Section </button>
+                                    <button mat-mini-fab type="button" color="primary" style=" height: 30px; width: 30px;"
+                                      (click)="removeSection(o,nestedSection.sections)">
+                                      <mat-icon style="font-size: 16px;">remove</mat-icon>
+                                    </button>
+                                  </div>
+                                  <div *ngFor="let nestedSections of nestedSubSection.rows; let p=index">
+                                    <div fxLayoutAlign="end end" fxLayoutGap="20px"
+                                      *ngIf="nestedSections.columns.length > 0" style="margin-top: 1%">
+  
+                                      <button mat-button color="primary" (click)="rowAdd(nestedSubSection,p)"
+                                        *ngIf="nestedSubSection.rows.length-1 === p && p !==0">Add Row at Last</button>
+  
+                                      <button mat-button color="primary" (click)="rowAdd(nestedSubSection,p)"
+                                        *ngIf="p===0">Add Row here</button>
+  
+                                      <button mat-button color="primary" (click)="rowAddAbove(nestedSubSection,p)"
+                                        *ngIf="p>1 || p==1">Add Row here</button>
+  
+                                      <button mat-button color="primary"
+                                        (click)="rowUpdate(nestedSubSection,nestedSections, p)">Edit
+                                        Row Configuration
+                                      </button>
+                                      <button mat-button type="button" color="accent"
+                                        (click)="removeRowFormSection(p,nestedSubSection.rows)">
+                                        Remove
+                                      </button>
+                                    </div>
+                                    <div>
+                                      <ng-container>
+                                        <div *ngIf="nestedSections.columns && nestedSections.alignment"
+                                          [fxLayout]="nestedSections.layoutDirection"
+                                          [fxLayout.lt-md]="nestedSections.layoutResponsiveDirection"
+                                          [fxLayoutAlign]="nestedSections.alignment"
+                                          [fxLayoutGap]="nestedSections.layoutGap+'px'"
+                                          [style.width.%]=nestedSections.width>
+                                          <div *ngFor="let nestedColumn of nestedSections.columns; let q=index"
+                                            class="list-column" cdkDropList
+                                            [style.border]="getColumnBoxProperty(nestedColumn,userForm)"
+                                            (cdkDropListDropped)="dropped($event,p,q,nestedSubSection,nestedColumn,false )"
+                                            [cdkDropListData]=nestedSections.columns
+                                            [style.width.%]="nestedColumn.field.fieldWidth =='0' ? (nestedSections.rowWidth/nestedSections.columns.length) : nestedColumn.field.fieldWidth"
+                                            (click)="createFormField(nestedColumn,p,q,nestedSubSection,false)">
+  
+                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                              style="width: 100%;">
+                                              <app-load-controls [column]="nestedColumn"></app-load-controls>
+                                              <div *ngIf="nestedSections.columns.length>0">
+                                                <a (click)="removeColumn(q,nestedSections.columns, p , nestedSubSection)"
+                                                  style="cursor: default">
+                                                  <mat-icon style="color: #ff4081">clear</mat-icon>
+                                                </a>
+                                              </div>
+                                            </div>
+  
+                                          </div>
+                                        </div>
+                                      </ng-container>
+                                    </div>
+                                  </div>
+                                </mat-card>
+                              </div>
+                            </ng-container>
+                          </mat-card>
+                        </div>
+                      </ng-container> -->
+                  <!-- Nested section ends here -->
+                  <!-- <button style="padding-left: -10px" mat-button color="primary"
+                        (click)="nestedSectionAdd( section , false)">Add
+                        SubSection</button> -->
+                  <!-- Section of Sub section starts here -->
+                </mat-card>
+              </div>
+            </div>
+            <div fxLayout="row" *ngIf="showSectionAddIcon" fxLayoutAlign="center">
+              <button mat-mini-fab type="button" style=" height: 45px; width: 45px;margin-right: 75px;" color="primary"
+                (click)="addSection()" id="addSections">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <div fxLayout="row" *ngIf="showSectionAddIcon" fxLayoutAlign="center">
+              <a style="margin-top: 10px;margin-right: 75px;" i18n="Click here to add section">Click here to add
+                section</a>
+            </div>
+          </mat-card>
+          <!-- Ends here-->
+          <div *ngIf="buttonVisible" fxLayoutAlign="end end" style="margin-top:1%;margin-left: 1%">
+            <button mat-raised-button color="primary" id="btnSubmit" (click)="createPage(userForm)"
+              [disabled]="!userForm.dirty && !enableSubmit" i18n="Submit">Submit</button>
+            <button mat-raised-button id="btnReset" style="margin-left: 1%" type="button" color="accent"
+              (click)="resetPage(userForm)" i18n="Reset">Reset</button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</mat-card>

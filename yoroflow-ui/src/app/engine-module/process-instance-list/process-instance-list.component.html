@@ -1,0 +1,102 @@
+<mat-card>
+    <mat-card-title>
+        <span *ngIf="status==='COMPLETED'" i18n="Completed Process">Completed Process</span>
+        <span *ngIf="status==='IN_PROCESS'" i18n="Running Process">Running Process</span>
+    </mat-card-title>
+    <div fxLayout="row" fxLayoutAlign="end start" style="width:100%">
+        <button mat-raised-button type="button" color="accent" (click)="clearAllFilter()" i18n="Clear
+        Filters">Clear
+            Filters</button>
+    </div>
+    <ng-container *ngIf="status==='COMPLETED'">
+        <div class="grid-header" style="margin-top: 1%;">
+            <mat-table [dataSource]="processInstanceList" matSort [matSortDisableClear]="true">
+                <ng-container *ngFor="let column of processHeader; let i=index;" matColumnDef="{{column.headerId}}">
+
+                    <mat-header-cell mat-header-cell *matHeaderCellDef [style.flex.%]="90">
+                        <div fxLayout="row">
+
+                            <span style="margin-left:10px" mat-sort-header>{{ column.headerName | translate}}</span>
+                            <mat-icon class="icon-css" [matMenuTriggerFor]="dropdownMenuOne"
+                                #menuTrigger="matMenuTrigger" (click)="setDataType(column)"
+                                style="cursor: pointer; margin-left: 4px;" [style]="column.style">
+                                filter_list
+                            </mat-icon>
+                        </div>
+                    </mat-header-cell>
+                    <ng-container *ngIf="processInstanceList.length>0">
+                        <mat-cell mat-cell *matCellDef="let data" [id]="data[column.headerId]"
+                            [matTooltip]="data[column.headerId]" matTooltipPosition="below" (click)="openTaskList(data)"
+                            [style.flex.%]="100">
+                            <span *ngIf="column.headerId === 'col3' || column.headerId === 'col4'"
+                                style="margin-left:10px">{{checkDate(data[column.headerId])}}</span>
+                            <span *ngIf="column.headerId !== 'col3' && column.headerId !== 'col4'"
+                                style="margin-left:10px">{{data[column.headerId]}}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                </ng-container>
+                <mat-header-row [style.width.%]="100" *matHeaderRowDef="displayedColumns; sticky: true">
+                </mat-header-row>
+                <mat-row class="ripple-row" [style.width.%]="100" *matRowDef="let row; columns: displayedColumns">
+                </mat-row>
+            </mat-table>
+        </div>
+        <app-paginator *ngIf="isPaginator && isLength" [length]="listLength" [pageSize]="defaultPageSize"
+            [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)"></app-paginator>
+    </ng-container>
+</mat-card>
+<mat-menu #dropdownMenuOne="matMenu" class="filter-drop-down">
+    <form [formGroup]="form" #userForm="ngForm">
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-size">
+                <mat-label i18n="Operator">Operator</mat-label>
+                <mat-select formControlName="operator" required>
+                    <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                        {{data.description}}</mat-option>
+                </mat-select>
+                <mat-error i18n="Operator is required">Opeartor is required</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+            style="margin-top:20px">
+            <mat-form-field class="field-size" *ngIf="isDateField===false">
+                <mat-label i18n="Filter Value">Filter Value</mat-label>
+                <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+                    formControlName="filterValue" required>
+                <input matInput *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue"
+                    type="number" formControlName="filterValue" required>
+                <mat-error i18n="Filter Value is required">
+                    Filter value is required</mat-error>
+            </mat-form-field>
+            <mat-form-field class="field-size" *ngIf="filterOperator==='number' && isDateField===true">
+                <mat-label i18n="Filter Value">Filter Value</mat-label>
+                <input matInput [id]="columnValue" [matDatepicker]="picker" formControlName="filterValue" required>
+                <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error i18n="Filter Value is required">
+                    Filter value is required</mat-error>
+            </mat-form-field>
+        </div>
+        <ng-container *ngIf="columnId==='Total Time Taken'">
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+                style="margin-top:20px">
+                <mat-form-field class="field-size">
+                    <mat-label i18n="Units">Units</mat-label>
+                    <mat-select formControlName="totalTimeFilterValue" required>
+                        <mat-option value="minutes" i18n="Minutes"> minutes</mat-option>
+                        <mat-option value="hours" i18n="Hours"> Hours</mat-option>
+                        <mat-option value="days" i18n="Days"> Days</mat-option>
+                    </mat-select>
+                    <mat-error i18n="Units is required">Units is required</mat-error>
+                </mat-form-field>
+            </div>
+        </ng-container>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+            style="margin-top:30px">
+            <button mat-raised-button type="submit" color="primary" (click)="filterApply(userForm)"
+                i18n="Apply">Apply</button>
+            <button mat-raised-button type="button" color="accent" (click)="clearFilter()" i18n="Clear">Clear</button>
+        </div>
+    </form>
+</mat-menu>

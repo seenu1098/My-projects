@@ -1,0 +1,386 @@
+<div id="task" class="page-style">
+    <div fxLayout="row" style="margin-top: 5px;">
+        <div style="height: 14px;width: 98%;">
+            <mat-progress-bar id="progressBar" *ngIf="showProgessBar" mode="indeterminate" color="primary">
+            </mat-progress-bar>
+        </div>
+        <div *ngIf="pageRendered">
+            <mat-icon (click)="onNoClick()" style="cursor: pointer;margin-top: -10px;">close</mat-icon>
+        </div>
+    </div>
+    <!-- <mat-spinner [diameter]="40" style="margin-left: 48%;margin-top: 25%;" *ngIf="!pageRendered"></mat-spinner> -->
+    <div style="width: 100%;overflow-y: scroll;height: 96%;" *ngIf="yoroflowVO.status === 'LAUNCH'">
+        <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version" [yoroflowInfo]="yoroflowVO"
+            (submit)="submit($event)" (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+            (progressBar)="showProgressbar($event)" *ngIf="show"></dynamic-page>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between end" *ngIf="pageRendered && yoroflowVO.status !== 'LAUNCH'"
+        style="margin-top: 1%;">
+        <div>
+            <ng-container *ngIf="yoroflowVO.approvalStatus !== undefined && yoroflowVO.approvalStatus !== null">
+                <span style="font-size: medium; font-weight: bold;"> {{yoroflowVO.approvalStatus}} </span>
+            </ng-container>
+        </div>
+        <!-- <ng-container
+        *ngIf="taskNotesVOList.length>0  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+        <span [matBadge]="taskNotesVOList.length" matBadgeOverlap="true" (click)="openComments()"
+            style="font-weight: bold;">Workflow Comments</span>
+    </ng-container> -->
+        <!-- <ng-container
+        *ngIf="taskNotesVOList.length ===0  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+        <span style="font-size: medium;" (click)="openComments()" style="font-weight: bold;">Workflow Comments</span>
+    </ng-container> -->
+    </div>
+    <div fxLayout="column" style="overflow-y: scroll;height: 96%;"
+        *ngIf="yoroflowVO.status !== 'LAUNCH' && (mobileQuery.matches || ipadResolution.matches || ipadProResolution.matches)">
+        <div style="width: 100%;">
+            <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version" [yoroflowInfo]="yoroflowVO"
+                (submit)="submit($event)" (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+                (progressBar)="showProgressbar($event)" *ngIf="show"></dynamic-page>
+        </div>
+        <ng-container *ngIf="pageRendered && yoroflowVO.status !== 'LAUNCH'">
+            <div style="margin: 1%;" class="comments-container">
+                <span style="font-size: medium;" i18n="Workflow Comments">Workflow Comments</span>
+                <form [formGroup]="form" #userForm="ngForm">
+                    <div fxLayout="column">
+                        <mat-form-field>
+                            <mat-label i18n="Add your comments here...">Add your comments here...</mat-label>
+                            <textarea matInput id="comment" placeholder="Add a comment..."
+                                i18n-placeholder="Add a comment..." formControlName="comment"
+                                (keyup.enter)="keyEnter($event)" [readonly]="showButton"></textarea>
+                            <mat-error i18n="Add a comment to save">Add a comment to save</mat-error>
+                        </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="end end">
+                            <button mat-raised-button id="btnsave" color="primary" (click)="addComment()"
+                                style="width: 20%;" [disabled]="showButton" i18n="Save">Save</button>
+                        </div>
+                    </div>
+                </form>
+                <ng-container *ngIf="taskNotesVOList.length >0 ">
+                    <div>
+                        <div *ngFor="let note of taskNotesVOList">
+
+                            <div fxLayout="row" fxLayoutAlign="end end">
+                                <div class="message-container" fxLayout="column">
+                                    <div style="font-size: 15px;" fxLayout="row" fxLayoutGap="10px"
+                                        fxLayoutAlign="space-between center">
+                                        <div style="font-size: small;">
+                                            {{note.userName}}
+                                        </div>
+
+                                        <div style="font-size: smaller;">
+                                            {{getBrowsertime(note.creationTime) | date :'MMM d, y, h:mm a'}}
+                                        </div>
+                                    </div>
+                                    <!-- <div style="font-size: small;">{{note.notes}}</div> -->
+                                    <div style="font-size: small;" [innerHtml]="note.notes"></div>
+                                </div>
+                                <div class="chat-history-circle" style="margin-bottom: 15px;">
+                                    {{userProfile(note.userName)}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+    <!-- <mat-sidenav-container
+    *ngIf="yoroflowVO.status !== 'LAUNCH'  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+    <mat-sidenav #sidenav mode="side" position="end" style="overflow: hidden;">
+        <div>
+
+            <form [formGroup]="form" #userForm="ngForm">
+                <div fxLayout="column">
+                    <mat-form-field>
+                        <mat-label>Add your comments here..</mat-label>
+                        <textarea matInput id="comment" placeholder="Add a comment..." formControlName="comment"
+                            (keyup.enter)="keyEnter($event)" [readonly]="showButton"></textarea>
+                        <mat-error>Add a comment to save</mat-error>
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="end end">
+                        <button mat-raised-button id="btnsave" color="primary" (click)="addComment()"
+                            style="width: 20%;" [disabled]="showButton">Save</button>
+                    </div>
+                </div>
+            </form>
+            <ng-container *ngIf="taskNotesVOList.length >0 ">
+                <div class="workflow-container scrollbar-css">
+                    <div *ngFor="let note of taskNotesVOList">
+                        <div fxLayout="row" fxLayoutAlign="end end">
+                            <div class="message-container" fxLayout="column">
+                                <div style="font-size: 15px;" fxLayout="row" fxLayoutGap="10px"
+                                    fxLayoutAlign="space-between center">
+                                    <div style="font-size: small;">
+                                        {{note.userName}}
+                                    </div>
+
+                                    <div style="font-size: smaller;">
+                                        {{getBrowsertime(note.creationTime) | date :'MMM d, y, h:mm a'}}
+                                    </div>
+                                </div>
+                                <div style="font-size: small;">{{note.notes}}</div>
+                            </div>
+                            <div class="chat-history-circle" style="margin-bottom: 15px;">{{userProfile(note.userName)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div [style.width.%]="100">
+            <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version" [yoroflowInfo]="yoroflowVO"
+                (submit)="submit($event)" (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+                (progressBar)="showProgressbar($event)" *ngIf="show"></dynamic-page>
+
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container> -->
+    <ng-container
+        *ngIf="yoroflowVO.status !== 'LAUNCH'  && !mobileQuery.matches && !ipadResolution.matches && !ipadProResolution.matches">
+        <div fxLayout="row" style="height: 100%;">
+            <div fxLayout="column" style="width:14%;" id="category-column">
+                <ng-conatiner *ngFor="let category of categoriesArray; let i = index;">
+                    <button mat-button class="category-button-css" [style.color]="category.isSelected?'#039be5':'black'"
+                        [style.background]="category.isSelected?'#e5f4ff':''" (click)="onCategorySelected(category)"
+                        [id]="'catagory_'+i">
+                        <div fxLayout="row" fxLayoutAlign="space-between center"
+                            (click)='category.name === "Activity log" ? getActivity() :" "'>
+                            <div fxLayout="row">
+                                <mat-icon [style.color]="category.color"
+                                    style="font-size: 20px;margin-right: 5px;margin-top: 8px;">
+                                    {{category.icon}}
+                                </mat-icon>
+                                <span>{{category.name | translate}}</span>
+                            </div>
+                            <div fxLayout="column" class="badge-css" *ngIf="category.name==='Comments'">
+                                <span style="align-self: center;font-size: 10px;"
+                                    *ngIf="taskNotesVOList.length>0">{{taskNotesVOList[0].taskNotesLength}}</span>
+                                <span style="align-self: center;font-size: 10px;"
+                                    *ngIf="taskNotesVOList.length===0">0</span>
+                            </div>
+                        </div>
+                    </button>
+                </ng-conatiner>
+            </div>
+            <div fxLayout="column" class="column-css" style="margin-left: 10px;height:90%;overflow-x: hidden;"
+                [style.width.%]="85" [style.overflow-y]="selectedCategory==='Form'?'scroll':'hidden'">
+                <div [hidden]="selectedCategory==='Form'?false:true" [style.width.%]="100">
+                    <div>
+                        <dynamic-page [id]="yoroflowVO.formId" [version]="yoroflowVO.version"
+                            [yoroflowInfo]="yoroflowVO" (submit)="submit($event)"
+                            (pageRendered)="isPageRendered($event)" (isDialogClose)="dialogClose($event)"
+                            (progressBar)="showProgressbar($event)" [inputObject]="this" *ngIf="show">
+                        </dynamic-page>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px" style="z-index: 1;"
+                        class="button-sticky-css"
+                        *ngIf="!isMobile.matches && yoroflowVO && yoroflowVO.status!=='COMPLETED' && yoroflowVO.status!=='LAUNCH' && !yoroflowVO.isApproveRejectForm">
+                        <ng-container *ngIf="yoroflowVO.enableSaveAsDraft">
+                            <button mat-raised-button id="Save As Draft" type="button" color="primary"
+                                (click)="buttonEmit('draft')" class="z-index-css margin-css" i18n="Save As Draft">Save
+                                As
+                                Draft</button>
+                        </ng-container>
+                        <ng-container *ngIf="yoroflowVO.approveButtonName">
+                            <button mat-raised-button id="Submit" type="button" color="primary"
+                                (click)="buttonEmit('submit')" class="z-index-css margin-css"
+                                style="background-color: #40bf80;">{{yoroflowVO.approveButtonName | translate}}</button>
+                        </ng-container>
+                        <button mat-raised-button id="Assign To Someone" type="button" color="primary"
+                            (click)="buttonEmit('assign')" style="background-color: #3f51b5;"
+                            class="z-index-css margin-css" i18n="Assign To Someone">Assign
+                            To
+                            Someone</button>
+                        <button mat-raised-button id="Cancel Workflow" *ngIf="yoroflowVO.isCancelWorkflow" type="button"
+                            color="accent" class="z-index-css margin-css"
+                            (click)="buttonEmit('cancel')">{{yoroflowVO.cancelButtonName | translate}}</button>
+                        <button mat-raised-button id="Cancel Workflow" type="button" color="accent"
+                            (click)="buttonEmit('close')" class="z-index-css margin-css">{{'Close' |
+                            translate}}</button>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px" class="button-sticky-css"
+                        *ngIf="!isMobile.matches && yoroflowVO && yoroflowVO.status!=='COMPLETED' && yoroflowVO.status!=='LAUNCH'">
+                        <ng-container *ngIf="yoroflowVO.isApproveRejectForm" style="margin-top: 1%;">
+                            <ng-container *ngIf="yoroflowVO.enableSaveAsDraft">
+                                <button mat-raised-button id="Save As Draft" type="button" color="primary"
+                                    (click)="buttonEmit('draft')" class="margin-css" i18n="Save As Draft">Save
+                                    As
+                                    Draft</button>
+                            </ng-container>
+
+                            <button mat-raised-button id="Approve" type="button" color="primary"
+                                style="background-color: #40bf80;" class="margin-css"
+                                (click)="buttonEmit('approve')">{{yoroflowVO.approvalButtonName | translate}}</button>
+                            <button *ngIf="yoroflowVO.isReject" mat-raised-button id="Reject" type="button"
+                                color="accent" class="margin-css"
+                                (click)="buttonEmit('reject')">{{yoroflowVO.rejectButtonName | translate}}</button>
+                            <button mat-raised-button id="Send Back" type="button" color="primary"
+                                (click)="buttonEmit('sendBack')" *ngIf="yoroflowVO.isSendBack"
+                                class="margin-css">{{yoroflowVO.sendBackButtonName | translate}}</button>
+                            <button mat-raised-button id="Assign To Someone" type="button" color="primary"
+                                (click)="buttonEmit('assign')" style="background-color: #3f51b5;" class="margin-css"
+                                i18n="Assign To
+                                Someone">Assign To
+                                Someone</button>
+                            <button mat-raised-button id="Cancel Workflow" type="button" color="accent"
+                                (click)="buttonEmit('close')" class="margin-css" i18n="Close">{{'Close' |
+                                translate}}</button>
+                        </ng-container>
+                    </div>
+                </div>
+                <div *ngIf="selectedCategory==='Comments'" style="overflow-y: scroll;">
+                    <div fxLayout="row" class="label-name-css">
+                        <div i18n="Comments">Comments</div>
+                    </div>
+                    <div style="margin-right: 10px;width: 100%;" *ngIf="isUsers && userVO">
+                        <ng-container *ngFor="let comments of taskNotesVOList; let i = index">
+                            <div fxLayout="row" fxLayoutAlign="start" style="position: relative;">
+                                <span class="vl"></span>
+                                <app-workflow-comments style="width: 100%;" [comments]="comments" [usersList]="userList"
+                                    [loggedInUser]="userVO" [users]="userList" [taskId]="yoroflowVO.workflowTaskId"
+                                    [status]="yoroflowVO.status" [taskNotesVOList]="taskNotesVOList">
+                                </app-workflow-comments>
+                            </div>
+                        </ng-container>
+                        <div fxLayout="row" *ngIf="yoroflowVO.status !=='COMPLETED'">
+                            <app-quill-editor style="width: 99%;" [workflowComments]="true" [users]="userList"
+                                (editorValue)="addComment($event)"></app-quill-editor>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngIf="selectedCategory==='Activity log'">
+                    <div fxLayout="row" class="category-label-css">
+                        <span i18n="Dependencies">Activity log</span>
+                    </div>
+                    <perfect-scrollbar [style.height.px]="screenHeight">
+
+                        <div fxLayout="column" class="notification-body">
+                            <table class="table-css">
+                                <div fxLayout="row" class="primary-row-css" fxLayoutAlign="space-between center">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <span class="select-all-css" i18n="Select All">Activity by
+                                        </span>
+
+                                    </div>
+                                    <div (click)="sort()">
+                                        <span class="mark-read-css" style="cursor: pointer;"
+                                            i18n="Mark all as read">Time<mat-icon style="font-size:12px"
+                                                *ngIf="sortb===true">
+                                                north</mat-icon>
+                                            <mat-icon style="font-size:12px" *ngIf="sortb===false">south</mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="length !== 0">
+                                    <ng-container *ngFor="let activelog of activities;let i = index;">
+                                        <div fxLayout="row" class="secondary-row-css"
+                                            [style.background]="i%2===0?'#f6f8fa':'white'">
+                                            <div fxLayout="row" fxLayoutGap="10px" class="table-column-css">
+
+                                                <div fxLayout="row" class="notification_msg"
+                                                    fxLayoutAlign="start center">
+                                                    <span class="notification_msg_title">
+                                                        <ng-container
+                                                            *ngIf="activity.getUser(activelog.userId).profilePicture !== null">
+                                                            <img class="avatar" alt="User Avatar"
+                                                                [matTooltip]="activity.getUser(activelog.userId).firstName+' '+activity.getUser(activelog.userId).lastName"
+                                                                src={{activity.getUser(activelog.userId).profilePicture}}>&nbsp;&nbsp;{{activity.getdata(activelog)}}&nbsp;
+                                                        </ng-container>
+                                                        <ng-container
+                                                            *ngIf="activity.getUser(activelog.userId).profilePicture === null">
+                                                            <span class="hover-class round_firstletter"
+                                                                style="color: white;padding:5px !important"
+                                                                [matTooltip]="activity.getUser(activelog.userId).firstName+' '+activity.getUser(activelog.userId).lastName"
+                                                                [style.background]="activity.getUserColoras(activelog)">
+                                                                {{activity.getAssigner(activelog)}}
+                                                            </span>&nbsp;&nbsp;{{activity.getdata(activelog)}}&nbsp;&nbsp;
+
+                                                        </ng-container>
+                                                    </span>
+                                                    <span *ngIf="activelog.activityType ==='wf_comment'">
+                                                        &nbsp;{{''}}
+                                                    </span>
+                                                    <ng-container
+                                                        *ngIf="activelog.activityType ==='wf_assign_to_group'">
+                                                        <ng-container
+                                                            *ngFor="let assign of activity.getAssigneeName(activelog.activityData)">
+                                                            <span class="hover-class round_firstletter fs_12"
+                                                                style="color: white;"
+                                                                [style.background]="activity.getgroupColor(assign)">
+                                                                {{activity.getgroup(assign)}}</span>
+
+
+                                                        </ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="activelog.activityType ==='wf_assign_to_user'">
+                                                        <ng-container
+                                                            *ngFor="let assign of activity.getAssigneeName(activelog.activityData)">
+                                                            <span class="hover-class round_firstletter fs_12"
+                                                                style="color: white;"
+                                                                [style.background]="activity.getUserColor(assign)">
+                                                                {{activity.getAssigneruser(assign)}}</span>
+
+
+                                                        </ng-container>
+                                                    </ng-container>
+
+
+                                                    <span *ngIf="activelog.activityType ==='wf_assign_to_me'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span>
+                                                    <span *ngIf="activelog.activityType ==='wf_submitted'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span> <span *ngIf="activelog.activityType ==='wf_sendback'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span> <span *ngIf="activelog.activityType ==='wf_rejectd'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span> <span *ngIf="activelog.activityType ==='wf_approved'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span> <span *ngIf="activelog.activityType ==='wf_draft'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span> <span *ngIf="activelog.activityType ==='wf_attachment'">
+                                                        &nbsp;{{activelog.activityData}}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="assigned-time-css" fxLayoutAlign="center">
+                                                {{activelog.createdOn | date:'medium'}}
+                                            </div>
+                                        </div>
+
+                                    </ng-container>
+                                </ng-container>
+
+
+                            </table>
+                            <ng-container *ngIf="length ===0">
+                                <div fxLayout="row" fxLayoutAlign="center" style="margin-top:10px;">
+                                    <span>
+                                        No Data Found
+                                    </span>
+                                </div>
+                            </ng-container>
+                            <div fxLayout="row" fxLayoutAlign="end" style="margin-right:10px;">
+                                <app-paginator *ngIf="length" id="mat_table_page_selector" [length]="length"
+                                    [pageSize]="paginationVO.size"
+                                    [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)">
+                                </app-paginator>
+                            </div>
+                        </div>
+                    </perfect-scrollbar>
+
+
+                </ng-container>
+
+
+            </div>
+        </div>
+    </ng-container>
+</div>

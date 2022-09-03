@@ -1,0 +1,38 @@
+<mat-card>
+    <mat-card-title i18n="Variable List">Variable List</mat-card-title>
+    <form [formGroup]="envVariablesForm" #userForm="ngForm">
+        <div fxLayout="row" style="margin-top: .5%;" fxLayoutAlign="center center">
+            <mat-spinner [diameter]="40" *ngIf="loadVariables"></mat-spinner>
+        </div>
+        <mat-dialog-content *ngIf="!loadVariables">
+            <div formArrayName="envVariableRequestVOList"
+                *ngFor="let permission of getVariablesFormArray().controls; let i = index">
+                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="30px">
+                    <mat-form-field style="width: 40%;">
+                        <span matPrefix>env_</span>
+                        <input matInput id="btnYes" type="text" formControlName="name" placeholder="Name"
+                            i18n-placeholder="Name" id="name">
+                        <mat-error i18n="Name is required">Name is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width: 50%;">
+                        <input matInput type="text" formControlName="value" placeholder="Value" i18n-placeholder="Value"
+                            id="value">
+                        <mat-error i18n="Value is required">Value is required</mat-error>
+                    </mat-form-field>
+                    <button mat-mini-fab id="btnAdd" type="button" color="primary" (click)="addVariables()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <button type="button" *ngIf="getVariablesFormArray().length>1" mat-mini-fab color="accent"
+                        id="remove" (click)="removeVariable(i)">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" type="submit" (click)="save(userForm)" id="btnSave"
+                [disabled]="!envVariablesForm.dirty" i18n="Save">Save</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="cancel()" i18n="Cancel">Cancel</button>
+        </mat-card-actions>
+    </form>
+</mat-card>

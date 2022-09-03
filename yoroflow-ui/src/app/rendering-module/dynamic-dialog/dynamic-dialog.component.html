@@ -1,0 +1,6 @@
+<div fxLayout="row" fxLayoutAlign="end end">
+    <mat-icon id="close" style="cursor: pointer;" (click)="close()">close</mat-icon>
+</div>
+<dynamic-page  [id]="data.targetPageId" [version]="data.version"  (pageRendered)="getPageRendered($event)">
+</dynamic-page> 
+<mat-spinner [diameter]="40" *ngIf="!show" style="margin-left: 48%;margin-top: 25%;" ></mat-spinner>   

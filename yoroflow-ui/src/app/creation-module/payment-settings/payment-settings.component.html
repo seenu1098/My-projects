@@ -1,0 +1,63 @@
+<mat-card>
+    <mat-card-title>{{'Payment Settings' | translate}}</mat-card-title>
+    <form [formGroup]="form" #userForm="ngForm">
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+            <mat-form-field style="width: 33%; " appearance="outline">
+                <mat-label>{{'Stripe Key Name' | translate}} *</mat-label>
+                <input matInput id="name" type="text" formControlName="stripeKeyName">
+                <mat-error>
+                    {{'Stripe Key Name is required' | translate}}
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field style="width: 33%; " appearance="outline">
+                <mat-label>{{'Secret Key' | translate}} *</mat-label>
+                <input matInput id="name" type="text" formControlName="secretKey">
+                <mat-error *ngIf="form.get('secretKey').errors?.required">
+                    {{'Secret Key is required' | translate}}
+                </mat-error>
+                <mat-error *ngIf="form.get('secretKey').errors?.invalidSecretKey">
+                    {{'You need to update secret key' | translate}}
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field style="width: 33%; " appearance="outline">
+                <mat-label>{{'Publish Key' | translate}} *</mat-label>
+                <input matInput id="name" type="text" formControlName="publishKey">
+                <mat-error *ngIf="form.get('publishKey').errors?.required">
+                    {{'Publish Key is required' | translate}}
+                </mat-error>
+                <mat-error *ngIf="form.get('publishKey').errors?.invalidPublishKey">
+                    {{'You need to update publish key' | translate}}
+                </mat-error>
+            </mat-form-field>
+
+
+        </div>
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+            <mat-form-field style="width: 50%; " appearance="outline">
+                <mat-label>{{'Description' | translate}}</mat-label>
+                <textarea formControlName="description" matInput></textarea>
+            </mat-form-field>
+        </div>
+        <mat-card-actions>
+            <div fxLayoutAlign="center center">
+                <button mat-raised-button color="primary" id="btnsave" (click)="save(userForm)">{{'Save' |
+                    translate}}</button>
+                <button mat-raised-button color="accent" type="button" (click)="reset(userForm)"
+                    id="btnreset">Reset</button>
+            </div>
+        </mat-card-actions>
+    </form>
+
+</mat-card>
+
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+    <div fxFlex="100%">
+        <mat-card>
+            <mat-card-title>{{'Payment Settings List' | translate}}</mat-card-title>
+            <app-yorogrid #payment gridId="Payment Settings" (messageEvent)="receiveMessage($event)"
+                defaultColumn="ya_stripe_key_name">
+            </app-yorogrid>
+        </mat-card>
+    </div>
+</div>

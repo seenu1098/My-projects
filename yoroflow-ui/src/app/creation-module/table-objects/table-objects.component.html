@@ -1,0 +1,60 @@
+<ng-container *ngIf="isFreePlan===false">
+    <div class="row mx-0 mt-2">
+        <mat-card class="w-100 m-2" id="list_box" [style.height]="scrollHeight">
+            <div class="row mx-0">
+                <div class="col-md-5 px-0">
+                    <mat-card-title i18n="Data Table List">Data Table List</mat-card-title>
+                </div>
+                <div class="col-md-7 float-right px-0">
+                    <button mat-raised-button color="primary" id="btnsave" (click)="addTable()"
+                        i18n="Create New Data Table" class="float-right">Create New Data Table</button>
+                </div>
+            </div>
+            <perfect-scrollbar style="width:100%;height: 90%;margin-top: 10px;">
+                <ng-container *ngIf="tableObjectsVOList.length > 0">
+                    <div class="row mx-0">
+                        <ng-container *ngFor="let dataTable of tableObjectsVOList; let i=index;">
+                            <div class="col-md-3 my-3 ">
+                                <mat-card (click)="receiveMessage(dataTable)">
+                                    <div class="row mx-0">
+                                        <div class="col-md-2 px-0">
+                                            <div class="main_icon_bg">
+                                                <mat-icon class="main_left_icon" [ngStyle]="{'color': dataTable.color}">
+                                                    app_registration</mat-icon>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9 px-2">
+                                            <h3 class="my-0 fs_14  margin_top_reduce pl-1">{{dataTable.tableName}}</h3>
+                                        </div>
+                                        <div class="col-md-1 px-0 float-right">
+                                            <mat-icon (click)="$event.stopPropagation()"
+                                                [matMenuTriggerFor]="deleteTable" #menuTriggerColumn="matMenuTrigger"
+                                                (mousedown)="deleteChanges(dataTable, i)" class="float-right dot_icon ">
+                                                more_vert
+                                            </mat-icon>
+                                        </div>
+                                    </div>
+                                    <div class="row mx-0 mt-2">
+                                        <div class="col-md-12 px-0">
+                                            <p class="fs_12">{{dataTable.tableDescription}}</p>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </perfect-scrollbar>
+        </mat-card>
+    </div>
+
+    <mat-menu #deleteTable="matMenu" class="column-menu-map">
+        <button (click)="deleteTables()" i18n="Delete" mat-menu-item class="px-1" type="button">
+            Delete
+        </button>
+    </mat-menu>
+</ng-container>
+
+<ng-container *ngIf="isFreePlan===true">
+    <app-expire-dialog></app-expire-dialog>
+</ng-container>

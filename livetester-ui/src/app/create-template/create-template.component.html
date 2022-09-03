@@ -1,0 +1,2313 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+    <div fxFlex="100%">
+        <mat-card style="background-color:rgb(154, 199, 212)">
+
+            <div class="accordion-form-section">
+
+                <form [formGroup]="form" #userForm="ngForm">
+                    <div *ngIf=isTemplate>
+
+                        <mat-card style="margin-top: 1%">
+                            <div fxLayoutAlign="space-between center" style="margin-top:1%">
+
+                                <p style="width: 80%;">
+                                    <mat-form-field>
+                                        <mat-label>Template Name *</mat-label>
+                                        <input matInput type="text" placeholder="Template Name" id="templateName"
+                                            formControlName="templateName">
+                                        <mat-error class="text-danger" id="templateNameRequired"
+                                            *ngIf="form.get('templateName').errors?.required
+                                    &&(userForm.submitted || form.get('templateName').touched || form.get('templateName').dirty)">
+                                            Template Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <button mat-raised-button id="saveDupBtn" color="primary"
+                                    (click)="saveDuplicateTemplate(userForm)" *ngIf="!isDuplicateTemplate">
+                                    Save Duplicate Template
+                                </button>
+
+
+                            </div>
+                        </mat-card>
+                    </div>
+
+                    <div *ngIf="isDuplicateTemplate">
+                        <mat-card style="margin-top: 1%">
+                            <p style="width: 80%;">
+                                <mat-form-field>
+                                    <textarea formControlName="testScenario" cols="30" rows="4" type="text" matInput
+                                        placeholder="Test Scenario"></textarea>
+                                </mat-form-field>
+                            </p>
+                        </mat-card>
+                        <mat-card style="margin-top: 1%">
+                            <p>
+                                <mat-form-field>
+                                    <mat-label for="claimSubmitters">Submitters *</mat-label>
+                                    <mat-select id="claimSubmitter" name="claimSubmitter"
+                                        formControlName="claimSubmitters" placeholder="Submitters">
+                                        <mat-option id="claimSubmittersOption" *ngFor="let submitter of submitterList"
+                                            [value]="submitter.code">
+                                            {{ submitter.code }} - {{ submitter.description }}</mat-option>
+                                    </mat-select>
+
+                                    <mat-error class="text-danger" id="claimSubmitterRequired"
+                                        *ngIf="form.get('claimSubmitters').errors?.required
+                                && (userForm.submitted || form.get('claimSubmitters').touched || form.get('claimSubmitters').dirty) ">
+                                        Claim Submitter is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+                            <p>
+                                <mat-form-field>
+                                    <mat-label for="claimReceiver">Receiver *</mat-label>
+                                    <mat-select id="claimReceiver" name="claimReceiver" formControlName="claimReceiver">
+                                        <mat-option id="claimReceiverOption" *ngFor="let receiver of receiverList"
+                                            [value]="receiver.code">
+                                            {{ receiver.code }} - {{ receiver.description }}</mat-option>
+                                    </mat-select>
+                                    <mat-error class="text-danger" id="receiverRequired"
+                                        *ngIf="form.get('claimReceiver').errors?.required
+                                && (userForm.submitted || form.get('claimReceiver').touched || form.get('claimReceiver').dirty)">
+                                        Claim Receiver is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+                            <p>
+                                <mat-form-field>
+                                    <mat-label for="formType">Form Type *</mat-label>
+                                    <mat-select id="formType" name="formType" formControlName="formType">
+                                        <!-- <mat-option [id]="formType.code" *ngFor="let formType of formtypeList"
+                                            [value]="formType.code"
+                                            (onSelectionChange)="setHeaderLevelValidatorsForInstitutionalClaims($event)">
+                                            {{ formType.code }} - {{ formType.description }}</mat-option>
+                                       </mat-select> -->
+                                        <mat-option id="professional" value="P"
+                                            (onSelectionChange)="setHeaderLevelValidatorsForInstitutionalClaims($event)">
+                                            Professional
+                                        </mat-option>
+                                        <mat-option id="institutional" value="I"
+                                            (onSelectionChange)="setHeaderLevelValidatorsForInstitutionalClaims($event)">
+                                            Institutional
+                                        </mat-option>
+                                        <mat-option id="dental" value="D"
+                                            (onSelectionChange)="setHeaderLevelValidatorsForInstitutionalClaims($event)">
+                                            Dental
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error class="text-danger" id="claimFormTypeRequired" *ngIf="form.get('formType').errors?.required
+                                &&(userForm.submitted || form.get('formType').touched || form.get('formType').dirty)">
+                                        Claim Form Type is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </p>
+                            <!-- <p>
+                                <mat-form-field>
+                                    <mat-label for="claimType">Claim Type *</mat-label>
+                                    <mat-select id="claimType" name="claimType" formControlName="claimType">
+                                        <mat-option id="claimTypeOption" [value]="claimType.claimTypeCode"
+                                            *ngFor="let claimType of claimTypeList">
+                                            {{claimType.claimTypeCode}} - {{ claimType.description }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error class="text-danger" id="claimTypeRequired"
+                                        *ngIf="form.get('claimType').errors?.required
+                                &&(userForm.submitted || form.get('claimType').touched || form.get('claimType').dirty)">
+                                        Claim Type is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </p> -->
+                            <p></p>
+                        </mat-card>
+                        <mat-card style="margin-top: 1%">
+                            <mat-card-subtitle>Subscriber</mat-card-subtitle>
+                            <div formGroupName="subscriber">
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Subscriber Identifier </mat-label>
+                                        <input matInput id="identifier" formControlName="identifier"
+                                            [matAutocomplete]="subscriberIdentifiers">
+                                        <mat-autocomplete id="identifiers" #subscriberIdentifiers="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="beneficiary.firstName+'-'+beneficiary.lastName"
+                                                id="identifierId" *ngFor="let beneficiary of beneficiaryList"
+                                                [value]="beneficiary.identifier"
+                                                (click)="getSubscriberInfo(beneficiary,$event)">
+                                                {{beneficiary.identifier}}-{{beneficiary.firstName}}-{{beneficiary.lastName}}-{{beneficiary.dob | date: 'dd/MM/yyyy' }}
+                                                -{{beneficiary.gender}}-{{beneficiary.address.city}}-{{beneficiary.address.zipcode}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error class="text-danger" id="beneficiaryIdentifierRequired"
+                                            *ngIf="form.get('beneficiary').get('identifier').errors?.required
+                          &&(userForm.submitted || form.get('beneficiary').get('identifier').touched || form.get('beneficiary').get('identifier').dirty)">
+                                            Subscriber Identifier is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <input type="hidden" formControlName="description" />
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="First Name " name="firstName"
+                                            id="subFirstName" formControlName="firstName">
+                                        <mat-error class="text-danger" id="beneficiaryFirstNameRequired"
+                                            *ngIf="form.get('beneficiary').get('firstName').errors?.required
+                                &&(userForm.submitted || form.get('beneficiary').get('firstName').touched || form.get('beneficiary').get('firstName').dirty)">
+                                            First Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Last Name " name="lastName"
+                                            id="subLastName" formControlName="lastName">
+                                        <mat-error class="text-danger" id="beneficiaryLastNameRequired"
+                                            *ngIf="form.get('beneficiary').get('lastName').errors?.required
+                                &&(userForm.submitted || form.get('beneficiary').get('lastName').touched || form.get('beneficiary').get('lastName').dirty)">
+                                            Last Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="subscriberDob" placeholder="Date of Birth "
+                                            id="subDob" [max]="today" formControlName="dob">
+                                        <mat-datepicker-toggle matSuffix [for]="subscriberDob"></mat-datepicker-toggle>
+                                        <mat-datepicker #subscriberDob startView="month" [startAt]="subscriberDob">
+                                        </mat-datepicker>
+                                        <mat-error class="text-danger" id="beneficiaryDOBRequired"
+                                            *ngIf="form.get('beneficiary').get('dob').errors?.required
+                            &&(userForm.submitted || form.get('beneficiary').get('dob').touched || form.get('beneficiary').get('dob').dirty)">
+                                            Date of Birth is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Gender</mat-label>
+                                        <mat-select id="subGender" name="gender" formControlName="gender">
+                                            <mat-option id="male" value="M">Male</mat-option>
+                                            <mat-option id="female" value="F">Female</mat-option>
+                                        </mat-select>
+                                        <mat-error class="text-danger" id="beneficiaryGenderRequired"
+                                            *ngIf="form.get('beneficiary').get('gender').errors?.required
+                            &&(userForm.submitted || form.get('beneficiary').get('gender').touched || form.get('beneficiary').get('gender').dirty)">
+                                            Gender is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <div formGroupName="address">
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput id="subAddress" type="text" placeholder="Address "
+                                                name="address" formControlName="address" id="subaddress">
+                                            <mat-error class="text-danger" id="beneficiaryAddressRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('address').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('address').touched || form.get('beneficiary').get('address').get('address').dirty)">
+                                                Address is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="City " name="city"
+                                                formControlName="city" id="subCity">
+                                            <mat-error class="text-danger" id="beneficiaryCityRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('city').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('city').touched || form.get('beneficiary').get('address').get('city').dirty)">
+                                                City is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="State " name="state" id="subState"
+                                                formControlName="state" maxlength="2">
+                                            <mat-error class="text-danger" id="beneficiaryStateRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('state').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('state').touched || form.get('beneficiary').get('address').get('state').dirty)">
+                                                State is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Zipcode " name="zipcode"
+                                                maxlength="9" id="subZipcode" formControlName="zipcode">
+                                            <mat-error class="text-danger" id="beneficiaryZipcodeRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('zipcode').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('zipcode').touched || form.get('beneficiary').get('address').get('zipcode').dirty)">
+                                                Zipcode is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+                            </div>
+                        </mat-card>
+                        <mat-card style="margin-top: 1%">
+                            <mat-card-subtitle>Beneficiary</mat-card-subtitle>
+                            <div formGroupName="beneficiary">
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Beneficiary Identifier *</mat-label>
+                                        <input matInput id="beneIdentifier" formControlName="identifier"
+                                            [matAutocomplete]="identifiers">
+                                        <mat-autocomplete id="identifiers" #identifiers="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="beneficiary.firstName+'-'+beneficiary.lastName"
+                                                id="identifierId" *ngFor="let beneficiary of beneficiaryList"
+                                                [value]="beneficiary.identifier"
+                                                (click)="getBeneficiaryInfo(beneficiary,$event)">
+                                                {{beneficiary.identifier}}-{{beneficiary.firstName}}-{{beneficiary.lastName}}-{{beneficiary.dob | date: 'dd/MM/yyyy' }}
+                                                -{{beneficiary.gender}}-{{beneficiary.address.city}}-{{beneficiary.address.zipcode}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error class="text-danger" id="beneficiaryIdentifierRequired"
+                                            *ngIf="form.get('beneficiary').get('identifier').errors?.required
+                          &&(userForm.submitted || form.get('beneficiary').get('identifier').touched || form.get('beneficiary').get('identifier').dirty)">
+                                            Beneficiary Identifier is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <input type="hidden" formControlName="description" />
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="First Name *" name="firstName"
+                                            id="beneFirstName" formControlName="firstName">
+                                        <mat-error class="text-danger" id="beneficiaryFirstNameRequired"
+                                            *ngIf="form.get('beneficiary').get('firstName').errors?.required
+                                &&(userForm.submitted || form.get('beneficiary').get('firstName').touched || form.get('beneficiary').get('firstName').dirty)">
+                                            First Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Last Name *" name="lastName"
+                                            id="beneLastName" formControlName="lastName">
+                                        <mat-error class="text-danger" id="beneficiaryLastNameRequired"
+                                            *ngIf="form.get('beneficiary').get('lastName').errors?.required
+                                &&(userForm.submitted || form.get('beneficiary').get('lastName').touched || form.get('beneficiary').get('lastName').dirty)">
+                                            Last Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="beneficiaryDob" placeholder="Date of Birth *"
+                                            id="beneDob" [max]="today" name="dob" formControlName="dob">
+                                        <mat-datepicker-toggle matSuffix [for]="beneficiaryDob"></mat-datepicker-toggle>
+                                        <mat-datepicker #beneficiaryDob startView="month" [startAt]="beneficiaryDob">
+                                        </mat-datepicker>
+                                        <mat-error class="text-danger" id="beneficiaryDOBRequired"
+                                            *ngIf="form.get('beneficiary').get('dob').errors?.required
+                            &&(userForm.submitted || form.get('beneficiary').get('dob').touched || form.get('beneficiary').get('dob').dirty)">
+                                            Date of Birth is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Gender *</mat-label>
+                                        <mat-select id="beneGender" name="gender" formControlName="gender">
+                                            <mat-option id="male" value="M">Male</mat-option>
+                                            <mat-option id="female" value="F">Female</mat-option>
+                                        </mat-select>
+                                        <mat-error class="text-danger" id="beneficiaryGenderRequired"
+                                            *ngIf="form.get('beneficiary').get('gender').errors?.required
+                            &&(userForm.submitted || form.get('beneficiary').get('gender').touched || form.get('beneficiary').get('gender').dirty)">
+                                            Gender is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <div formGroupName="address">
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput id="beneAddress" type="text" placeholder="Address "
+                                                name="address" formControlName="address" id="beneaddress">
+                                            <mat-error class="text-danger" id="beneficiaryAddressRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('address').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('address').touched || form.get('beneficiary').get('address').get('address').dirty)">
+                                                Address is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="City *" name="city"
+                                                formControlName="city" id="beneCity">
+                                            <mat-error class="text-danger" id="beneficiaryCityRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('city').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('city').touched || form.get('beneficiary').get('address').get('city').dirty)">
+                                                City is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="State *" name="state" id="beneState"
+                                                formControlName="state" maxlength="2">
+                                            <mat-error class="text-danger" id="beneficiaryStateRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('state').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('state').touched || form.get('beneficiary').get('address').get('state').dirty)">
+                                                State is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Zipcode *" name="zipcode"
+                                                maxlength="9" id="beneZipcode" formControlName="zipcode">
+                                            <mat-error class="text-danger" id="beneficiaryZipcodeRequired"
+                                                *ngIf="form.get('beneficiary').get('address').get('zipcode').errors?.required
+                                    &&(userForm.submitted || form.get('beneficiary').get('address').get('zipcode').touched || form.get('beneficiary').get('address').get('zipcode').dirty)">
+                                                Zipcode is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+                            </div>
+                        </mat-card>
+                        <mat-card style="margin-top:1%">
+                            <mat-card-subtitle>Provider Details</mat-card-subtitle>
+                            <div formGroupName="billing">
+
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Billing Provider Identifier *</mat-label>
+                                        <input matInput id="billingNpi" formControlName="npi"
+                                            [matAutocomplete]="billingProviders">
+                                        <mat-autocomplete id="providers" #billingProviders="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="provider.firstName+'-'+provider.lastName"
+                                                id="providerId" *ngFor="let provider of providerList"
+                                                [value]="provider.npi" (click)="getProviderInfo(provider,'billing')">
+                                                {{provider.npi}}-{{provider.firstName}}-{{provider.lastName}} -
+                                                {{provider.organizationName  }}
+                                                -{{provider.type}}-{{provider.address.city  }}-{{provider.address.zipcode  }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error class="text-danger" id="billingProviderNPIRequired"
+                                            *ngIf="form.get('billing').get('npi').errors?.required
+                        &&(userForm.submitted || form.get('billing').get('npi').touched || form.get('billing').get('npi').dirty)">
+                                            Billing Provider NPI is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Billing Provider Taxonomy *"
+                                            id="billingTaxonomy" name="taxonomy" formControlName="taxonomy">
+                                        <mat-error class="text-danger" id="billingProviderTaxonomyNPIRequired"
+                                            *ngIf="form.get('billing').get('taxonomy').errors?.required
+                            &&(userForm.submitted || form.get('billing').get('taxonomy').touched || form.get('billing').get('taxonomy').dirty)">
+                                            Billing Provider Taxonomy is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <input type="hidden" formControlName="description" />
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="First Name" name="firstName"
+                                            id="billingFirstName" formControlName="firstName">
+                                        <mat-error class="text-danger" id="billingProviderFirstNameNPIRequired"
+                                            *ngIf="form.get('billing').get('firstName').errors?.required
+                            &&(userForm.submitted || form.get('billing').get('firstName').touched || form.get('billing').get('firstName').dirty)">
+                                            First Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Last Name" name="lastName"
+                                            id="billingLastName" formControlName="lastName">
+                                        <mat-error class="text-danger" id="billingProviderLastNameRequired"
+                                            *ngIf="form.get('billing').get('lastName').errors?.required
+                            &&(userForm.submitted || form.get('billing').get('lastName').touched || form.get('billing').get('lastName').dirty)">
+                                            Last Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Organization Name"
+                                            name="organizationName" id="billingOrganizationName"
+                                            formControlName="organizationName">
+                                        <mat-error class="text-danger" id="billingProviderOrganizationNameRequired"
+                                            *ngIf="form.get('billing').get('organizationName').errors?.required
+                            &&(userForm.submitted || form.get('billing').get('organizationName').touched || form.get('billing').get('organizationName').dirty)">
+                                            Organization Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="SSN / EIN *" name="taxId" id="billingTaxId"
+                                            formControlName="taxId">
+                                        <mat-error class="text-danger" id="billingTaxIdRequired"
+                                            *ngIf="form.get('billing').get('taxId').errors?.required
+                            &&(userForm.submitted || form.get('billing').get('taxId').touched || form.get('billing').get('taxId').dirty)">
+                                            SSN / EIN is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Type *</mat-label>
+                                        <mat-select id="billingType" name="type" formControlName="type">
+                                            <mat-option id="individual" value="I">Individual</mat-option>
+                                            <mat-option id="organization" value="O">Organization</mat-option>
+                                        </mat-select>
+                                        <mat-error class="text-danger" id="billingTypeRequired"
+                                            *ngIf="form.get('billing').get('type').errors?.required
+                            &&(userForm.submitted || form.get('billing').get('type').touched || form.get('billing').get('type').dirty)">
+                                            Type is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <div formGroupName="address">
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="billingAddress" matInput type="text" placeholder="Address *"
+                                                name="address" formControlName="address" id="billingaddress">
+                                            <mat-error class="text-danger" id="billingAddressRequired"
+                                                *ngIf="form.get('billing').get('address').get('address').errors?.required
+                                    &&(userForm.submitted || form.get('billing').get('address').get('address').touched || form.get('billing').get('address').get('address').dirty)">
+                                                Address is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="City *" name="city"
+                                                id="billingCity" formControlName="city">
+                                            <mat-error class="text-danger" id="billingCityRequired"
+                                                *ngIf="form.get('billing').get('address').get('city').errors?.required
+                                    &&(userForm.submitted || form.get('billing').get('address').get('city').touched || form.get('billing').get('address').get('city').dirty)">
+                                                City is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="State *" id="billingState"
+                                                formControlName="state" maxlength="2">
+                                            <!-- <mat-error class="text-danger" id="billingStateRequired"
+                                            *ngIf="form.get('billing').get('address').get('state').errors?.required
+                                    &&(userForm.submitted || form.get('billing').get('address').get('state').touched || form.get('billing').get('address').get('state').dirty)">
+                                            State is required
+                                        </mat-error> -->
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Zipcode *" name="zipcode"
+                                                maxlength="9" id="billingZipcode" formControlName="zipcode">
+                                            <mat-error class="text-danger" id="billingZipcodeRequired"
+                                                *ngIf="form.get('billing').get('address').get('zipcode').errors?.required
+                                    &&(userForm.submitted || form.get('billing').get('address').get('zipcode').touched || form.get('billing').get('address').get('zipcode').dirty)">
+                                                Zipcode is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+                            </div>
+                            <p>
+                                <mat-checkbox style="font-size: 14px" id="checkbox" [checked]="checkBoxControl"
+                                    (change)="sameAsBillingProvider($event)">Same as
+                                    Billing Provider</mat-checkbox>
+                            </p>
+                            <br>
+                            <div formGroupName="servicing">
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Servicing Provider Identifier *</mat-label>
+                                        <input matInput id="servicingNpi" formControlName="npi"
+                                            [matAutocomplete]="servicingProviders"
+                                            readonly="{{servicingFieldDisabled}}">
+                                        <mat-autocomplete id="providers" #servicingProviders="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="provider.firstName+'-'+provider.lastName"
+                                                id="servicingProviderId" *ngFor="let provider of providerList"
+                                                [value]="provider.npi" (click)="getProviderInfo(provider,'servicing')">
+                                                {{provider.npi}}-{{provider.firstName}}-{{provider.lastName}} -
+                                                {{provider.organizationName  }}
+                                                -{{provider.type}}-{{provider.address.city  }}-{{provider.address.zipcode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error class="text-danger" id="billingProviderNPIRequired"
+                                            *ngIf="form.get('billing').get('npi').errors?.required
+                        &&(userForm.submitted || form.get('billing').get('npi').touched || form.get('billing').get('npi').dirty)">
+                                            Servicing Provider NPI is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Servicing Provider Taxonomy"
+                                            id="servicingProviderTaxonomy" name="taxonomy" formControlName="taxonomy"
+                                            readonly="{{servicingFieldDisabled}}">
+                                        <mat-error class="text-danger" id="serviceProviderTaxonomyRequired"
+                                            *ngIf="form.get('servicing').get('taxonomy').errors?.required
+                                &&(userForm.submitted || form.get('servicing').get('taxonomy').touched || form.get('servicing').get('taxonomy').dirty)">
+                                            Servicing Provider Taxonomy is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <input type="hidden" formControlName="description" />
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="First Name" name="firstName"
+                                            id="servicingProviderFirstName" formControlName="firstName"
+                                            readonly="{{servicingFieldDisabled}}">
+                                        <mat-error class="text-danger" id="serviceProviderFirstNameRequired"
+                                            *ngIf="form.get('servicing').get('firstName').errors?.required
+                                &&(userForm.submitted || form.get('servicing').get('firstName').touched || form.get('servicing').get('firstName').dirty)">
+                                            First Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Last Name" name="lastName"
+                                            id="servicingProviderLastName" formControlName="lastName"
+                                            readonly="{{servicingFieldDisabled}}">
+                                        <mat-error class="text-danger" id="serviceProviderLastNameRequired"
+                                            *ngIf="form.get('servicing').get('lastName').errors?.required
+                                &&(userForm.submitted || form.get('servicing').get('lastName').touched || form.get('servicing').get('lastName').dirty)">
+                                            Last Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Organization Name"
+                                            name="organizationName" id="servicingProviderOrganizationName"
+                                            formControlName="organizationName" readonly="{{servicingFieldDisabled}}">
+                                        <mat-error class="text-danger" id="serviceProviderOrganizationNameRequired"
+                                            *ngIf="form.get('servicing').get('organizationName').errors?.required
+                                &&(userForm.submitted || form.get('servicing').get('organizationName').touched || form.get('servicing').get('organizationName').dirty)">
+                                            Organization Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="SSN / EIN" name="taxId"
+                                            id="servicingProviderTaxId" formControlName="taxId"
+                                            readonly="{{servicingFieldDisabled}}">
+                                        <mat-error class="text-danger" id="servicingTaxIdRequired"
+                                            *ngIf="form.get('servicing').get('taxId').errors?.required
+                            &&(userForm.submitted || form.get('servicing').get('taxId').touched || form.get('servicing').get('taxId').dirty)">
+                                            SSN / EIN is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Type</mat-label>
+                                        <mat-select id="servicingProviderType" name="type" formControlName="type">
+                                            <mat-option id="providerIndividual" value="I">Individual</mat-option>
+                                            <mat-option id="providerOrganization" value="O">Organization</mat-option>
+                                        </mat-select>
+                                        <mat-error class="text-danger" id="servicingTypeRequired"
+                                            *ngIf="form.get('servicing').get('type').errors?.required
+                            &&(userForm.submitted || form.get('servicing').get('type').touched || form.get('servicing').get('type').dirty)">
+                                            Type is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <div formGroupName="address">
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="servicingProviderAddress" matInput type="text" placeholder="Address"
+                                                name="address" formControlName="address" 
+                                                readonly="{{servicingFieldDisabled}}">
+                                            <mat-error class="text-danger" id="servicingAddressRequired"
+                                                *ngIf="form.get('servicing').get('address').get('address').errors?.required
+                                    &&(userForm.submitted || form.get('servicing').get('address').get('address').touched || form.get('servicing').get('address').get('address').dirty)">
+                                                Address is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="servicingProviderCity" matInput type="text" placeholder="City" name="city"
+                                                formControlName="city" readonly="{{servicingFieldDisabled}}">
+                                            <mat-error class="text-danger" id="servicingCityRequired"
+                                                *ngIf="form.get('servicing').get('address').get('city').errors?.required
+                                    &&(userForm.submitted || form.get('servicing').get('address').get('city').touched || form.get('servicing').get('address').get('city').dirty)">
+                                                City is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="servicingProviderState" matInput type="text" placeholder="State"
+                                                formControlName="state" readonly="{{servicingFieldDisabled}}"
+                                                maxlength="2">
+                                            <mat-error class="text-danger" id="servicingStateRequired"
+                                                *ngIf="form.get('servicing').get('address').get('state').errors?.required
+                                    &&(userForm.submitted || form.get('servicing').get('address').get('state').touched || form.get('servicing').get('address').get('state').dirty)">
+                                                State is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="servicingProviderZipcode" matInput type="text" placeholder="Zipcode"
+                                                name="zipcode" maxlength="9" formControlName="zipcode"
+                                                readonly="{{servicingFieldDisabled}}">
+                                            <mat-error class="text-danger" id="servicingZipcodeRequired"
+                                                *ngIf="form.get('servicing').get('address').get('zipcode').errors?.required
+                                    &&(userForm.submitted || form.get('servicing').get('address').get('zipcode').touched || form.get('servicing').get('address').get('zipcode').dirty)">
+                                                Zipcode is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card style="margin-top:1%">
+                            <mat-card-subtitle>Payor Details</mat-card-subtitle>
+                            <div formGroupName="payor">
+
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Payor Identifier *</mat-label>
+                                        <input matInput id="payorIdentifier" formControlName="identifier"
+                                            [matAutocomplete]="payorIdentifiers">
+                                        <mat-autocomplete id="identifiers" #payorIdentifiers="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="payor.name+'-'+payor.address.zipcode"
+                                                id="payorIdentifierId" *ngFor="let payor of payorList"
+                                                [value]="payor.identifier" (click)="getPayourInfo(payor)">
+                                                {{payor.identifier}}-{{payor.name}} -
+                                                {{payor.address.address }}-{{payor.address.city }}
+                                                -{{payor.address.state }}-{{payor.address.zipcode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error class="text-danger" id="payorIdentifierRequired"
+                                            *ngIf="form.get('payor').get('identifier').errors?.required
+                        &&(userForm.submitted || form.get('payor').get('identifier').touched || form.get('payor').get('identifier').dirty)">
+                                            Payor Identifier is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <input type="hidden" formControlName="description" />
+                                    <mat-form-field>
+                                        <input id="payorName" matInput type="text" placeholder="Payor Name *"
+                                            name="name" formControlName="name">
+                                        <mat-error class="text-danger" id="payorNameRequired"
+                                            *ngIf="form.get('payor').get('name').errors?.required
+                            &&(userForm.submitted || form.get('payor').get('name').touched || form.get('payor').get('name').dirty)">
+                                            Payor Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <div formGroupName="address">
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="payorAddress" matInput type="text" placeholder="Address *"
+                                                name="address" formControlName="address" >
+                                            <mat-error class="text-danger" id="payorAddressRequired"
+                                                *ngIf="form.get('payor').get('address').get('address').errors?.required
+                                    &&(userForm.submitted || form.get('payor').get('address').get('address').touched || form.get('payor').get('address').get('address').dirty)">
+                                                Address is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="payorCity" matInput type="text" placeholder="City *" name="city"
+                                                formControlName="city">
+                                            <mat-error class="text-danger" id="payorCityRequired"
+                                                *ngIf="form.get('payor').get('address').get('city').errors?.required
+                                    &&(userForm.submitted || form.get('payor').get('address').get('city').touched || form.get('payor').get('address').get('city').dirty)">
+                                                City is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="payorState" matInput type="text" placeholder="State *"
+                                                name="state" formControlName="state" maxlength="2">
+                                            <mat-error class="text-danger" id="payorStateRequired"
+                                                *ngIf="form.get('payor').get('address').get('state').errors?.required
+                                    &&(userForm.submitted || form.get('payor').get('address').get('state').touched || form.get('payor').get('address').get('state').dirty)">
+                                                State is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="payorZipcode" matInput type="text" placeholder="Zipcode *"
+                                                name="zipcode" maxlength="9" formControlName="zipcode">
+                                            <mat-error class="text-danger" id="payorZipcodeRequired"
+                                                *ngIf="form.get('payor').get('address').get('zipcode').errors?.required
+                                    &&(userForm.submitted || form.get('payor').get('address').get('zipcode').touched || form.get('payor').get('address').get('zipcode').dirty)">
+                                                Zipcode is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+                            </div>
+                        </mat-card>
+
+                        <mat-card style="margin-top: 1%">
+                            <mat-card-subtitle>Claim Header</mat-card-subtitle>
+                            <div formGroupName="claimHeader">
+                                <p>
+                                    <mat-form-field>
+                                        <input id="billedAmount" matInput type="number" placeholder="Billed Amount *"
+                                            name="billedAmount" formControlName="billedAmount">
+                                        <mat-error class="text-danger" id="claimHeaderBilledAmountRequired"
+                                            *ngIf="form.get('claimHeader').get('billedAmount').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('billedAmount').touched || form.get('claimHeader').get('billedAmount').dirty)">
+                                            Billed Amount is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input id="billedUnits" matInput type="number" placeholder="Billed Units *"
+                                            name="billedUnits" formControlName="billedUnits">
+                                        <mat-error class="text-danger" id="claimHeaderBilledUnitsRequired"
+                                            *ngIf="form.get('claimHeader').get('billedUnits').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('billedUnits').touched || form.get('claimHeader').get('billedUnits').dirty)">
+                                            Billed Units is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input id="claimHeaderFromDate" matInput [matDatepicker]="claimHeaderFromDate"
+                                            [max]="today" placeholder="Service From Date *" name="fromDate"
+                                            formControlName="fromDate">
+                                        <mat-datepicker-toggle matSuffix [for]="claimHeaderFromDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #claimHeaderFromDate startView="month"
+                                            [startAt]="claimHeaderFromDate">
+                                        </mat-datepicker>
+                                        <mat-error class="text-danger" id="serviceFromDateRequired"
+                                            *ngIf="form.get('claimHeader').get('fromDate').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('fromDate').touched || form.get('claimHeader').get('fromDate').dirty)">
+                                            Service From Date is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input id="claimHeaderToDate" matInput [matDatepicker]="claimHeaderToDate"
+                                            placeholder="Service To Date *" [max]="today" name="toDate"
+                                            formControlName="toDate">
+                                        <mat-datepicker-toggle matSuffix [for]="claimHeaderToDate">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #claimHeaderToDate startView="month"
+                                            [startAt]="claimHeaderToDate">
+                                        </mat-datepicker>
+                                        <mat-error class="text-danger" id="serviceToDateRequired"
+                                            *ngIf="form.get('claimHeader').get('toDate').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('toDate').touched || form.get('claimHeader').get('toDate').dirty)">
+                                            Service To Date is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <br>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Frequency *</mat-label>
+                                        <mat-select id="frequency" name="frequency" formControlName="frequency">
+                                            <mat-option id="frequencyOption" *ngFor="let frequency of frequencyList"
+                                                [value]="frequency.code"
+                                                (onSelectionChange)="setValidatorsOriginalClaim($event)">
+                                                {{ frequency.code }} - {{ frequency.description }}</mat-option>
+                                        </mat-select>
+                                        <mat-error class="text-danger" id="claimFrequencyRequired"
+                                            *ngIf="form.get('claimHeader').get('frequency').errors?.required
+                            &&(userForm.submitted || form.get('claimHeader').get('frequency').touched || form.get('claimHeader').get('frequency').dirty)">
+                                            Frequency is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p
+                                    *ngIf="form.get('claimHeader').get('frequency').value === '7' || form.get('claimHeader').get('frequency').value === '8'">
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Original Claim Reference Number *"
+                                            id="parentTCN" name="parentTCN" formControlName="parentTCN">
+                                        <mat-error class="text-danger" id="claimHeaderPatientControlNoRequired"
+                                            *ngIf="form.get('claimHeader').get('parentTCN').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('parentTCN').touched || form.get('claimHeader').get('parentTCN').dirty)">
+                                            Original Claim Reference Number is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Source *</mat-label>
+                                        <mat-select id="source" name="source" formControlName="source">
+                                            <mat-option id="sourceOption" *ngFor="let source of sourceList"
+                                                [value]="source.code">
+                                                {{ source.code }} - {{ source.description }}</mat-option>
+                                        </mat-select>
+                                        <mat-error class="text-danger" id="claimSourceRequired"
+                                            *ngIf="form.get('claimHeader').get('source').errors?.required
+                            &&(userForm.submitted || form.get('claimHeader').get('source').touched || form.get('claimHeader').get('source').dirty)">
+                                            Source is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Patient Control Number *"
+                                            id="patientControlNo" name="patientControlNo"
+                                            formControlName="patientControlNo">
+                                        <mat-error class="text-danger" id="claimHeaderPatientControlNoRequired"
+                                            *ngIf="form.get('claimHeader').get('patientControlNo').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('patientControlNo').touched || form.get('claimHeader').get('patientControlNo').dirty)">
+                                            Patient Control Number is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Facility Type *" name="facilityType"
+                                            id="headerFacilityType" formControlName="facilityType">
+                                        <mat-error class="text-danger" id="claimHeaderFacilityTypeRequired"
+                                            *ngIf="form.get('claimHeader').get('facilityType').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('facilityType').touched || form.get('claimHeader').get('facilityType').dirty)">
+                                            Facility Type is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <br>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-label>Prior Auth1</mat-label>
+                                        <input matInput id="headerPriorAuth1" type="text" formControlName="priorAuth1"
+                                            [matAutocomplete]="paOneList">
+                                        <mat-autocomplete id="paIdentifiers" #paOneList="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="pa.number+'-'+pa.description" id="paIdentifierId"
+                                                *ngFor="let pa of paList" [value]="pa.number" (click)="getPa1Info(pa)">
+                                                {{pa.number}} -{{pa.description }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Prior Auth2" id="headerPriorAuth2"
+                                            formControlName="priorAuth2" [matAutocomplete]="paTwoList">
+                                        <mat-autocomplete id="paIdentifiers" #paTwoList="matAutocomplete"
+                                            style="width: 100%">
+                                            <mat-option [matTooltip]="pa.number+'-'+pa.description" id="paIdentifierId"
+                                                *ngFor="let pa of paList" [value]="pa.number">
+                                                {{pa.number}} - {{pa.description }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </p>
+                                <div *ngIf="form.get('formType').value == 'I'">
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="DRG Code" id="drgCode"
+                                                formControlName="drgCode">
+                                            <mat-error>
+                                                DRG Code is required
+                                            </mat-error>
+                                        </mat-form-field>
+
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="admitDate" matInput [matDatepicker]="claimHeaderAdmitDate"
+                                                placeholder="Admit Date" [max]="today" formControlName="admitDate">
+                                            <mat-datepicker-toggle matSuffix [for]="claimHeaderAdmitDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #claimHeaderAdmitDate startView="month"
+                                                [startAt]="claimHeaderAdmitDate">
+                                            </mat-datepicker>
+                                            <mat-error class="text-danger" id="admitDateRequired"
+                                                *ngIf="form.get('claimHeader').get('admitDate').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('admitDate').touched || form.get('claimHeader').get('admitDate').dirty)">
+                                                Admit Date is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput [ngxTimepicker]="admitTime" placeholder="Admit Time"
+                                                formControlName="admitTime">
+                                            <ngx-material-timepicker #admitTime></ngx-material-timepicker>
+                                            <mat-error class="text-danger" id="admitTimeRequired">
+                                                Admit Time is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input id="dischargeDate" matInput
+                                                [matDatepicker]="claimHeaderDischargeDate"
+                                                placeholder="Discharge Date" [max]="today"
+                                                formControlName="dischargeDate">
+                                            <mat-datepicker-toggle matSuffix [for]="claimHeaderDischargeDate">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #claimHeaderDischargeDate startView="month"
+                                                [startAt]="claimHeaderDischargeDate">
+                                            </mat-datepicker>
+                                            <mat-error class="text-danger" id="dischargeDateRequired">
+                                                Discharge Date is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput [ngxTimepicker]="dischargeTime"
+                                                placeholder="Discharge Time" formControlName="dischargeTime">
+                                            <ngx-material-timepicker #dischargeTime></ngx-material-timepicker>
+                                            <mat-error class="text-danger" id="dischargeTimeRequired">
+                                                Discharge Time is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Patient Status" id="patientStatus"
+                                                formControlName="patientStatus">
+                                            <mat-error class="text-danger" id="patientStatusRequired"
+                                                *ngIf="form.get('claimHeader').get('patientStatus').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('patientStatus').touched || form.get('claimHeader').get('patientStatus').dirty)">
+                                                Patient Status is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Discharge Status"
+                                                id="dischargeStatus" formControlName="dischargeStatus">
+                                            <mat-error class="text-danger" id="dischargeStatusRequired"
+                                                *ngIf="form.get('claimHeader').get('dischargeStatus').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('dischargeStatus').touched || form.get('claimHeader').get('dischargeStatus').dirty)">
+                                                Discharge Status is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Admit Diagnosis"
+                                                id="admitDiagnosis" formControlName="admitDiagnosis">
+                                            <mat-error class="text-danger" id="admitDiagnosisRequired"
+                                                *ngIf="form.get('claimHeader').get('admitDiagnosis').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('admitDiagnosis').touched || form.get('claimHeader').get('dischargeStatus').dirty)">
+                                                Admit Diagnosis is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+                                <br>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Primary Diagnosis"
+                                            id="primaryDiagnosis" name="primaryDiagnosis"
+                                            formControlName="primaryDiagnosis" (blur)="getSelectedValues()">
+                                        <mat-error class="text-danger" id="claimHeaderPrimaryDiagnosisRequired"
+                                            *ngIf="form.get('claimHeader').get('primaryDiagnosis').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('primaryDiagnosis').touched || form.get('claimHeader').get('primaryDiagnosis').dirty)">
+                                            Primary Diagnosis is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </p>
+                                <p style="width: 80%;">
+                                    <mat-form-field>
+                                        <mat-chip-list #claimHeaderSecondaryDiagnosis
+                                            aria-label="Secondary Diagnosis Codes">
+                                            <mat-chip *ngFor="let diagnosis of chipHeaderSecondaryDiagnosisList"
+                                                [selectable]="selectable" [removable]="removable"
+                                                (removed)="removeDiagnosis(diagnosis)">
+                                                {{diagnosis.name}}
+                                                <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="Secondary Diagnosis" (keyup.enter)="getSelectedValues()"
+                                                id="secondaryDiagnosisList"
+                                                [matChipInputFor]="claimHeaderSecondaryDiagnosis"
+                                                formControlName="secondaryDiagnosisList"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="addOnBlur"
+                                                (matChipInputTokenEnd)="addDiagnosis($event)">
+
+                                        </mat-chip-list>
+                                    </mat-form-field>
+                                </p>
+
+                                <div *ngIf="form.get('formType').value == 'I'">
+
+                                    <mat-card style="margin-top: 1%;">
+                                        <mat-card-title>Surgical Codes</mat-card-title>
+                                        <div formArrayName="surgicalCodeList" style="display: inline-block"
+                                            *ngFor="let surgicalCode of form.controls.claimHeader.controls.surgicalCodeList.controls; let i = index">
+                                            <div [formGroupName]="i">
+                                                <div fxLayoutAlign="end start"
+                                                    *ngIf="(i+1)%3==0 || (form.get('claimHeader').get('surgicalCodeList').length === i+1)">
+                                                    <button mat-mini-fab color="primary" type="button"
+                                                        (click)="addAnotherClaimSurgicalCode($event)">
+                                                        <mat-icon>add</mat-icon>
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <mat-form-field style="width:20%">
+                                                        <input matInput type="text" placeholder="Surgical Code"
+                                                            formControlName="surgicalCode" id="surgicalCode"
+                                                            (change)="getSurgicalCodeValidator(i)">
+                                                        <mat-error id=surgicalCodeRequired>
+                                                            Surgical Code is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+
+                                                    <mat-form-field style="margin-left: 5%;width:30%">
+                                                        <input matInput #todo (keyup)="onKey($event)"
+                                                            [matDatepicker]="claimSurigicalCodeDate" [max]="today"
+                                                            placeholder="Surgical Code Date"
+                                                            formControlName="surgicalDate" id="surgicalDate"
+                                                            (dateInput)="getSurgicalCodeValidator(i)">
+                                                        <mat-datepicker-toggle matSuffix [for]="claimSurigicalCodeDate">
+                                                        </mat-datepicker-toggle>
+                                                        <mat-datepicker #claimSurigicalCodeDate startView="month"
+                                                            [startAt]="startDate">
+                                                        </mat-datepicker>
+                                                        <mat-error id=surgicalDateRequired>
+                                                            Surgical Code Date is required
+                                                        </mat-error>
+
+                                                    </mat-form-field>
+                                                    <br>
+
+                                                    <button style="margin-top: 3%" type="button"
+                                                        *ngIf="form.get('claimHeader').get('surgicalCodeList').length>0"
+                                                        mat-mini-fab color="primary" id="remove"
+                                                        (click)="removeClaimSurgicalCode(i)">
+                                                        <mat-icon>remove</mat-icon>
+                                                    </button>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </mat-card>
+
+                                    <mat-card style="margin-top: 1%;">
+                                        <mat-card-title>Occurrence Codes</mat-card-title>
+                                        <div formArrayName="occuranceCodeList" style="display: inline-block"
+                                            *ngFor="let claimOccuranceCode of form.controls.claimHeader.controls.occuranceCodeList.controls; let i = index">
+                                            <div [formGroupName]="i">
+                                                <div fxLayoutAlign="end start">
+                                                    <button mat-mini-fab color="primary" type="button"
+                                                        *ngIf="(i+1)%3==0 || (form.get('claimHeader').get('occuranceCodeList').length === i+1)"
+                                                        (click)="addAnotherClaimOccuranceCode($event)">
+                                                        <mat-icon>add</mat-icon>
+                                                    </button>
+                                                </div>
+                                                <mat-form-field style="width:20%">
+                                                    <input matInput type="text" placeholder="Occurrence Code"
+                                                        formControlName="occuranceCode" id="occuranceCode"
+                                                        (change)="getOccuranceCodeValidator(i)">
+                                                    <mat-error id="occuranceCodeRequired">
+                                                        Occurrence Code is required
+                                                    </mat-error>
+                                                </mat-form-field>
+
+                                                <mat-form-field style="margin-left: 5%;width:40%">
+                                                    <input matInput [matDatepicker]="claimOccuranceCodeDate"
+                                                        [max]="today" placeholder="Occurrence Code Date"
+                                                        formControlName="occuranceCodeDate" id="occuranceCodeDate"
+                                                        (dateInput)="getOccuranceCodeValidator(i)">
+                                                    <mat-datepicker-toggle matSuffix [for]="claimOccuranceCodeDate">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #claimOccuranceCodeDate startView="month"
+                                                        [startAt]="startDate">
+                                                    </mat-datepicker>
+                                                    <mat-error id="occuranceDateRequired">
+                                                        Occurrence Code Date is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <br>
+
+
+
+                                                <button style="margin-top: 3%" type="button"
+                                                    *ngIf="form.get('claimHeader').get('occuranceCodeList').length>0"
+                                                    mat-mini-fab color="primary" id="remove"
+                                                    (click)="removeClaimOccuranceCode(i)">
+                                                    <mat-icon>remove</mat-icon>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                    <mat-card style="margin-top: 1%">
+                                        <mat-card-title>Occurrence Span Codes</mat-card-title>
+                                        <div formArrayName="occuranceSpanCodeList" style="display: inline-block"
+                                            *ngFor="let occuranceSpanCode of form.controls.claimHeader.controls.occuranceSpanCodeList.controls; let i = index">
+                                            <div [formGroupName]="i">
+                                                <div fxLayoutAlign="end start">
+                                                    <button mat-mini-fab color="primary" type="button"
+                                                        *ngIf="(i+1)%3==0 || (form.get('claimHeader').get('occuranceSpanCodeList').length === i+1)"
+                                                        (click)="addAnotherClaimOccuranceSpanCode($event)">
+                                                        <mat-icon>add</mat-icon>
+                                                    </button>
+                                                </div>
+
+                                                <mat-form-field style="width:20%">
+                                                    <input matInput type="text" placeholder="Occurrence Span Code"
+                                                        formControlName="occuranceSpanCode" id="occuranceSpanCode"
+                                                        (change)="getOccuranceSpanCodeValidator(i)">
+                                                    <mat-error id="occuranceSpanCodeRequired">
+                                                        Span Code is required
+                                                    </mat-error>
+                                                </mat-form-field>
+
+                                                <mat-form-field style="margin-left: 5%;width:40%">
+                                                    <input matInput [matDatepicker]="claimOccuranceSpanCodeDate"
+                                                        [max]="today" placeholder="Occurrence Span Code Date"
+                                                        formControlName="occuranceSpanCodeDate"
+                                                        id="occuranceSpanCodeDate"
+                                                        (dateInput)="getOccuranceSpanCodeValidator(i)">
+                                                    <mat-datepicker-toggle matSuffix [for]="claimOccuranceSpanCodeDate">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #claimOccuranceSpanCodeDate startView="month"
+                                                        [startAt]="startDate">
+                                                    </mat-datepicker>
+                                                    <mat-error id="occuranceSpanDateRequired">
+                                                        Span Code Date is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <br>
+                                                <button style="margin-top: 3%"
+                                                    *ngIf="form.get('claimHeader').get('occuranceSpanCodeList').length>0"
+                                                    mat-mini-fab color="primary" id="remove" type="button"
+                                                    (click)="removeClaimOccuranceSpanCode(i)">
+                                                    <mat-icon>remove</mat-icon>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                    <mat-card style="margin-top: 1%">
+                                        <mat-card-title>Value Codes</mat-card-title>
+
+                                        <div formArrayName="valueCodeList" style="display: inline-block"
+                                            *ngFor="let valueCode of form.controls.claimHeader.controls.valueCodeList.controls; let i = index">
+                                            <div [formGroupName]="i" style=" overflow-wrap: break-word;">
+
+                                                <div fxLayoutAlign="end start"
+                                                    *ngIf="(i+1)%3==0 || (form.get('claimHeader').get('valueCodeList').length === i+1)">
+                                                    <button mat-mini-fab type="button" color="primary"
+                                                        (click)="addAnotherClaimValueCode($event)">
+                                                        <mat-icon>add</mat-icon>
+                                                    </button>
+                                                </div>
+                                                <mat-form-field style="width:20%">
+                                                    <input matInput type="text" placeholder="Value Code*"
+                                                        formControlName="valueCode" id="valueCode"
+                                                        (change)="getValueCodeValidator(i)">
+                                                    <mat-error id="valueCodeRequired">
+                                                        Value Code is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <mat-form-field style="margin-left: 5%;width:40%">
+                                                    <input matInput type="number" placeholder="Value Amount *"
+                                                        formControlName="valueCodeAmount" id="valueCodeAmount"
+                                                        (change)="getValueCodeValidator(i)">
+                                                    <mat-error id="valueAmountRequired">
+                                                        Value Amount is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <br>
+
+
+                                                <button style="margin-top: 3%" type="button"
+                                                    *ngIf="form.get('claimHeader').get('valueCodeList').length>0"
+                                                    mat-mini-fab color="primary" id="remove"
+                                                    (click)="removeClaimValueCode(i)">
+                                                    <mat-icon>remove</mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </mat-card>
+                                    <mat-card style="margin-top: 1%">
+                                        <mat-card-title>Condition Codes</mat-card-title>
+
+                                        <mat-form-field>
+                                            <mat-chip-list #claimConditionCodes aria-label="Condition Codes">
+                                                <mat-chip *ngFor="let conditionCode of chipClaimConditionCodeList"
+                                                    [selectable]="selectable" [removable]="removable"
+                                                    (removed)="removeConditionCode(conditionCode)">
+                                                    {{conditionCode.name}}
+                                                    <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                </mat-chip>
+                                                <input placeholder="Condition Codes" id="conditionCodes"
+                                                    [matChipInputFor]="claimConditionCodes"
+                                                    formControlName="conditionCodeList"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="addOnBlur"
+                                                    (matChipInputTokenEnd)="addConditionCodes($event)">
+                                            </mat-chip-list>
+                                        </mat-form-field>
+
+                                    </mat-card>
+
+                                    <mat-card style="margin-top: 1%">
+                                        <mat-card-title>Treatment Codes</mat-card-title>
+                                        <mat-form-field>
+                                            <mat-chip-list #claimTreatmentCodes aria-label="Treatement Codes">
+                                                <mat-chip *ngFor="let treatmentCode of chipClaimTreatmentCodeList"
+                                                    [selectable]="selectable" [removable]="removable"
+                                                    (removed)="removeTreatmentCode(treatmentCode)">
+                                                    {{treatmentCode.name}}
+                                                    <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                </mat-chip>
+                                                <input placeholder="Treatement Codes" id="treatmentCodes"
+                                                    [matChipInputFor]="claimTreatmentCodes"
+                                                    formControlName="treatmentCodeList"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="addOnBlur"
+                                                    (matChipInputTokenEnd)="addTreatmentCodes($event)">
+                                            </mat-chip-list>
+                                        </mat-form-field>
+                                    </mat-card>
+                                </div>
+                                <div *ngIf="form.get('formType').value === 'D'">
+                                    <mat-card style="margin-top: 1%">
+                                        <mat-card-title>Tooth Status</mat-card-title>
+                                        <div formGroupName="dental">
+                                            <div formArrayName="toothStatusList" style="display: inline-block"
+                                                *ngFor="let status of form.controls.claimHeader.controls.dental.controls.toothStatusList.controls; let i = index">
+                                                <div [formGroupName]="i">
+                                                    <div fxLayoutAlign="end start">
+                                                        <button mat-mini-fab type="button" color="primary"
+                                                            (click)="addAnotherToothStatus($event)"
+                                                            *ngIf="(i+1)%3==0 || (form.get('claimHeader').get('dental').get('toothStatusList').length === i+1)">
+                                                            <mat-icon>add</mat-icon>
+                                                        </button>
+                                                    </div>
+
+                                                    <mat-form-field style="width:20%">
+                                                        <input matInput type="number" placeholder="Tooth Number"
+                                                            formControlName="toothNumber" id="toothNumber"
+                                                            (change)="getToothStatusValidator(i)">
+                                                        <mat-error id="numberRequired">
+                                                            Tooth Number is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+
+                                                    <mat-form-field style="margin-left: 5%;width:40%">
+                                                        <input matInput type="text" placeholder="Tooth Status"
+                                                            formControlName="toothStatus" id="toothStatus"
+                                                            (change)="getToothStatusValidator(i)">
+                                                        <mat-error id="statusRequired">
+                                                            Tooth Status is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                    <br>
+                                                    <button style="margin-top: 3%" type="button"
+                                                        *ngIf="form.get('claimHeader').get('dental').get('toothStatusList').length>0"
+                                                        mat-mini-fab color="primary" id="remove"
+                                                        (click)="removeToothStatus(i)">
+                                                        <mat-icon>remove</mat-icon>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+                                </div>
+                                <mat-card style="margin-top:1%" style="background-color: rgb(214, 221, 245)">
+                                    <mat-card-subtitle>Servicing Facility</mat-card-subtitle>
+                                    <div formGroupName="serviceFacility">
+
+                                        <p>
+                                            <mat-form-field>
+                                                <mat-label>Identifier</mat-label>
+                                                <input matInput id="servicingFacilityNpi" #myInput formControlName="npi"
+                                                    [matAutocomplete]="servivingFacilityProviders"
+                                                    (focusout)="setValidatorsForServicingFacility(form.get('claimHeader').get('serviceFacility'))">
+                                                <mat-autocomplete id="providers"
+                                                    #servivingFacilityProviders="matAutocomplete" style="width: 100%">
+                                                    <mat-option [matTooltip]="provider.firstName+'-'+provider.lastName"
+                                                        id="servivingFacilityProviderId" *ngFor="let provider of providerList"
+                                                        [value]="provider.npi"
+                                                        (click)="getProviderInfo(provider,'serviceFacility')">
+                                                        {{provider.npi}}-{{provider.firstName}}-{{provider.lastName}} -
+                                                        {{provider.organizationName  }}
+                                                        -{{provider.type}}-{{provider.address.city  }}-{{provider.address.zipcode  }}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                                <mat-error class="text-danger" id="servicingFacilityIdRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('npi').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('npi').touched || form.get('claimHeader').get('serviceFacility').get('npi').dirty)">
+                                                    Identifier is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="text" placeholder="Taxonomy" id="servicingFacilityTaxonomy"
+                                                    name="taxonomy" formControlName="taxonomy">
+                                                <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('taxonomy').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('taxonomy').touched || form.get('claimHeader').get('serviceFacility').get('taxonomy').dirty)">
+                                                    Taxonomy is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <input type="hidden" formControlName="description" />
+                                            <mat-form-field>
+                                                <input matInput type="text" placeholder="First Name" name="firstName"
+                                                    id="servicingFacilityFirstName" formControlName="firstName">
+                                                <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('firstName').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('firstName').touched || form.get('claimHeader').get('serviceFacility').get('firstName').dirty)">
+                                                    First Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="text" placeholder="Last Name" name="lastName"
+                                                    id="servicingFacilityLastName" formControlName="lastName">
+                                                <mat-error class="text-danger" id="servicingFacilityLastNameRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('lastName').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('lastName').touched || form.get('claimHeader').get('serviceFacility').get('lastName').dirty)">
+                                                    Last Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="text" placeholder="Organization Name"
+                                                    name="organizationName" id="servicingFacilityOrganizationName"
+                                                    formControlName="organizationName">
+                                                <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('organizationName').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('organizationName').touched || form.get('claimHeader').get('serviceFacility').get('organizationName').dirty)">
+                                                    Organization Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="text" placeholder="SSN / EIN" name="taxId"
+                                                    id="servicingFacilityTaxId" formControlName="taxId">
+                                                <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('taxId').errors?.required
+                                &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('taxId').touched || form.get('claimHeader').get('serviceFacility').get('taxId').dirty)">
+                                                    SSN / EIN is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <mat-label>Type </mat-label>
+                                                <mat-select id="servicingFacilityType" name="type" formControlName="type">
+                                                    <mat-option id="individual" value="I">Individual</mat-option>
+                                                    <mat-option id="organization" value="O">Organization</mat-option>
+                                                </mat-select>
+                                                <mat-error class="text-danger" id="servicingFacilityTypeRequired"
+                                                    *ngIf="form.get('claimHeader').get('serviceFacility').get('type').errors?.required
+                            &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('type').touched || form.get('claimHeader').get('serviceFacility').get('type').dirty)">
+                                                    Type is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <div formGroupName="address">
+                                            <p>
+                                                <mat-form-field>
+                                                    <input id="servicingAddress" matInput type="text"
+                                                        placeholder="Address " name="address" formControlName="address" id="headersfaddress">
+                                                    <mat-error class="text-danger" id="servicingFacilityAddressRequired"
+                                                        *ngIf="form.get('claimHeader').get('serviceFacility').get('address').get('address').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('address').get('address').touched || form.get('claimHeader').get('serviceFacility').get('address').get('address').dirty)">
+                                                        Address is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="City " name="city"
+                                                        id="servicingFacilityCity" formControlName="city">
+                                                    <mat-error class="text-danger" id="servicingFacilityCityRequired"
+                                                        *ngIf="form.get('claimHeader').get('serviceFacility').get('address').get('city').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('address').get('city').touched || form.get('claimHeader').get('serviceFacility').get('address').get('city').dirty)">
+                                                        City is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="State" id="servicingFacilityState"
+                                                        formControlName="state" maxlength="2">
+                                                    <mat-error class="text-danger" id="servicingFacilityStateRequired"
+                                                        *ngIf="form.get('claimHeader').get('serviceFacility').get('address').get('state').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('address').get('state').touched || form.get('claimHeader').get('serviceFacility').get('address').get('state').dirty)">
+                                                        State is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="Zipcode" name="zipcode"
+                                                        maxlength="9" id="servicingFacilityZipcode" formControlName="zipcode">
+                                                    <mat-error class="text-danger" id="servicingFacilityZipcodeRequired"
+                                                        *ngIf="form.get('claimHeader').get('serviceFacility').get('address').get('zipcode').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('serviceFacility').get('address').get('zipcode').touched || form.get('claimHeader').get('serviceFacility').get('address').get('zipcode').dirty)">
+                                                        Zipcode is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </mat-card>
+
+                                <mat-card style="background-color:rgb(118, 167, 170); margin-top: 1%">
+                                    <mat-card-subtitle>Expected Results</mat-card-subtitle>
+                                    <div formGroupName="expectedResult">
+                                        <!-- <p>
+                                            <mat-form-field>
+                                                <input matInput id="paidAmount" type="number"
+                                                    placeholder="Paid Amount *" name="paidAmount"
+                                                    formControlName="paidAmount">
+                                                <mat-error class="text-danger"
+                                                    id="claimHeaderExpectedPaidAmountRequired" *ngIf="form.get('claimHeader').get('expectedResult').get('paidAmount').errors?.required
+                                       &&(userForm.submitted || form.get('claimHeader').get('expectedResult').get('paidAmount').touched || 
+                                         form.get('claimHeader').get('expectedResult').get('paidAmount').dirty)">
+                                                    Paid Amout is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="number" placeholder="Allowed Amout *"
+                                                    name="allowedAmount" id="allowedAmount"
+                                                    formControlName="allowedAmount">
+                                                <mat-error class="text-danger"
+                                                    id="claimHeaderExpectedAllowedAmountRequired"
+                                                    *ngIf="form.get('claimHeader').get('expectedResult').get('allowedAmount').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('expectedResult').get('allowedAmount').touched || form.get('claimHeader').get('expectedResult').get('allowedAmount').dirty)">
+                                                    Allowed Amout is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="number" id="paidUnits" placeholder="Paid Units *"
+                                                    name="paidUnits" formControlName="paidUnits">
+                                                <mat-error class="text-danger" id="claimHeaderExpectedPaidUnitsRequired"
+                                                    *ngIf="form.get('claimHeader').get('expectedResult').get('paidUnits').errors?.required
+                                       &&(userForm.submitted || form.get('claimHeader').get('expectedResult').get('paidUnits').touched ||
+                                        form.get('claimHeader').get('expectedResult').get('paidUnits').dirty)">
+                                                    Paid Units is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <mat-label>Claim Type *</mat-label>
+                                                <mat-select name="claimType" id="expectedClaimType"
+                                                    formControlName="claimType">
+                                                    <mat-option id="expectedClaimTypeOption"
+                                                        [value]="claimType.claimTypeCode"
+                                                        *ngFor="let claimType of claimTypeList">
+                                                        {{claimType.claimTypeCode}} - {{claimType.description}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error class="text-danger" id="claimHeaderExpectedClaimTypeRequired"
+                                                    *ngIf="form.get('claimHeader').get('expectedResult').get('claimType').errors?.required
+                                    &&(userForm.submitted || form.get('claimHeader').get('expectedResult').get('claimType').touched ||
+                                     form.get('claimHeader').get('expectedResult').get('claimType').dirty)">
+                                                    Claim Type is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <mat-chip-list #claimHeaderExpectedErrorCodes aria-label="Error Codes">
+                                                    <mat-chip *ngFor="let errorCode of headerExpectedErrors"
+                                                        [selectable]="selectable" [removable]="removable"
+                                                        (removed)="removeHeaderExpectedError(errorCode)">
+                                                        {{errorCode.name}}
+                                                        <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                    </mat-chip>
+                                                    <input placeholder="Expected Error Codes" id="errorCodesList"
+                                                        name="errorCodesList"
+                                                        [matChipInputFor]="claimHeaderExpectedErrorCodes"
+                                                        formControlName="errorCodesList"
+                                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                        [matChipInputAddOnBlur]="addOnBlur"
+                                                        (matChipInputTokenEnd)="addHeaderExpectedError($event)">
+                                                </mat-chip-list>
+                                                <mat-error class="text-danger"
+                                                    id="claimHeaderExpectedErrorCodesRequired"
+                                                    *ngIf="form.get('claimHeader').get('expectedResult').get('errorCodesList').errors?.required
+                                          &&(userForm.submitted || form.get('claimHeader').get('expectedResult').get('errorCodesList').touched || 
+                                              form.get('claimHeader').get('expectedResult').get('errorCodesList').dirty)">
+                                                    Expected Error Codes is required
+                                                </mat-error>
+
+                                            </mat-form-field>
+                                        </p> -->
+                                        <p *ngFor="let element of elementConfigList; let i=index;">
+    
+                                            <mat-form-field
+                                                *ngIf="element.fieldType !== 'date' && element.fieldType !== 'Multi Choice' 
+                                                && element.controlType !== 'Select Box'">
+                                                <input [formControlName]="element.fieldName" matInput
+                                                    placeholder={{element.elementLabel}} [type]="element.fieldType">
+                                                <mat-error [id]="element.fieldName">
+                                                    {{element.elementLabel}} is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field *ngIf="element.controlType === 'Select Box'">
+                                                <mat-label>{{element.elementLabel}}</mat-label>
+                                                <mat-select [id]="element.fieldName"
+                                                    [formControlName]="element.fieldName">
+                                                    <mat-option id="empty" value=""></mat-option>
+                                                     <mat-option id="multiChoice" [value]="option.key" *ngFor="let option of headerExpectedElementsOptions">{{option.value}}
+                                                    </mat-option>  
+                                                    <!-- <mat-option value="1">test</mat-option> -->
+                                                </mat-select>
+                                                <mat-error [id]="element.fieldName">{{element.elementLabel}} is required</mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field *ngIf="element.fieldType === 'date'">
+                                                <input id="dischargeDate" matInput [matDatepicker]="i"
+                                                    placeholder={{element.elementLabel}} [max]="today"
+                                                    [formControlName]="element.fieldName">
+                                                <mat-datepicker-toggle matSuffix [for]="i">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #i startView="month" [startAt]="i">
+                                                </mat-datepicker>
+                                                <mat-error [id]="element.fieldName">
+                                                    {{element.elementLabel}} is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                            
+
+                                            <mat-form-field *ngIf="element.fieldType === 'Multi Choice'">
+
+                                                <mat-chip-list #claimHeaderExpectedErrorCodes aria-label="Error Codes">
+                                                    <mat-chip
+                                                        *ngFor="let errorCode of headerExpectedElementsChipList[element.fieldName]; let i=index;"
+                                                        [selectable]="selectable" [removable]="removable"
+                                                        (removed)="removeHeaderExpectedError(errorCode,element.fieldName)">
+                                                        {{errorCode.name}}
+                                                        <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                    </mat-chip>
+                                                    <input placeholder={{element.elementLabel}} [id]="element.fieldName"
+                                                        name="errorCodesList"
+                                                        [matChipInputFor]="claimHeaderExpectedErrorCodes"
+                                                        [formControlName]="element.fieldName"
+                                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                        [matChipInputAddOnBlur]="addOnBlur"
+                                                        (matChipInputTokenEnd)="addHeaderExpectedData($event,element.fieldName,'header')">
+                                                </mat-chip-list>
+                                            </mat-form-field>
+                                            <mat-error class="text-danger chipCss" [id]="element.fieldName"
+                                                *ngIf="form.get('claimHeader').get('expectedResult').get(element.fieldName).errors?.required && element.fieldType === 'Multi Choice'
+                                    &&(userForm.submitted || form.get('claimHeader').get('expectedResult').get(element.fieldName).touched || form.get('claimHeader').get('expectedResult').get(element.fieldName).dirty)">
+                                                {{element.elementLabel}} is required
+                                            </mat-error>
+                                            <p>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </mat-card>
+                        <div formArrayName="services"
+                            *ngFor="let service of form.controls.services.controls; let i = index">
+                            <div [formGroupName]="i">
+                                <mat-card style="margin-top: 1%">
+                                    <mat-card-title>Service Line #{{i+1}}</mat-card-title>
+                                    <div fxLayoutAlign="end start">
+                                        <button mat-mini-fab type="button" color="primary"
+                                            (click)="addAnotherService(i,$event)">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="serviceLineFromDatePicker" [max]="today"
+                                                placeholder="Service Line From Date *" name="fromDate"
+                                                formControlName="fromDate" id="fromDate">
+                                            <mat-datepicker-toggle matSuffix [for]="serviceLineFromDatePicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #serviceLineFromDatePicker startView="month"
+                                                [startAt]="startDate"></mat-datepicker>
+                                            <mat-error class="text-danger" id="serviceLineFromDatetRequired"
+                                                *ngIf="service.get('fromDate').errors?.required
+                                            &&(userForm.submitted || service.get('fromDate').touched || service.get('fromDate').dirty)">
+                                                Service Line From Date is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="serviceLineToDatePicker" [max]="today"
+                                                placeholder="Service Line To Date *" name="toDate" id="toDate"
+                                                formControlName="toDate">
+                                            <mat-datepicker-toggle matSuffix [for]="serviceLineToDatePicker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #serviceLineToDatePicker startView="month"
+                                                [startAt]="startDate"></mat-datepicker>
+                                            <mat-error class="text-danger" id="serviceLineToDateRequired"
+                                                *ngIf="service.get('toDate').errors?.required
+                                            &&(userForm.submitted || service.get('toDate').touched || service.get('toDate').dirty)">
+                                                Service Line To Date is required
+                                            </mat-error>
+                                            <mat-error class="text-danger" id="serviceLineToDateRequired"
+                                                *ngIf="service.get('toDate')>service.get('toDate')">
+                                                Service Line To Date must be greater than or equal to Service Line From
+                                                Date.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Facility Type"
+                                                formControlName="facilityType" id="lineFacilityType">
+                                        </mat-form-field>
+                                    </p>
+                                    <br>
+
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Revenue Code" name="revenueCode"
+                                                formControlName="revenueCode" id="servicingRevenueCode">
+                                            <mat-error class="text-danger" id="serviceLineRevenueCodeRequired"
+                                                *ngIf="service.get('revenueCode').errors?.required
+                                            &&(userForm.submitted || service.get('revenueCode').touched || service.get('revenueCode').dirty)">
+                                                Revenue Code is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Procedure Code"
+                                                name="procedureCode" formControlName="procedureCode"
+                                                id="servicingProcedureCode" (focusout)="setValidatorsForProcedureCodeType(service)">
+                                            <mat-error class="text-danger" id="serviceLineProcedureCodeRequired"
+                                                *ngIf="service.get('procedureCode').errors?.required
+                                            &&(userForm.submitted || service.get('procedureCode').touched || service.get('procedureCode').dirty)">
+                                                Procedure Code is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <mat-label>Procedure Code Type </mat-label>
+                                            <mat-select id="procedureCodeType" formControlName="procedureCodeType">
+                                                <mat-option value=""></mat-option>
+                                                <mat-option value="HC">Procedure Code</mat-option>
+                                                <mat-option value="HI">Health Care Industry Bar Code</mat-option>
+                                            </mat-select>
+                                            <mat-error class="text-danger" id="serviceLineProcedureCodeRequired"
+                                                *ngIf="service.get('procedureCodeType').errors?.required
+                                            &&(userForm.submitted || service.get('procedureCodeType').touched || service.get('procedureCodeType').dirty)">
+                                                Procedure Code Type is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <mat-chip-list #serviceLineModifiers
+                                                aria-label="Service Line Modifiers (Maximum is 4 modifiers)">
+                                                <mat-chip *ngFor="let modifier of lineModifiersList[i]"
+                                                    [selectable]="selectable" [removable]="removable"
+                                                    (removed)="removeModifier(i, modifier)">
+                                                    {{modifier.name}}
+                                                    <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                </mat-chip>
+                                                <input placeholder="Modifiers (Max allowed 4)" id="modifiersList"
+                                                    [matChipInputFor]="serviceLineModifiers"
+                                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                    [matChipInputAddOnBlur]="addOnBlur" formControlName="modifiersList"
+                                                    (matChipInputTokenEnd)="addModifier(i, $event)" maxlength="2">
+                                            </mat-chip-list>
+                                            <mat-error class="text-danger" id="serviceLineModifiersRequired"
+                                                *ngIf="service.get('modifiersList').errors?.required
+                                            &&(userForm.submitted || service.get('modifiersList').touched || service.get('modifiersList').dirty)">
+                                                Service Line Modifiers is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <!--
+                                    <p *ngIf="form.get('formType').value !=='P'">
+                                        <mat-form-field>
+                                            <mat-label>Service Line Diagnosis *</mat-label>
+                                            <mat-select id="diagnosisCode" name="diagnosisCode"
+                                                formControlName="diagnosisCode">
+
+                                                <mat-option id="diagnosisCodeOption"
+                                                    *ngFor="let secondaryDiagnosis of secondaryDiagnoses"
+                                                    value="{{secondaryDiagnosis}}">
+                                                    {{ secondaryDiagnosis }} </mat-option>
+                                            </mat-select>
+                                            <mat-error class="text-danger" id="serviceLineDiagnosisCodeRequired"
+                                                *ngIf="service.get('diagnosisCode').errors?.required
+                                            &&(userForm.submitted || service.get('diagnosisCode').touched || service.get('diagnosisCode').dirty)">
+                                                Service Line Diagnosis is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p> *ngIf="form.get('formType').value ==='P'" formGroupName="internal" 
+                                    -->
+                                    <br>
+                                    <ng-container>
+                                        <p>
+                                            <mat-form-field floatLabel="always">
+                                                <mat-label>Service Line Diagnosis 1 </mat-label>
+                                                <mat-select id="diagnosisCode1" name="diagnosisCode1"
+                                                    formControlName="diagnosisCode1">
+                                                    <mat-option value=""></mat-option>
+                                                    <mat-option id="diagnosisCode1"
+                                                        *ngFor="let secondaryDiagnosis of secondaryDiagnoses"
+                                                        value="{{secondaryDiagnosis}}">
+                                                        {{ secondaryDiagnosis }} </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </p>
+                                        <p *ngIf="service.get('diagnosisCode1').value">
+                                            <mat-form-field floatLabel="always">
+                                                <mat-label>Service Line Diagnosis 2 </mat-label>
+                                                <mat-select id="diagnosisCode2" name="diagnosisCode2"
+                                                    formControlName="diagnosisCode2">
+                                                    <mat-option value=""></mat-option>
+                                                    <mat-option id="diagnosisCode2"
+                                                        *ngFor="let secondaryDiagnosis of secondaryDiagnoses"
+                                                        value="{{secondaryDiagnosis}}">
+                                                        {{ secondaryDiagnosis }} </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </p>
+                                        <p *ngIf="service.get('diagnosisCode2').value">
+                                            <mat-form-field floatLabel="always">
+                                                <mat-label>Service Line Diagnosis 3 </mat-label>
+                                                <mat-select id="diagnosisCode3" name="diagnosisCode3"
+                                                    formControlName="diagnosisCode3">
+                                                    <mat-option value=""></mat-option>
+                                                    <mat-option id="diagnosisCode3"
+                                                        *ngFor="let secondaryDiagnosis of secondaryDiagnoses"
+                                                        value="{{secondaryDiagnosis}}">
+                                                        {{ secondaryDiagnosis }} </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </p>
+                                        <p *ngIf="service.get('diagnosisCode3').value">
+                                            <mat-form-field floatLabel="always">
+                                                <mat-label>Service Line Diagnosis 4 </mat-label>
+                                                <mat-select id="diagnosisCode4" name="diagnosisCode4"
+                                                    formControlName="diagnosisCode4">
+                                                    <mat-option value=""></mat-option>
+                                                    <mat-option id="diagnosisCode4"
+                                                        *ngFor="let secondaryDiagnosis of secondaryDiagnoses"
+                                                        value="{{secondaryDiagnosis}}">
+                                                        {{ secondaryDiagnosis }} </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </p>
+                                    </ng-container>
+                                    <br>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="number" placeholder="Service Billed Amount *"
+                                                id="serviceLineBilledAmount" name="billedAmount"
+                                                formControlName="billedAmount">
+                                            <mat-error class="text-danger" id="serviceLineBilledAmountRequired"
+                                                *ngIf="service.get('billedAmount').errors?.required
+                                            &&(userForm.submitted || service.get('billedAmount').touched || service.get('billedAmount').dirty)">
+                                                Service Line Billed Amount is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="number" placeholder="Service Billed Units *"
+                                                id="serviceLineBilledUnits" name="billedUnits"
+                                                formControlName="billedUnits">
+                                            <mat-error class="text-danger" id="serviceLineBilledUnitsRequired"
+                                                *ngIf="service.get('billedUnits').errors?.required
+                                            &&(userForm.submitted || service.get('billedUnits').touched || service.get('billedUnits').dirty)">
+                                                Service Line Billed Units is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <mat-label>Service Unit Type </mat-label>
+                                            <mat-select id="billedUnitsMeasure" 
+                                                formControlName="billedUnitsMeasure">
+                                                <mat-option value=""></mat-option>
+                                                <mat-option value="UN">Units</mat-option>
+                                                <mat-option value="MJ">Minutes</mat-option>
+                                            </mat-select>
+                                            <mat-error class="text-danger" id="billedUnitsMeasureRequired"
+                                                *ngIf="service.get('billedUnitsMeasure').errors?.required
+                                            &&(userForm.submitted || service.get('billedUnitsMeasure').touched || service.get('billedUnitsMeasure').dirty)">
+                                            Service Unit Type is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </p>
+
+
+                                    <p>
+                                        <mat-form-field>
+                                            <mat-label>Prior Auth1</mat-label>
+                                            <input matInput id="linePriorAuth1" type="text" formControlName="priorAuth1"
+                                                [matAutocomplete]="serviceLinePa">
+                                            <mat-autocomplete id="paIdentifiers" #serviceLinePa="matAutocomplete"
+                                                style="width: 100%">
+                                                <mat-option [matTooltip]="pa.number+'-'+pa.description"
+                                                    id="paIdentifierId" *ngFor="let pa of paList" [value]="pa.number"
+                                                    (click)="getServiceLinePaInfo(pa,i)">
+                                                    {{pa.number}} - {{pa.description }}
+                                                </mat-option>
+                                            </mat-autocomplete>
+
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Prior Auth2" id="linePriorAuth2"
+                                                formControlName="priorAuth2" [matAutocomplete]="serviceLinePa2">
+                                            <mat-autocomplete id="paIdentifiers" #serviceLinePa2="matAutocomplete"
+                                                style="width: 100%">
+                                                <mat-option [matTooltip]="pa.number+'-'+pa.description"
+                                                    id="paIdentifierId" *ngFor="let pa of paList" [value]="pa.number"
+                                                    (click)="getServiceLinePa2Info(pa,i)">
+                                                    {{pa.number}} - {{pa.description }}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </p>
+                                    <div *ngIf="form.get('formType').value === 'D'">
+                                        <div formGroupName="dental">
+                                            <p style="width: 50%;">
+                                                <mat-form-field>
+                                                    <mat-chip-list #serviceLineToothCodes
+                                                        aria-label="Service Line Tooth Codes">
+                                                        <mat-chip *ngFor="let toothCode of lineToothCodeList[i]"
+                                                            [selectable]="selectable" [removable]="removable"
+                                                            (removed)="removeServiceLineToothCodes(i, toothCode)">
+                                                            {{toothCode.name}}
+                                                            <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                        </mat-chip>
+                                                        <input type="text" placeholder="Service Line Tooth Codes"
+                                                            id="toothCodes" [matChipInputFor]="serviceLineToothCodes"
+                                                            formControlName="toothCodeList"
+                                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                            [matChipInputAddOnBlur]="addOnBlur"
+                                                            (matChipInputTokenEnd)="addServiceLineToothCodes(i, $event)">
+                                                    </mat-chip-list>
+                                                </mat-form-field>
+                                            </p>
+                                            <p style="width: 50%;">
+                                                <mat-form-field>
+                                                    <mat-chip-list #serviceLineOralCavityCodes
+                                                        aria-label="Service Line Oral Cavity Designation Codes">
+                                                        <mat-chip
+                                                            *ngFor="let oralCavityCode of lineOralCavityDesignationCodesList[i]"
+                                                            [selectable]="selectable" [removable]="removable"
+                                                            (removed)="removeServiceLineOralCavityCode(i, oralCavityCode)">
+                                                            {{oralCavityCode.name}}
+                                                            <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                        </mat-chip>
+                                                        <input type="text"
+                                                            placeholder="Service Line Oral Cavity Designation Codes"
+                                                            id="oralCavityDesignationCodes"
+                                                            [matChipInputFor]="serviceLineOralCavityCodes"
+                                                            formControlName="oralCavityDesignationCodeList"
+                                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                            [matChipInputAddOnBlur]="addOnBlur"
+                                                            (matChipInputTokenEnd)="addServiceLineOralCavityCode(i, $event)">
+                                                    </mat-chip-list>
+                                                </mat-form-field>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <mat-card style="margin-top:1%;background-color: rgb(214, 221, 245)">
+                                        <mat-card-subtitle>Servicing Facility</mat-card-subtitle>
+                                        <div formGroupName="serviceFacility">
+                                            <p>
+                                                <mat-checkbox style="font-size: 14px" [id]="i"
+                                                    [checked]="lineCheckBoxontrol[i]"
+                                                    (change)="sameAsClaimHeader($event,i)">Same as
+                                                    Header Facility</mat-checkbox>
+                                            </p>
+                                            <br>
+                                            <p>
+                                                <mat-form-field>
+                                                    <mat-label>Identifier</mat-label>
+                                                    <input matInput id="npi" formControlName="npi"
+                                                        [matAutocomplete]="servivingFacilityProviders"
+                                                        (focusout)="setValidatorsForServicingFacility(service.get('serviceFacility'))"
+                                                        readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                    <mat-autocomplete id="providers"
+                                                        #servivingFacilityProviders="matAutocomplete"
+                                                        style="width: 100%">
+                                                        <mat-option
+                                                            [matTooltip]="provider.firstName+'-'+provider.lastName"
+                                                            id="providerId" *ngFor="let provider of providerList"
+                                                            [value]="provider.npi"
+                                                            (click)="getLineProviderInfo(provider,i)">
+                                                            {{provider.npi}}-{{provider.firstName}}-{{provider.lastName}}
+                                                            -
+                                                            {{provider.organizationName  }}
+                                                            -{{provider.type}}-{{provider.address.city  }}-{{provider.address.zipcode  }}
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                    <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                        *ngIf="service.get('serviceFacility').get('npi').errors?.required
+                            &&(userForm.submitted || service.get('serviceFacility').get('npi').touched || service.get('serviceFacility').get('npi').dirty)">
+                                                        Identifier is required
+                                                    </mat-error>
+                                                </mat-form-field>
+
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="Taxonomy " id="taxonomy"
+                                                        name="taxonomy" formControlName="taxonomy"
+                                                        readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                    <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                        *ngIf="service.get('serviceFacility').get('taxonomy').errors?.required
+                            &&(userForm.submitted || service.get('serviceFacility').get('taxonomy').touched || service.get('serviceFacility').get('taxonomy').dirty)">
+                                                        Taxonomy is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <input type="hidden" formControlName="description" />
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="First Name"
+                                                        name="firstName" id="lineServicingFirstName"
+                                                        formControlName="firstName"
+                                                        readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                    <mat-error class="text-danger" id="claimFrequencyRequired"
+                                                        *ngIf="service.get('serviceFacility').get('firstName').errors?.required
+                                    &&(userForm.submitted || service.get('serviceFacility').get('firstName').touched || service.get('serviceFacility').get('firstName').dirty)">
+                                                        First Name is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="Last Name" name="lastName"
+                                                        id="lineServicingLastName" formControlName="lastName"
+                                                        readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                    <mat-error class="text-danger" id="lineServicingLastNameRequired"
+                                                        *ngIf="service.get('serviceFacility').get('lastName').errors?.required
+                                    &&(userForm.submitted || service.get('serviceFacility').get('lastName').touched || service.get('serviceFacility').get('lastName').dirty)">
+                                                        Last Name is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="Organization Name"
+                                                        name="organizationName" id="lineServicingOrganizationName"
+                                                        formControlName="organizationName"
+                                                        readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                    <mat-error class="text-danger" id="lineServicingOrganizationNameRequired"
+                                                        *ngIf="service.get('serviceFacility').get('organizationName').errors?.required
+                                    &&(userForm.submitted || service.get('serviceFacility').get('organizationName').touched || service.get('serviceFacility').get('organizationName').dirty)">
+                                                        Organization Name is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="text" placeholder="SSN / EIN " name="taxId"
+                                                        id="lineServicingTaxId" formControlName="taxId"
+                                                        readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                    <mat-error class="text-danger" id="lineServicingTaxIdRequired"
+                                                        *ngIf="service.get('serviceFacility').get('taxId').errors?.required
+                                    &&(userForm.submitted || service.get('serviceFacility').get('taxId').touched || service.get('serviceFacility').get('taxId').dirty)">
+                                                        SSN / EIN is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <mat-label>Type </mat-label>
+                                                    <mat-select id="lineServicingType" name="type" formControlName="type">
+                                                        <mat-option id="individual" value="I">Individual</mat-option>
+                                                        <mat-option id="organization" value="O">Organization
+                                                        </mat-option>
+                                                    </mat-select>
+                                                    <mat-error class="text-danger" id="lineServicingTypeRequired"
+                                                        *ngIf="service.get('serviceFacility').get('type').errors?.required
+                                &&(userForm.submitted || service.get('serviceFacility').get('type').touched || service.get('serviceFacility').get('type').dirty)">
+                                                        Type is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <div formGroupName="address">
+                                                <p>
+                                                    <mat-form-field>
+                                                        <input id="lineServicingAddress" matInput type="text"
+                                                            placeholder="Address " name="address"
+                                                            formControlName="address" id="linesfaddress"
+                                                            readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                        <mat-error class="text-danger" id="lineServicingAddressRequired"
+                                                            *ngIf="service.get('serviceFacility').get('address').get('address').errors?.required
+                                        &&(userForm.submitted || service.get('serviceFacility').get('address').get('address').touched || service.get('serviceFacility').get('address').get('address').dirty)">
+                                                            Address is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </p>
+
+                                                <p>
+                                                    <mat-form-field>
+                                                        <input matInput type="text" placeholder="City " name="city"
+                                                            id="lineSfCity" formControlName="city"
+                                                            readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                        <mat-error class="text-danger" id="lineSfCityRequired"
+                                                            *ngIf="service.get('serviceFacility').get('address').get('city').errors?.required
+                                        &&(userForm.submitted || service.get('serviceFacility').get('address').get('city').touched || service.get('serviceFacility').get('address').get('city').dirty)">
+                                                            City is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </p>
+
+                                                <p>
+                                                    <mat-form-field>
+                                                        <input matInput type="text" placeholder="State "
+                                                            id="lineSfState" formControlName="state"
+                                                            readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}"
+                                                            maxlength="2">
+                                                        <mat-error class="text-danger" id="lineSfStateRequired"
+                                                            *ngIf="service.get('serviceFacility').get('address').get('state').errors?.required
+                                        &&(userForm.submitted || service.get('serviceFacility').get('address').get('state').touched || service.get('serviceFacility').get('address').get('state').dirty)">
+                                                            State is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </p>
+
+                                                <p>
+                                                    <mat-form-field>
+                                                        <input matInput type="text" placeholder="Zipcode "
+                                                            name="zipcode" maxlength="9" id="lineSfZipcode"
+                                                            formControlName="zipcode"
+                                                            readonly="{{lineServiceFacilityReadOnlyValue[i+ '_' + 'serviceFacility']}}">
+                                                        <mat-error class="text-danger" id="lineSfZipcodeRequired"
+                                                            *ngIf="service.get('serviceFacility').get('address').get('zipcode').errors?.required
+                                        &&(userForm.submitted || service.get('serviceFacility').get('address').get('zipcode').touched || service.get('serviceFacility').get('address').get('zipcode').dirty)">
+                                                            Zipcode is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </mat-card>
+
+                                    <div style="margin-top: 1%">
+                                        <mat-card style="background-color: rgb(118, 167, 170)">
+                                            <mat-card-subtitle>Expected Results</mat-card-subtitle>
+                                            <div formGroupName="expectedElements">
+                                                <!-- <p>
+                                                <mat-form-field>
+                                                    <input matInput type="number"
+                                                        placeholder="Service Line Paid Amount *"
+                                                        id="serviceLinePaidAmount" name="paidAmount"
+                                                        formControlName="paidAmount">
+                                                    <mat-error class="text-danger"
+                                                        id="serviceLineExpectedPaidAmountRequired"
+                                                        *ngIf="service.get('expectedResults').get('paidAmount').errors?.required
+                                                &&(userForm.submitted || service.get('expectedResults').get('paidAmount').touched || service.get('expectedResults').get('paidAmount').dirty)">
+                                                        Service Line Paid Amount is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="number"
+                                                        placeholder="Service Line Allowed Amount *" name="allowedAmount"
+                                                        formControlName="allowedAmount" id="serviceLineAllowedAmount">
+                                                    <mat-error class="text-danger"
+                                                        id="serviceLineExpectedAllowedAmountRequired"
+                                                        *ngIf="service.get('expectedResults').get('allowedAmount').errors?.required
+                                                &&(userForm.submitted || service.get('expectedResults').get('allowedAmount').touched || service.get('expectedResults').get('allowedAmount').dirty)">
+                                                        Service Line Allowed Amount is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="number"
+                                                        placeholder="Service Line Allowed Units *" name="allowedUnits"
+                                                        id="serviceLineAllowedUnits" formControlName="allowedUnits">
+                                                    <mat-error class="text-danger"
+                                                        id="serviceLineExpectedAllowedAmountRequired"
+                                                        *ngIf="service.get('expectedResults').get('allowedUnits').errors?.required
+                                                    &&(userForm.submitted || service.get('expectedResults').get('allowedUnits').touched || service.get('expectedResults').get('allowedUnits').dirty)">
+                                                        Service Line Allowed Units is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <input matInput type="number"
+                                                        placeholder="Service Line Paid Units *" name="paidUnits"
+                                                        id="serviceLinePaidUnits" formControlName="paidUnits">
+                                                    <mat-error class="text-danger"
+                                                        id="serviceLineExpectedPaidUnitsRequired"
+                                                        *ngIf="service.get('expectedResults').get('paidUnits').errors?.required
+                                                &&(userForm.submitted || service.get('expectedResults').get('paidUnits').touched || service.get('expectedResults').get('paidUnits').dirty)">
+                                                        Service Line Paid Units is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </p>
+                                            <p>
+                                                <mat-form-field>
+                                                    <mat-chip-list #serviceLineExpectedErrorCodes
+                                                        aria-label="Service Line Error Codes">
+                                                        <mat-chip *ngFor="let serviceLine of lineExpectedErrors[i]"
+                                                            [selectable]="selectable" [removable]="removable"
+                                                            (removed)="removeServiceLineErrorCode(i, serviceLine)">
+                                                            {{serviceLine.name}}
+                                                            <mat-icon matChipRemove *ngIf="removable">close</mat-icon>
+                                                        </mat-chip>
+                                                        <input type="text" placeholder="Service Line Error Codes"
+                                                            id="errorCodesList"
+                                                            [matChipInputFor]="serviceLineExpectedErrorCodes"
+                                                            formControlName="errorCodesList"
+                                                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                            [matChipInputAddOnBlur]="addOnBlur"
+                                                            (matChipInputTokenEnd)="addServiceLineExpectedError(i, $event)">
+                                                        <mat-error class="text-danger"
+                                                            id="serviceLineExpectedErrorCodesRequired" *ngIf="service.get('expectedResults').get('errorCodesList').errors?.required
+                                                &&(userForm.submitted || service.get('expectedResults').get('errorCodesList').touched ||
+                                                 service.get('expectedResults').get('errorCodesList').dirty)">
+                                                            Service Line Error Codes is required
+                                                        </mat-error>
+                                                    </mat-chip-list>
+
+                                                </mat-form-field>
+                                            </p> -->
+                                                <p *ngFor="let element of lineElementConfigList; let j=index;">
+                                
+                                                    <mat-form-field
+                                                        *ngIf="element.fieldType !== 'date' && element.fieldType !== 'Multi Choice' && element.controlType !== 'Select Box'">
+                                                        <input [formControlName]="element.fieldName" matInput
+                                                            placeholder={{element.elementLabel}}
+                                                            [type]="element.fieldType">
+                                                        <mat-error [id]="element.fieldName">
+                                                            {{element.elementLabel}} is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                    <mat-form-field *ngIf="element.fieldType === 'date' && element.controlType !== 'Select Box'">
+                                                        <input id="dischargeDate" matInput [matDatepicker]="j"
+                                                            placeholder={{element.elementLabel}} [max]="today"
+                                                            [formControlName]="element.fieldName">
+                                                        <mat-datepicker-toggle matSuffix [for]="j">
+                                                        </mat-datepicker-toggle>
+                                                        <mat-datepicker #j startView="month" [startAt]="j">
+                                                        </mat-datepicker>
+                                                        <mat-error [id]="element.fieldName">
+                                                            {{element.elementLabel}} is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                    <mat-form-field *ngIf="element.controlType === 'Select Box'">
+                                                        <mat-label>{{element.elementLabel}}</mat-label>
+                                                        <mat-select [id]="element.fieldName"
+                                                            [formControlName]="element.fieldName">
+                                                            <mat-option id="empty" value=""></mat-option>
+                                                            <mat-option id="multiChoice" [value]="option.key" *ngFor="let option of  lineExpectedElementsOptions">
+                                                            {{option.value}}</mat-option>
+                                                        </mat-select>
+                                                        <mat-error [id]="element.fieldName">{{element.elementLabel}} is required</mat-error>
+                                                    </mat-form-field>
+                                                    <mat-form-field
+                                                        *ngIf="element.fieldType === 'Multi Choice' || element.controlType === 'Multi Choice'">
+                                                        <mat-chip-list #serviceLineExpectedErrorCodes
+                                                            aria-label="Service Line Error Codes">
+                                                            <mat-chip
+                                                                *ngFor="let serviceLine of lineExepectedElementChipList[i+'_'+element.fieldName]"
+                                                                [selectable]="selectable" [removable]="removable"
+                                                                (removed)="removeServiceLineErrorCode(i+'_'+element.fieldName, serviceLine,element.fieldName,i,j)">
+                                                                {{serviceLine.name}}
+                                                                <mat-icon matChipRemove *ngIf="removable">close
+                                                                </mat-icon>
+                                                            </mat-chip>
+                                                            <input type="text" placeholder="{{element.elementLabel}}"
+                                                                id="errorCodesList"
+                                                                [matChipInputFor]="serviceLineExpectedErrorCodes"
+                                                                [formControlName]="element.fieldName"
+                                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                                [matChipInputAddOnBlur]="addOnBlur"
+                                                                (matChipInputTokenEnd)="addServiceLineExpectedError(i, $event,element.fieldName,'line')">
+
+                                                        </mat-chip-list>
+                                                        <mat-error [id]="element.fieldName">
+                                                            {{element.elementLabel}} is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+
+
+                                                    <mat-error class="text-danger chipCss" [id]="element.fieldName"
+                                                        *ngIf="service.get('expectedElements').get(element.fieldName).errors?.required && element.fieldType === 'Multi Choice' 
+                                            &&(userForm.submitted || service.get('expectedElements').get(element.fieldName).touched || service.get('expectedElements').get(element.fieldName).dirty)">
+                                                        {{element.elementLabel}} is required
+                                                    </mat-error>
+
+                                                    <p>
+                                            </div>
+                                        </mat-card>
+                                    </div>
+                                    <div fxLayoutAlign="end start">
+                                        <button style="margin-top: 1%" *ngIf="form.get('services').length>1"
+                                            mat-mini-fab color="primary" id="remove" (click)="removeThisService(i)">
+                                            <mat-icon>remove</mat-icon>
+                                        </button>
+                                    </div>
+                                </mat-card>
+                            </div>
+                        </div>
+                        <div *ngIf="userAccess" fxLayoutAlign="end start" style="margin-top:1%">
+                            <button mat-raised-button color="primary" id="save" (click)="save(userForm)">Save</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </mat-card>
+    </div>
+</div>

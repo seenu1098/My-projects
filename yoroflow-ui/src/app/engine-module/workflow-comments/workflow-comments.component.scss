@@ -1,0 +1,118 @@
+$hover_color: #039be5;
+
+.image-circle{
+    height: 32px;
+    width: 32px;
+    line-height: 30px;
+    border-radius: 50%;
+    border: 0.5px solid #cacaca;
+    background-color: #df340e;
+    color: white;
+    margin-left: 10px;
+    font-size: 12px;
+    z-index: 9999;
+}
+
+.reply-button-css{
+    cursor: pointer;
+    margin-top: 6px;
+    margin-right: 10px;
+    color: grey;
+}
+
+.reply-button-css:hover{
+    color:$hover_color;
+}
+
+.createdBy-css{
+    margin: 6px 0px 0px 10px;
+}
+
+.edit-css{
+    font-size: 18px;
+    margin-top: 9px;
+    color: grey;
+    cursor: pointer;
+    &:hover{
+        color:$hover_color;
+    }
+}
+
+.expand-collapse-css{
+    cursor: pointer;
+    font-size: 12px;
+    color: grey;
+    margin-left: -4px;
+    &:hover{
+        color:$hover_color;
+    }
+}
+
+.reply-label-css{
+    margin-bottom: 5px;
+    font-size: 12px;
+    margin-left: -6px;
+}
+
+.expand-collapse-icon-css{
+    color: grey;
+    cursor: pointer;
+    font-size: 18px;
+    &:hover{
+        color:$hover_color;
+    }
+}
+
+.hover-class{
+    cursor: pointer;
+    &:hover{
+        color:$hover_color;
+    }
+}
+
+.comment-css{
+    width:89%;
+    margin-top: 5px;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    padding-right: 20px;
+}
+
+.vl {
+    border-left: 1px solid grey;
+    height: 97%;
+    position: absolute;
+    left: 3px;
+    top: 38px;
+    z-index: 0;
+}
+
+.padding-css{
+    padding: 5px 0px;
+    background: white;
+    z-index: 9000;
+ }
+
+ .collpase-css{
+    font-size: 11px;
+    margin-top: 3px;
+    cursor: pointer;
+    z-index: 9000;
+    padding-bottom: 2px;
+    background: white;
+ }
+
+ ::ng-deep .mention1{
+    color: #ff00009e;
+    font-weight: bold;
+    background: #ffdead87;
+    padding: 3px 5px;
+    border-radius: 7px;
+    margin-top: -4px;
+    text-decoration: none;
+ }
+
+ ::ng-deep .mention{
+    color: #1068bf;
+ }
+

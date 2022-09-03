@@ -1,0 +1,106 @@
+<ng-container *ngIf="showControl" [formGroup]="group">
+    <div class="table-container scrollbar-css">
+        <div fxLayout="row">
+            <table [style.border]="getBorderStyle(table.borderStyle)" class="border" style="width: 100%;">
+                <tr style="position: sticky;">
+                    <th [style.border]="getBorderStyle(table.borderStyle)" [style.background-color]="table.headerColor"
+                        class="border" style="width: 10%;">
+                    </th>
+                    <th [style.border]="getBorderStyle(table.borderStyle)" [style.background-color]="table.headerColor"
+                        class="border" *ngIf="table.enableSequnceNumber" style="width: 10%;">
+                        No
+                    </th>
+                    <th *ngFor="let headers of table.columns" [style.border]="getBorderStyle(table.borderStyle)"
+                        [style.width.%]="headers.field.control.columnWidth" [style.background-color]="table.headerColor"
+                        class="border">
+                        <div fxLayout="row" [fxLayoutAlign]="headers.field.control.columnHeaderAlignment">
+                            {{headers.field.label.labelName}}
+                        </div>
+                    </th>
+                    <ng-container
+                        *ngIf="table.enableRowLevelComputation && table.enableRowLevelComputation.option===true">
+                        <th [style.border]="getBorderStyle(table.borderStyle)" class="border"
+                            [style.background-color]="table.headerColor">
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                {{table.enableRowLevelComputation.computationLabelName}}</div>
+                        </th>
+                    </ng-container>
+                </tr>
+                <ng-container *ngFor="let arrayGroup of formArray.controls;let i=index;">
+                    <tr>
+                        <td>
+                            <div fxLayout="row" fxLayoutGap="5px">
+                                <mat-icon style="cursor: pointer;font-size: 21px;" (click)="addFormGroup(i)">add
+                                </mat-icon>
+                                <mat-icon style="cursor: pointer;color:#f05a5a;font-size: 21px;"
+                                    (click)="removeFormGroup(i)" *ngIf="formArray.length>1">delete_sweep</mat-icon>
+                            </div>
+                        </td>
+                        <td [style.border]="getBorderStyle(table.borderStyle)" class="border"
+                            *ngIf="table.enableSequnceNumber">{{i+1}}</td>
+                        <td *ngFor="let field of table.columns;let j=index"
+                            [style.border]="getBorderStyle(table.borderStyle)" class="border">
+                            <ng-container [formGroup]="arrayGroup">
+                                <ng-container *ngIf="field.controlType==='input'">
+                                    <div fxLayout="column">
+                                        <input matInput [type]="getDatatype(field.field.dataType)"
+                                            [formControlName]="field.field.name" [id]="'field_'+i+'_'+j"
+                                            [style.text-align]="getAllignment(field.field.control.columnHeaderAlignment)">
+                                        <div fxLayout="row" [fxLayoutAlign]="field.field.control.columnHeaderAlignment">
+                                            <mat-error *ngIf="arrayGroup.get(field.field.name).errors?.required">
+                                                {{field.field.label.labelName}} is required.</mat-error>
+                                        </div>
+                                    </div>
+
+                                </ng-container>
+                                <ng-container *ngIf="field.controlType==='textarea'">
+                                    <div fxLayout="column">
+                                        <textarea matInput [formControlName]="field.field.name" [id]="'field_'+i+'_'+j"
+                                            [style.text-align]="getAllignment(field.field.control.columnHeaderAlignment)"></textarea>
+                                        <div fxLayout="row" [fxLayoutAlign]="field.field.control.columnHeaderAlignment">
+                                            <mat-error *ngIf="arrayGroup.get(field.field.name).errors?.required">
+                                                {{field.field.label.labelName}} is required.</mat-error>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="field.controlType==='date'">
+                                    <div fxLayout="column">
+                                        <div fxLayout="row">
+                                            <input matInput [matDatepicker]="picker"
+                                                [formControlName]="field.field.name" [id]="'field_'+i+'_'+j"
+                                                [style.text-align]="getAllignment(field.field.control.columnHeaderAlignment)">
+                                            <mat-datepicker-toggle matSuffix [for]="picker">
+                                                <mat-icon matDatepickerToggleIcon style="font-size: 17px;"
+                                                    [id]="'datepicker_'+i+'_'+j"
+                                                    (click)="setFormat(field.field.dateFormat)">
+                                                    date_range</mat-icon>
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </div>
+                                        <div fxLayout="row" [fxLayoutAlign]="field.field.control.columnHeaderAlignment">
+                                            <mat-error *ngIf="arrayGroup.get(field.field.name).errors?.required">
+                                                {{field.field.label.labelName}} is required.</mat-error>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+                            </ng-container>
+                        </td>
+                        <ng-container
+                            *ngIf="table.enableRowLevelComputation && table.enableRowLevelComputation.option===true">
+                            <td [style.border]="getBorderStyle(table.borderStyle)" class="border">
+                                <div fxLayout="row">
+                                    <ng-container [formGroup]="arrayGroup">
+                                        {{arrayGroup.get(computationField.field.name).value}}
+                                        <!-- <input matInput [placeholder]="computationField.field.label.labelName"
+                                            [formControlName]="computationField.field.name" type="number"> -->
+                                    </ng-container>
+                                </div>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </ng-container>
+            </table>
+        </div>
+    </div>
+</ng-container>

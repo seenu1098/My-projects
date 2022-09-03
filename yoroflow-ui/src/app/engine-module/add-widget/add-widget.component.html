@@ -1,0 +1,304 @@
+<ng-container>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100 mx-0">
+        <div>
+            <h2 style="font-weight: bold;margin-top: 5px;height: 20px;">{{'Add Widget' | translate}}</h2>
+        </div>
+        <div>
+            <div fxLayout="row" fxLayoutGap="5px">
+                <ng-container *ngFor="let mode of modes; let i = index">
+
+                    <button mat-button (click)="changeMode(mode?.name)" style="cursor: pointer;"
+                        [class.activeMode]="viewMode === mode.name">
+
+                        <span class="h_14">{{mode?.name | translate}}</span>
+
+                    </button>
+
+
+                </ng-container>
+            </div>
+        </div>
+        <div>
+            <div class="row w-100 mx-0 justify-content-end">
+                <mat-icon type="button" i18n="Cancel" (click)="close()" class="mat-icon-color" id="close_btn">
+                    close</mat-icon>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row w-100 mx-0" *ngIf="viewMode==='Taskboard'">
+        <div class="col-md-3">
+            <ng-container *ngFor="let menu of taskboardMenus; let i = index;">
+                <div class="row w-100 mx-0">
+                    <button mat-button [id]="'menu_'+i" (click)="changeWidget(menu.name)"
+                        [class.active]="menu?.name === selectedWidgetName" class="menu-btn w-100">
+                        <span>{{menu.name | translate}}</span>
+                    </button>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Featured'">
+                <div *ngFor="let featured of featuredCards" class="card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(featured)">
+                    <div class="row w-100 mt-3 mb-4 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="featured?.color">
+                            {{featured?.icon}}</mat-icon>
+                    </div>
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 style="font-weight: bold;text-align: center;">{{featured?.name | translate}}</h2>
+                            <p style="color: lightslategrey;text-align: center;">{{featured?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Statuses'">
+                <div *ngFor="let statuses of statusesCards" class="status-card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(statuses)">
+                    <div *ngIf="statuses?.icon!=='square_root' && statuses?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="statuses?.color">
+                            {{statuses?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="statuses?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="statuses?.icon==='hor_bar'">
+                        <img style="width: 60px;" src="../../../assets/Hor_Bar Chart.svg">
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 *ngIf="statuses?.name!=='Workload by Status Ver Bar' && statuses?.name!=='Workload by Status Hor Bar'"
+                                style="font-weight: bold;text-align: center;">{{statuses?.name | translate}}</h2>
+                            <h2 i18n="@@Workload by Status"
+                                *ngIf="statuses?.name==='Workload by Status Ver Bar' || statuses?.name==='Workload by Status Hor Bar'"
+                                style="font-weight: bold;text-align: center;">Workload by Status</h2>
+                            <p style="color: lightslategrey;text-align: center;">{{statuses?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Assignees'">
+                <div *ngFor="let assignee of assigneeCards" class="status-card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(assignee)">
+                    <div *ngIf="assignee?.icon!=='square_root' && assignee?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="assignee?.color">
+                            {{assignee?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="assignee?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="assignee?.icon==='hor_bar'">
+                        <img style="width: 60px;" src="../../../assets/Hor_Bar Chart.svg">
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 *ngIf="assignee?.name!=='Tasks by Assignee Ver Bar' && assignee?.name!=='Tasks by Assignee Hor Bar'"
+                                style="font-weight: bold;text-align: center;">{{assignee?.name | translate}}</h2>
+                            <h2 i18n="@@Tasks By Assignee"
+                                *ngIf="assignee?.name==='Tasks by Assignee Ver Bar' || assignee?.name==='Tasks by Assignee Hor Bar'"
+                                style="font-weight: bold;text-align: center;">Tasks by Assignee</h2>
+                            <p style="color: lightslategrey;text-align: center;">{{assignee?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Priorities'">
+                <div *ngFor="let priority of priorityCards" class="status-card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(priority)">
+                    <div *ngIf="priority?.icon!=='square_root' && priority?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="priority?.color">
+                            {{priority?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="priority?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="priority?.icon==='hor_bar'">
+                        <img style="width: 60px;" src="../../../assets/Hor_Bar Chart.svg">
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 *ngIf="priority?.name!=='Priority Breakdown Ver Bar' && priority?.name!=='Priority Breakdown Hor Bar'"
+                                style="font-weight: bold;text-align: center;">{{priority?.name | translate}}</h2>
+                            <h2 i18n="@@Priority Breakdown"
+                                *ngIf="priority?.name==='Priority Breakdown Ver Bar' || priority?.name==='Priority Breakdown Hor Bar'"
+                                style="font-weight: bold;text-align: center;">Priority Breakdown</h2>
+                            <p style="color: lightslategrey;text-align: center;">{{priority?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Time Tracking'">
+                <div *ngFor="let timeTracking of timeTrackingCards" class="status-card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(timeTracking)">
+                    <div *ngIf="timeTracking?.icon!=='square_root' && timeTracking?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="timeTracking?.color">
+                            {{timeTracking?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="timeTracking?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 style="font-weight: bold;text-align: center;">{{timeTracking?.name | translate}}</h2>
+
+                            <p style="color: lightslategrey;text-align: center;">
+                                {{timeTracking?.description | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row w-100 mx-0" *ngIf="viewMode==='Workflow'">
+        <div class="col-md-3">
+            <ng-container *ngFor="let menu of workflowMenus; let i = index;">
+                <div style="cursor: pointer;" class="row w-100 mx-0" (click)="changeWidget(menu.name)">
+                    <button mat-button [id]="'menu_'+i" [class.active]="menu?.name === selectedWidgetName"
+                        class="menu-btn w-100">
+                        <span>{{menu.name | translate}}</span>
+                    </button>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Featured'">
+                <div *ngFor="let featured of workflowFeaturedCards" class="card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(featured)">
+                    <div class="row w-100 mt-3 mb-4 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="featured?.color">
+                            {{featured?.icon}}</mat-icon>
+                    </div>
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 style="font-weight: bold;text-align: center;">{{featured?.name | translate}}</h2>
+                            <p style="color: lightslategrey;text-align: center;">{{featured?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Tasknames'">
+                <div *ngFor="let statuses of workflowStatusesCards" class="status-card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(statuses)">
+                    <div *ngIf="statuses?.icon!=='square_root' && statuses?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="statuses?.color">
+                            {{statuses?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="statuses?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="statuses?.icon==='hor_bar'">
+                        <img style="width: 60px;" src="../../../assets/Hor_Bar Chart.svg">
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 *ngIf="statuses?.name!=='Assignee Task by Taskname Ver Bar' && statuses?.name!=='Assignee Task by Taskname Hor Bar'
+                            && statuses?.name!=='Teams Task by Taskname Ver Bar'  && statuses?.name!=='Teams Task by Taskname Hor Bar'"
+                                style="font-weight: bold;text-align: center;">{{statuses?.name | translate}}</h2>
+                            <h2 i18n="@@Assignee Task by Taskname"
+                                *ngIf="statuses?.name==='Assignee Task by Taskname Ver Bar' || statuses?.name==='Assignee Task by Taskname Hor Bar'"
+                                style="font-weight: bold;text-align: center;">Assignee Task by Taskname</h2>
+                            <h2 i18n="@@Teams Task by Taskname"
+                                *ngIf="statuses?.name==='Teams Task by Taskname Ver Bar' || statuses?.name==='Teams Task by Taskname Hor Bar'"
+                                style="font-weight: bold;text-align: center;">Teams Task by Taskname</h2>
+
+                            <p style="color: lightslategrey;text-align: center;">{{statuses?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Assignees & Teams'">
+                <div *ngFor="let assignee of workflowAssigneeCards" class="status-card mr-3 mb-3" appMaterialElevation
+                    defaultElevation=4 raisedElevation=16 (click)="selectWidget(assignee)">
+                    <div *ngIf="assignee?.icon!=='square_root' && assignee?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="assignee?.color">
+                            {{assignee?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="assignee?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="assignee?.icon==='hor_bar'">
+                        <img style="width: 60px;" src="../../../assets/Hor_Bar Chart.svg">
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 *ngIf="assignee?.name!=='Workflow Tasks by Assignee' &&
+                             assignee?.name!=='Workflow Tasks by Assignee Ver Bar' 
+                            && assignee?.name!=='Workflow Tasks by Assignee Hor Bar'
+                            &&  assignee?.name!=='Tasks by Teams Ver Bar' && assignee?.name!=='Tasks by Teams Hor Bar'"
+                                style="font-weight: bold;text-align: center;">{{assignee?.name | translate}}</h2>
+                            <h2 i18n="@@Tasks By Assignee" *ngIf="assignee?.name==='Workflow Tasks by Assignee Ver Bar' || 
+                            assignee?.name==='Workflow Tasks by Assignee Hor Bar' ||
+                            assignee?.name==='Workflow Tasks by Assignee'"
+                                style="font-weight: bold;text-align: center;">Tasks by Assignee</h2>
+                            <h2 i18n="@@Tasks by Teams"
+                                *ngIf="assignee?.name==='Tasks by Teams Ver Bar' || assignee?.name==='Tasks by Teams Hor Bar'"
+                                style="font-weight: bold;text-align: center;">Tasks by Teams</h2>
+                            <p style="color: lightslategrey;text-align: center;">{{assignee?.description | translate}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row w-100 mx-0" *ngIf="selectedWidgetName==='Workflow Time Tracking'">
+                <div *ngFor="let timeTracking of workflowTimeTrackingCards" class="status-card mr-3 mb-3"
+                    appMaterialElevation defaultElevation=4 raisedElevation=16 (click)="selectWidget(timeTracking)">
+                    <div *ngIf="timeTracking?.icon!=='square_root' && timeTracking?.icon!=='hor_bar'"
+                        class="row w-100 mt-3 mb-5 justify-content-center">
+                        <mat-icon style="font-size: 60px;" [style.color]="timeTracking?.color">
+                            {{timeTracking?.icon}}</mat-icon>
+                    </div>
+                    <div class="row w-100 mt-3 justify-content-center" *ngIf="timeTracking?.icon==='square_root'">
+                        <img style="width: 60px;" src="../../../assets/Square Root.svg">
+
+                    </div>
+
+                    <div class="row mx-0 w-100 mt-4">
+                        <div class="row w-100 mx-0 justify-content-center">
+                            <h2 style="font-weight: bold;text-align: center;">{{timeTracking?.name | translate}}</h2>
+
+                            <p style="color: lightslategrey;text-align: center;">
+                                {{timeTracking?.description | translate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</ng-container>

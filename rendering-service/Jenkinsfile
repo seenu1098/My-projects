@@ -1,0 +1,10 @@
+@Library("yorosis-shared-library") _
+
+standardPipeline {
+    projectType = "java-service"
+    deploymentName = "rendering-service-deployment"
+    dockerImageName = "rendering-service"
+    canSkipSonarQubeCheck = true
+    canBuildDockerImage = true
+    canDeployImage = true
+}

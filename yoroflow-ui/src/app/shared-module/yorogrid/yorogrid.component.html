@@ -1,0 +1,117 @@
+<div class="row my-2 justify-content-end w-100 mx-0" *ngIf="isFilterEnable===true">
+  <!-- <div id="exportExcel" class="mr-3" *ngIf="gridHeaders.exportEnabled">
+    <button mat-raised-button color="primary" style="color: white;" (click)="ExcelService()"
+      i18n="Export as Excel">Export as Excel</button>
+  </div> -->
+  <div class="justify-content-end">
+    <button mat-raised-button type="button" color="accent" (click)="clearAllFilter()" i18n="Clear
+    Filters" class="align-self-center justify-content-end float-right">Clear
+      Filters</button>
+  </div>
+</div>
+<div class="mat-table-responsive w-100 mat_ui">
+  <mat-table [dataSource]="dataSource" matSort [matSortDisableClear]="true" class="table w-100">
+    <ng-container *ngFor="let column of columnHeaders; let i=index;" matColumnDef="{{column.headerId}}">
+
+      <mat-header-cell mat-header-cell *matHeaderCellDef [style.flex.%]="column.widthPercentage">
+        <div *ngIf="column.headerId === 'select' ">
+          <mat-checkbox [id]="'selectallChcekBox'+i" (change)="isAllSelected($event)" [checked]=isSelectAll>
+          </mat-checkbox>
+        </div>
+        <div *ngIf="column.headerId !== 'select' " fxLayout="row" class="w-100">
+          <div class="pl-3 text-black w-100" fxLayout="row" [disabled]="!column.sortable">
+            <div mat-sort-header>{{ column.headerName |
+              translate}}</div>
+            <!-- </div> -->
+            <!-- <div class="col-md-4 pr-0"> -->
+            <button class="btn_filter" *ngIf="column.filterable===true" [matMenuTriggerFor]="dropdownMenuOne"
+              #menuTrigger="matMenuTrigger" (click)="setDataType(column.headerId)">
+              <mat-icon fontSet="material-icons-outlined" class="fs_14 w_14 h_16 " [style]="column.style">
+                filter_list
+              </mat-icon>
+            </button>
+            <!-- <mat-icon class="icon-css float-right" *ngIf="column.filterable===true"
+              [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger" (click)="setDataType(column.headerId)"
+              [style.margin-left]="column.sortable?'':'5px'" style="cursor: pointer;" [style]="column.style">stream
+            </mat-icon> -->
+          </div>
+        </div>
+      </mat-header-cell>
+      <ng-container *ngIf="!gridHeaders.checkboxEnabled">
+        <mat-cell id="data" mat-cell *matCellDef="let data" [matTooltip]="data['col' + column.columnSeqNo]"
+          matTooltipPosition="below" (click)="onRowClicked(data)" [style.flex.%]="column.widthPercentage">
+          <div class="col-md-12 mat_font">{{getBrowsertime(data['col' + column.columnSeqNo])}}</div>
+        </mat-cell>
+      </ng-container>
+      <ng-container *ngIf="gridHeaders.checkboxEnabled">
+        <mat-cell id="data" mat-cell *matCellDef="let data; let i = index"
+          [matTooltip]="data['col' + column.columnSeqNo]" matTooltipPosition="below" (dblclick)="onRowClicked(data)"
+          [style.flex.%]="column.widthPercentage">
+          <div *ngIf="column.headerId === 'select' ">
+            <ng-container *ngIf="data['col0']==='select'">
+              <mat-checkbox [id]="'rowSelectCheckbox'+i" checked="true" (change)="isSelctedIndividual(data , $event)">
+              </mat-checkbox>
+            </ng-container>
+            <ng-container *ngIf="data['col0']===''">
+              <mat-checkbox [id]="'selectAllCheckbox'+i" [checked]="isSelectAll"
+                (change)="isSelctedIndividual(data , $event)">
+              </mat-checkbox>
+            </ng-container>
+          </div>
+          <div *ngIf="column.headerId !== 'select' " class="col-md-12">
+            {{getBrowsertime(data['col' + column.columnSeqNo])}}
+          </div>
+        </mat-cell>
+      </ng-container>
+    </ng-container>
+    <mat-header-row [style.width.%]="gridHeaders.tableWidth" *matHeaderRowDef="displayedColumns; sticky: true">
+    </mat-header-row>
+    <mat-row class="ripple-row" [style.width.%]="gridHeaders.tableWidth"
+      *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="end" style="margin-right:10px;">
+  <app-paginator id="mat_table_page_selector" *ngIf="isPaginator && isLength" [length]="resultsLength"
+    [pageSize]="gridHeaders.defaultPageSize" [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]"
+    (page)="pageEvent($event)"></app-paginator>
+</div>
+<mat-menu #dropdownMenuOne="matMenu">
+  <form [formGroup]="form" #userForm="ngForm" style="padding: 10px;">
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()">
+      <mat-form-field class="field-size">
+        <mat-label i18n="Operator">Operator</mat-label>
+        <mat-select formControlName="operator" required>
+          <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+            {{data.description}}</mat-option>
+        </mat-select>
+        <mat-error i18n="Operator is required">Opeartor is required</mat-error>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+      style="margin-top:20px">
+      <mat-form-field class="field-size" *ngIf="isDateField===false">
+        <mat-label i18n="Filter Value">Filter Value</mat-label>
+        <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+          formControlName="filterValue" required>
+        <input matInput *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue" type="number"
+          formControlName="filterValue" required>
+        <mat-error i18n="Filter value is required">
+          Filter value is required</mat-error>
+      </mat-form-field>
+      <mat-form-field class="field-size" *ngIf="filterOperator==='number' && isDateField===true">
+        <input matInput [id]="columnValue" [matDatepicker]="picker" formControlName="filterValue" required>
+        <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error i18n="Filter value is required">
+          Filter value is required</mat-error>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+      style="margin-top:30px">
+      <button mat-raised-button type="submit" color="primary" style="color: white;" i18n="Apply"
+        (click)="filterApply(userForm)">Apply</button>
+      <button mat-raised-button type="button" color="accent" (click)="clearFilter()" i18n="Clear">Clear</button>
+    </div>
+  </form>
+</mat-menu>

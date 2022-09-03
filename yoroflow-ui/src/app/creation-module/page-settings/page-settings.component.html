@@ -1,0 +1,48 @@
+<form [formGroup]="form" #userForm="ngForm" id="workflow_formfield_popup">
+  <div class="row w-100 mx-0 ">
+    <div class="col-md-5 pl-0">
+      <h2 class="font-weight-bold mb-0">Page Settings</h2>
+    </div>
+    <div class="col-md-7 pr-0">
+      <div class="row w-100 mx-0 justify-content-end">
+        <button mat-raised-button color="primary" class="mr-2" type="button"
+          [disabled]="!submitEnable && !userForm.dirty" (click)="save(userForm)" i18n="Save">Save</button>
+        <button mat-raised-button color="accent" class="mr-2" (click)="resetPageSettings()" i18n="Reset">Reset</button>
+        <button mat-raised-button color="accent" type="button" (click)="close()" i18n="Close">Close</button>
+      </div>
+    </div>
+  </div>
+  <hr class="mb-1 mx-0 mb-0 b-0">
+  <!-- <div fxLayout="row" fxLayoutAlign="space-between center"
+  style="border-bottom: 0.5px solid rgb(214, 214, 214);margin: 0px -20px;">
+   <span style="margin-left:15px;font-size: 18px;font-weight: bold;" i18n="Page Settings">Page Settings</span>
+      <div fxLayout="row" fxLayoutGap="20px" style = "float: right; margin-top: -20px;">
+          <button mat-raised-button color="primary" style="cursor: pointer;height:25px;line-height: 25px;"
+           [disabled]="!submitEnable && !userForm.dirty" (click)="save(userForm)" i18n="Save">Save</button>
+
+          <button mat-raised-button color="accent" style="cursor: pointer;height:25px;line-height: 25px;"
+          class="mr-3" (click)="resetPageSettings()" i18n="Reset">Reset</button>
+
+          <button mat-raised-button color="accent" style="cursor: pointer;height:25px;line-height: 25px;"
+          class="mr-3" (click)="close()" i18n="Close">Close</button>
+      </div>
+    </div> -->
+
+  <div fxLayout="row" style="margin-top:30px" fxLayoutGap="20px">
+    <mat-form-field appearance="outline">
+      <mat-label i18n="Page Id">Page Id</mat-label>
+      <input matInput formControlName="pageId" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label i18n="Description">Description</mat-label>
+      <input matInput formControlName="description">
+    </mat-form-field>
+  </div>
+  <div fxLayout="row" style="margin-top:20px">
+    <mat-slide-toggle formControlName="exporttoPdf" (change)="allowExporttoPdf($event)" i18n="Export to PDF">Export to
+      PDF
+    </mat-slide-toggle>
+  </div>
+
+</form>

@@ -1,0 +1,73 @@
+<mat-card style="margin: 1%">
+  <mat-card-title *ngIf="data.securityType === 'workflow'" i18n="Workflow Security">Workflow Security</mat-card-title>
+  <mat-card-title *ngIf="data.securityType === 'task'" i18n="Task Security">Task Security</mat-card-title>
+  <div fxLayout="row" fxLayoutGap="30px">
+    <mat-label style="width: 30%;" i18n="Group Name">Team Name</mat-label>
+    <!-- <mat-label style="width: 5%;">Create</mat-label> -->
+    <mat-label style="width: 5%;" i18n="Read">Read</mat-label>
+    <mat-label style="width: 5%;" i18n="Update">Update</mat-label>
+    <mat-label style="width: 5%;" i18n="Publish">Publish</mat-label>
+    <mat-label style="width: 5%;" i18n="Launch">Launch</mat-label>
+    <!-- <mat-label style="width: 5%;">Delete</mat-label> -->
+    <mat-label style="width: 5%;" i18n="All">All</mat-label>
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="pagePermissionsForm" #userForm="ngForm">
+      <div formArrayName="pagePermissions" *ngFor="let permission of getPermissionsFormArray().controls; let i = index">
+        <div [formGroupName]="i" fxLayout="row" fxLayoutGap="30px">
+          <mat-form-field style="width: 30%;">
+            <input matInput id="groupName" formControlName="groupName" [matAutocomplete]="auto"
+              (click)="getAllGroupNames()">
+            <mat-autocomplete #auto="matAutocomplete">
+              <ng-container *ngIf="showGroups">
+                <mat-option type="text" [value]="name.name" *ngFor="let name of yoroGroups"
+                  (onSelectionChange)="setGroupId($event,name.id,i)">
+                  {{name.name}}</mat-option>
+              </ng-container>
+              <ng-container *ngIf="!showGroups">
+                <mat-option type="text" [value]="name.groupName" *ngFor="let name of yoroGroups"
+                  (onSelectionChange)="setGroupId($event,name.groupId,i)">
+                  {{name.groupName}}-{{name.groupDesc}}</mat-option>
+              </ng-container>
+            </mat-autocomplete>
+            <mat-error *ngIf="permission.get('groupName').errors?.required" i18n="Group Name is required">Team Name is
+              required</mat-error>
+            <mat-error *ngIf="permission.get('groupName').errors?.requiredError" i18n="Group Name is required">Team
+              Name is required</mat-error>
+            <mat-error *ngIf="permission.get('groupName').errors?.validators" i18n="Group Name already exist">Team Name
+              already exist</mat-error>
+          </mat-form-field>
+          <!-- <mat-checkbox style="width: 5%;" class="mat-checkbox" formControlName="createAllowed"
+          (change)="unCheckValue($event,i)"></mat-checkbox> -->
+          <mat-checkbox [id]="'readAllowed_'+i" style="width: 5%;" class="mat-checkbox" formControlName="readAllowed"
+            (change)="unCheckValue($event,i)"></mat-checkbox>
+          <mat-checkbox [id]="'updateAllowed_'+i" style="width: 5%;" formControlName="updateAllowed"
+            (change)="unCheckValue($event,i)">
+          </mat-checkbox>
+          <mat-checkbox [id]="'publishAllowed_'+i" style="width: 5%;" formControlName="publishAllowed"
+            (change)="unCheckValue($event,i)">
+          </mat-checkbox>
+          <mat-checkbox [id]="'launchAllowed_'+i" style="width: 5%;" formControlName="launchAllowed"
+            (change)="unCheckValue($event,i)">
+          </mat-checkbox>
+          <!-- <mat-checkbox style="width: 5%;" formControlName="deleteAllowed" (change)="unCheckValue($event,i)">
+        </mat-checkbox> -->
+          <mat-checkbox [id]="'allCheck_'+i" style="width: 5%;" [id]="i" [checked]="allCheckBoxControl[i]"
+            (change)="setAllChecked($event,i)">
+          </mat-checkbox>
+          <button mat-mini-fab [id]="'btnAdd_'+i" type="button" color="primary" (click)="addPermission()">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button type="button" *ngIf="getPermissionsFormArray().length>1" mat-mini-fab color="accent"
+            [id]="'remove_'+i" (click)="removePermission(i)">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <div style="margin-top: 1%;">
+    <button mat-raised-button color="primary" id="btnsave" (click)="save(userForm)" i18n="Save">Save</button>&nbsp;
+    <button mat-raised-button color="accent" id="btnClose" (click)="cancel()" i18n="Close">Close</button>
+  </div>
+</mat-card>

@@ -1,0 +1,36 @@
+<form [formGroup]="form" #userForm="ngForm" id="dependency-dialog" style="height: 100%;">
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="padding: 0px 10px;">
+        <h3>Task List</h3>
+        <mat-icon (click)="close()" style="cursor: pointer;margin-top: -19px;">close</mat-icon>
+    </div>
+    <div class="input-group mb-3 px-2">
+        <input type="text" id="search" formControlName="search" class="form-control" placeholder="search..."
+            i18n-placeholder="search...">
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <mat-icon matSuffix>search</mat-icon>
+            </span>
+        </div>
+    </div>
+    <div class="task-list-container">
+        <ng-container *ngFor="let task of filteredTaskList;let i = index;">
+            <div fxLayout="row" class="taskId-css">
+                <button mat-button [id]="'task_'+i" (click)="handleDependency(task)"
+                    [style.background]="task.isSelected===true?'#f1fff1':''" style="text-align: left;width: 100%;">
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <div fxLayout="row" class="task-details-css">
+                            <span>{{task.taskId}}</span><b *ngIf="task.taskName">&nbsp;- {{task.taskName}}</b>
+                        </div>
+                        <div *ngIf="task.isSelected===true" fxLayout="column" fxLayoutAlign="center">
+                            <mat-icon class="taskSelectedIcon-css">done</mat-icon>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </ng-container>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" style="margin-top: 5px;">
+        <button color="primary" id="save" mat-raised-button (click)="saveDependencies()"
+            [disabled]="isDisable">Save</button>
+    </div>
+</form>

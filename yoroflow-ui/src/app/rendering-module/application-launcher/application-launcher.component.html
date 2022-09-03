@@ -1,0 +1,15 @@
+<ng-container *ngIf="show">
+        <div>
+                <!-- [class]="applicationVO?.themeId" -->
+                <app-dynamic-header [application]="applicationVO" (headerEmitter)="getEvent($event)"
+                        (isNotificationOpened)="getNotificationOpened($event)"
+                        (isMessageOpened)="getMessageOpened($event)" (messageObject)="getMessageObject($event)"
+                        (notificationObject)="getNotificationObject($event)" (pinEmitter)="pinClicked($event)">
+                </app-dynamic-header>
+        </div>
+</ng-container>
+
+
+
+<!-- <button mat-menu-item id='gridConfig' routerLink='page/47'>1 </button>
+<button mat-menu-item id='hdhd' routerLink='page/8'>2 </button> -->

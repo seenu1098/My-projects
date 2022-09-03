@@ -1,0 +1,98 @@
+spring:
+  profiles:
+    active: default, local
+  application.name: DB Deployment - Liquibase
+  
+  liquibase:
+    change-log: classpath*:db/changelog/master-changelog.xml
+  
+  application:
+    name: db-deployment-service
+    
+server.servlet.context-path: /db-deployment-service
+
+logging:
+  pattern:
+    console: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    file: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    
+  level:
+    org.springframework.web: INFO
+    org.springframework.amqp: INFO
+    com.yorosis.yoroflow: INFO
+    liquibase.changelog: INFO
+    
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator 
+    algorithm: PBEWithMD5AndDES
+    
+server:
+  port: 8080
+  
+---
+spring:
+  profiles: default
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+  liquibase:
+    enabled: false
+    drop-first: false
+    contexts: local
+    
+db:
+  changelog:
+    base-version:
+      schema: db/changelog/base-version/customer.base.schema.xml
+      table: db/changelog/base-version/customer.base.tables.xml
+      data: db/changelog/base-version/customer.base.data.xml
+    rel:
+      script: db/changelog/release/db.release.scripts.xml
+      
+    yoroflow:
+      schema: yoroflow
+      script: db/changelog/yoroflow/db.yoroflow.scripts.xml
+    
+---
+spring:
+  profiles: local
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: ${CONNECTION_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${CONNECTION_POOL_MAX_SIZE:5}
+      pool-name: db-deployment-service-pool
+      auto-commit: false
+    url: jdbc:postgresql://db.yorosis.com:5544/liveapps?currentSchema=yoroflow
+    username: liveappsuser
+    password: oZXu10d09$@$LK90U6b]Z$Uv
+
+server:
+  port: 8181
+
+---
+spring:
+  profiles: prod 
+  
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: ${CONNECTION_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${CONNECTION_POOL_MAX_SIZE:7}
+      pool-name: db-deployment-service-pool
+      auto-commit: false
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+jasypt:
+  encryptor:
+    password: ${ENCRYPTION_KEY:yorosis-secret}
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator 
+    algorithm: PBEWithMD5AndDES
+        

@@ -1,0 +1,190 @@
+<div class="mb-5 row w-100 mx-0">
+    <mat-card class="w-100">
+        <div class="row mx-0 w-100 mb-3">
+            <div class="col-md-6 col-sm-12 pl-0">
+                <mat-card-title i18n="Files">Files</mat-card-title>
+            </div>
+            <div class="col-md-6 col-sm-12 justify-content-end">
+                <button class="align-self-center justify-content-end float-right mr-2 clear_filter" mat-raised-button
+                    type="button" color="accent" *ngIf="filterCountForTaskboard !== 0"
+                    (click)="clearAllFilterTaskboard()" i18n="Clear
+                Filters">Clear
+                    Filters</button>
+            </div>
+        </div>
+        <mat-card-content>
+            <mat-table [dataSource]="attachments" matSort [matSortDisableClear]="true"
+                (matSortChange)="sortData($event)">
+                <ng-container matColumnDef="taskboardName">
+                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                        <span i18n="Board Name">Board Name</span>
+                        <mat-icon id="board_name" class="icon-css" [matMenuTriggerFor]="dropdownMenuTwo"
+                            #menuTrigger1="matMenuTrigger" [ngClass]="{'active': selectedItem == 'taskboardName'}"
+                            (click)="setDataTypeForTaskboard('taskboardName','string')"
+                            style="cursor: pointer; margin-left: 4px;">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task" style="width:20%">
+                        <a class="task-id" [routerLink]="['/taskboard' , task?.taskboardKey]">{{task?.taskboardName}}</a>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="task_id">
+                    <mat-header-cell *matHeaderCellDef style="width:20%; ">
+                        <span i18n="Task Id">Task Id</span>
+                        <mat-icon id="task_name" class="icon-css" [ngClass]="{'active': selectedItem == 'task_id'}"
+                            [matMenuTriggerFor]="dropdownMenuOne" (click)="setDataTypeForTaskboard('task_id','string')"
+                            #menuTrigger2="matMenuTrigger" style="cursor: pointer; margin-left: 4px;">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task" style="width:20%; ">
+                        <a class="task-id" style="cursor: pointer;" (click)="viewTaskboardTask(task?.taskboardId, task?.taskId)">{{task?.taskId}}</a>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="file_name">
+                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                        <span mat-sort-header i18n="File Name">File Name </span>
+                        <mat-icon id="fileName" class="icon-css" style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active': selectedItem == 'file_name'}" [matMenuTriggerFor]="dropdownMenuOne"
+                            (click)="setDataTypeForTaskboard('file_name','string')" #menuTrigger3="matMenuTrigger">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task">
+                        {{task?.fileName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="file_type">
+                    <mat-header-cell *matHeaderCellDef style="width:30%">
+                        <span mat-sort-header i18n="File Type">File Type</span>
+                        <mat-icon class="icon-css" id="fileType" [ngClass]="{'active': selectedItem == 'file_type'}"
+                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger4="matMenuTrigger"
+                            (click)="setDataTypeForTaskboard('file_type','string')"
+                            style="cursor: pointer; margin-left: 4px;">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task" style="width:30%">
+                        {{task?.fileType}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="created_on">
+                    <mat-header-cell *matHeaderCellDef style="width:30%">
+                        <span mat-sort-header i18n="Created On">Created On </span>
+                        <mat-icon class="icon-css" id="createdOn" [ngClass]="{'active': selectedItem == 'created_on'}"
+                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger5="matMenuTrigger"
+                            (click)="setDataTypeForTaskboard('created_on','string')"
+                            style="cursor: pointer; margin-left: 4px;">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task" style="width:30%">
+                        {{task?.createdOn | date:'medium'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="created_by">
+                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                        <span mat-sort-header i18n="Created By">Created By </span>
+                        <mat-icon class="icon-css" id="createdBy" [matMenuTriggerFor]="dropdownMenuOne"
+                            #menuTrigger6="matMenuTrigger" (click)="setDataTypeForTaskboard('created_by','string')"
+                            style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active': selectedItem == 'created_by'}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task" style="width:20%">
+                        <mat-button class="filter_option ">{{task?.createdBy}}</mat-button>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef style="width:20%">
+                        <span i18n="Actions">Actions </span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let task" style="width:20%">
+                        <div>
+                            <mat-icon style="cursor: pointer;" (click)="download(task)">file_download</mat-icon>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;">
+                </mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+<div class="w-100 row justify-content-center" style="margin-top: 1%;" *ngIf="attachments?.length === 0">
+    <div style="font-weight: bold;font-size: 20px;">No data available</div>
+</div>
+<div *ngIf="isPaginator && isLength && attachments.length !== 0" class="w-100 row justify-content-end"
+    style="margin-right:10px;">
+    <app-paginator id="mat_table_page_selector" [length]="taskboardLength" [pageSize]="defaultPageSize"
+        [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)"></app-paginator>
+</div>
+</mat-card-content>
+</mat-card>
+<form [formGroup]="taskboardForm" #userForm="ngForm" style="padding: 10px;">
+    <mat-menu #dropdownMenuOne="matMenu" class="remaining-menu" id="operator_menu">
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-size">
+                <mat-label i18n="Operator">Operator</mat-label>
+                <mat-select formControlName="operator" required>
+                    <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                        {{data.description}}</mat-option>
+                </mat-select>
+                <mat-error i18n="Operator is required">Opeartor is required</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+            style="margin-top:20px">
+            <mat-form-field class="field-size" *ngIf="isDateField===false">
+                <mat-label i18n="Filter Value">Filter Value</mat-label>
+                <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+                    formControlName="filterValue" required>
+                <input matInput *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue"
+                    type="number" formControlName="filterValue" required>
+                <mat-error i18n="Filter value is required">
+                    Filter value is required</mat-error>
+            </mat-form-field>
+            <mat-form-field class="field-size" *ngIf="isDateField===true">
+                <mat-label i18n="Filter Value">Filter Value</mat-label>
+                <input matInput [id]="columnValue" [matDatepicker]="picker" formControlName="filterValue" required>
+                <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                </mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error i18n="Filter value is required">
+                    Filter value is required</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+            style="margin-top:30px">
+            <button mat-raised-button type="submit" color="primary" (click)="filterApplyForTaskboard()"
+                i18n="Apply">Apply</button>
+            <button mat-raised-button type="button" color="accent" (click)="clearFilterForTaskboard()"
+                i18n="Clear">Clear</button>
+        </div>
+    </mat-menu>
+    <mat-menu class="filter-menu" #dropdownMenuTwo="matMenu" id="board_menu">
+        <div (click)="$event.stopPropagation();">
+            <div class="input-group mb-3 px-2">
+                <input type="text" formControlName="search" class="form-control" placeholder="search..."
+                    i18n-placeholder="search...">
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </span>
+                </div>
+            </div>
+            <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:200px;">
+                <ng-container>
+                    <ng-container *ngFor="let board of boardNamesVO;let j = index;">
+                        <div style="margin-left: 15px;margin-top: 5px;" fxLayout="row">
+                            <mat-checkbox [checked]="board?.isSelected"
+                                (change)="changeFilterValue($event, board?.boardName, 'taskboardName', 'string', board?.isSelected)">
+                                <div fxLayout="row" fxLayoutGap="5px">
+                                    {{board?.boardName}}
+                                </div>
+                            </mat-checkbox>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </perfect-scrollbar>
+        </div>
+    </mat-menu>
+</form>
+</div>

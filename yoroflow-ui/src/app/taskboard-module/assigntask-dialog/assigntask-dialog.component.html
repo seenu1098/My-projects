@@ -1,0 +1,53 @@
+<form #userForm="ngForm" [formGroup]="form">
+    <div class="row w-100 mx-0">
+        <div class="col-md-8">
+            <h3 class="fs_14 font-weight-bold text-uppercase" i18n="Assign task to">Assign task to</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="row w-100 mx-0 justify-content-end">
+                <button mat-raised-button type="button" class="mr-2" color="primary" (click)="close()"
+                    [disabled]="isDisable" i18n="Confirm">Confirm</button>
+                <button mat-raised-button type="button" color="accent" (click)="dialogClose()"
+                    i18n="Cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <hr class="my-1 mx-0 b-0">
+    <div class="row w-100 mx-0 mt-2">
+        <div class="col-md-11 col-sm-11 justify-content-center">
+            <mat-form-field class="example-chip-list" appearance="outline" class="w-100">
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                    <ng-container *ngFor="let user of usersList; let i = index;">
+                        <mat-chip *ngIf="user.isSelected" [selectable]="selectable" [removable]="removable"
+                            (removed)="selectAssigneeUser(user,i)">
+                            <span>{{user?.firstName}} {{user?.lastName}}</span>
+                            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                        </mat-chip>
+                    </ng-container>
+                    <input placeholder="{{'Search...' | translate}}" #fruitInput formControlName="searchUser"
+                        [matChipInputFor]="chipList">
+                </mat-chip-list>
+            </mat-form-field>
+        </div>
+    </div>
+    <div style="height:500px;overflow-y: scroll">
+        <div class="row w-100 mx-0">
+            <ng-container *ngFor="let user of usersList; let i = index;">
+                <div class="col-md-6" *ngIf="user?.isSelected === false && user?.filter">
+                    <mat-card class="inner_card_user" (click)="selectAssigneeUser(user)" appMaterialElevation>
+                        <div class="row w-100 mx-0">
+                            <div class="col-md-2 align-self-center">
+                                <p class="user_letter" [style.background]="user.color">{{setUserProfilename(user)}}</p>
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="mb-0 text-uppercase font-weight-bold fs_12">{{user?.firstName}}
+                                    {{user?.lastName}}</h5>
+                                <h5 class="mb-0 fs_12">{{user?.emailId}}</h5>
+                            </div>
+                        </div>
+                    </mat-card>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</form>

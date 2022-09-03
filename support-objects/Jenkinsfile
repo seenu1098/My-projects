@@ -1,0 +1,10 @@
+@Library("yorosis-shared-library") _
+
+standardPipeline {
+    projectType = "java-library"
+    deploymentName = "yoroapps-support-objects-deployment"
+    dockerImageName = "yoroapps-support-objects"
+    canSkipSonarQubeCheck = true
+    canBuildDockerImage = false
+    canDeployImage = false
+}

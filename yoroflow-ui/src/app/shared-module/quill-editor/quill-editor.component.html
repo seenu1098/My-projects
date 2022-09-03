@@ -1,0 +1,47 @@
+<form [formGroup]="form" #userForm="ngForm" class="quill-form-css">
+  <quill-editor #quill id="quill" formControlName="editor" placeholder="Enter Text" [modules]="quillConfig"
+    (onSelectionChanged)="onSelectionChanged($event)" (onContentChanged)="onContentChanged($event)" [format]="format">
+  </quill-editor>
+  <div *ngIf="fromEmailTemplate || automation" style="margin-top: 10px;">
+    <mat-button class="filter_option align-self-center  mr-2 " *ngFor="let select of systemVariables"
+      (click)="selectChip(select)">
+      {{select?.fieldId}}
+    </mat-button>
+  </div>
+  <div *ngIf="!fromEmailTemplate || !automation && fromEmailTask  || fromSystemTask || fromSmsTask"
+    style="margin-top: 10px;">
+    <mat-button class="filter_option align-self-center  mr-2 " *ngFor="let select of autocompleteInitialFieldList"
+      (click)="selectChip(select)">
+      {{select?.fieldId}}
+    </mat-button>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end" *ngIf="automation || createTask">
+    <button mat-raised-button color="primary"
+      *ngIf="form.get('editor').value!==undefined && form.get('editor').value!==null && form.get('editor').value!==''"
+      class="apply-button-css" (click)="apply()" i18n="Apply">{{'Apply' | translate}}</button>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end"
+    *ngIf="fromTaskboard || taskboardComments || isReply || isEdit || workflowComments">
+    <button *ngIf="taskboardComments || workflowComments || isReply || isEdit" mat-raised-button id="add-comment"
+      color="primary" class="apply-button-css" (click)="apply()"
+      [disabled]="form.get('editor').value===undefined || form.get('editor').value===null || form.get('editor').value===''">
+      <span *ngIf="taskboardComments || workflowComments || isReply" i18n="Add comment">{{'Add comment' |
+        translate}}</span>
+      <span *ngIf="isEdit" i18n="Update comment">{{'Update comment' | translate}}</span></button>
+    <button *ngIf="fromTaskboard" mat-raised-button id="save" color="primary" class="apply-button-css" (click)="apply()"
+      [disabled]="form.get('editor').value===undefined || form.get('editor').value===null || form.get('editor').value===''"
+      i18n="Save">{{'Save' | translate}}</button>
+    <button *ngIf="fromTaskboard || isReply || isEdit" mat-raised-button id="cancel" color="accent"
+      class="apply-button-css" (click)="closeQuill()" i18n="Cancel">{{'Cancel' | translate}}</button>
+  </div>
+  <div fxLayout="row" *ngIf="fromEmailTemplate && !fromTaskboard">
+    <button *ngIf="!inputData" mat-raised-button color="primary" class="apply-button-css" (click)="update()"
+      [disabled]="!templateForm.dirty && !userForm.dirty">
+      <span i18n="Save">{{'Save' | translate}}</span></button>
+    <button mat-raised-button color="primary" *ngIf="inputData" class="apply-button-css" (click)="update()"
+      [disabled]="isShow === true && !userForm.dirty">
+      <span i18n="Update">{{'Update' | translate}}</span></button>
+    <button mat-raised-button color="accent" class="apply-button-css" (click)="reset(userForm)" i18n="Reset">{{'Reset' |
+      translate}}</button>
+  </div>
+</form>

@@ -1,0 +1,21 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <ng-container>
+        <mat-label *ngIf="data?.type === 'add'">{{'Add comment for' | translate}} <b>{{data?.data}}</b></mat-label>
+        <mat-label *ngIf="data?.type === 'reply'">{{'Add reply for' | translate}} <b>{{data?.data.commentSection}}</b>
+        </mat-label>
+        <mat-label *ngIf="data?.type === 'edit'">{{'Edit comment for' | translate}} <b>{{data?.data.commentSection}}</b>
+        </mat-label>
+
+        <mat-form-field class="w-100" apperance="outline">
+            <textarea matInput id="style" formControlName="commentValue" cols="3" rows="4" type="text"> </textarea>
+        </mat-form-field>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button *ngIf="data?.type === 'add' || data?.type === 'reply'" color="primary" id="save"
+                class="comment" [disabled]="!userForm.dirty" (click)="addTypedComment()" i18n="Save">Save</button>
+            <button mat-raised-button *ngIf="data?.type === 'edit'" color="primary" id="edit" class="comment"
+                [disabled]="!userForm.dirty" (click)="addTypedComment()" i18n="Update">Update</button>
+            <button mat-raised-button color="accent" id="cancel" class="comment" (click)="cancel()"
+                i18n="Cancel">Cancel</button>
+        </mat-dialog-actions>
+    </ng-container>
+</form>

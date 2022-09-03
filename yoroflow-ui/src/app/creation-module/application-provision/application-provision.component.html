@@ -1,0 +1,99 @@
+<div fxLayout.xs="column" fxLayoutAlign="start none">
+    <div fxFill="100">
+        <mat-card style="background-color:whitesmoke;">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <mat-card-title>
+                    Application
+                </mat-card-title>
+                <mat-icon (click)="onNoClick()" id="close" style="cursor: pointer;">close</mat-icon>
+            </div>
+            <form [formGroup]="form" #userForm="ngForm">
+                <mat-card style="margin: 1%; ">
+                    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                        <mat-form-field style="width: 30%;">
+                            <mat-label>Application Name *</mat-label>
+                            <input matInput type="text" id="applicationName" formControlName="applicationName"
+                                (focusout)="createAppIdByAppName()" #message maxlength="100">
+                            <mat-hint align="start"><strong>Characters remaining</strong> </mat-hint>
+                            <mat-hint align="end">{{message.value.length}} / 100</mat-hint>
+                            <mat-error *ngIf="form.get('applicationName').errors?.required">Application Name is
+                                required</mat-error>
+                            <mat-error *ngIf="form.get('applicationName').errors?.alreadyExist">Application Name
+                                already exist</mat-error>
+
+                        </mat-form-field>
+
+                        <mat-form-field style="width: 25%;">
+                            <mat-label>Application Identifier *</mat-label>
+                            <input matInput type="text" id="subdomainName" formControlName="applicationId"
+                                (focusout)="createApplicationIdentifier('applicationId','update')"
+                                readonly="{{appIdentifierReadOnlyValue}}">
+                            <mat-error *ngIf="form.get('applicationId').errors?.required">Application Identifier
+                                is required</mat-error>
+                            <mat-error *ngIf="form.get('applicationId').errors?.alreadyExist">Application
+                                Identifier already exist</mat-error>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Time Zone *</mat-label>
+                            <mat-select id="timezone" formControlName="timezone">
+                                <mat-option value="EST" id="EST">Eastern Standard Time</mat-option>
+                                <mat-option value="CST" id="CST">Central Standard Time</mat-option>
+                                <mat-option value="PST" id="PST">Pacific Standard Time</mat-option>
+                                <mat-option value="AKST" id="AKST">Alaska Standard Time</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.get('timezone').errors?.required">Time Zone is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Default Language *</mat-label>
+                            <mat-select id="defaultLanguage" formControlName="defaultLanguage">
+                                <mat-option value="en">English</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.get('defaultLanguage').errors?.required">Default Language is
+                                required</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field style="width: 30%;">
+                            <mat-label>Description *</mat-label>
+                            <textarea matInput id="description" formControlName="description" rows="3" cols="5"
+                                #textArea maxlength="200"></textarea>
+                            <mat-hint align="start"><strong>Characters remaining</strong> </mat-hint>
+                            <mat-hint align="end">{{textArea.value.length}} / 200</mat-hint>
+                            <mat-error *ngIf="form.get('description').errors?.required">Description is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field style="width: 20%;bottom: 10%;">
+                            <mat-label>Select Organization Theme </mat-label>
+                            <mat-select id="themeName" formControlName="themeName">
+                                <mat-option [value]="theme.themeName" *ngFor="let theme of themesList"
+                                    (onSelectionChange)="setThemeId(theme.themeId,$event)">{{theme.themeName}}
+                                </mat-option>
+                            </mat-select>
+                            <!-- <mat-error *ngIf="form.get('timezone').errors?.required">Time Zone is required
+                            </mat-error> -->
+                        </mat-form-field>
+
+                        <app-upload-logo #uploadLogo [action]="uploadAction" (uploaded)="getUploaded($event)"
+                            style="margin:1%;" buttonName="Upload Application Logo"></app-upload-logo>
+
+                        <app-load-logo [base64Image]="loadLogo.previewUrl" *ngIf="loadLogo.previewUrl"
+                            style="margin-top:2%;">
+                        </app-load-logo>
+
+
+                    </div>
+                </mat-card>
+                <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px">
+                    <button mat-raised-button id="security" color="primary" type="button"
+                        (click)="openApplicationPermissions()" [disabled]="securityOptionEnable"> Security
+                    </button>
+                    <button mat-raised-button id="submit" color="primary" (click)="submit(userForm)"
+                        [disabled]="!userForm.dirty">Submit</button>&nbsp;
+                    <button mat-raised-button id="reset" type="reset" (click)="reset(userForm)"
+                        color="accent">Reset</button>
+                </div>
+            </form>
+        </mat-card>
+    </div>
+</div>

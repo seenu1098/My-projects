@@ -1,0 +1,16 @@
+<ng-container *ngIf="showControl">
+    <div [style]="field.style" style="width:100%">
+        <mat-form-field [formGroup]="group" [style.background-color]="field.rowBackground" appearance="outline"
+            style="width: 100%;">
+            <mat-label>{{field.label.labelName}}{{required}}</mat-label>
+            <input matInput [ngxMatDatetimePicker]="picker2" [formControlName]="field.name">
+            <mat-datepicker-toggle matSuffix [for]="picker2" (click)="setFormat()"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker2 color="primary" [enableMeridian]="true">
+            </ngx-mat-datetime-picker>
+            <ng-container *ngFor="let validation of field.validations;" ngProjectAs="mat-error">
+                <mat-error *ngIf="group.get(field.name) && group.get(field.name).hasError(validation.type)">
+                    {{formService.getValidationErrorMessage(validation,field.label.labelName)}}</mat-error>
+            </ng-container>
+        </mat-form-field>
+    </div>
+</ng-container>

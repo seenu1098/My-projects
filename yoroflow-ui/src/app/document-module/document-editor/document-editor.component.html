@@ -1,0 +1,91 @@
+<form [formGroup]="form" #userForm="ngForm" class="quill-form-css" class="w-100" id="quill-editor">
+  <div class="row w-100 mx-0 mb-4 justify-content-end">
+    <div class="col-md-8 pl-0">
+      <div class="row w-100 mx-0" *ngIf="data?.type === 'edit' && editTitle === false">
+        <span class="mb-0 font-weight-bold doc_title_name">{{form.get('title').value}}</span>
+        <span>
+          <mat-icon class="fs_12 h_14 w_14 mt-1 ml-1" matTooltip="{{'Edit Title' | translate}}" (click)="editName()">
+            drive_file_rename_outline
+          </mat-icon>
+        </span>
+      </div>
+      <div class="row w-100 mx-0" *ngIf="editTitle === true">
+        <div class="input-group">
+          <input type="text" class="form-control" formControlName="title">
+          <div class="input-group-append">
+            <button class="py-0 px-0  btn  btn-success done_btn" color="primary" matTooltip="{{'Save' | translate}}"
+              type="button" (click)="saveTitle(this.form.get('title').value)">
+              <mat-icon>done</mat-icon>
+            </button>
+            <button class="px-0 py-0 btn btn-danger close_btn" color="accent" matTooltip="{{'Cancel' | translate}}"
+              type="button" (click)="cancel()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="row w-100 ml-2 error_message" *ngIf="showError">
+          <p>{{'Document Name should be within 100 characters.' | translate}}</p>
+        </div>
+      </div>
+      <div class="row w-100 mx-0" *ngIf="data?.type === 'new' || data?.type === 'newchild'">
+        <input type="text" id="title" class="w-100 title_input" formControlName="title"
+          placeholder="{{'Untitled' | translate}}">
+      </div>
+    </div>
+    <div class="col-md-4 pr-0">
+      <div class="row mx-0 w-100 justify-content-end">
+        <mat-icon class="fs_12 w_14 h_14  comment-icon-css" *ngIf="data?.type === 'edit'"
+          fontSet="material-icons-outlined">
+          question_answer</mat-icon>
+        <span *ngIf="data?.type === 'edit'" class="mr-3 mt-2 comment_button" [matBadge]="commentsCount"
+          matBadgeColor="accent" (click)="openCommentsDialog()" i18n="Comments">Comments</span>
+        <span></span>
+        <button mat-raised-button type="button" *ngIf="data?.type === 'new' || data?.type === 'newchild'"
+          color="primary" (click)="save(userForm)" class="mr-3" [disabled]="!form.get('title').dirty" id="save">{{'Save'
+          | translate}}</button>
+        <button mat-raised-button type="button" *ngIf="data?.type === 'edit'" class="mr-3" color="primary"
+          (click)="update()" id="update">{{'Update' | translate}}</button>
+        <button mat-raised-button type="button" color="accent" (click)="dialogClose()" id="cancel">{{'Cancel' |
+          translate}}</button>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center center" *ngIf="showSpinner === true">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
+  <div [matMenuTriggerFor]="contextmenu" [style.position]="'absolute'" [style.left.px]="menuX" [style.top.px]="menuY">
+  </div>
+  <!-- <div (click)="addComment('j')">
+    <mat-icon class="material-icons-outlined">
+      chat
+    </mat-icon><span>Comments</span>
+  </div> -->
+  <div fxLayout="row">
+    <div fxLayout="column" [style.width]="open===true?'70%':'100%'">
+      <div style="position: relative;" (dblclick)="askComment($event)" #quill id="quill"></div>
+      <div fxLayout="row" fxLayoutAlign="end">
+        <span *ngIf="open === true" class="navigate-close-css" id="expand-icon" appMaterialElevation defaultElevation=4
+          raisedElevation=8 (click)="expandOrCollapse('close')">
+          <mat-icon class="animate-css">navigate_next</mat-icon>
+        </span>
+      </div>
+    </div>
+    <div fxLayout="column" style="margin-right: 10px;width: 30%;height: 550px;overflow-y:scroll; border-left: 1px solid #ddd;position: relative
+    " class="comments-container-css" *ngIf="open === true" appResize>
+      <ng-container *ngFor="let comments of commentsList;let i=index">
+        <div fxLayout="row">
+          <span class="vl"></span>
+          <app-doc-comments *ngIf="showComment === true" class="w-100" [comments]="comments"
+            (refresh)="refreshEvent($event)" (highlightValue)="getValue($event)" [usersList]="usersList">
+          </app-doc-comments>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</form>
+
+<mat-menu #contextmenu="matMenu" class="mat-menu-css">
+  <button class="mat-menu-button-css" id="addComment" (click)="addComment('j')" i18n="Add
+  Comment">Add
+    Comment</button>
+</mat-menu>

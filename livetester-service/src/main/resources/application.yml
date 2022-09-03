@@ -1,0 +1,134 @@
+logging.level: INFO
+logging.level.org.hibernate.SQL: INFO
+logging.level.org.hibernate.type.descriptor.sql: INFO          
+
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation: true
+
+server.servlet.context-path: /livetester-service
+
+spring:
+  profiles:
+    active: prod
+
+license:
+  file: /license/yorosis-livetester.lic
+
+
+---
+spring:
+  profiles: prod 
+  data:
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 5 
+      pool-name: livetester
+      auto-commit: false
+      
+    url: jdbc:postgresql://db.yorosis.com:5544/liveapps?currentSchema=livetester_demo
+    username: liveappsuser
+    password: oZXu10d09$@$LK90U6b]Z$Uv
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: false
+    hibernate:
+      generate-ddl: true
+      ddl-auto: validate
+      show_sql: false
+    properties:
+      hibernate:
+        default_schema: livetester_demo
+        format_sql : true
+
+license:
+  file: ${LICENSE_FILE:/license/yorosis-livetester.lic}
+---
+spring:
+  profiles: local 
+  data:
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 5 
+      pool-name: livetester
+      auto-commit: false
+      
+    url: jdbc:postgresql://localhost:5432/liveclaims_new?currentSchema=livetester_demo
+    username: admin
+    password: admin
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    hibernate:
+      generate-ddl: true
+      ddl-auto: update
+      show_sql: true
+    properties:
+      hibernate:
+        default_schema: livetester_demo
+        format_sql : true
+          
+---
+spring:
+  profiles: test 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 5
+      pool-name: livetester
+      auto-commit: false
+      
+    url: jdbc:h2:mem:livetester;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+    password: sa
+    
+  jpa:
+    database-platform: org.hibernate.dialect.HSQLDialect
+    show-sql: true
+    hibernate:
+      generate-ddl: true
+      ddl-auto: create-drop
+      show_sql: true
+    properties:
+      hibernate:
+        default_schema: public
+               
+---
+spring:
+  profiles: local-db
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:file:${DATABASE_FOLDER}/livetester
+    username: sa
+    password: sa
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    hibernate:
+      generate-ddl: true
+      ddl-auto: update
+      show_sql: false
+    properties:
+      hibernate:
+        default_schema: public
+
+license:
+  file: ${LICENSE_FILE}
+  
+server:
+  port: ${SERVER_PORT:8080}

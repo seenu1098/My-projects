@@ -1,0 +1,12 @@
+<div class="cancel">
+    <button mat-raised-button color="primary" (click)="save()" type="button" *ngIf="data.isDoneColumn===false"
+        style="cursor: pointer;height:25px;line-height: 25px; margin:5px;">Save</button>
+    <button mat-raised-button color="warn" (click)="cancel()"
+        style="cursor: pointer;height:25px;line-height: 25px;" type="button">Cancel</button>
+</div>
+<div style="margin-top:20px;width:98%;border:0.5px solid rgb(216, 216, 216)" class="icon_box">
+
+    <dynamic-page [id]="data.id" [version]="data.version" (formValues)="getFormValues($event)"
+        [formData]="taskBoardTaskVO" pageFrom="popoutView" [object]="object" [pageSecurity]="data.isDoneColumn===false">
+    </dynamic-page>
+</div>

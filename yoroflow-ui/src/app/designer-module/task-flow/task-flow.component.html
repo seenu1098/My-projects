@@ -1,0 +1,536 @@
+<!-- <dynamic-page id="practicedetails"></dynamic-page> -->
+<div [style.width]="screenWidth">
+  <ng-container *ngIf="contextMenuNodeEnable">
+    <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+      [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="nodeContextMenu">
+    </div>
+  </ng-container>
+  <ng-container *ngIf="contextMenuLinkEnable">
+    <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+      [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="linkContextMenu">
+    </div>
+  </ng-container>
+  <mat-menu #linkContextMenu="matMenu">
+    <ng-template matMenuContent let-item="item">
+      <!-- <button mat-menu-item (click)="linkProperty(item)">Properties</button> -->
+      <button mat-menu-item id="deleteLink" (click)="deleteLink(item, 'Link')" i18n="Delete">Delete</button>
+    </ng-template>
+  </mat-menu>
+  <mat-menu #nodeContextMenu="matMenu" id="rightclick_property">
+    <ng-template matMenuContent let-item="item">
+      <button mat-menu-item id="properties" (click)="clickEvent(item)" i18n="Properties">Properties</button>
+      <button mat-menu-item id="deleteNode" (click)="deleteNode(item)" i18n="Delete">Delete</button>
+      <button mat-menu-item id="duplicateNode" *ngIf="item.data.taskType !== 'START_TASK'
+    && item.data.taskType !== 'END_TASK'" (click)="duplicateNode(item)" i18n="Duplicate">Duplicate</button>
+    </ng-template>
+  </mat-menu>
+  <mat-card>
+    <mat-card-title i18n="Workflow">Workflow</mat-card-title>
+    <div fxLayout="column">
+      <form #userForm="ngForm" [formGroup]="workFlowForm" (ngSubmit)="onSubmit(userForm)">
+        <div fxLayout="row" fxLayoutGap="20px" class="mt-1">
+          <mat-form-field style="width: 40%;" appearance="outline">
+            <mat-label>Work Flow Name</mat-label>
+            <input matInput id="workflowname" i18n-placeholder="Work Flow Name" placeholder="Work Flow Name"
+              (focusout)="setWorkFlowKeyByName($event)" formControlName="name">
+            <mat-error *ngIf="workFlowForm.get('name').errors?.required" i18n="Workflow Name is required">Workflow Name
+              is required</mat-error>
+            <mat-error *ngIf="workFlowForm.get('name').errors?.alreadyExist" i18n="Workflow already exist">Workflow
+              already exist</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Key</mat-label>
+            <input matInput id="workFlowKey" placeholder="Key" (focusout)="setWorkFlowKey()" formControlName="key"
+              [readonly]="workFlowForm.get('workflowId').value">
+            <mat-error *ngIf="workFlowForm.get('key').errors?.alreadyExist" i18n="Workflow Key already exist">Workflow
+              Key already exist</mat-error>
+          </mat-form-field>
+          <div fxLayout="row" fxLayoutGap="10px">
+            <button class="btn_example" mat-raised-button id="btnsave" [disabled]="!isChange && !workFlowForm.dirty">
+              <span *ngIf="!isEditWorkFlow" i18n="Save">Save</span><span *ngIf="isEditWorkFlow" i18n="Update"
+                color="primary">Update</span></button>
+            <ng-container *ngIf="workFlowStatus === 'draft'">
+              <button class="btn_example" mat-raised-button id="publish"
+                (click)="publishWorkFlow(workFlowKey, workFlowVersion)" [disabled]="workFlowVO.canPublish===false"
+                i18n="Publish" color="primary">Publish</button>
+            </ng-container>
+            <button class="btn_example" mat-raised-button id="security" type="button"
+              (click)=" openWorkflowPermissions()" [disabled]="!workFlowVO.workflowId || !showSecurity" i18n="User
+            Permissions" color="primary">User
+              Permissions</button>
+            <button class="btn_example" mat-raised-button id="variables" type="button" (click)="openVariablesList()"
+              [disabled]="!workFlowVO.workflowId" i18n="Variables" color="primary">Variables</button>
+            <button class="btn_example" mat-raised-button id="undoChanges" type="button" (click)="resetDesign()"
+              [disabled]="!isChange && !workFlowForm.dirty" i18n="Undo all changes" color="accent">Undo all
+              changes</button>
+            <!-- <button mat-raised-button color="primary" type="button" id="export" style="height: 40px;padding: 3px 21px;"
+            [disabled]="!workFlowVO.workflowId" (click)="tokenExpires('exportFromWorkflow')">Export</button>
+          <button mat-raised-button color="primary" type="button" id="import" style="height: 40px;padding: 3px 21px;"
+            (click)="fileInput.click()">
+            <span>Import</span>
+            <input type="file" #fileInput (change)="fileImport($event)" style="display:none;" accept="json/*"
+              id="import" />
+          </button>
+          <button mat-raised-button color="primary" type="button" id="export" style="height: 40px;padding: 3px 21px;"
+            [disabled]="!workFlowVO.workflowId" (click)="copyJsonData()">Copy Workflow</button> -->
+            <button class="btn_example" mat-raised-button type="button" id="import" matTooltip="Import Workflow"
+              (click)="fileInput.click()" color="primary">
+              <!-- <span i18n="Import">Import</span> -->
+              <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+              <input type="file" #fileInput (change)="fileImport($event)" style="display:none;" accept="json/*"
+                id="import" />
+            </button>
+            <div>
+              <!-- <mat-button-toggle-group id="export_button" class="btn_example">
+                <mat-button-toggle id="exportLabel" color="primary" style="width: 130px;color: rgb(255, 253, 253);"
+                  class="split-button-1" i18n="Export Workflow">
+                  Export Workflow
+                </mat-button-toggle>
+                <mat-button-toggle class="split-button-1 drop-down-button" [matMenuTriggerFor]="dropdownMenuOne">
+                  <mat-icon style="margin-top: -5px;">arrow_drop_down</mat-icon>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+              <mat-menu #dropdownMenuOne="matMenu">
+                <button color="primary" type="button" id="export" mat-menu-item [disabled]="!workFlowVO.workflowId"
+                  (click)="tokenExpires('exportFromWorkflow')" i18n="Export">Export</button>
+                <button color="primary" type="button" id="export" mat-menu-item [disabled]="!workFlowVO.workflowId"
+                  (click)="copyJsonData()" i18n="Copy Workflow">Copy
+                  Workflow</button>
+              </mat-menu> -->
+              <button mat-raised-button [matMenuTriggerFor]="dropdownMenuOne" i18n="Export Workflow"
+                matTooltip="Export Workflow" color="primary" [disabled]="!workFlowVO.workflowId">
+                <mat-icon fontSet="material-icons-outlined">file_download</mat-icon>
+              </button>
+              <mat-menu #dropdownMenuOne="matMenu">
+                <button type="button" id="export" mat-menu-item [disabled]="!workFlowVO.workflowId"
+                  (click)="tokenExpires('exportFromWorkflow')" i18n="Export">Export</button>
+                <button type="button" id="export" mat-menu-item [disabled]="!workFlowVO.workflowId"
+                  (click)="copyJsonData()" i18n="Copy Workflow">Copy Workflow</button>
+              </mat-menu>
+            </div>
+          </div>
+        </div>
+
+
+      </form>
+      <!-- <div fxLayout="row" style="margin-top: -30px;"> -->
+      <div class="wrap">
+        <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="toolKitList" class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <ng-container *ngFor="let tool of toolKitList">
+            <div>
+              <div class="left_col" *ngIf="tool.taskType=='START_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i class="far fa-play-circle" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_start_60207.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="START TASK">START TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="right_col" *ngIf="tool.taskType=='END_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+              fiber_manual_record
+             </i> -->
+                  <!-- <i class="fas fa-hourglass-end" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_player_stop.png" class="icon_size" id="{{tool.taskType}}" cdkDrag>
+                  <div>
+                    <mat-label style="font-size: x-small;padding-left:10px" i18n="END TASK">END TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='USER_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i class="fas fa-user" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_person (1).png" class="icon">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="USER TASK">USER TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="right_col" *ngIf="tool.taskType=='APPROVAL_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                done
+              </i> -->
+                  <!-- <i class="far fa-check-circle" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_approval.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size:  x-small;" i18n="APPROVAL TASK">APPROVAL TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='DECISION_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                sync_alt
+               </i> -->
+                  <!-- <i class="fas fa-sync-alt" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/decision-making-color.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="DECISION TASK">DECISION TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="right_col" *ngIf="tool.taskType=='DECISION_TABLE'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                https
+              </i> -->
+                  <!-- <i class="fas fa-link" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/decision table-png-3.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="DECISION TABLE">DECISION TABLE</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='EMAIL_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                email
+               </i> -->
+                  <!-- <i class="far fa-envelope" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_mail.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="EMAIL TASK">EMAIL TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='WEB_SERVICE_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                web 
+              </i> -->
+                  <!-- <i class="fas fa-external-link-alt" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_webservice.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size:  x-small;" i18n="WEB SERVICE TASK">WEB SERVICE TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='DELAY_TIMER'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                access_time
+              </i> -->
+                  <!-- <i class="far fa-clock" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_timer.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size:  x-small;" i18n="DELAY TIMER">DELAY TIMER</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="right_col" *ngIf="tool.taskType=='DB_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                cloud
+              </i> -->
+                  <!-- <i class="fas fa-database" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_database.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;padding-left:10px" i18n="DB TASK">DB TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='CALL_ANOTHER_WORKFLOW'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                https
+              </i> -->
+                  <!-- <i class="fas fa-link" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_workflow.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="CALL WORKFLOW">CALL WORKFLOW</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='EXCEL_REPORT'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                https
+              </i> -->
+                  <!-- <i class="fas fa-link" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_webservice.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="EXCEL REPORT">EXCEL REPORT</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="right_col" *ngIf="tool.taskType=='COMPUTE_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                assessment
+              </i> -->
+                  <!-- <i class="fas fa-calculator" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_compute.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size:  x-small;" i18n="COMPUTE TASK">COMPUTE TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="left_col" *ngIf="tool.taskType=='COUNTER_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                https
+              </i> -->
+                  <!-- <i class="fas fa-link" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_compute.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size: x-small;" i18n="COUNTER TASK">COUNTER TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="right_col" *ngIf="tool.taskType=='SMS_TASK'" id="{{tool.taskType}}" cdkDrag>
+                <ng-container>
+                  <!-- <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+                assessment
+              </i> -->
+                  <!-- <i class="fas fa-calculator" style="margin: 10px;font-size: 30px;"></i> -->
+                  <img src="assets/iconfinder_mail.png" class="icon_size">
+                  <div>
+                    <mat-label style="font-size:  x-small;" i18n="SMS TASK">SMS TASK</mat-label>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div style="height:100px"></div>
+      <div class="main canvas-container " cdkDropList #doneList="cdkDropList" (cdkDropListDropped)="drop($event)">
+        <ngx-graph [view]="[2000, 2000]" [links]="links" [nodes]="nodes" [curve]="curve" [layout]="layout"
+          [nodeWidth]=150 [nodeHeight]=100 [layoutSettings]="layoutSettings" [curve]="curve" [enableZoom]="false"
+          [autoZoom]="true" [update$]="update$" [draggingEnabled]=dragEnabled>
+
+          <ng-template #defsTemplate>
+            <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4"
+              orient="auto">
+              <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+            </svg:marker>
+          </ng-template>
+
+          <ng-template #nodeTemplate let-node>
+
+            <svg (contextmenu)="onContextMenu($event,node)">
+              <filter id="component-drop-shadow" height="140%" y="-20%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
+                <feOffset in="blur" dx="0" dy="1" result="offsetBlur"></feOffset>
+                <feFlood flood-color="#000000" flood-opacity="0.4" result="offsetColor"></feFlood>
+                <feComposite in="offsetColor" in2="offsetBlur" operator="in" result="offsetColorBlur"></feComposite>
+                <feMerge>
+                  <feMergeNode in="offsetColorBlur"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+              <g class="processor component" (click)="nodeClicked(node)" (mousedrag)="nodeDrag()"
+                (mousedown)="mouseDown()" (mousemove)="nodeMoved($event,node)">
+                <rect class="border" width="150" height="130" fill="transparent" stroke="transparent"></rect>
+                <rect class="body" width="150" height="130" filter="url(#component-drop-shadow)" stroke-width="0">
+                </rect>
+                <text x="30" y="18" width="150" height="14" class="processor-name">
+                  {{node.label}}
+                </text>
+                <!-- <svg:foreignObject x="0" y="0" width="30" height="30"> -->
+                <!-- <xhtml:i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="padding-left: 2px;">
+
+                    {{getStyles(node.data.taskType)}}
+                  </xhtml:i> -->
+                <!-- <xhtml:i xmlns="http://www.w3.org/1999/xhtml" [ngClass]="getStyles(node.data.taskType)"
+                    style="margin: 10px;font-size: 10px;"></xhtml:i>
+                </svg:foreignObject> -->
+                <image width="30" height="30" [attr.href]="getStyles(node.data.taskType)"></image>
+                <g class="processor-canvas-details">
+                  <text class="processor-type" x="30" y="32" width="230" height="12">
+                    {{node.data.taskType}}
+                  </text>
+                  <rect width="150" height="19" x="0" y="50" fill="#f4f6f7">comments</rect>
+                  <rect width="150" height="19" x="0" y="70" fill="#ffffff"> </rect>
+                  <rect width="150" height="19" x="0" y="90" fill="#f4f6f7"> </rect>
+
+                  <rect width="150" height="19" x="0" y="110" fill="#ffffff"> </rect>
+                  <svg:foreignObject x="60" y="105" width="30" height="30">
+                    <xhtml:i xmlns="http://www.w3.org/1999/xhtml" class="material-icons"
+                      (mousedown)="mousedown($event,node)" (mouseup)="nodemouseup($event,node)">
+                      arrow_drop_down_circle
+                    </xhtml:i>
+                  </svg:foreignObject>
+                  <!-- <svg:foreignObject x="80" y="105" width="30" height="30">
+                    <xhtml:i xmlns="http://www.w3.org/1999/xhtml" class="material-icons"
+                      (click)="deleteNode(node)">
+                      delete
+                    </xhtml:i>
+                  </svg:foreignObject> -->
+                </g>
+              </g>
+            </svg>
+          </ng-template>
+
+          <ng-template #linkTemplate let-link>
+            <svg:g class="edge" (mouseover)="mouseInLink()" (contextmenu)="onClickLinkContextMenu($event,link)">
+              <svg:path class="line" stroke-width="3.5" marker-end="url(#arrow)">
+              </svg:path>
+              <svg:text class="edge-label" text-anchor="middle">
+                <textPath class="text-path" [attr.href]="'#' + link.id"
+                  [style.dominant-baseline]="link.dominantBaseline" startOffset="50%" *ngIf="link.model">
+                  {{link.model.label}}</textPath>
+              </svg:text>
+            </svg:g>
+
+          </ng-template>
+        </ngx-graph>
+      </div>
+      <!-- </div> -->
+    </div>
+  </mat-card>
+</div>
+
+
+<!-- <div>
+<form #userForm="ngForm" [formGroup]="workFlowForm" (ngSubmit)="onSubmit(userForm)">
+  <div fxLayout="row" fxLayoutGap="20px" style="margin: 1%;">
+    <mat-form-field style="width: 40%;">
+      <input matInput placeholder="Work Flow Name" (focusout)="setWorkFlowKeyByName()" formControlName="name">
+      <mat-error *ngIf="workFlowForm.get('name').errors?.required">Work Flow Name is required</mat-error>
+      <mat-error *ngIf="workFlowForm.get('name').errors?.alreadyExist">Work Flow already exist</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Key" (focusout)="setWorkFlowKey()" formControlName="key">
+      <mat-error *ngIf="workFlowForm.get('key').errors?.alreadyExist">Work Flow Key already exist</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" style="height: 40px;padding: 3px 21px;">
+      <span *ngIf="!isEditWorkFlow">Save</span><span *ngIf="isEditWorkFlow">Update</span></button>
+  </div>
+
+</form>
+</div>
+<div class="sidenav">
+  <mat-menu #appMenu>
+    <ng-template matMenuContent>
+      <button mat-menu-item>Settings</button>
+      <button mat-menu-item>Help</button>
+  </ng-template>
+  </mat-menu>
+
+<div cdkDropList #todoList="cdkDropList" [cdkDropListData]="toolKitList" [cdkDropListConnectedTo]="[main]"
+  class="example-list" (cdkDropListDropped)="drop($event)">
+  <div *ngFor="let tool of toolKitList" id="{{tool.taskType}}" cdkDrag>
+
+
+    <ng-container *ngIf="tool.taskType=='USER_TASK'">
+      <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+        person
+
+      </i>
+
+    </ng-container>
+    <ng-container *ngIf="tool.taskType=='EMAIL_TASK'">
+      <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+        email
+
+      </i>
+    </ng-container>
+    <ng-container *ngIf="tool.taskType=='DECISION_TASK'">
+      <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+        sync_alt
+      </i>
+
+    </ng-container>
+    <ng-container *ngIf="tool.taskType=='END_TASK'">
+
+      <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="margin: 10px;font-size: 60px;">
+        fiber_manual_record
+
+      </i>
+    </ng-container>
+     <ng-container *ngIf="tool.taskType=='START_TASK'">
+        <i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="padding: 10px;font-size: 60px;">
+          play_circle_outline
+
+        </i>
+        
+        
+      </ng-container> 
+  </div>
+
+</div>
+
+
+</div> 
+<div class="main canvas-container " cdkDropList #doneList="cdkDropList" (cdkDropListDropped)="drop($event)">
+
+<ngx-graph [view]="[1000, 1000]" [links]="links" [nodes]="nodes" [curve]="curve" [layout]="layout" [nodeWidth]=150
+  [nodeHeight]=100 [layoutSettings]="layoutSettings" [curve]="curve" [enableZoom]="false" [autoZoom]="true"
+   [update$]="update$" [draggingEnabled]=dragEnabled>
+
+  <ng-template #defsTemplate>
+    <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+      <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+    </svg:marker>
+  </ng-template>
+
+  <ng-template #nodeTemplate let-node>
+
+    <svg>
+      <filter id="component-drop-shadow" height="140%" y="-20%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
+        <feOffset in="blur" dx="0" dy="1" result="offsetBlur"></feOffset>
+        <feFlood flood-color="#000000" flood-opacity="0.4" result="offsetColor"></feFlood>
+        <feComposite in="offsetColor" in2="offsetBlur" operator="in" result="offsetColorBlur"></feComposite>
+        <feMerge>
+          <feMergeNode in="offsetColorBlur"></feMergeNode>
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+        </feMerge>
+      </filter>
+      <g class="processor component" (click)="nodeClicked(node)" (mousedown)="mouseDown()" (mousemove)="nodeMoved()">
+        <rect class="border" width="150" height="130" fill="transparent" stroke="transparent"></rect>
+        <rect class="body" width="150" height="130" filter="url(#component-drop-shadow)" stroke-width="0"></rect>
+        <text x="30" y="18" width="150" height="14" class="processor-name">
+          {{node.label}}
+        </text>
+      
+        <svg:foreignObject x="0" y="0" width="30" height="30">
+          
+          <xhtml:i xmlns="http://www.w3.org/1999/xhtml" class="material-icons" style="padding-left: 2px;">
+            {{getStyles(node.data.taskType)}}
+          </xhtml:i>
+        </svg:foreignObject>
+
+        <g class="processor-canvas-details" >
+          <text class="processor-type" x="30" y="32" width="230" height="12">
+            {{node.data.taskType}}
+          </text>
+          <rect width="150" height="19" x="0" y="50" fill="#f4f6f7">comments</rect>
+          <rect width="150" height="19" x="0" y="70" fill="#ffffff"> </rect>
+          <rect width="150" height="19" x="0" y="90" fill="#f4f6f7"> </rect>
+
+          <rect width="150" height="19" x="0" y="110" fill="#ffffff"> </rect>
+          <svg:foreignObject x="70" y="105" width="30" height="30">
+            <xhtml:i xmlns="http://www.w3.org/1999/xhtml" class="material-icons"
+              (mousedown)="mousedown($event,node)" (mouseup)="nodemouseup($event,node)">
+              arrow_drop_down_circle
+            </xhtml:i>
+          </svg:foreignObject> 
+          
+        </g>
+      </g>
+    </svg>
+  </ng-template>
+
+  <ng-template #linkTemplate let-link>
+    <svg:g class="edge">
+      <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+      </svg:path>
+      <svg:text class="edge-label" text-anchor="middle">
+        <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline"
+          startOffset="50%">{{link.label}}</textPath>
+      </svg:text>
+    </svg:g>
+
+  </ng-template>
+
+</ngx-graph> 
+<button mat-raised-button (click)="openBottomSheet()">Open file</button>
+
+
+</div> -->

@@ -1,0 +1,32 @@
+<div *ngIf="showMenu" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="15px" class="header">
+    <div *ngIf="!showLogo" fxFlex="10%" fxLayoutAlign="start center">
+        <img id="logo" src="assets/images/product-logo.png" alt="YOROSIS LOGO">
+    </div>
+
+    <div fxFlex="80%" class="menuAlign" fxLayoutAlign="start start" fxLayout.xs="column" fxLayoutGap="2px"
+        fxShow="true">
+
+        <!-- <button mat-button routerLink='/board'>Board</button> -->
+        <button mat-button id="dashboard" routerLink='dashboard' i18n="Dashboard">Dashboard</button>
+        <button id="workflow" *ngIf="userVo.firstName!=='Help' && userVo.firstName!=='Data'" mat-button
+            routerLink='workflow' i18n="Workflow">Workflow</button>
+        <button id="myTasks" mat-button routerLink='my-pending-task' i18n="My tasks">My tasks</button>
+        <button id="completedTasks" mat-button routerLink='my-done-task' i18n="Completed tasks">Completed tasks</button>
+        <button id="myLaunches" mat-button routerLink='my-launched-task' i18n="My Launches">My Launches</button>
+        <button id="tableObjects" *ngIf="userVo.firstName!=='Help' && userVo.firstName!=='Data'" mat-button
+            routerLink='table-objects' i18n="Table Objects">Table Objects</button>
+    </div>
+
+    <div>
+        <button mat-button id="userMenu" [matMenuTriggerFor]="userMenu">{{userVo.firstName}} {{userVo.lastName}}
+            <mat-icon>
+                arrow_drop_down
+            </mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+            <button mat-menu-item id="logout" (click)="logout()" i18n="Logout">Logout</button>
+        </mat-menu>
+
+    </div>
+
+</div>

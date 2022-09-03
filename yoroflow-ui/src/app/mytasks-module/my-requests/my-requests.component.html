@@ -1,0 +1,116 @@
+<div class="mat_ui">
+    <form [formGroup]="searchForm" #userForm="ngForm" class="m-0 p-0" id="board">
+        <div class="row w-100 mx-0 justify-content-end px-0 mt-0">
+            <div class="input-group mb-2 mt-0 col-md-4 col-sm-12" id="border_less">
+                <input type="text" formControlName="search" class="form-control fs_12"
+                    placeholder="{{'Search...' | translate}}">
+                <div class="input-group-append bg-trasparent">
+                    <span class="input-group-text padding-css">
+                        <mat-icon matSuffix class="fs_14 w_14 h_11">search</mat-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div [style.height.px]="scrollHeight" fxLayout="row" *ngIf="showDashboard===false" fxLayoutAlign="center center"
+        class="w-100 mt-2">
+        <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+
+    <div class="row mx-0 w-100">
+        <div class="col-md-6 col-sm-12 px-2">
+            <perfect-scrollbar *ngIf="showDashboard" id="grid-view" class="perfect-scroll-css"
+                [style.height.px]="scrollHeight" (psScrollY)="onScrollEvent($event)">
+                <mat-table [dataSource]="filteredLeftSideRequestList" matSort [matSortDisableClear]="true">
+                    <ng-container *ngFor="let column of columnHeaders;let i = index;"
+                        matColumnDef="{{column.headerId}}">
+                        <mat-header-cell mat-header-cell *matHeaderCellDef [style.flex.%]="column.widthPercentage">
+                            <div fxLayout="row" class="w-100">
+                                <div class="pl-2 text-black">
+                                    {{ column.headerName | translate}}
+                                </div>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell id="data" mat-cell *matCellDef="let data" [matTooltip]="data[column.headerId]"
+                            matTooltipPosition="below">
+                            <!-- [style.flex.%]="column.widthPercentage" -->
+                            <div class="col-md-12 col-sm-12 pl-2 pr-2 mat_font"
+                                *ngIf="column.headerId!=='launchButtonName'">
+                                {{data[column.headerId]}}
+                            </div>
+                            <button class="mx-auto d-block" *ngIf="data['taskType']==='workflow'" mat-raised-button
+                                color="primary" [id]="data.data.key"
+                                (click)="launchWorkflow(data.data,data.data.key,data.data.workflowVersion, data.data.workspaceId)">
+                                {{data[column.headerId]===null?'Launch':data[column.headerId]}}</button>
+                            <button class="mx-auto d-block" *ngIf="data['taskType']==='taskboard'" mat-raised-button
+                                color="primary" [id]="data.data.id" (click)="viewTaskboardTask(data.data.id)">
+                                {{data[column.headerId]===null?'Launch':data[column.headerId]}}</button>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+                    <mat-row class="ripple-row" *matRowDef="let row; columns: displayedColumns"></mat-row>
+                </mat-table>
+
+                <ng-container
+                    *ngIf="showDashboard && filteredLeftSideRequestList && filteredLeftSideRequestList.length === 0"
+                    style="height: 400px;">
+                    <div class="row w-100 mx-0 justify-content-center mt-1">
+                        <div class="font-weight-bold" i18n="@@Taskboard No Data">No
+                            data
+                            available
+                        </div>
+                    </div>
+                </ng-container>
+
+            </perfect-scrollbar>
+        </div>
+        <div class="col-md-6 col-sm-12 px-2">
+            <perfect-scrollbar *ngIf="showDashboard" id="grid-view" class="perfect-scroll-css"
+                [style.height.px]="scrollHeight" (psScrollY)="onScrollEvent($event)">
+
+                <mat-table [dataSource]="filteredRightSideRequestList" matSort [matSortDisableClear]="true">
+                    <ng-container *ngFor="let column of columnHeaders;let i = index;"
+                        matColumnDef="{{column.headerId}}">
+                        <mat-header-cell mat-header-cell *matHeaderCellDef [style.flex.%]="column.widthPercentage">
+                            <div fxLayout="row" class="w-100">
+                                <div class="pl-3 text-black">
+                                    {{ column.headerName | translate}}
+                                </div>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell id="data" mat-cell *matCellDef="let data" [matTooltip]="data[column.headerId]"
+                            matTooltipPosition="below" [style.flex.%]="column.widthPercentage">
+                            <div class="col-md-12 col-sm-12 pl-2 pr-2 mat_font"
+                                *ngIf="column.headerId!=='launchButtonName'">
+                                {{data[column.headerId]}}
+                            </div>
+                            <button class="mx-auto d-block" *ngIf="data['taskType']==='workflow'" mat-raised-button
+                                color="primary"
+                                (click)="launchWorkflow(data.data,data.data.key,data.data.workflowVersion,data.data.workspaceId)">
+                                {{data[column.headerId]===null?'Launch':data[column.headerId]}}</button>
+                            <button class="mx-auto d-block" *ngIf="data['taskType']==='taskboard'" mat-raised-button
+                                color="primary" (click)="viewTaskboardTask(data.data.id)">
+                                {{data[column.headerId]===null?'Launch':data[column.headerId]}}</button>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></mat-header-row>
+                    <mat-row class="ripple-row" *matRowDef="let row; columns: displayedColumns"></mat-row>
+                </mat-table>
+
+                <ng-container
+                    *ngIf="showDashboard && filteredRightSideRequestList && filteredRightSideRequestList.length === 0"
+                    style="height: 400px;">
+                    <div class="row w-100 mx-0 justify-content-center mt-1">
+                        <div class="font-weight-bold" i18n="@@Taskboard No Data">No
+                            data
+                            available
+                        </div>
+                    </div>
+                </ng-container>
+
+            </perfect-scrollbar>
+        </div>
+
+    </div>
+</div>

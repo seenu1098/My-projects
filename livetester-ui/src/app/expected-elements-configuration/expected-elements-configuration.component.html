@@ -1,0 +1,207 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+  <div fxFlex="100%">
+    <mat-card style="background-color:rgb(154, 199, 212)">
+      <div class="accordion-form-section">
+        <div fxLayoutAlign="space-between center" style="margin-top:1%">
+          <mat-form-field style="width: 70%">
+            <mat-label for="labelList">
+              Labels
+            </mat-label>
+            <mat-select [(value)]="selected" id="labelList">
+              <mat-option style="display:none" value="Label"> </mat-option>
+              <mat-option id="labelOption" (onSelectionChange)="loadExpectedElementInfo($event, userForm)"
+                [value]="label.id" *ngFor="let label of response">{{label.labelNames}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div fxLayoutAlign="end center">
+            <button id="editButton" *ngIf="deleteButtonVisible" mat-raised-button color="primary"
+              (click)="editElementConfig()" style="margin-right:5%">Edit</button>
+            <button id="deleteButton" *ngIf="deleteButtonVisible" mat-raised-button color="warn"
+              (click)="deleteElement()">Delete</button>
+          </div>
+        </div>
+        <form [formGroup]="form" #userForm="ngForm">
+          <mat-card-subtitle>Element Configuration</mat-card-subtitle>
+          <mat-card style="margin-top: 1%">
+            <input type="hidden" name="id" formControlName="id" />
+            <p>
+              <mat-form-field>
+                <mat-label>Label *</mat-label>
+                <input matInput id="label" type="text" formControlName="label" placeholder="Label" name="LabelName"
+                  [readonly]="readonly">
+                <mat-error class="text-danger" id="labelRequired" *ngIf="form.get('label').errors?.required
+              &&(userForm.submitted || form.get('label').touched || form.get('label').dirty)">
+                  Label is required
+                </mat-error>
+              </mat-form-field>
+
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Field Name *</mat-label>
+                <input id="fieldName" matInput type="text" formControlName="fieldName" placeholder="Field Name"
+                  name="FieldName">
+                <mat-error class="text-danger" id="fieldNameRequired" *ngIf="form.get('fieldName').errors?.required
+                &&(userForm.submitted || form.get('fieldName').touched || form.get('fieldName').dirty)">
+                  Field Name is required
+                </mat-error>
+              </mat-form-field>
+
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Data Type *</mat-label>
+                <mat-select id="fieldType" name="FieldType" formControlName="fieldType">
+                  <mat-option id="string" value="string">String</mat-option>
+                  <mat-option id="date" value="date">Date</mat-option>
+                  <mat-option id="number" value="number">Number</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="fieldTypeRequired" *ngIf="form.get('fieldType').errors?.required
+                &&(userForm.submitted || form.get('fieldType').touched || form.get('fieldType').dirty)">
+                  Field Type is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Control Type *</mat-label>
+                <mat-select id="controlType" name="controlType" formControlName="controlType">
+                  <mat-option id="multiChoice" value="Text Box" *ngIf="form.get('fieldType').value==='string' || form.get('fieldType').value==='date' ||
+                  form.get('fieldType').value==='number'">Text box</mat-option>
+                  <mat-option id="multiChoice" value="Select Box"
+                    *ngIf="form.get('fieldType').value==='string' || form.get('fieldType').value==='number' ">Select box
+                  </mat-option>
+                  <mat-option id="multiChoice" value="Multi Choice" *ngIf="form.get('fieldType').value==='string'">Multi
+                    choice</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="fieldTypeRequired" *ngIf="form.get('controlType').errors?.required
+                &&(userForm.submitted || form.get('controlType').touched || form.get('controlType').dirty)">
+                  Control Type is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <br>
+            <div fxLayout="row wrap" *ngIf="form.get('controlType').value === 'Select Box'">
+              <div formArrayName="array"  *ngFor="let option of form.controls.array.controls; let i = index" style="margin: 1%;">
+                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="10px" >
+                  <mat-form-field>
+                    <mat-label>Code *</mat-label>
+                    <input id="fieldName" matInput [type]="form.get('fieldType').value" formControlName="key" placeholder="Key" name="FieldName">
+                    <mat-error>
+                      Key is required
+                    </mat-error>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Description *</mat-label>
+                    <input id="value" matInput type="text" formControlName="value">
+                    <mat-error>
+                      Value is required
+                    </mat-error>
+                  </mat-form-field>
+                  <button mat-mini-fab type="button" color="primary" (click)="addOption()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button mat-mini-fab type="button" color="accent" (click)="removeOption(i)" 
+                  *ngIf="getSelectOptionsFormArray().length>1">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+          <mat-card style="margin-top: 1%;">
+            <p>
+              <mat-radio-group id="mandatory" formControlName="mandatory" aria-label="Select an option">
+                <fieldset style="margin-left: -15px;" class="border">
+                  <legend>Is Mandatory ? *</legend>
+                  <div style="margin-top: 3%">
+                    <mat-radio-button id="yes" value="Y">Yes</mat-radio-button>
+                  </div>
+                  <div style="margin-top: 3%">
+                    <mat-radio-button id="no" value="N">No</mat-radio-button>
+                  </div>
+                </fieldset>
+                <mat-error class="text-danger" id="mandatoryRequired" *ngIf="form.get('mandatory').errors?.required
+                &&(userForm.submitted || form.get('mandatory').touched || form.get('mandatory').dirty)">
+                  Mandatory is required
+                </mat-error>
+              </mat-radio-group>
+            </p>
+
+          </mat-card>
+          <mat-card style="margin-top: 1%">
+            <p>
+              <mat-radio-group id="applicable" formControlName="applicable" name="applicable" [disabled]="isDisabled"
+                aria-label="Select an option">
+                <!-- <mat-label>Applicable at *</mat-label> -->
+                <fieldset style="margin-left: -15px;" class="border">
+                  <legend>Applicable at *</legend>
+                  <div style="margin-top: 3%">
+                    <mat-radio-button id="header" value="Header">Header</mat-radio-button>
+                  </div>
+                  <div style="margin-top: 3%">
+                    <mat-radio-button id="line" value="Line">Line</mat-radio-button>
+                  </div>
+                </fieldset>
+                <mat-error class="text-danger" id="applicableRequired" *ngIf="form.get('applicable').errors?.required
+                &&(userForm.submitted || form.get('applicable').touched || form.get('applicable').dirty)">
+                  Applicable is required
+                </mat-error>
+              </mat-radio-group>
+            </p>
+
+          </mat-card>
+          <mat-card style="margin-top: 1%">
+            <p style="width: 80%;">
+              <mat-form-field>
+                <mat-label>Match Query *</mat-label>
+                <textarea id="matchQuery" formControlName="matchQuery" matInput cols="30" rows="4" type="text"
+                  placeholder="Match Query 1 (ex., select paid_amount from claim where patient_account_number = :PCN) - This should match against the Patient control number column using :PCN"
+                  name="LabelName">
+                  </textarea>
+                <mat-error class="text-danger" id="matchQueryRequired" *ngIf="form.get('matchQuery').errors?.required
+                  &&(userForm.submitted || form.get('matchQuery').touched || form.get('matchQuery').dirty)">
+                  Match Query is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+
+          </mat-card>
+          <mat-card style="margin-top: 1%">
+            <p style="width: 80%;">
+              <mat-form-field>
+                <mat-label>Fallback Query #1</mat-label>
+                <textarea id="fallbackQuery1" formControlName="fallbackQuery1" matInput cols="30" rows="4" type="text"
+                  placeholder="Fallback Query 1 (ex., select paid_amount from claim where patient_account_number = :PCN) - This should match against the Patient control number column using :PCN"
+                  name="LabelName">
+                  </textarea>
+              </mat-form-field>
+            </p>
+
+          </mat-card>
+
+          <mat-card style="margin-top: 1%">
+            <p style="width: 80%;">
+              <mat-form-field>
+                <mat-label>Fallback Query #2</mat-label>
+                <textarea id="fallbackQuery2" formControlName="fallbackQuery2" matInput cols="30" rows="4" type="text"
+                  placeholder="Fallback Query 2 (ex., select paid_amount from claim where patient_account_number = :PCN) - This should match against the Patient control number column using :PCN"
+                  name="LabelName">
+                  </textarea>
+              </mat-form-field>
+            </p>
+
+          </mat-card>
+
+          <div fxLayoutAlign="end start" style="margin-top:1%">
+            <button mat-raised-button id="save" color="primary" style="margin-right: 1%"
+              (click)="save(userForm)">Save</button>
+            <button mat-raised-button id="clear" color="accent" (click)="clearSearch('reset')"
+              type="reset">Reset</button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+  </div>
+</div>

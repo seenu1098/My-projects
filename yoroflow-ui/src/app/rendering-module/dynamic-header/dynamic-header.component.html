@@ -1,0 +1,58 @@
+<!-- <ng-container *ngIf="application">
+ <ng-container *ngIf="menu.menuOrientation === 'Top'">
+        <app-dynamic-menu [id]="menu.menuId" [appIdentifier]="id"></app-dynamic-menu>
+        <mat-progress-bar mode="indeterminate" color ="accent"></mat-progress-bar>
+        <router-outlet></router-outlet>
+    </ng-container>
+     <ng-container *ngIf="menu.menuOrientation === 'Bottom'" style="position: fixed;">
+        <router-outlet></router-outlet>
+        <mat-progress-bar *ngIf="loaderService.showLoader" mode="indeterminate" color ="accent"></mat-progress-bar>
+        <app-dynamic-menu [id]="menu.menuId" [appIdentifier]="id"></app-dynamic-menu>
+    </ng-container>
+    <ng-container>
+         <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar> 
+        <app-dynamic-side-nav-bar [id]="application.leftMenuId">
+        </app-dynamic-side-nav-bar>
+    </ng-container>
+</ng-container> -->
+<ng-container *ngIf="application">
+    <div *ngIf="application.topMenuId">
+        <div fxLayout="row">
+            <div style="width: 100%;">
+                <app-dynamic-menu [id]="application.topMenuId" [application]="application"
+                    (isMessageOpened)="getMessageOpened($event)" [hideLogo]="showTopMenuLogo"
+                    (menuEmitter)="getMenuEvent($event)" (isNotificationOpened)="getNotificationOpened($event)"
+                    (messageObject)="getMessageObject($event)" (notificationObject)="getNotificationObject($event)"
+                    (pinEmitter)="pinClicked($event)">
+                </app-dynamic-menu>
+                <!-- <lib-dynamic-menu-tab [id]="application.topMenuId"></lib-dynamic-menu-tab> -->
+            </div>
+        </div>
+        <div style="width: 100%;" *ngIf="application.applicationId!=='yoroflow-app'">
+            <div style="height: 4px;width: 100%;">
+                <mat-progress-bar id="progressBar" *ngIf="show" mode="indeterminate" color="primary"></mat-progress-bar>
+            </div>
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <div fxLayout="row" *ngIf="(application.leftMenuId || application.rightMenuId) && userVo.userId"
+        style="width:100%;overflow-y: auto!important;">
+        <app-dynamic-side-nav-bar style="width:100%" [id]="application.leftMenuId" [application]="application"
+            orientation="Left" [hideLogo]="showLeftMenuLogo" [url]="url" (pinEmitter)="pinClicked($event)"
+            (notificationObjectEmitter)="getNotificationObject($event)">
+        </app-dynamic-side-nav-bar>
+    </div>
+
+    <div fxLayout="row" *ngIf="application.bottomMenuId">
+        <div style="width: 100%;">
+            <div style="height: 4px;width: 100%;">
+                <mat-progress-bar id="progressBar" *ngIf="show" mode="indeterminate" color="primary"></mat-progress-bar>
+            </div>
+            <router-outlet></router-outlet>
+        </div>
+        <div style="width: 100%;margin-top: 1%;" *ngIf="application.bottomMenuId">
+            <app-dynamic-menu [id]="application.bottomMenuId" [application]="application"
+                [hideLogo]="showBottomMenuLogo"></app-dynamic-menu>
+        </div>
+    </div>
+</ng-container>

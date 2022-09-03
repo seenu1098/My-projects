@@ -1,0 +1,127 @@
+
+  
+  .mat-card-avatar  {
+    /* background-image: url('../../assets/images/product-logo.png'); */
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  mat-toolbar {
+    background: none;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+/* @media  only screen and  (min-width: 768px) {
+  .dashboard-items{
+   margin: 1%;display: inline-block;width: 40%;
+  }
+ }
+ @media  only screen and  (min-width: 1200px) {
+ .dashboard-items{
+   margin: 0.5%;display: inline-block;width: 21%;
+  }
+ } */
+
+ @media  only screen and  (min-width: 1024px) {
+  .dashboard-items{
+    margin:1%;display: inline-block;width: 30%;
+   }
+   /* .margin-class{
+     margin-left: -8%;
+   } */
+  }
+ 
+  @media  only screen and  (max-width: 850px) {
+    .dashboard-items{
+     margin:1.2%;display: inline-block;width: 100%;border-radius: 5px;height: 200px;
+   }
+  }
+
+  .app-logo{
+    width: 25px;
+    height: 25px;
+    background-size: cover;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin-left:5px;
+    margin-top:5px;
+  }
+
+  .mat-card-header{
+    padding:5px !important;
+  }
+  
+  .mat-card{
+    padding:0 !important;
+  }
+  
+  .top{
+    margin-top:5px;
+  }
+
+  .title{
+    margin-top:5px;
+    margin-left:5px;
+  }
+
+  hr.new1 {
+    border-top: 1px solid rgb(232, 232, 232);
+    margin: 0px!important;
+  }
+
+
+
+#appCreate{
+  font-size: 16px;
+}
+  .bg_whitesmoke{
+    background: whitesmoke;
+  }
+  .main_continer{
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height:40px
+  }
+  .margin-class{
+    width:100%
+  }
+.title{
+  font-size: 14px;
+  font-weight: bold
+}
+.box_head_icon{
+  font-size: 16px;
+  cursor: pointer;
+}
+.mat-card-header-text{
+  margin: 0%!important;
+}
+.text_description{
+  color:grey;font-size: 14px;margin-left:5px;margin-top:5px;width: 96%;
+}
+ ::ng-deep .mat-card-header-text{	margin:0px!important;
+ }
+ .w-100{
+   width:100%!important;
+ }
+  
+ @media  only screen and  (min-width: 768px) {
+ #container_mat_card mat-card{
+  /* height: 230px; */
+ }
+}
+ @media  only screen and  (max-width: 768px) {
+ #container_mat_card mat-card{
+  /* height: 250px; */
+  width: 97%;
+ }
+}
+.scroll_content{
+  white-space: nowrap; 
+  width: 95%; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

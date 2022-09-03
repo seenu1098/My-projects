@@ -1,0 +1,75 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <ng-conatiner *ngIf="type==='notify'">
+        <div fxLayout="row">
+            <h4 style="color: #656565;width:130px" i18n="Custom users">Custom users</h4>
+            <span class="line-style"></span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field class="example-chip-list" appearance="outline" style="width: 90%;">
+                <mat-label i18n="Custom users">Custom Users</mat-label>
+                <mat-chip-list #chipList aria-label="Fruit selection">
+                    <mat-chip *ngFor="let user of customUsers; let i = index;" [selectable]="selectable"
+                        [removable]="removable" (removed)="removeCustomUsers(i)" color="primary" selected>
+                        {{user}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip>
+                    <input #fruitInput formControlName="customUsers" [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="addCustomUsers($event)">
+                </mat-chip-list>
+            </mat-form-field>
+        </div>
+        <mat-error *ngIf="form.get('customUsers').errors?.email===true" i18n="Please enter a valid mail">Please enter a
+            valid mail</mat-error>
+    </ng-conatiner>
+
+
+    <ng-conatiner *ngIf="groupList!==undefined && groupList!==null && groupList.length>0 && type==='notify'">
+        <div fxLayout="row">
+            <h4 style="color: #656565;width:130px" i18n="Select groups">Select groups</h4>
+            <span class="line-style"></span>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px">
+            <mat-form-field appearance="outline" style="width: 90%;">
+                <mat-label i18n="Groups">Groups</mat-label>
+                <mat-select formControlName="groups" multiple>
+                    <mat-select-trigger>
+                        <mat-chip-list>
+                            <mat-chip *ngFor="let group of form.get('groups').value" [removable]="true"
+                                (removed)="removeGroup(group)" color="primary" selected>
+                                {{group.groupName}}
+                                <mat-icon matChipRemove>cancel</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
+                    </mat-select-trigger>
+                    <mat-option *ngFor="let group of groupList;let i = index;" [value]="group" [id]="'group_'+i">
+                        {{group.groupName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </ng-conatiner>
+    <div fxLayout="row">
+        <h4 style="color: #656565;width:130px" i18n="Select users">Select users</h4>
+        <span class="line-style"></span>
+    </div>
+    <div fxLayout="row" fxLayoutGap="20px">
+        <mat-form-field appearance="outline" style="width: 87%;">
+            <mat-label i18n="Users">Users</mat-label>
+            <mat-select formControlName="users" multiple>
+                <mat-select-trigger>
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let user of form.get('users').value" [removable]="true"
+                            (removed)="removeUser(user)" color="primary" selected>
+                            {{user.firstName}} {{user.lastName}}
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>
+                </mat-select-trigger>
+                <mat-option *ngFor="let user of userList;let i = index;" [value]="user" [id]="'user_'+i">
+                    {{user.firstName}} {{user.lastName}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="getUserName()" class="apply-button-css"
+            i18n="Apply">Apply</button>
+    </div>
+</form>

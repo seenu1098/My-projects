@@ -1,0 +1,70 @@
+.mat-mini-fab  {
+    height: 30px;
+    width: 30px;
+  }
+
+  .mat-icon{
+    font-size:16px ;
+}
+
+.legacy {
+  border-radius: 25px;
+  border: 2px solid rgb(221, 218, 218);
+  padding: 3px;
+  width: 100%;
+  height: 24px;
+  display: inline-block;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-selected {
+  background-color: #ffa900; 
+}
+
+::ng-deep .mat-step-header .mat-step-icon {
+  background-color: #0011ff; 
+}
+
+::ng-deep .mat-step-header-selected {
+  background-color: rgb(78, 102, 236); 
+}
+
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: #00b74a;
+  color: white;
+}
+
+.step-border {
+  border: 4px solid #dee1e4;
+	padding: 1.75rem 1.5rem;
+	border-top-left-radius: 0.42rem;
+	border-top-right-radius: 0.42rem;
+}
+
+
+
+  table {
+    border-collapse: collapse;
+    border: 1px solid rgb(252, 225, 209);
+   }
+   td, th {
+    height: 10px;
+    padding: 5px;
+    text-align: left;
+    border: 1px solid rgb(252, 225, 209);
+   }
+
+.w-100{
+  width: 100%!important;
+}
+.w-10{
+  width: 10%!important;
+}
+.w-80{
+  width: 80%!important;
+}
+.w-90{
+  width: 90%!important;
+}
+.w-45{
+  width: 45%!important;
+}

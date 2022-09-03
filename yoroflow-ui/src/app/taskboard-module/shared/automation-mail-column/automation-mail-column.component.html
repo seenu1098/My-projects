@@ -1,0 +1,39 @@
+<ng-container *ngIf="tableColumnNames.length>0">
+    <div fxLayout="row">
+        <h4 style="color: #656565;width: 170px;" i18n="Select table column">Select table column</h4>
+        <span class="line-style"></span>
+    </div>
+    <div fxLayout="row wrap" style="margin-bottom: 40px;">
+        <ng-container *ngFor="let column of tableColumnNames;let i = index;">
+            <div class="server-name-style" (click)="getColumnName(column)" [id]="'column_'+i" appMaterialElevation>
+                {{column}}
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<div fxLayout="row">
+    <h4 style="color: #656565;width: 170px;" i18n="Enter custom email">Enter custom email</h4>
+    <span class="line-style"></span>
+</div>
+<form [formGroup]="form" #userForm="ngForm">
+    <div fxLayout="row" style="margin-bottom: 40px;">
+        <mat-form-field class="example-chip-list" appearance="outline" style="width: 90%;">
+            <mat-label i18n="Custom email">Custom Mail</mat-label>
+            <mat-chip-list #chipList aria-label="Fruit selection">
+                <mat-chip *ngFor="let mail of customMails; let i = index;" [selectable]="selectable"
+                    [removable]="removable" (removed)="removeCustomMails(i)" color="primary" selected>
+                    {{mail}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+                <input #fruitInput formControlName="customMails" [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="addCustomMails($event)">
+            </mat-chip-list>
+        </mat-form-field>
+    </div>
+    <mat-error *ngIf="form.get('customMails').errors?.email===true" i18n="Please enter a valid mail">Please enter a
+        valid mail</mat-error>
+    <div fxLayout="row" fxLayoutAlign="end">
+        <button mat-raised-button color="primary" (click)="applyCustomMails(userForm)" i18n="Apply">Apply</button>
+    </div>
+</form>

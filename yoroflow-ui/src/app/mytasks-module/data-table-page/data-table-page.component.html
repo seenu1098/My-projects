@@ -1,0 +1,34 @@
+<form [formGroup]="form">
+    <div fxLayout="row" [class]="themeService.layoutName">
+        <div fxLayout="column" class="board-list-css">
+            <!-- [style.height]="screenHeight"> -->
+            <h1 class="my-2 font-weight-bold pl-2">Data Table</h1>
+            <div fxLayout="row" class="justify-content-center">
+                <div class="input-group mb-3 mx-1 " id="border_less">
+                    <input type="text" formControlName="search" class="form-control fs_12"
+                        placeholder="{{'Search...' | translate}}">
+                    <div class="input-group-append bg-trasparent">
+                        <span class="input-group-text pr-2">
+                            <mat-icon matSuffix class="fs_14 w_14 h_14">search</mat-icon>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <perfect-scrollbar style="width:100%" id="menu_with_icon" [style.height]="listScrollHeight">
+                <!-- [style.height]="taskboardListScrollHeight"> -->
+                <ul class="child_menu pl-0" *ngIf="filterTableObjectsList?.length>0">
+                    <li *ngFor="let dataTable of filterTableObjectsList; let i = index" class="fs_12">
+                        <div fxLayout="row" [ngClass]="dataTable?.tableName === activeElement ? 'active_li' : 'li-css'"
+                            (click)="selectedDataTable(dataTable)">
+                            <span>{{dataTable?.tableName}}</span>
+                        </div>
+                    </li>
+                </ul>
+            </perfect-scrollbar>
+        </div>
+        <perfect-scrollbar [style.height]="tableScrollHeight">
+            <app-data-table *ngIf="isSelect" [tableObjectId]="dataTableId" [object]="this" from="landing-page">
+            </app-data-table>
+        </perfect-scrollbar>
+    </div>
+</form>

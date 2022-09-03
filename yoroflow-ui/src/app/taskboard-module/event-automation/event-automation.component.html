@@ -1,0 +1,389 @@
+<div *ngIf="!show" fxLayout="row" fxLayoutAlign="space-between center"
+    style="border-bottom: 0.5px solid rgb(214, 214, 214);margin: 0px -20px;">
+    <span style="margin-left:15px;font-size: 18px;font-weight: bold;" i18n="Start from scratch">Start from
+        scratch</span>
+    <div fxLayout="column">
+        <div fxLayout="row">
+            <div [class]="tabType==='customAutomation'?'shadow-class':''">
+                <button id="custom_automation" mat-button [color]="tabType==='customAutomation'?'primary':''"
+                    type="button" [style.background]="tabType==='customAutomation'?'#e5f4ff':''"
+                    (click)="openAutomation('customAutomation')" style="font-size: 15px" i18n="Automations Center">
+                    Automations Center</button>
+            </div>
+            <div [class]="tabType==='boardAutomation'?'shadow-class':''">
+                <button id="board_automation" mat-button [color]="tabType==='boardAutomation'?'primary':''"
+                    type="button" [style.background]="tabType==='boardAutomation'?'#e5f4ff':''"
+                    (click)="openAutomation('boardAutomation')" style="font-size: 15px" i18n="Existing Event
+                    Automations">Existing Event
+                    Automations</button>
+            </div>
+        </div>
+    </div>
+    <mat-icon (click)="close()" style="cursor: pointer;margin-right: 15px;">close</mat-icon>
+</div>
+<ng-container *ngIf="count<3">
+    <div fxLayout="row" fxLayoutAlign="center center" style="height:90%" fxLayoutGap="20px">
+        <span i18n="Loading automations">Loading automations</span>
+        <span class="dot-falling"></span>
+    </div>
+</ng-container>
+<ng-container *ngIf="count>=3">
+    <div fxLayout="row" style="width:100%" *ngIf="tabType==='customAutomation' && !show">
+        <div fxLayout="column" id="category-column">
+            <span class="category-label-css" i18n="Categories">Categories</span>
+            <ng-conatiner *ngFor="let category of categoriesArray; let i = index;">
+                <button mat-button class="category-button-css" [style.color]="category.isSelected?'#039be5':'black'"
+                    [style.background]="category.isSelected?'#e5f4ff':''" (click)="onCategorySelected(category)"
+                    [id]="'catagory_'+i">
+                    <mat-icon [style.color]="category.color" style="font-size: 20px;margin-right: 10px;">
+                        {{category.icon}}
+                    </mat-icon>
+                    <span>{{category.name | translate}}</span>
+                </button>
+            </ng-conatiner>
+            <span class="category-label-css" i18n="Taskboard Apps">Taskboard Apps</span>
+            <button mat-button class="category-button-css" [style.color]="appSelected?'#039be5':'black'"
+                [style.background]="appSelected?'#e5f4ff':''" (click)="onCategorySelected('apps')" id="my-app">
+                <mat-icon style="font-size: 20px;margin-right: 10px;color:green">
+                    apps
+                </mat-icon>
+                <span i18n="My Apps">My Apps</span>
+            </button>
+        </div>
+        <div *ngIf="!appSelected" fxLayout="column" style="width:87%">
+            <mat-card class="card-css" appMaterialElevation defaultElevation=4 raisedElevation=16
+                (click)="createAutomation()">
+                <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center">
+                    <mat-icon class="animate-class">dashboard_customize</mat-icon>
+                    <h2 class="mb-0" style="font-family: Arial;text-align: center" i18n="Create automations with different
+                    categories">Create automations with different
+                        categories</h2>
+                </div>
+            </mat-card>
+            <div fxLayout="row" style="margin-left: 15px;padding: 15px 0px;">
+                <span class="category-headerName-css" i18n="Application Filter">
+                    Application Filter
+                </span>
+                <span class="border-css"></span>
+            </div>
+            <div fxLayout="row wrap" style="margin-left: 15px;">
+                <ng-container *ngFor="let logo of logoArray;let i = index;">
+                    <span (click)="selectedLogo(logo)" class="logo-selection-class"
+                        [class.logo-selection-class-active]="logo.isSelected===true">
+                        <img [src]="logo.img" class="app-icon-css">
+                        {{logo.name}}
+                    </span>
+                </ng-container>
+            </div>
+            <ng-conatiner *ngFor="let category of categoryAutomations; let i = index">
+                <div fxLayout="row" class="categoryName-header-css">
+                    <span class="category-headerName-css">{{category.categoryName | translate}}</span>
+                    <span class="categoryName-heading-border-css"></span>
+                </div>
+                <div fxLayout="row wrap">
+                    <ng-conatiner *ngFor="let automation of category.automation; let j = index">
+                        <div [style.backgroundImage]="getBackgroundImage(category.categoryName)"
+                            class="category-automation-card background-lighten"
+                            (click)="openAutomationFromCetegory(category.automation[j],category.categoryName)"
+                            appMaterialElevation defaultElevation=4 raisedElevation=16 [id]="'category_'+i+'_'+j">
+                            <h3 class="automation-css">{{automation | translate}}</h3>
+                            <div *ngIf="isApplicationLogo(automation)" fxLayout="row" fxLayoutAlign="end">
+                                <img [src]="getAppLogo(automation)" class="logo-class">
+                                <span class="application-name-css">{{getAppName(automation)}}</span>
+                            </div>
+                        </div>
+                    </ng-conatiner>
+                </div>
+            </ng-conatiner>
+        </div>
+        <div *ngIf="appSelected" fxLayout="column" style="width:87%">
+            <ng-container>
+                <div fxLayout="row wrap" *ngIf="organizationApps.length>0" style="margin-top: 20px;">
+                    <ng-conatiner *ngFor="let app of organizationApps; let j = index">
+                        <div fxLayout="column" class="img-card" appMaterialElevation defaultElevation=4
+                            raisedElevation=16>
+                            <div fxLayout="row">
+                                <img [src]="getImage(app)" class="img-class">
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="center center">
+                                <button mat-button *ngIf="app.remove===false" class="add-button-css"
+                                    (click)="addApplication(app)" [disabled]="disabled" i18n="Add">
+                                    Add</button>
+                                <button mat-button *ngIf="app.remove===true" class="remove-button-css"
+                                    (click)="removeApplication(app)" [disabled]="disabled" i18n="Remove">
+                                    Remove</button>
+                            </div>
+                        </div>
+                    </ng-conatiner>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div id="event-automation" (mouseenter)="mouseenter('true')" *ngIf="tabType==='boardAutomation'">
+        <ng-container *ngIf="!show">
+            <ng-container *ngFor="let event of script; let i = index;">
+                <mat-card [style.margin-top]="i>0?'10px':'20px'" appMaterialElevation defaultElevation=4
+                    raisedElevation=16
+                    [style.border]="event.ruleActive===true?'2px solid #00800085':'2px solid #ff000082'"
+                    [style.background]="event.ruleActive===false?'#ececec':''">
+                    <div *ngIf="event.automationType!=='schedule'" fxLayout="row wrap">
+                        <ng-container *ngFor="let scripts of event.automation; let j = index;">
+                            <ng-container *ngFor="let word of scripts.words;let k = index">
+                                <span class="automation-style">
+                                    <span [class]="event.disabledApps.length===0?getKeywords(scripts,word,k):''"
+                                        [style.background]="scripts.keyValuePair.value===word?scripts.keyValuePair.color:''"
+                                        [style.line-height]="scripts.keyValuePair.value===word?'25px':'26px'"
+                                        [style.margin-left]="word===','?'-8px':''"
+                                        style="margin-right:10px;font-weight: lighter!important;">{{word |
+                                        translate}}</span>
+                                </span>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="event.automationType==='schedule'" class="automation-style" fxLayout="row wrap">
+                        <span style="margin-right:10px;" i18n="Starting from">Starting from</span>
+                        <span class="actions-class" style="margin-right:10px;">{{date}}</span>
+                        <span style="margin-right:10px;" i18n="every"> every </span>
+                        <ng-container *ngFor="let script of automation; let i = index;">
+                            <span class="actions-class" style="margin-right:10px;">
+                                {{script}}
+                            </span>
+                        </ng-container>
+                        <ng-container *ngFor="let scripts of timePeriodScript; let i = index;">
+                            <ng-container *ngFor="let word of scripts.words;let j = index">
+                                <span [class]="getKeywords(scripts,word,j)"
+                                    [style.background]="scripts.keyValuePair.value===word?scripts.keyValuePair.color:''"
+                                    [style.text-decoration]="mouseOverScriptIndex===i && removeIconMouseOver ? 'line-through':''"
+                                    style="margin-right:10px;" [style.margin-left]="word===','?'-8px':''"
+                                    (click)="loadFields(scripts,word)">{{word | translate}}</span>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: 15px;">
+                        <div fxLayout="column" style="width:80%">
+                            <div fxLayout="row" fxLayoutAlign="space-between center" style="width:100%">
+                                <div fxLayout="row" *ngFor="let app of event.appNameList;let k = index;">
+                                    <img [src]="getAppLogoByAppName(app)" class="logo-class">
+                                    <span class="application-name-css">{{app}}</span>
+                                </div>
+                                <div fxLayout="row wrap" *ngIf="event.disabledApps && event.disabledApps.length>0"
+                                    style="width: 70%;">
+                                    <span class="warning-css" appMaterialElevation defaultElevation=4 raisedElevation=4
+                                        i18n="You need
+                                        to add following applications (">You need
+                                        to add following applications (
+                                        <ng-container *ngFor="let disableApp of event.disabledApps; let l = index">
+                                            <b>{{disableApp}}</b>
+                                            <span
+                                                *ngIf="event.disabledApps.length===1 && l!==event.disabledApps.length-1">&nbsp;,</span>
+                                        </ng-container>
+                                    </span>
+                                    <span i18n=") for enable this automation.">) for enable this automation.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxLayout="column">
+                            <div fxLayout="row" fxLayoutGap="15px">
+                                <mat-slide-toggle [checked]="event.ruleActive" (change)="change($event,event,i)"
+                                    [id]="'ruleActive_'+i"
+                                    [disabled]="event.disabledApps && event.disabledApps.length>0" i18n="Enabled">
+                                    Enabled
+                                </mat-slide-toggle>
+                                <mat-icon matTooltip="Edit Automation" i18n-matTooltip="Edit Automation"
+                                    style="cursor:pointer" (click)="getAutomation(event.id,event.automationType)"
+                                    *ngIf="event.disabledApps && event.disabledApps.length===0">edit
+                                </mat-icon>
+                                <mat-icon matTooltip="Delete Automation" i18n-matTooltip="Delete Automation"
+                                    style="cursor:pointer" color="accent" (click)="deleteAutomation(event.id,i)">delete
+                                </mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card>
+            </ng-container>
+            <div fxLayout="row" fxLayoutAlign="end end">
+                <button mat-raised-button id="create_automation" style="margin-top:10px;" type="button"
+                    (click)="createAutomation()" color="primary" i18n="Create Automation">Create Automation</button>
+            </div>
+        </ng-container>
+    </div>
+
+    <div *ngIf="show" id="automation">
+        <div (mouseenter)="mouseenter('true')" fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-icon (click)="back()" style="cursor: pointer;color:grey;">arrow_back</mat-icon>
+            <div style="font-size: 15px;font-weight: bold;margin-left:20px;" i18n="Event Automation">Event Automation
+            </div>
+            <mat-icon (click)="close()" style="cursor: pointer;">close</mat-icon>
+        </div>
+        <ng-container>
+            <ng-container>
+                <h1 class="header-style">
+                    <div (mouseenter)="mouseenter('true')" fxLayout="row wrap">
+                        <ng-container *ngFor="let scripts of automationSciptsVO; let i = index;">
+                            <ng-container *ngIf="mouseOverScriptIndex===i">
+                                <span (mouseenter)="onMouseEnter(i)" (mouseleave)="onMouseLeave(i)">
+                                    <mat-icon (click)="removeAutomation(scripts,i)" class="removeIcon-css">highlight_off
+                                    </mat-icon>
+                                </span>
+                            </ng-container>
+                            <ng-container *ngFor="let word of scripts.words;let j = index">
+                                <span [class]="getKeywords(scripts,word,j)"
+                                    (mouseenter)="scriptMouseEnter(scripts,i,automationSciptsVO.length)"
+                                    [style.background]="scripts.keyValuePair.value===word?scripts.keyValuePair.color:''"
+                                    [style.text-decoration]="mouseOverScriptIndex===i && removeIconMouseOver ? 'line-through':''"
+                                    style="margin-right:10px;margin-top:15px;"
+                                    [style.margin-left]="word===','?'-8px':''" (click)="loadFields(scripts,word)"
+                                    [matMenuTriggerFor]="menu1" #menuTrigger1="matMenuTrigger">{{word |
+                                    translate}}</span>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <button (mouseenter)="mouseenter('true')" mat-button *ngIf="isSecondaryAction" color="primary"
+                        type="button" (click)="addAction()" i18n="+ Add Action">
+                        + Add Action</button>
+                    <!-- <button (mouseenter)="mouseenter('true')" mat-button
+                        *ngIf="isSecondaryAction && automationFrom!=='category'" color="primary" type="button"
+                        (click)="addEvent()" i18n="+ Add Event">
+                        + Add Event</button> -->
+                </h1>
+            </ng-container>
+            <div (mouseenter)="mouseenter('true')" fxLayout="row wrap" style="height:50%;width:100%;margin-top: 20px;">
+                <ng-container *ngIf="isActions">
+                    <div fxLayout="column" style="width: 100%;margin-left:20px">
+                        <div fxLayout="row" *ngIf="actionsList.length>0">
+                            <h4 style="color: #656565;" i18n="Select conditions">Select conditions</h4>
+                            <span class="line-style"></span>
+                        </div>
+                        <div fxLayout="row wrap">
+                            <ng-container *ngFor="let automation of actionsList;let i = index;">
+                                <div class="actionsList-style" (click)="loadAutomation(automation)"
+                                    [id]="'primaryActions_'+i" appMaterialElevation>{{automation.automation |
+                                    translate}}</div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!isActions">
+                    <ng-container *ngIf="automationType==='label'">
+                        <automation-label class="actions-css" [labels]="data.labelsList"
+                            [taskboardId]="data.taskboardId" (labelName)="loadFieldValues($event)"
+                            (labelsList)="getLabels($event)">
+                        </automation-label>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='notify' || automationType==='assigned'">
+                        <automation-assigned-user class="actions-css" [userList]="boardUsers" [groupList]="boardGroups"
+                            (user)="getUsers($event)" [message]="message" [allUsers]="usersList" [users]="users"
+                            [groups]="groups" [emails]="customUsers" [type]="automationType">
+                        </automation-assigned-user>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='status' || automationType==='subtask status'">
+                        <automation-status class="actions-css" [taskboardStatus]="data.statusList"
+                            [automationType]="automationType" [selectedScript]="selectedScript"
+                            (statusName)="loadFieldValues($event)" [data]="data"
+                            (automationTypeEmit)="setAutomationType($event)">
+                        </automation-status>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='message'">
+                        <app-automation-quill-editor class="actions-css" [automation]="true"
+                            [selectedScript]="selectedScript" [createTask]="automationType==='create task'?true:false"
+                            [inputMessage]="message" (message)="isActionsLoad()" [page]="data.page">
+                        </app-automation-quill-editor>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='task field'">
+                        <app-task-field class="actions-css" [selectedScript]="selectedScript"
+                            [automationType]="automationType" (fieldName)="setAutomationType($event)"
+                            [page]="data.page">
+                        </app-task-field>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='field_value'">
+                        <app-automation-field-value class="actions-css" [selectedScript]="selectedScript"
+                            [automationType]="automationType" (columnNameEmit)="isActionsLoad()" [page]="data.page">
+                        </app-automation-field-value>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='new task' || automationType==='create task'">
+                        <app-automation-taskboard class="actions-css" [taskboardVO]="data.taskboardVO"
+                            [selectedScript]="selectedScript" (boardDetails)="loadBoardDetails($event)"
+                            [taskboardList]="data.taskboardList" [type]="automationType" [page]="data.page"
+                            [taskboardName]="data.boardName" (boardDetailsEmit)="isActionsLoad()">
+                        </app-automation-taskboard>
+                    </ng-container>
+                    <ng-container
+                        *ngIf="automationType==='app_notification' && (applicationName==='Microsoft Teams' || applicationName==='Slack')">
+                        <app-automation-app-integration class="actions-css" [selectedScript]="selectedScript"
+                            (channelDetails)="loadChannel($event)" (message)="isActionsLoad()"
+                            [taskboardVO]="data.taskboardVO">
+                        </app-automation-app-integration>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='email_campaign'">
+                        <app-email-server class="actions-css" [selectedScript]="selectedScript"
+                            (serverEmit)="isActionsLoad()"></app-email-server>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='columnName'">
+                        <app-automation-mail-column class="actions-css" [customMail]="customMail" [page]="data.page"
+                            [selectedScript]="selectedScript" (columnNameEmit)="isActionsLoad()">
+                        </app-automation-mail-column>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='subject'">
+                        <app-automation-subject class="actions-css" [selectedScript]="selectedScript"
+                            [subject]="subject" (subjectEmit)="isActionsLoad()" [page]="data.page">
+                        </app-automation-subject>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='outlook-integration'">
+                        <app-automation-outlook-integration class="actions-css" [userList]="boardUsers"
+                            [groupList]="boardGroups" (user)="getUsers($event)" [message]="message"
+                            [allUsers]="usersList" [users]="users" [groups]="groups" [emails]="customUsers"
+                            [type]="automationType" [selectedScript]="selectedScript" (columnNameEmit)="isActionsLoad()"
+                            [page]="data.page">
+                        </app-automation-outlook-integration>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='startTime'">
+                        <app-automation-date-time class="actions-css" [selectedScript]="selectedScript"
+                            (columnNameEmit)="isActionsLoad()" [page]="data.page" [type]="automationType">
+                        </app-automation-date-time>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='endTime'">
+                        <app-automation-date-time class="actions-css" [selectedScript]="selectedScript"
+                            (columnNameEmit)="isActionsLoad()" [page]="data.page" [type]="automationType">
+                        </app-automation-date-time>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='location'">
+                        <app-automation-location class="actions-css" [selectedScript]="selectedScript"
+                            (columnNameEmit)="isActionsLoad()" [page]="data.page"></app-automation-location>
+                    </ng-container>
+                    <ng-container *ngIf="automationType==='data_table'">
+                        <app-automation-data-table class="actions-css" [taskboardVO]="data.taskboardVO"
+                            [selectedScript]="selectedScript" (boardDetails)="loadBoardDetails($event)"
+                            [taskboardList]="data.taskboardList" [type]="automationType" [page]="data.page"
+                            [taskboardName]="data.boardName" (boardDetailsEmit)="isActionsLoad()">
+                        </app-automation-data-table>
+                    </ng-container>
+                </ng-container>
+            </div>
+            <div (mouseenter)="mouseenter('true')" fxLayout="row" fxLayoutAlign="end end">
+                <button *ngIf="!updateAutomation && isActions" mat-raised-button type="button" color="primary"
+                    (click)="saveAutomation()" [disabled]="isDisabled" i18n="Save Automation">
+                    Save Automation</button>
+                <button *ngIf="updateAutomation && isActions" mat-raised-button type="button" color="primary"
+                    (click)="saveAutomation()" [disabled]="isDisabled" i18n="Update Automation">
+                    Update Automation</button>
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<form [formGroup]="form" #userForm="ngForm">
+    <mat-menu #menu1="matMenu" class="column-menu">
+        <div fxLayout="column" fxLayoutAlign="center" (click)="$event.stopPropagation()" style="width: 98%;">
+            <mat-form-field appearance="outline">
+                <mat-label i18n="Number of days">Number of days</mat-label>
+                <input matInput type="number" formControlName="numberOfDays" required min="1" max="12"
+                    oninput="this.value = Math.abs(this.value)">
+                <mat-error *ngIf="form.get('numberOfDays').errors?.required" i18n="Days is required">Days is required
+                </mat-error>
+                <mat-error *ngIf="form.get('numberOfDays').value===0" i18n="Days should be 1 or more">Days should be 1
+                    or more</mat-error>
+            </mat-form-field>
+            <button mat-raised-button type="button" color="primary" (click)="loadDays(userForm)"
+                i18n="Apply">Apply</button>
+        </div>
+    </mat-menu>
+</form>

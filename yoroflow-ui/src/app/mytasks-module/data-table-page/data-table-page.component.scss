@@ -1,0 +1,66 @@
+.board-list-css {
+    width: 200px;
+    border-right: 1px solid #dddddd;
+}
+
+.modern {
+    .active_li {
+      background-color: var(--theme-main-color);
+      color: #fff;
+      padding-top: 5px !important;
+      padding-right: 10px;
+      padding-bottom: 5px !important;
+      padding-left: 7px !important;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      width: 97%;
+      margin-left: 1.5%;
+      border-radius: 5px;
+      display: inline-block;
+    }
+}
+
+.simple {
+    .active_li {
+      border-bottom-right-radius: 30px;
+      background-color: var(--theme-main-color);
+      color: white;
+      border-top-right-radius: 30px;
+      padding-top: 7px !important;
+      padding-right: 10px;
+      padding-bottom: 7px !important;
+      padding-left: 7px !important;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      display: inline-block;
+    }
+}
+
+.li-css {
+    cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 9px;
+    padding-right: 10px;
+    font-size: 12px;
+}
+  
+.li-css:hover {
+    background-color: #ebebeb;
+    .sprint_setting_icon{
+      display: inline-block;
+      cursor: pointer;
+      height: 21px;
+    }
+}
+  
+.active_li:hover {
+    background-color: var(--theme-main-color) !important;
+    .sprint_setting_icon{
+      display: inline-block;
+      cursor: pointer;
+      height: 21px;
+    }
+}

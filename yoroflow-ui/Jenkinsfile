@@ -1,0 +1,10 @@
+@Library("yorosis-shared-library") _
+
+standardPipeline {
+    projectType = "angular"
+    deploymentName = "yoroflow-ui-deployment"
+    dockerImageName = "yoroflow-ui"
+    canSkipSonarQubeCheck = true
+    canBuildDockerImage = true
+    canDeployImage = true
+}

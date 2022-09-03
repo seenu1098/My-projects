@@ -1,0 +1,73 @@
+<ng-container *ngIf="comments.isEdit===undefined || comments.isEdit===false">
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: 10px;z-index: 9999;"
+        [style.margin-left]="left">
+        <div fxLayout="column">
+            <div fxLayout="row" class="padding-css">
+                <div fxLayout="column" class="image-circle">
+                    <span style="align-self: center;">{{getCommentsUserPrefix(comments.createdBy)}}</span>
+                    <ng-container *ngIf="comments.nestedComments && comments.nestedComments.length>0">
+                        <mat-icon (click)="close(comments)" class="collpase-css" style="color: red;"
+                            [style.margin-left]="index===1?'8px':'10px'" matTooltip="Collapse"
+                            *ngIf="comments.openComment===undefined || comments.openComment===null || comments.openComment===false">
+                            remove_circle_outline</mat-icon>
+                        <mat-icon (click)="close(comments)" class="collpase-css"
+                            [style.margin-left]="index===1?'8px':'10px'" style="color: blue;"
+                            *ngIf="comments.openComment===true" matTooltip="Expand">add_circle_outline</mat-icon>
+                    </ng-container>
+                </div>
+                <span class="createdBy-css"><b>{{comments.createdBy}}</b>&nbsp;&nbsp;<span style="font-size: 12px;"
+                        i18n="Created
+                        {{getDataDiff(comments.createdOn)}}">Created
+                        {{getDataDiff(comments.createdOn)}}</span></span>
+                <span *ngIf="comments.modifiedOn && comments.createdOn!==comments.modifiedOn" class="createdBy-css"
+                    style="font-size: 12px;">
+                    -<span style="margin-left: 8px;" i18n="Last edited">Last edited</span>
+                    {{getDataDiff(comments.modifiedOn)}}</span>
+
+            </div>
+        </div>
+        <div fxLayout="column" *ngIf="isArchived===false">
+            <div fxLayout="row">
+                <div fxLayout="column">
+                    <mat-icon *ngIf="checkLoggedInUser(comments)===true" (click)="editMessage(comments)"
+                        class="edit-css">edit
+                    </mat-icon>
+                </div>
+                <div fxLayout="row" class="reply-button-css" (click)="replyComment(comments)">
+                    <mat-icon style="font-size: 15px;margin-top: 2px;">reply
+                    </mat-icon>
+                    <div class="reply-label-css" i18n="Reply">Reply</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="comment-css" [style.margin-left]="contentLeft" *ngIf="comments.comments"
+        [innerHTML]="comments.comments">
+    </div>
+    <div class="comment-css" [style.margin-left]="contentLeft" *ngIf="comments.nestedComment"
+        [innerHTML]="comments.nestedComment">
+    </div>
+</ng-container>
+<ng-container *ngIf="comments.isEdit===true">
+    <div [style.margin-left]="contentLeft">
+        <app-quill-editor style="width: 100%;" [isEdit]="true" [users]="users"
+            [comments]="comments.comments?comments.comments:comments.nestedComment"
+            (editorValue)="setUpdateMessage($event,comments)" (close)="closeQuill(comments)"></app-quill-editor>
+    </div>
+</ng-container>
+<ng-container *ngIf="comments.isReply===true">
+    <div [style.margin-left]="contentLeft">
+        <app-quill-editor style="width: 100%;" [isReply]="true" [users]="users"
+            (editorValue)="setReplyMessage($event,comments)" (close)="closeQuill(comments)"></app-quill-editor>
+    </div>
+</ng-container>
+<ng-container
+    *ngIf="comments.nestedComments.length>0 && (comments.openComment===undefined || comments.openComment===null || comments.openComment===false)">
+    <p style="position: relative;width: 100%;">
+        <span class="vl" [style.margin-left]="contentLeft"></span>
+        <app-task-comments *ngFor="let comments of comments.nestedComments;" [comments]="comments"
+            [usersList]="usersList" [taskBoardTaskVO]="taskBoardTaskVO" [index]="index+1" [loggedInUser]="loggedInUser"
+            [taskList]="taskList" [users]="users" [isArchived]="isArchived">
+        </app-task-comments>
+    </p>
+</ng-container>

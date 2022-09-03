@@ -1,0 +1,208 @@
+<!-- <mat-card>
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="height:60px">
+        <mat-card-title>Task Details List</mat-card-title>
+        <button mat-raised-button color="primary" (click)="onClick()">Back to List</button>
+    </div>
+    <ng-container>
+        <form [formGroup]="form" #userForm="ngForm">
+            <div formArrayName="filters" class='filter-css'
+                *ngFor="let filter of getFiltersFormArray(); let i = index">
+                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="10px" style="margin: 1%;">
+                    <div fxLayout="column" fxLayoutGap="10px" style="width: 100%;">
+                        <div fxLayout="row" fxLayoutGap="10px">
+                            <mat-select id="filterIdColumn" class="legacy" formControlName="filterIdColumn"
+                                (selectionChange)="getDataType(i,$event.value)" placeholder="Filter Name *">
+                                <mat-option *ngFor="let filterColumn of filterColumns;"
+                                    [value]="filterColumn.fieldName">
+                                    {{ filterColumn.fieldName }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-select id="operators" class="legacy" formControlName="operators" placeholder="Operator">
+                                <mat-option *ngFor="let data of dataType[filterDataType[i]]" [value]="data.value"
+                                    selected>
+                                    {{data.description}}
+                                </mat-option>
+                            </mat-select>
+                            <ng-container>
+                                <div class="legacy">
+                                    <ng-container
+                                        *ngIf="filter.get('dataType').value === '' || filter.get('dataType').value === null">
+                                        <input id="filterIdColumnValue" matInput placeholder="Filter Value *"
+                                            formControlName="filterIdColumnValue">
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="filter.get('dataType').value === 'string'||filter.get('dataType').value === 'text'">
+                                        <input matInput id="filterIdColumnValue" type="text" placeholder="Filter Value"
+                                            formControlName="filterIdColumnValue"
+                                            change="checkValidation($event.value, i)">
+                                    </ng-container>
+                                    <ng-container
+                                        *ngIf="filter.get('dataType').value === 'number' || filter.get('dataType').value === 'long'">
+                                        <input matInput id="filterIdColumnValue" type="number" placeholder="Filter Value"
+                                            formControlName="filterIdColumnValue">
+                                    </ng-container>
+                                    <ng-container *ngIf="filter.get('dataType').value === 'date'">
+                                       
+                                        <div fxLayout="row" fxLayoutGap="10px">
+                                            <input matInput id="filterIdColumnValue" [matDatepicker]="picker"
+                                                formControlName="filterIdColumnValue" placeholder="Filter Value">
+                                            <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #picker></mat-datepicker>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="filter.get('filterIdColumn').value === 'Total Time Taken'">
+                                <mat-select id="units" class="legacy" placeholder="Units"
+                                    (selectionChange)="totalTime(i, $event.value)">
+                                    <mat-option value="days">Days</mat-option>
+                                    <mat-option value="hours">Hours</mat-option>
+                                    <mat-option value="minutes">Minutes</mat-option>
+                                </mat-select>
+                            </ng-container>
+                            <button mat-mini-fab id="btnAdd" type="button" (click)="addAnotherFilter($event, i)" color="primary"
+                                *ngIf="getFiltersFormArray().length === i+1" class="add">
+                                <mat-icon style="font-size: 16px;margin-bottom: 2px;font-weight: bold;">add</mat-icon>
+                            </button>
+                            <button mat-mini-fab id="remove" type="button" *ngIf="getFiltersFormArray().length > 1"
+                                (click)="removeThisService(i)" class="add">
+                                <mat-icon style="font-size: 16px;margin-bottom: 2px;font-weight: bold;">remove
+                                </mat-icon>
+                            </button>
+                        </div>
+                        <div fxLayout="row" style="margin-left: 3%;">
+                            <mat-error class="web-service-error"
+                                *ngIf="filter.get('filterIdColumn').errors?.filterIdColumnRequired && userForm.submitted">
+                                [Filter Name]&nbsp;</mat-error>
+                            <mat-error class="web-service-error"
+                                *ngIf="filter.get('operators').errors?.operatorsRequired && userForm.submitted">
+                                [Operator]&nbsp;</mat-error>
+                            <mat-error class="web-service-error"
+                                *ngIf="filter.get('filterIdColumnValue').errors?.filterIdColumnValueRequired && userForm.submitted">
+                                [Filter Value]&nbsp;</mat-error>
+                            <mat-error class="web-service-error" *ngIf="filter.get('filterIdColumnValue').errors?.filterIdColumnValueRequired || 
+                    filter.get('operators').errors?.operatorsRequired || filter.get('filterIdColumn').errors?.filterIdColumnRequired
+                     && userForm.submitted">
+                                &nbsp;is required</mat-error>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div fxLayoutAlign="end center">
+                <button mat-raised-button id="search" color="primary" (click)="searchFilter(userForm)">Search</button>&nbsp;
+                <button mat-raised-button id="reset" color="accent" type="reset" (click)="reset()">Reset</button>
+            </div>
+        </form>
+    </ng-container>
+</mat-card>
+<mat-card>
+    <ng-container>
+        <table mat-table [dataSource]="taskList" matSort [matSortDisableClear]="true">
+            <ng-container matColumnDef="processDefinitionTask.taskName">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef>Task Name</th>
+                <td mat-cell (click)="openTaskInfo(element)" *matCellDef="let element"> {{element.col2}} </td>
+            </ng-container>
+            <ng-container matColumnDef="processDefinitionTask.taskType">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Task Type </th>
+                <td mat-cell (click)="openTaskInfo(element)" *matCellDef="let element">
+                    {{element.col3}} </td>
+            </ng-container>
+            <ng-container matColumnDef="startTime">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Start Date </th>
+                <td mat-cell (click)="openTaskInfo(element)" *matCellDef="let element">
+                    {{element.col4 | date:"dd MMM yyyy hh:mm:ss a"}} </td>
+            </ng-container>
+            <ng-container matColumnDef="endTime">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> End Date</th>
+                <td mat-cell (click)="openTaskInfo(element)" *matCellDef="let element">
+                    {{element.col5 | date:"dd MMM yyyy hh:mm:ss a"}} </td>
+            </ng-container>
+            <ng-container matColumnDef="updatedBy">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Task Resolved By </th>
+                <td mat-cell (click)="openTaskInfo(element)" *matCellDef="let element">
+                    {{element.col7}} </td>
+            </ng-container>
+            <ng-container matColumnDef="time">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Total Time Taken </th>
+                <td mat-cell (click)="openTaskInfo(element)" *matCellDef="let element"> {{element.col8}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row class="ripple-row" *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [length]="listLength" [pageSizeOptions]="[10, 25, 100]" (page)="pageEvent($event)">
+        </mat-paginator>
+    </ng-container>
+</mat-card> -->
+
+
+<h1 style="margin-left:1%;margin-top:1%;">Task Details List</h1>
+<mgl-timeline alternate=true side=left>
+    <mgl-timeline-entry *ngFor="let tasks of taskList;let i  = index;" appMaterialElevation>
+        <mgl-timeline-entry-header (click)="onHeaderClick($event)">
+            <div fxLayout="row" style="width: 90%;" fxLayoutAlign="end">
+                <div fxLayoutAlign="row" style="width: 90%;" fxLayoutAlign="space-between center">
+                    <div [style.font-size]="isMobile?'12px':''">{{tasks.col2}}</div>
+                    <div fxLayout="row" [fxLayoutGap]="isMobile?'5px':'10px'"
+                        *ngIf="tasks.col8!==null && tasks.col8!==undefined && tasks.col8!==''">
+                        <mat-icon [style.font-size]="isMobile?'15px':''" class="icon-top">
+                            access_time</mat-icon>
+                        <div class="top">
+                            <a [style.font-size]="isMobile?'12px':''">{{tasks.col8}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mgl-timeline-entry-header>
+        <mgl-timeline-entry-content [expandAnimationTiming]="contentAnimation ? '200ms ease' : '0ms'"
+            [collapseAnimationTiming]="contentAnimation ? '100ms ease' : '0ms'">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="row">
+                    <div fxLayout="column">
+                        <div fxLayout="row" style="font-weight: bold;" [style.font-size]="isMobile?'10px':''">Task
+                            Resolved By &nbsp;</div>
+                        <div fxLayout="row" style="font-weight: bold;" [style.font-size]="isMobile?'10px':''">Start
+                            Date
+                            &nbsp;</div>
+                        <div fxLayout="row" style="font-weight: bold;" [style.font-size]="isMobile?'10px':''"
+                            *ngIf="tasks.col5!==null && tasks.col5!==undefined && tasks.col5!==''">
+                            Updated
+                            Date &nbsp;</div>
+                    </div>
+                    <div fxLayout="column">
+                        <div fxLayout="row" [style.font-size]="isMobile?'10px':''">: {{tasks.col7}}</div>
+                        <div fxLayout="row" [style.font-size]="isMobile?'10px':''">: {{tasks.col4 | date:"dd MMM
+                            yyyy
+                            hh:mm:ss a"}}</div>
+                        <div fxLayout="row" [style.font-size]="isMobile?'10px':''"
+                            *ngIf="tasks.col5!==null && tasks.col5!==undefined && tasks.col5!==''">: {{tasks.col5 |
+                            date:"dd MMM
+                            yyyy
+                            hh:mm:ss a"}}</div>
+                    </div>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="end end">
+                <button mat-raised-button color="primary" (click)="openTaskInfo(tasks)">View Details</button>
+            </div>
+        </mgl-timeline-entry-content>
+        <mgl-timeline-entry-dot [class]="color ? 'primary' : 'accent'" size="40" (click)="onDotClick($event)"
+            [expandAnimationTiming]="dotAnimation ? '200ms ease' : '0ms'"
+            [collapseAnimationTiming]="dotAnimation ? '100ms ease' : '0ms'">
+            <img src="assets/iconfinder_start_60207.png" *ngIf="tasks.col3==='START_TASK'" class="icon_size">
+            <img src="assets/iconfinder_person (1).png" *ngIf="tasks.col3==='USER_TASK'" class="icon_size">
+            <img src="assets/iconfinder_approval.png" *ngIf="tasks.col3==='APPROVAL_TASK'" class="icon_size">
+            <img src="assets/decision-making-color.png" *ngIf="tasks.col3==='DECISION_TASK'" class="icon_size">
+            <img src="assets/decision table-png-3.png" *ngIf="tasks.col3==='DECISION_TABLE'" class="icon_size">
+            <img src="assets/iconfinder_mail.png" *ngIf="tasks.col3==='EMAIL_TASK' || tasks.col3==='SMS_TASK'"
+                class="icon_size">
+            <img src="assets/iconfinder_webservice.png"
+                *ngIf="tasks.col3==='WEB_SERVICE_TASK' || tasks.col3==='EXCEL_REPORT'" class="icon_size">
+            <img src="assets/iconfinder_timer.png" *ngIf="tasks.col3==='DELAY_TIMER'" class="icon_size">
+            <img src="assets/iconfinder_database.png" *ngIf="tasks.col3==='DB_TASK'" class="icon_size">
+            <img src="assets/iconfinder_workflow.png" *ngIf="tasks.col3==='CALL_ANOTHER_WORKFLOW'" class="icon_size">
+            <img src="assets/iconfinder_compute.png" *ngIf="tasks.col3==='COMPUTE_TASK' || tasks.col3==='COUNTER_TASK'"
+                class="icon_size">
+        </mgl-timeline-entry-dot>
+    </mgl-timeline-entry>
+</mgl-timeline>

@@ -1,0 +1,47 @@
+<ng-container *ngIf="applicationName!=='Twitter' && applicationName !== 'LinkedIn'">
+    <div fxLayout="row">
+        <h4 style="color: #656565;width: 130px;" i18n="Select channel">Select channel</h4>
+        <span class="line-style"></span>
+    </div>
+    <div fxLayout="row" *ngIf="spinnerShow" fxLayoutAlign="center center" style="margin-top:20px" fxLayoutGap="20px">
+        <span i18n="Loading channels">Loading channels</span>
+        <span class="dot-falling"></span>
+    </div>
+    <div fxLayout="row wrap" *ngIf="!spinnerShow" style="margin-bottom: 40px;">
+        <ng-container *ngFor="let channel of channelsList;let i = index;">
+            <div class="channels-style" (click)="getChannelName(channel)" [id]="'channel_'+i" appMaterialElevation>
+                {{channel.name}}
+            </div>
+        </ng-container>
+    </div>
+</ng-container>
+<div [hidden]="applicationName==='Twitter' || applicationName==='LinkedIn'?false:true">
+    <form [formGroup]="form" #userForm="ngForm" class="quill-form-css">
+        <div fxLayout="row">
+            <h4 style="color: #656565;width: 60px;" i18n="Subject">Subject</h4>
+            <span class="sub-line-style"></span>
+        </div>
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label i18n="Subject">Subject</mat-label>
+            <textarea matInput rows="2" cols="3" formControlName="subject"></textarea>
+        </mat-form-field>
+        <div fxLayout="row">
+            <h4 style="color: #656565;width: 60px;" i18n="Text">Text</h4>
+            <span class="sub-line-style"></span>
+        </div>
+        <quill-editor #quill id="quill" formControlName="editor" placeholder="Enter Text" [modules]="quillConfig"
+            [format]="format">
+        </quill-editor>
+        <div style="margin-top: 10px;">
+            <mat-button class="filter_option align-self-center  mr-2 " *ngFor="let select of systemVariables"
+                (click)="selectChip(select)">
+                {{select?.fieldId}}
+            </mat-button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end">
+            <button mat-raised-button color="primary"
+                *ngIf="form.get('editor').value!==undefined && form.get('editor').value!==null && form.get('editor').value!==''"
+                class="apply-button-css" (click)="apply()" i18n="Apply">Apply</button>
+        </div>
+    </form>
+</div>

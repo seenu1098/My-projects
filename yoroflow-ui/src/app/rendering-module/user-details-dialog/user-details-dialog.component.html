@@ -1,0 +1,69 @@
+<div fxLayout="row" style="height: 100%;overflow: hidden !important;" id="user-details"
+    [class]="themeService.fontSizeClass">
+    <div fxLayout="column" class="border-style" style="width: 40px;height: 100%;overflow-y: scroll;">
+        <div fxLayout="row" class="add-workspace-avatar" tooltip="Add new workspace" (click)="createWorkspace()">+</div>
+        <ng-container *ngIf="workspaceService.workspaceListVO?.length>0">
+            <ng-container *ngFor="let list of workspaceService.workspaceListVO; let i = index;">
+                <div [class]="workspaceService.getWorkSpaceName()===list?.workspaceName?'outline-class':''"
+                    style="margin-top: 5px;">
+                    <div fxLayout="row" class="avatar" [id]="'name_'+i" [tooltip]="list?.workspaceName"
+                        (click)="switchWorkspace(list)" [options]="myOptions"
+                        [style.background]="list.workspaceAvatar ? list.workspaceAvatar : '#D3D3D3'">
+                        {{setUserProfilename(list?.workspaceName)}}</div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+    <div fxLayout="column" class="border-style" style="width: 170px;">
+        <ng-container *ngIf="workspaceService?.workspaceID">
+            <div fxLayout="row" fxLayoutGap="10px" class="margin-css">
+                <div class="avatar" [style.background]="workspaceService.getAvatar()">
+                    {{workspaceService.getFirstLetter()}}</div>
+                <span class="name-css" [tooltip]="workspaceService.getWorkSpaceName()"
+                    [options]="myOptions">{{workspaceService.getWorkSpaceName()}}</span>
+            </div>
+            <span class="text-css fs_13" (click)="gotoHome()" i18n="Home">Home</span>
+            <span class="text-css fs_13" (click)="openWorkspace()" i18n="Workspaces">Workspaces</span>
+        </ng-container>
+    </div>
+    <div fxLayout="column" style="width: 150px;">
+        <ng-container *ngIf="data.userVo">
+            <div fxLayout="row" fxLayoutGap="10px" class="margin-css">
+                <div
+                    *ngIf="data.userVo.profilePicture && data.userVo.profilePicture !==null && data.userVo.profilePicture !==''">
+                    <img mat-card-avatar [src]="transformImage(data.userVo.profilePicture)" class="avatar">
+                </div>
+                <div class="avatar"
+                    *ngIf="data.userVo.profilePicture ===null || data.userVo.profilePicture ==='' || !data.userVo.profilePicture">
+                    {{userProfileValue(data.userVo.firstName)}}</div>
+                <span class="name-css" [tooltip]="data.userVo.firstName + data.userVo.lastName"
+                    [options]="myOptions">{{data.userVo.firstName}}&nbsp;{{data.userVo.lastName}}</span>
+            </div>
+            <span class="text-css fs_13" (click)="userProfile()" i18n="My Settings">My Settings</span>
+            <div fxLayout="row">
+                <span class="text-css fs_13" (click)="openNotification()" i18n="Notifications">Notifications</span>
+                <div class="count-css">{{notificationService.getNotificationCounts()}}</div>
+            </div>
+            <span class="text-css fs_13" (click)="openThemeDialog()">{{'Themes & Layouts' | translate}}</span>
+            <div fxLayout="row" class="text-css fs_13" [matMenuTriggerFor]="languageMenu" fxLayoutGap="3px">
+                <span i18n="Language">Language</span>
+                <span *ngIf="selectedLang && selectedLang!=='en'">(Language)</span>
+            </div>
+            <span class="text-css fs_13" (click)="logout()" i18n="Logout">Logout</span>
+        </ng-container>
+    </div>
+</div>
+<mat-menu #languageMenu="matMenu">
+    <div *ngFor="let language of allLanguages;let i=index">
+        <button mat-menu-item style="width: 100%;" (click)="changeLanguage(language.lang)">
+            <a href="{{language.href + contextUrl}}" class="float-right fs_13"
+                style="color: black;text-decoration: none;"
+                [ngStyle]="{'color' : selectedLang === language.lang ? 'darkblue' : 'black'}">
+                <mat-icon *ngIf="selectedLang === language.lang" class="fs_13"
+                    [ngStyle]="{'color' : selectedLang === language.lang ? 'darkblue' : 'black'}">
+                    done</mat-icon>
+                {{language.name}}
+            </a>
+        </button>
+    </div>
+</mat-menu>

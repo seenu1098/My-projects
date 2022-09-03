@@ -1,0 +1,22 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;" i18n="Select labels">Select labels</h4>
+    <span class="line-style"></span>
+</div>
+<ng-container *ngIf="labels.length===0">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <h4>
+            <span style="margin-right: 10px;" i18n="This taskboard doesn't have labels.">This taskboard doesn't have
+                labels.</span>
+            <span id="create_label" class="create_label" (click)="addLabels()" i18n="Click here to create label">Click
+                here to create label</span>
+        </h4>
+    </div>
+</ng-container>
+<div fxLayout="row wrap">
+    <ng-container *ngFor="let label of labels;let i = index;">
+        <div class="labelList-style" [style.background]="label.labelcolor" (click)="getLabelName(label)"
+            [id]="'labels_'+i" appMaterialElevation>
+            {{label.labelName}}
+        </div>
+    </ng-container>
+</div>

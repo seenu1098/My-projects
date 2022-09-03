@@ -1,0 +1,72 @@
+<div fxLayout.xs="column" fxLayoutAlign="start none">
+    <mat-card class="bg-whitesmoke w-100">
+        <mat-card>
+            <mat-card-title i18n="Dashboard Report"> Dashboard Report</mat-card-title>
+            <mat-card-content>
+                <form [formGroup]="adminReportForm" #userForm="ngForm">
+                    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                        <mat-form-field appearance="outline">
+                            <mat-label i18n="Start Date">Start Date</mat-label>
+                            <input matInput id="startDate" formControlName="startDate" [matDatepicker]="picker">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error *ngIf="adminReportForm.get('startDate').errors?.greaterValue" i18n="Start date
+                                should less than end date">Start date
+                                should less than end date</mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label i18n="End Date">End Date</mat-label>
+                            <input matInput id="endDate" formControlName="endDate" [max]="maxDate"
+                                [matDatepicker]="endDatepicker">
+                            <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+                            <mat-datepicker #endDatepicker></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" style="width: 13%;">
+                            <mat-label i18n="Option Type">Option Type</mat-label>
+                            <mat-select id="optionType" [(value)]="selected" formControlName="optionType">
+                                <mat-option value="all" i18n="ALL">ALL</mat-option>
+                                <!-- <mat-option value="taskName">Task Name</mat-option> -->
+                                <mat-option value="users" i18n="Users">Users</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <!-- <mat-form-field appearance="outline" style="width: 13%;" *ngIf="(selected === 'taskName')">
+                                <mat-label>Task Names</mat-label>
+                                <mat-select placeholder="Task Names" formControlName="taskId">
+                                    <mat-option [value]="task.taskId" *ngFor="let task of taskNameList">
+                                        {{task.taskName}}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="adminReportForm.get('taskId').errors?.required">Task Name is Required
+                                </mat-error>
+                            </mat-form-field> -->
+                        <mat-form-field appearance="outline" style="width: 13%;" *ngIf="(selected === 'users')">
+                            <mat-label i18n="Users">Users</mat-label>
+                            <mat-select id="userId" placeholder="Users" formControlName="userId">
+                                <mat-option [value]="user.userId" *ngFor="let user of userslist">
+                                    {{user.firstName}} {{user.lastName}}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="adminReportForm.get('userId').errors?.required" i18n="User is Required">
+                                User is Required
+                            </mat-error>
+                        </mat-form-field>
+                        <div>
+                            <button mat-raised-button class="mt-1" color="primary" (click)="submit(userForm)"
+                                id="btnsave" i18n="GO">GO</button>
+                        </div>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </mat-card>
+</div>
+
+<highcharts-chart *ngIf="taskReportBoolean" [Highcharts]="highcharts" [options]="totalReportList"
+    style="width: 100%; height: 400px; display: block;">
+</highcharts-chart>
+
+<highcharts-chart *ngIf="userBoolean" [Highcharts]="highcharts" [options]="getTotalTaskByUser"
+    style="width: 100%; height: 400px; display: block;">
+</highcharts-chart>
+
+<highcharts-chart *ngIf="averageTaskTimeBoolean" [Highcharts]="highcharts" [options]="averageTaskTimeProcessing"
+    style="width: 100%; height: 400px; display: block;">
+</highcharts-chart>

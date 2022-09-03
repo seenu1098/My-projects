@@ -1,0 +1,52 @@
+.header {
+    padding: 5px;
+    padding-left: 7px;
+    background: #0078ff;
+    color: #fff;
+    margin: 0%
+  }
+  
+  .menuAlign {
+    direction: ltr;
+    display: flex;
+    justify-content: end-end;
+  }
+  mat-form-field {
+    width: 60%;
+  }
+
+  .one{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 24px;
+    border-radius: inherit;
+    font-weight: 400;
+  }
+
+  .example-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-sidenav {
+  padding: 20px;
+}
+
+.example-container{
+min-height: 608px;
+}
+
+mat-sidenav {
+  width: 200px;
+  height: 100%;
+}

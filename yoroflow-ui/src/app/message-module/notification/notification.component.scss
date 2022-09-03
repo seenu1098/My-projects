@@ -1,0 +1,74 @@
+// .chat-margin{
+//     margin: 3%;
+//     }
+.mat-menu-content {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 15px;
+  color: #fff;
+  line-height: 50px;
+  text-align: center;
+  background: #c2c2a3;
+}
+
+.user-chat-list-container {
+  height: 500px;
+  width: 500px;
+  overflow-y: auto;
+}
+.header_notification_icon {
+  margin-top: 10px;
+}
+// .header_notification_icon_1{
+//   margin-top: 6px;
+// }
+
+// ::ng-deep.mat-menu-panel {
+//   width: 450px;
+//   max-width: 500px !important;
+// }
+
+// ::ng-deep .mat-menu-content {
+//   padding-top: 0px !important;
+//   padding-bottom: 0px !important;
+// }
+@media screen and (min-width: 768px) {
+  .header_notification_icon_1 {
+    cursor: context-menu;
+    margin-top: 6px;
+    font-size: 24px !important;
+  }
+  .header_notification_icon_modern {
+    cursor: pointer;
+    padding-right: 25px !important;
+    font-size: 25px !important;
+    // margin-left: 4px;
+  }
+//   #theme_css ::ng-deep .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+//     // left: 12px;
+//     // right: 0px !important;
+// }
+}
+@media screen and (max-width: 768px) {
+  .header_notification_icon_1 {
+    cursor: context-menu;
+    // margin-top: 6px;
+    font-size: 24px !important;
+  }
+  .header_notification_icon_modern {
+    cursor: pointer;
+    padding-right: 25px !important;
+    font-size: 25px !important;
+    // margin-left: 4px;
+  }
+  //   #theme_css ::ng-deep .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+  //     // left: 12px;
+  //     right: 0px !important;
+  // }
+}

@@ -1,0 +1,59 @@
+<ng-container>
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: 10px;z-index: 9999;"
+        [style.margin-left]="left">
+        <div fxLayout="column">
+            <div fxLayout="row" class="padding-css">
+                <div fxLayout="column" [style.background]="getUserColor(comments.createdBy)" class="image-circle">
+                    <span style="align-self: center;">{{getCommentsUserPrefix(comments.createdBy)}}</span>
+                    <ng-container *ngIf="comments.nestedDocsCommentVo && comments.nestedDocsCommentVo.length>0">
+                        <mat-icon [style.margin-left]="index===1?'8px':'10px'" (click)="close(comments)"
+                            class="collpase-css" style="color: red;"
+                            *ngIf="comments.openComment===undefined || comments.openComment===null || comments.openComment===false"
+                            matTooltip="Collapse">
+                            remove_circle_outline</mat-icon>
+                        <mat-icon [style.margin-left]="index===1?'8px':'10px'" (click)="close(comments)"
+                            class="collpase-css" style="color: blue;" *ngIf="comments.openComment===true"
+                            matTooltip="Expand">add_circle_outline</mat-icon>
+                    </ng-container>
+                </div>
+                <span class="createdBy-css"><span style="font-size: 12px;" i18n="Created">Created
+                        {{getDataDiff(comments?.createdOn)}}
+                    </span>
+                </span>
+                <span class="createdBy-css" style="font-size: 12px;">
+                    -<span style="margin-left: 8px;" i18n="Last edited">Last edited</span>
+                    {{getDataDiff(comments?.modifiedOn)}}
+                </span>
+            </div>
+        </div>
+        <div fxLayout="column">
+            <div fxLayout="row">
+                <div fxLayout="column">
+                    <mat-icon class="edit-css" (click)="editMessage(comments)">edit
+                    </mat-icon>
+                </div>
+                <div fxLayout="row" class="reply-button-css">
+                    <mat-icon style="font-size: 15px;margin-top: 2px;">reply
+                    </mat-icon>
+                    <div class="reply-label-css" i18n="Reply" (click)="reply(comments)">Reply</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="selectable" class="comment-css" [style.margin-left]="contentLeft" (click)="highlight(comments)"
+        style="font-weight: bolder; cursor: pointer;" *ngIf="comments?.comment">{{comments?.commentSection}}
+    </div>
+    <div id="selectable" class="comment-css" [disabled]="comments.isEdit===false" [contentEditable]="isContentEditable"
+        [style.margin-left]="contentLeft" *ngIf="comments?.comment">
+        {{comments?.comment}}
+    </div>
+</ng-container>
+<ng-container
+    *ngIf="comments.nestedDocsCommentVo.length>0 && (comments.openComment===undefined || comments.openComment===null || comments.openComment===false)">
+    <p style="position: relative;width: 100%;">
+        <span class="vl" [style.margin-left]="contentLeft"></span>
+        <app-doc-comments *ngFor="let comments of comments.nestedDocsCommentVo" [comments]="comments"
+            (highlightValue)="getValue($event)" [usersList]="usersList" [index]="index+1">
+        </app-doc-comments>
+    </p>
+</ng-container>

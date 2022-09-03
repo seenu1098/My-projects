@@ -1,0 +1,17 @@
+mat-form-field {
+    width: 40%;
+    font-size: 15px;
+}
+mat-card-subtitle{
+    font-size: 18px;
+    font-weight: bold;
+}
+mat-card{
+    background-color: rgb(248, 248, 248)
+}
+
+.loader {
+    left: 50%;
+    margin-left: -4em;
+    margin-top: 25%;
+}

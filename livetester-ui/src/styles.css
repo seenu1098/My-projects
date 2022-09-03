@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0px;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    min-height: 100%;
+    /* background: #303030; */
+  }
+.card-style {
+  background-color:rgb(154, 199, 212)
+}
+.bottom-sheet-container{
+  position: absolute;
+  left: 30px;
+  width: 100%;
+  right: 40px;
+}
+
+bottom-sheet-container1 {
+  position: absolute;
+  left: 10px;
+  width: 80%;
+  right: 10px;
+}
+.dialog_class{
+  left: 100px;
+  width: 1000px;
+  height: 1000px;
+}

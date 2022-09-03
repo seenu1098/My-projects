@@ -1,0 +1,21 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <span class="sub_status_header" i18n="Choose Sub Status">Choose Sub Status</span>
+    <button mat-raised-button color="accent" id="label_close" (click)="close()" style="height:25px;line-height: 25px;"
+        i18n="Close">Close</button>
+</div>
+<ng-container *ngFor="let subStatus of subStatusList;let i = index">
+    <button mat-button class="button-css" [style.background]="subStatus.isSelected?'#f1fff1':''"
+        (click)="selectedSubStatus(subStatus)">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="column">
+                <div fxLayout="row" fxLayoutGap="15px">
+                    <span class="color-circle" [style.background]="subStatus.color"></span>
+                    <span>{{subStatus.name | translate}}</span>
+                </div>
+            </div>
+            <div fxLayout="column" *ngIf="subStatus.isSelected===true">
+                <mat-icon class="selectedSubStatusIcon-css">done</mat-icon>
+            </div>
+        </div>
+    </button>
+</ng-container>

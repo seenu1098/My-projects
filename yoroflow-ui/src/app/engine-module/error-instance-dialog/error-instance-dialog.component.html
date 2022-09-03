@@ -1,0 +1,19 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <mat-card-title i18n="Error Description">Error Description</mat-card-title>
+    <mat-icon id="close" (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+</div>
+<mat-spinner [diameter]="40" style="margin-left: 48%;margin-top: 10%;" *ngIf="!pageRendered"></mat-spinner>
+<ng-container *ngIf="pageRendered">
+    <ng-container *ngFor="let errorDetail of errorDetails">
+        <mat-card>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-label style="font-weight: bold;">{{errorDetail.taskName}}:</mat-label>
+            </div>
+            <div style="margin-top: 1%;">
+                <p>
+                    {{errorDetail.errorDescription}}
+                </p>
+            </div>
+        </mat-card>
+    </ng-container>
+</ng-container>

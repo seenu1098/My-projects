@@ -1,0 +1,406 @@
+<mat-spinner *ngIf="!dataFetched" [diameter]="45" class="loader"></mat-spinner>
+<div *ngIf="dataFetched" style="margin: 0%">
+  <div fxLayout="row" fxLayout.xs="column">
+    <div fxFill="100" class="accordion-form-section">
+        <mat-card style="margin-top: 1%;background-color:rgb(154, 199, 212)">
+          <mat-card-title>Claim Details
+            <span>
+              <button  mat-button type="btn" id="closebtn" class="close " (click)="onNoClick()" aria-label="Close">
+                <mat-icon class="icon" svgIcon="clear"></mat-icon>
+              </button>
+              </span>
+          </mat-card-title>
+           <mat-card style="margin-top: 1%">
+            <p style="width: 80%;">
+                <mat-form-field>
+                    <mat-label>Template Name *</mat-label>
+                    <input matInput type="text" placeholder="Template Name" [value]="claimVO.templateName" readonly=true>
+                </mat-form-field>
+            </p>
+           </mat-card>
+
+           <mat-card style="margin-top: 1%">
+            <p>
+                <mat-form-field >
+                    <mat-label>Submitters *</mat-label>
+                    <mat-select  name="claimSubmitter"  [value]="claimVO.claimSubmitters" disabled=true>
+                      <mat-option [value]="claimVO.claimSubmitters">{{claimVO.claimSubmitters}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <mat-label>Receiver *</mat-label>
+                    <mat-select name="claimReceiver" [value]="claimVO.claimReceiver" disabled=true >
+                        <mat-option [value]="claimVO.claimReceiver">{{claimVO.claimReceiver}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <mat-label>Form Type *</mat-label>
+                    <mat-select name="formType" [value]="claimVO.formType" disabled=true>
+                        <mat-option [value]="claimVO.formType">{{claimVO.formType}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <mat-label>Claim Type *</mat-label>
+                    <mat-select name="claimType" [value]="claimVO.claimType" disabled=true>
+                        <mat-option [value]="claimVO.claimType">{{claimVO.claimType}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </p>
+            <p></p>
+           </mat-card>
+
+           <mat-card style="margin-top:1%">
+              <mat-card-subtitle>Provider Details</mat-card-subtitle>
+              <div>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Billing Provider NPI *"
+                              [value]="claimVO.billing.npi" readonly=true>
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Billing Provider Taxonomy *" name="taxonomy"
+                          [value]="claimVO.billing.taxonomy" readonly=true>
+                       </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="First Name" name="firstName"
+                          [value]="claimVO.billing.firstName" readonly=true>
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Last Name" name="lastName"
+                          [value]="claimVO.billing.lastName" readonly=true>
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Organization Name" name="organizationName"
+                          [value]="claimVO.billing.organizationName" readonly=true>
+                       </mat-form-field>
+                  </p>
+              </div>
+              <p>
+                  <mat-checkbox style="font-size: 14px" disabled=true>Same as Billing
+                      Provider</mat-checkbox>
+              </p>
+              <br>
+              <div>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Servicing Provider NPI"
+                               [value]="claimVO.servicing.npi" readonly=true>
+                       </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Servicing Provider Taxonomy"
+                             [value]="claimVO.servicing.taxonomy" readonly=true>
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="First Name" name="firstName"
+                              [value]="claimVO.servicing.firstName" readonly=true>
+                       </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Last Name" name="lastName"
+                               [value]="claimVO.servicing.lastName" readonly=true>
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Organization Name" name="organizationName"
+                                [value]="claimVO.servicing.organizationName" readonly=true>
+                       </mat-form-field>
+                  </p>
+              </div>
+        
+          </mat-card>
+
+          <mat-card style="margin-top: 1%">
+              <mat-card-subtitle>Claim Header</mat-card-subtitle>
+              <div>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="number" placeholder="Billed Amount *" name="billedAmount"
+                              [value]="claimVO.claimHeader.billedAmount" readonly=true>
+                         
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="number" placeholder="Billed Units *" name="billedUnits"
+                          [value]="claimVO.claimHeader.billedUnits" readonly=true>
+                          
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput [matDatepicker]="claimHeaderFromDate" [max]="today"
+                              placeholder="Service From Date *" name="fromDate" [value]="claimVO.claimHeader.fromDate" disabled=true>
+                          <mat-datepicker-toggle matSuffix [for]="claimHeaderFromDate">
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #claimHeaderFromDate startView="month"
+                              [startAt]="claimHeaderFromDate">
+                          </mat-datepicker>
+                         
+                      </mat-form-field>
+                  </p>
+                  <p>
+                      <mat-form-field>
+                          <input matInput [matDatepicker]="claimHeaderToDate" placeholder="Service To Date *" [max]="today"
+                              name="toDate" [value]="claimVO.claimHeader.toDate" disabled=true>
+                          <mat-datepicker-toggle matSuffix [for]="claimHeaderToDate"></mat-datepicker-toggle>
+                          <mat-datepicker #claimHeaderToDate startView="month" [startAt]="claimHeaderToDate">
+                          </mat-datepicker>
+                      </mat-form-field>
+                  </p>
+                  <br>
+                  <p>
+                      <mat-form-field>
+                          <mat-label>Frequency *</mat-label>
+                          <mat-select name="frequency" [value]="claimVO.claimHeader.frequency" disabled=true>
+                              <mat-option [value]="claimVO.claimHeader.frequency">{{claimVO.claimHeader.frequency}}</mat-option>
+                          </mat-select>
+                       </mat-form-field>
+                  </p>
+
+                  <p>
+                      <mat-form-field>
+                          <mat-label>Source *</mat-label>
+                          <mat-select name="source" [value]="claimVO.claimHeader.frequency" disabled=true >
+                              <mat-option [value]="claimVO.claimHeader.frequency">{{claimVO.claimHeader.frequency}}</mat-option>
+                           </mat-select>
+                       </mat-form-field>
+                  </p>
+                  <br>
+                  <p>
+                      <mat-form-field>
+                          <input matInput type="text" placeholder="Primary Diagnosis *" name="primaryDiagnosis"
+                          [value]="claimVO.claimHeader.primaryDiagnosis" readonly=true>
+                      </mat-form-field>
+                  </p>
+                  <p>
+                  <mat-form-field style="width: 160%">
+                      <mat-chip-list #claimHeaderSecondaryDiagnosis
+                          aria-label="Secondary Diagnosis Codes">
+                          <mat-chip *ngFor="let diagnosis of claimVO.claimHeader.secondryDiagnosisList"
+                              [selectable]="selectable" [removable]="removable">
+                              {{diagnosis}}
+                              <mat-icon matChipRemove >close</mat-icon>
+                          </mat-chip>
+                          <input placeholder="Secondry Diagnosis" name="secondryDiagnosisList"
+                              (keyup.enter)="getSelectedValues()"
+                              [matChipInputFor]="claimHeaderSecondaryDiagnosis"
+                              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                              [matChipInputAddOnBlur]="addOnBlur"
+                              disabled = true>
+                        </mat-chip-list>
+                  </mat-form-field>
+                  </p>
+                  <mat-card style="background-color:rgb(118, 167, 170)">
+                      <mat-card-subtitle>Expected Results</mat-card-subtitle>
+                      <div>
+                          <p>
+                              <mat-form-field>
+                                  <input matInput type="number" placeholder="Paid Amount *" name="paidAmount"
+                                  [value]="claimVO.claimHeader.expectedResult.paidAmount" readonly=true>
+                              </mat-form-field>
+                          </p>
+                          <p>
+                              <mat-form-field>
+                                  <input matInput type="number" placeholder="Allowed Amout *"
+                                  [value]="claimVO.claimHeader.expectedResult.allowedAmount" readonly=true name="allowedAmount" >
+                              </mat-form-field>
+                          </p>
+                          <p>
+                              <mat-form-field>
+                                  <input matInput type="number" placeholder="Paid Units *" name="paidUnits"
+                                  [value]="claimVO.claimHeader.expectedResult.paidUnits" readonly=true >
+                              </mat-form-field>
+                          </p>
+                          <p>
+                              <mat-form-field>
+                                  <mat-label>Claim Type *</mat-label>
+                                  <mat-select name="claimType" [value]="claimVO.claimHeader.expectedResult.claimType" disabled=true >
+                                      <mat-option [value]="claimVO.claimHeader.expectedResult.claimType">{{claimVO.claimHeader.expectedResult.claimType}}</mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                          </p>
+                          <p>
+                              <mat-form-field>
+                                  <mat-chip-list #claimHeaderExpectedErrorCodes aria-label="Error Codes">
+                                      <mat-chip *ngFor="let errorCode of claimVO.claimHeader.expectedResult.errorCodesList"
+                                          [selectable]="selectable" [removable]="removable">{{errorCode}}
+                                          <mat-icon matChipRemove >close</mat-icon>
+                                      </mat-chip>
+                                      <input placeholder="Expected Error Codes" name="errorCodesList"
+                                          [matChipInputFor]="claimHeaderExpectedErrorCodes"
+                                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                          [matChipInputAddOnBlur]="addOnBlur">
+                                  </mat-chip-list>
+                               </mat-form-field>
+                          </p>
+                      </div>
+                  </mat-card>
+
+              </div>
+          </mat-card>
+        <div >
+            <mat-expansion-panel id="claim_service_header" *ngFor="let service of claimVO.services; let i = index" style="margin-top: 1%">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                      Service Line #{{i+1}}
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                                 <p>
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="serviceLineFromDatePicker" [max]="today"
+                                            placeholder="Service Line From Date *" name="fromDate"
+                                            [value]="service.fromDate" disabled=true>
+                                        <mat-datepicker-toggle matSuffix [for]="serviceLineFromDatePicker">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #serviceLineFromDatePicker startView="month"
+                                            [startAt]="startDate"></mat-datepicker>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="serviceLineToDatePicker" [max]="today"
+                                            placeholder="Service Line To Date *" name="toDate" [value]="service.toDate" disabled=true>
+                                        <mat-datepicker-toggle matSuffix [for]="serviceLineToDatePicker">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #serviceLineToDatePicker startView="month"
+                                            [startAt]="startDate"></mat-datepicker>
+                                    </mat-form-field>
+                                </p>
+                                <div>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Servicing Provider NPI" name="npi"
+                                            [value]="service.servicing.npi" readonly=true>
+                                        </mat-form-field>
+                                    </p>
+                                    <p>
+                                        <mat-form-field>
+                                            <input matInput type="text" placeholder="Servicing Provider Taxomony"
+                                                name="taxonomy" [value]="service.servicing.taxonomy" readonly=true>
+                                        </mat-form-field>
+                                    </p>
+                                </div>
+
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Revenue Code" name="revenueCode"
+                                        [value]="service.revenueCode" readonly=true>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="text" placeholder="Procedure Code" name="procedureCode"
+                                        [value]="service.procedureCode" readonly=true>
+                                    </mat-form-field>
+                                </p>
+                               
+                                <p>
+                                    <mat-form-field>
+
+                                        <mat-label>Service Line Diagnosis *</mat-label>
+                                        <mat-select name="diagnosisCode" [value]="service.diagnosisCode" disabled=true>
+                                           <mat-option [value]="service.diagnosisCode">{{service.diagnosisCode}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <mat-chip-list #serviceLineModifiers aria-label="Service Line Modifiers">
+                                            <mat-chip *ngFor="let modifier of service.modifiersList"
+                                                [selectable]="selectable" [removable]="removable">
+                                                {{modifier}}
+                                                <mat-icon matChipRemove >close</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="Modifiers" [matChipInputFor]="serviceLineModifiers"
+                                                name="modifiersList"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="addOnBlur">
+                                        </mat-chip-list>
+                                     </mat-form-field>
+                                </p>
+                                <br>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="number" placeholder="Service Billed Amount *"
+                                            name="billedAmount" [value]="service.billedAmount" readonly="true">
+                                    </mat-form-field>
+                                </p>
+                                <p>
+                                    <mat-form-field>
+                                        <input matInput type="number" placeholder="Service Billed Units *"
+                                            name="billedUnits" [value]="service.billedUnits" readonly="true">
+                                    </mat-form-field>
+                                </p>
+
+                                <mat-card style="background-color: rgb(118, 167, 170)">
+                                    <mat-card-subtitle>Expected Results</mat-card-subtitle>
+                                    <div>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="number" placeholder="Service Line Paid Amount *"
+                                                    name="paidAmount" [value]="service.expectedResults.paidAmount" readonly="true">
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="number" placeholder="Service Line Allowed Amount *"
+                                                    name="allowedAmount" [value]="service.expectedResults.allowedAmount" readonly="true">
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="number" placeholder="Service Line Allowed Units *"
+                                                [value]="service.expectedResults.allowedUnits" readonly=true >
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <input matInput type="number" placeholder="Service Line Paid Units *"
+                                                    name="paidUnits" [value]="service.expectedResults.paidUnits" readonly=true >
+                                            </mat-form-field>
+                                        </p>
+                                        <p>
+                                            <mat-form-field>
+                                                <mat-chip-list #serviceLineExpectedErrorCodes
+                                                    aria-label="Service Line Error Codes">
+                                                    <mat-chip *ngFor="let serviceLine of service.expectedResults.errorCodesList"
+                                                        [selectable]="selectable" [removable]="removable">
+                                                        {{serviceLine}}
+                                                        <mat-icon matChipRemove >close</mat-icon>
+                                                    </mat-chip>
+                                                    <input matInput type="text" placeholder="Service Line Error Codes"
+                                                        name="errorCodesList"
+                                                        [matChipInputFor]="serviceLineExpectedErrorCodes"
+                                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                        [matChipInputAddOnBlur]="addOnBlur">
+                                                </mat-chip-list>
+                                        </mat-form-field>
+                                        </p>
+                                    </div>
+                                </mat-card>
+                   </mat-expansion-panel>
+              </div>
+          </mat-card>
+    </div>
+  </div>
+</div>

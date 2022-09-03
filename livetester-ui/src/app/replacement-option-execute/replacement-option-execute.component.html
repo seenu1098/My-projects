@@ -1,0 +1,191 @@
+<mat-spinner *ngIf="spinner" [diameter]="45" class="loader"></mat-spinner>
+<div>
+  <mat-card *ngIf="dataFetched" style="background-color:rgb(154, 199, 212)">
+    <mat-card-title>Replacement Options</mat-card-title>
+    <div class="accordion-form-section">
+      <form [formGroup]="form" #userForm="ngForm">
+        <mat-card style="margin: 10px;">
+          <div fxLayout="row" fxLayoutGap="10px">
+            <mat-form-field style="width:20%">
+              <mat-label for="environmentNameList">
+                Environment Names
+              </mat-label>
+
+              <mat-select id="environmentName" formControlName="environmentName" #environmentName>
+                <mat-option id="environmentNameList" [value]="environment.id" *ngFor="let environment of response" 
+                (onSelectionChange)="loadOptionByEnvironment($event,environment.id)">
+                  {{environment.environmentNames}}
+                </mat-option>
+              </mat-select>
+              <mat-error class="text-danger" id="environmentNameRequired"
+                *ngIf="form.get('environmentName').errors?.required
+              &&(userForm.submitted || form.get('environmentName').touched || form.get('environmentName').dirty)">
+                Environment Name is required
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field style="width: 60%">
+              <mat-label>Batch Name</mat-label>
+              <input matInput type="text" id="batchName" placeholder="Batch Name" formControlName="batchName"
+              (focusout)="validateEnvironmentName()">
+              <mat-error class="text-danger" id="environmentNameRequired"
+                *ngIf="form.get('batchName').errors?.required
+                    &&(userForm.submitted || form.get('batchName').touched || form.get('batchName').dirty)">
+                Batch Name is required
+              </mat-error>
+              <mat-error class="text-danger" id="environmentNameRequired"
+              *ngIf="form.get('batchName').errors?.alreadyExist">
+              Batch Name already exist
+            </mat-error>
+            </mat-form-field>
+          </div>
+          <mat-card-subtitle>Option</mat-card-subtitle>
+          <mat-checkbox formControlName="voidClaimsBefore" id="voidClaimsBefore">Void Claims Before Processing
+          </mat-checkbox><br>
+          <mat-checkbox formControlName="increaseDays" id="increaseDays">Increase Service day by</mat-checkbox>
+          &nbsp;&nbsp;<mat-form-field style="width: 10%"><input matInput type="number" formControlName="increaseBydays"
+              min="0" max="100" readonly="{{editing}}">
+          </mat-form-field> days.
+          <mat-error id="increaseBydaysError" *ngIf="form.get('increaseBydays').errors">Limit 0 to 100</mat-error>
+
+        </mat-card>
+        <mat-card style="margin: 10px;">
+          <mat-form-field>
+            <mat-label for="claimSubmitter">Submitters *</mat-label>
+            <mat-select id="claimSubmitter" formControlName="claimSubmitters" placeholder="Submitters">
+              <mat-option id="claimSubmittersOption" *ngFor="let submitter of submitterList" [value]="submitter.code">
+                {{ submitter.code }} - {{ submitter.description }}</mat-option>
+            </mat-select>
+            <mat-error class="text-danger" id="claimSubmitterRequired" *ngIf="form.get('claimSubmitters').errors?.required
+&& (userForm.submitted || form.get('claimSubmitters').touched || form.get('claimSubmitters').dirty) ">
+              Claim Submitter is required
+            </mat-error>
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field>
+            <mat-label for="claimReceiver">Receiver *</mat-label>
+            <mat-select id="claimReceiver" name="claimReceiver" formControlName="claimReceiver">
+              <mat-option id="claimReceiverOption" *ngFor="let receiver of receiverList" [value]="receiver.code">
+                {{ receiver.code }} - {{ receiver.description }}</mat-option>
+            </mat-select>
+            <mat-error class="text-danger" id="receiverRequired" *ngIf="form.get('claimReceiver').errors?.required
+    && (userForm.submitted || form.get('claimReceiver').touched || form.get('claimReceiver').dirty)">
+              Claim Receiver is required
+            </mat-error>
+          </mat-form-field>
+        </mat-card>
+        <mat-card style="margin: 10px;">
+          <mat-card-subtitle>Beneficiary</mat-card-subtitle>
+          <div formArrayName="replacementBeneficiary">
+            <div *ngFor="let beneficary of  form.controls.replacementBeneficiary.controls;let i=index">
+              <div [formGroupName]="i" fxLayoutGap=20px>
+                <mat-form-field>
+
+                  <input matInput formControlName="beneficaryIdentifier" id="beneficaryIdentifier">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>No Replace Beneficiary</mat-label>
+                  <mat-select formControlName="beneficaryControl">
+                    <mat-option [value]="-1">No Replace Provider</mat-option>
+                    <mat-option *ngFor="let replaceBeni of replacementBeneificaryList;"
+                      [value]="replaceBeni.beneficiary.identifier">
+                      {{replaceBeni.beneficiary.identifier}} ({{replaceBeni.beneficiary.description}})
+                    </mat-option>
+                  </mat-select>
+
+                </mat-form-field>
+                <mat-error id="beneficaryControlRequired"
+                  *ngIf="beneficary.get('beneficaryControl').errors?.required &&(userForm.submitted)">test </mat-error>
+                <mat-checkbox formControlName="alwaysReplace">
+                  Always Replace
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card style="margin: 10px;">
+          <mat-card-subtitle>Provider</mat-card-subtitle>
+          <div formArrayName="replacementProvider">
+            <div *ngFor="let provider of  providerList;let j=index">
+              <div [formGroupName]="j" fxLayoutGap=20px>
+                <mat-form-field>
+                  <input matInput readonly="true" formControlName="provider">
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label for="replaceProvider">Replace with Provider</mat-label>
+                  <mat-select id="providerControl" formControlName="providerControl">
+                    <mat-option [value]="-1">No Replace Provider</mat-option>
+                    <mat-option *ngFor="let replaceProvider of replacementProviderList;"
+                      [value]="replaceProvider.provider.npi">
+                      {{replaceProvider.provider.npi}} ({{replaceProvider.provider.description}})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-checkbox formControlName="alwaysReplace">
+                  Always Replace
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card style="margin: 10px;">
+          <mat-card-subtitle>Payor</mat-card-subtitle>
+          <div formArrayName="replacementPayor">
+            <div *ngFor="let payor of  payorList;let k=index">
+              <div [formGroupName]="k" fxLayoutGap=20px>
+                <mat-form-field>
+                  <input matInput readonly="true" formControlName="payor">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label for="replacePayor">Replace with Payor</mat-label>
+                  <mat-select formControlName="payorControl">
+                    <mat-option [value]="-1">No Replace Payor</mat-option>
+                    <mat-option *ngFor="let replacePayor of replacementPayorList;"
+                      [value]="replacePayor.payor.identifier">
+                      {{replacePayor.payor.identifier}} ({{replacePayor.payor.description}})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-checkbox formControlName="alwaysReplace">
+                  Always Replace
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+        <mat-card style="margin: 10px;">
+          <mat-card-subtitle>PA</mat-card-subtitle>
+          <div formArrayName="replacementPA">
+            <div *ngFor="let pa of  paList;let l=index">
+              <div [formGroupName]="l" fxLayoutGap=20px>
+                <mat-form-field>
+                  <input matInput readonly="true" formControlName="pa">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label for="replacePA">Replace with PA</mat-label>
+                  <mat-select formControlName="paControl">
+                    <mat-option [value]="-1">No Replace PA</mat-option>
+                    <mat-option *ngFor="let replacePA of replacemnentPAList;" [value]="replacePA.paVO.number">
+                      {{replacePA.paVO.number}} ({{replacePA.paVO.description}})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-checkbox formControlName="alwaysReplace">
+                  Always Replace
+                </mat-checkbox>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+        <div fxLayoutAlign="end start">
+          <button mat-raised-button type="submit" style="margin-right: 1%" color="primary"
+            (click)="replaceExecute(userForm)" color="primary" id="replaceExecute">Replace & Execute</button>
+          <button mat-raised-button matDialogClose color="accent">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </mat-card>
+</div>

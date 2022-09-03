@@ -1,0 +1,72 @@
+<br />
+<br />
+<div *ngIf="isExternalLogin === false" fxLayout="row" fxLayoutAlign="space-around center">
+
+  <div fxFlex="50%">
+    <mat-card>
+
+      <div class="accordion-form-section">
+        <mat-card-title>
+          <img src="assets/images/product-logo.png" alt="" />
+        </mat-card-title>
+        <form [formGroup]="loginForm" #userForm="ngForm" (ngSubmit)="submitForm()">
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1px">
+
+            <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" class="card">
+
+
+              <div fxFlex="100%" fxFlexAlign="start">
+
+              </div>
+              <h2>LiveTester </h2>
+
+              <p style="width: 100%;">
+                <mat-form-field>
+                  <input matInput [type]="'email'" placeholder="Username" formControlName="username" id="username">
+                  <mat-error sclass="text-danger" id="usernameRequired"
+                    *ngIf="loginForm.get('username').errors?.required
+                            &&(userForm.submitted || loginForm.get('username').touched || loginForm.get('username').dirty)">
+                    Username required</mat-error>
+                </mat-form-field>
+              </p>
+              <p style="width: 100%;">
+                <mat-form-field>
+                  <input matInput id="password" [type]="hide ? 'password' : 'text'" placeholder="Password"
+                    formControlName="password" required>
+                  <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  <mat-error class="text-danger" id="passwordRequired"
+                    *ngIf="loginForm.get('password').errors?.required
+                        &&(userForm.submitted || loginForm.get('password').touched || loginForm.get('password').dirty)">
+                    Password required</mat-error>
+                </mat-form-field>
+              </p>
+              <div [hidden]="!valid" class="error">
+                Invalid Login Details.
+              </div>
+              <div fxFlex="100%" fxFlexAlign="center">
+                <button mat-raised-button color="primary" id="login" type="submit" style="width : 17em;">Login</button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<div *ngIf="isExternalLogin === true" style="margin-top: 14%;">
+  <br />
+  <br />
+  <br />
+  <div fxLayout="row" fxLayoutAlign="space-around center">
+    <div fxFlex="50%">
+      <mat-card>
+        <div style="padding: 2%;" fxLayoutAlign="center center">
+          <h2>Signing In.........</h2>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

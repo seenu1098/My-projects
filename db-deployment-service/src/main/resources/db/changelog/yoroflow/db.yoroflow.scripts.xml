@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+	<include file="db/changelog/yoroflow/table/release-table-1.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-1.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-2.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-2.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-3.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-4.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-5.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-3.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-4.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-6.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-7.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-5.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-8.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-6.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-9.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-10.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-11.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-7.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-12.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-13.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-8.sql" />
+	<include file="db/changelog/yoroflow/table/release-table-9.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-14.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-15.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-16.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-17.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-18.sql" />
+	<include file="db/changelog/yoroflow/data/release-data-19.sql" />
+
+</databaseChangeLog>

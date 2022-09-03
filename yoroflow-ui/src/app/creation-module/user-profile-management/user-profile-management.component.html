@@ -1,0 +1,536 @@
+<div class="px-2 pt-2">
+    <div class="container-fluid p-0 m-0" id="user_details" *ngIf="isShow">
+        <form [formGroup]="form" #userForm="ngForm">
+            <div class="row p-0 m-0">
+                <div class="col-md-2 bg-light" id="sidebar_user_setting">
+                    <mat-nav-list style="width: 100%;" class="matNavStyle">
+                        <div fxLayout="row" fxLayoutGap="5px">
+                            <div *ngIf="loadProfilePicture !==null && loadProfilePicture !==''">
+                                <img mat-card-avatar [src]="transformImage(loadProfilePicture)" class="chat-prof-pic"
+                                    alt="User Avatar" id="transformImage">
+                            </div>
+                            <div class="circle" [style.background]="userVO?.color"
+                                *ngIf="loadProfilePicture ===null || loadProfilePicture ===''">
+                                {{userProfileValue(userVO.firstName)}}</div>
+                            <div style="padding-top: 7px; font-size: large; font-weight: bold;" i18n="User Settings">
+                                User Settings</div>
+                        </div>
+                        <a mat-list-item style="height:32px;" (click)="userDetailsTab()" id="userDetailsTab"
+                            [ngClass]="{'active-list-item': enableUserDetails}" class="menu-list-item mt=3">
+                            <mat-icon class="routeIcon" style="font-size:16px;margin-top:7px">account_circle</mat-icon>
+                            <span style="font-size:14px;" i18n="Profile">Profile</span>
+                        </a>
+                        <a mat-list-item style="height:32px;" (click)="passwordTab()" id="passwordTab"
+                            [ngClass]="{'active-list-item': enablePasswordChange}" class="menu-list-item">
+                            <mat-icon class="routeIcon" style="font-size:16px;margin-top:7px">visibility_off</mat-icon>
+                            <span style="font-size:14px;" i18n="Change Password">Change Password</span>
+                        </a>
+                        <a mat-list-item style="height:32px;" (click)="apiKeyTab()" id="apiKeyTab"
+                            [ngClass]="{'active-list-item': enableApiKey}" class="menu-list-item">
+                            <mat-icon class="routeIcon" style="font-size:16px;margin-top:7px">vpn_key
+                            </mat-icon>
+                            <span style="font-size:14px;" i18n="API Key List">API Key List</span>
+                        </a>
+                        <a mat-list-item style="height:32px;" (click)="customAttributeTab()" id="customAttributeTab"
+                            [ngClass]="{'active-list-item': enableCustomAttribute}" class="menu-list-item">
+                            <mat-icon class="routeIcon" style="font-size:16px;margin-top:7px">event</mat-icon>
+                            <span style="font-size:14px;" i18n="Custom Attribute">Custom
+                                Attribute</span>
+                        </a>
+                    </mat-nav-list>
+                </div>
+
+                <!------=User Setting------>
+                <div class="col-md-10" *ngIf="enableUserDetails">
+                    <!-- <div class="color_dev p-0 m-0">
+                        <h1 class="text-white font-weight-bold title text-dark">User Setting</h1>
+                    </div> -->
+                    <div class="row justify-content-center profile_mat_card">
+                        <div class="col-md-12 col-sm-10 justify-content-center">
+                            <div id="tabs_user_setting" class="justify-content-center">
+                                <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                                    <mat-button-toggle value="Change Password" (click)="passwordTab()"
+                                        i18n="Change Password">Change Password
+                                    </mat-button-toggle>
+                                    <mat-button-toggle value="Api Key List" (click)="apiKeyTab()" i18n="API Key List">
+                                        API Key List
+                                    </mat-button-toggle>
+                                    <mat-button-toggle value="Custom Attribute" (click)="customAttributeTab()"
+                                        i18n="Custom Attribute">Custom
+                                        Attribute</mat-button-toggle>
+                                </mat-button-toggle-group>
+                            </div>
+                            <h1 class=" font-weight-bold text-center text-dark" id="tabs_user_setting"
+                                i18n="User Setting">User Setting</h1>
+                            <h1 class=" font-weight-bold  text-dark" style="font-size: 16px;" i18n="User Settings">User
+                                Settings</h1>
+                            <mat-card>
+                                <div class="row w-100">
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                                <mat-label i18n="First Name">First Name</mat-label>
+                                                <input matInput placeholder="First Name" formControlName="firstName"
+                                                    i18n-placeholder="First Name" id="firstName" name="firstName">
+                                                <mat-error class="text-danger" id="firstNameRequired"
+                                                    *ngIf="form.get('firstName').errors?.required
+                                        &&(userForm.submitted || form.get('firstName').touched || form.get('firstName').dirty)" i18n="First Name is required">
+                                                    First Name is required</mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                                <mat-label i18n="Last Name">Last Name</mat-label>
+                                                <input matInput placeholder="Last Name" formControlName="lastName"
+                                                    i18n-placeholder="Last Name" id="lastName">
+                                                <mat-error class="text-danger" id="lastNameRequired" *ngIf="form.get('lastName').errors?.required
+                          &&(userForm.submitted || form.get('lastName').touched || form.get('lastName').dirty)"
+                                                    i18n="Last Name is required">
+                                                    Last Name is required</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="row">
+                                            <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                                <mat-label i18n="Login Email Id">Login Email Id</mat-label>
+                                                <input matInput placeholder="Login Email" i18n-placeholder="Login Email"
+                                                    [disabled]="form.get('emailId')" formControlName="emailId"
+                                                    id="loginEmail">
+                                                <mat-error class="text-danger" id="emailRequired"
+                                                    i18n="Login Email is required"
+                                                    *ngIf="form.get('emailId').errors?.required
+                                    &&(userForm.submitted || form.get('emailId').touched || form.get('emailId').dirty)">
+                                                    Login Email is required
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="emailValid"
+                                                    i18n="Login Email is not valid"
+                                                    *ngIf="form.get('emailId').errors?.email
+                                    &&(userForm.submitted || form.get('emailId').touched || form.get('emailId').dirty)">
+                                                    Login Email is not valid
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                                <mat-label i18n="Default Language">Default Language</mat-label>
+                                                <mat-select formControlName="defaultLanguage">
+                                                    <mat-option [value]="lang.lang"
+                                                        *ngFor="let lang of themeService.allLanguages">{{lang.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="row">
+                                            <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                                <mat-label i18n="Contact Email">Contact Email</mat-label>
+                                                <input matInput placeholder="Contact Email"
+                                                    i18n-placeholder="Contact Email"
+                                                    [disabled]="form.get('contactEmailId')"
+                                                    formControlName="contactEmailId">
+                                                <mat-error class="text-danger" id="contactEmailRequired"
+                                                    i18n="Contact Email is required"
+                                                    *ngIf="form.get('contactEmailId').errors?.required
+                                    &&(userForm.submitted || form.get('contactEmailId').touched || form.get('contactEmailId').dirty)">
+                                                    Contact Email is required
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="contactEmailValid"
+                                                    i18n="Contact Email is not valid"
+                                                    *ngIf="form.get('contactEmailId').errors?.email
+                                    &&(userForm.submitted || form.get('contactEmailId').touched || form.get('contactEmailId').dirty)">
+                                                    Contact Email is not valid
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                                <mat-label i18n="Contact Mobile Number">Contact Mobile Number
+                                                </mat-label>
+                                                <input matInput formControlName="mobileNumber"
+                                                    i18n-placeholder="Contact Mobile Number"
+                                                    placeholder="Contact Mobile Number">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" style="margin-top: 20px;">
+                                        <div *ngIf="croppedImage && profile" class="profile_img_container">
+                                            <div class="ctn">
+                                                <img [src]="croppedImage" id="croppedImage"
+                                                    class="profile_img img-fluid mx-auto d-block" />
+                                                <div class="centeredImage">
+                                                    <mat-icon id="btnUpdateProfilePicture" class="circleIcon"
+                                                        style="cursor: pointer;font-size: 21px; margin-top: 50px;"
+                                                        (click)="changeProfilePicture('edit')">
+                                                        photo_camera</mat-icon>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="!croppedImage && profile"
+                                            class="profile_img img-fluid mx-auto d-block" style="margin-top:-10%;">
+                                            <div class="ctn">
+                                                <div class="circleProfile" [style.background]="userVO?.color">
+                                                    {{userProfileValue(userVO.firstName)}}
+                                                </div>
+                                                <div class="centered">
+                                                    <mat-icon id="btnchangeProfilePicture" class="circleIcon"
+                                                        style="cursor: pointer;font-size: 21px; margin-top: 5px;"
+                                                        (click)="changeProfilePicture('add')">
+                                                        photo_camera</mat-icon>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" *ngIf="recallTimeZone === true">
+                                        <div class="w-100">
+                                            <app-timezone [inputMessage1]="timeZone" [fromUpdate]="true"
+                                                [templateObject1]="this" (orgValue1)="getData1($event,userForm)">
+                                            </app-timezone>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row w-100">
+                                    <h4 class="mt-4 mx-3"><b i18n="Avatar">Avatar</b></h4>
+                                    <div class="row w-100 mx-4">
+                                        <div class="circle-class-workspace" [style.background]="userVO?.color">
+                                            {{userProfileValue(userVO.firstName)}}
+                                        </div>
+                                        <div class="circle-class-avatar" *ngFor="let color of avatarColors"
+                                            [style.background]="color" (click)="changeAvatarColor(color)">
+                                            <mat-icon *ngIf="color===userVO.color" class="done-css">done</mat-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row w-100 ">
+                                    <div class="col-md-6">
+                                        <h4 class="mt-4"><b i18n="Roles">Roles</b></h4>
+                                        <span
+                                            style="padding: 5px;border-radius: 5px;margin-right: 15px; margin-bottom:10px;margin-top: 12px;"
+                                            [style.background]="role?.roleColor"
+                                            *ngFor="let role of userRoleList">{{role?.rolesNames}}</span>
+                                        <br>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="mt-4"><b i18n="Two Factor Authentication">Two Factor
+                                                Authentication</b></h4>
+                                        <div *ngIf="userDetails.isTwoFactor !== 'Y'">
+                                            <button mat-raised-button id="enable_2F" (click)="enableTwoFactorAuth()"
+                                                type="button" color="primary" i18n="Two Factor Authentication">Enable
+                                                Two Factor Authentication</button>
+                                        </div><br>
+                                        <div *ngIf="userDetails.isTwoFactor === 'Y'">
+                                            <button mat-raised-button id="enable_2F" (click)="disableTwoFactorAuth()"
+                                                type="button" color="primary"
+                                                [disabled]="userDetails.twoFactorEnforced === true"
+                                                i18n="Disable Two Factor Authentication">Disable Two Factor
+                                                Authentication</button>
+                                        </div><br>
+                                        <div
+                                            *ngIf="userDetails.isTwoFactor === 'Y' && userDetails.twoFactorSetUp === false">
+                                            <button mat-raised-button id="enable_2F" (click)="twoFactorsetUp()"
+                                                type="button" color="primary"
+                                                i18n="Setup Two Factor Authentication">Setup Two Factor
+                                                Authentication</button>
+                                        </div><br>
+                                        <div
+                                            *ngIf="userDetails.isTwoFactor === 'Y' && userDetails.twoFactorSetUp === true">
+                                            <button mat-raised-button id="reset_2F" (click)="resetTwoFactorAuth()"
+                                                type="button" color="accent"
+                                                i18n="Reset Two Factor Authentication">Reset Two Factor Authentication
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h4><b i18n="Groups">Teams</b></h4>
+                                <div fxLayout="row wrap" class="w-100 px-2 mb-4 mr-0" *ngIf="groupList?.length>0">
+                                    <span
+                                        style="padding: 5px;border-radius: 5px;margin-right: 15px; margin-bottom:10px;color:white;margin-top: 12px;"
+                                        [style.background]="group?.color"
+                                        *ngFor="let group of groupList;let k=index">{{group?.groupName}}</span>
+                                    <button mat-button (click)="loadGroups()"
+                                        *ngIf="userGroupList?.length>4">{{loadButtonName}}</button>
+                                </div>
+                                <h4 class="mt-4"><b i18n="Signatures"> Signatures</b></h4>
+                                <div class="row w-100 px-2 mb-4 mr-0">
+                                    <div class="col-md-4 col-sm-12 pr-0" *ngIf="signatureList[0]">
+                                        <h6 class="mb-0" style="font-size: 15px;" *ngIf="signatureList[0]">
+                                            {{signatureList[0].signatureName}}
+                                        </h6>
+                                        <div class="row w-100 mt-2 px-0 mx-0  ">
+                                            <signature-pad #signature class="col-md-11 px-0" id="signature"
+                                                (window:resize)="resizeSignaturePad()" [options]="signaturePadOptions"
+                                                (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()">
+                                            </signature-pad>
+                                            <div class="edit_icon col-md-1 pl-0 py-0 pr-2" *ngIf="showClose === true">
+                                                <mat-icon class="text-danger edit_icon_delete" (click)="delete(0)">
+                                                    highlight_off
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 pr-0" *ngIf="signatureList[1]">
+                                        <span *ngIf="signatureList[1]"
+                                            style="font-size: 15px;">{{signatureList[1].signatureName}}</span>
+                                        <div class="row w-100 mt-2 px-0 mx-0 ">
+                                            <signature-pad #signature1 id="signature1" class="col-md-11 px-0"
+                                                (window:resize)="resizeSignature()" [options]="signaturePadOptions"
+                                                (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()">
+                                            </signature-pad>
+                                            <div class="edit_icon col-md-1 pl-0 py-0 pr-2" *ngIf="showClose === true">
+                                                <mat-icon class="text-danger edit_icon_delete" (click)="delete(1)">
+                                                    highlight_off
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 pr-0" *ngIf="signatureList[2]">
+                                        <span *ngIf="signatureList[2]"
+                                            style="font-size: 15px;">{{signatureList[2].signatureName}}</span>
+                                        <div class="row w-100 mt-2 px-0 mx-0 ">
+                                            <signature-pad #signature2 class="col-md-11 px-0" id="signature2"
+                                                (window:resize)="resize()" [options]="signaturePadOptions"
+                                                (onBeginEvent)="drawStart()" (onEndEvent)="drawComplete()">
+                                            </signature-pad>
+                                            <div class="edit_icon col-md-1 pl-0 py-0 pr-20" *ngIf="showClose === true">
+                                                <mat-icon class="text-danger edit_icon_delete" (click)="delete(2)">
+                                                    highlight_off
+                                                </mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row w-100" style="margin-top:20px;margin-left: 12px;"
+                                    *ngIf="signatureList && signatureList.length < 3">
+                                    <button mat-button id="copy_taskboard" (click)="openSignature()" color="primary"
+                                        i18n="Add Signature">Add
+                                        Signature
+                                    </button>
+                                </div>
+                                <div class="row justify-content-end">
+                                    <button mat-raised-button color="accent" class="mr-3" (click)="resetUserDetails()"
+                                        i18n="Reset">Reset</button>
+                                    <button mat-raised-button color="primary" id="btnsave" class="mr-3"
+                                        [disabled]="!form.get('firstName').dirty && !form.get('lastName').dirty 
+                                        && !form.get('contactEmailId').dirty  && !form.get('mobileNumber').dirty && !form.get('defaultLanguage').dirty && !form.get('color').dirty"
+                                        (click)="submitUserDetails(userForm)" i18n="Update">Update</button>
+                                </div>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-------=change password-------->
+                <div class="col-md-10" *ngIf="enablePasswordChange">
+                    <div class="color_dev p-0 m-0">
+                        <h1 class="text-white font-weight-bold title text-dark" i18n="Change Password">Change Password
+                        </h1>
+                    </div>
+                    <div class="row justify-content-center profile_mat_card">
+                        <div class="col-md-10 col-sm-10">
+                            <div id="tabs_user_setting" class="justify-content-center">
+                                <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                                    <mat-button-toggle value="User Settings" (click)="userDetailsTab"
+                                        i18n="User Settings">User Settings
+                                    </mat-button-toggle>
+                                    <mat-button-toggle value="Api Key List" (click)="apiKeyTab()" i18n="Api Key List">
+                                        Api Key List
+                                    </mat-button-toggle>
+                                    <mat-button-toggle value="Custom Attribute" (click)="customAttributeTab"
+                                        i18n="Custom Attribute">Custom
+                                        Attribute</mat-button-toggle>
+                                </mat-button-toggle-group>
+                            </div>
+                            <h1 class=" font-weight-bold text-center text-dark" id="tabs_user_setting"
+                                i18n="Change Password">Change Password
+                            </h1>
+                            <mat-card>
+                                <ng-contanier *ngIf="authType === 'Yoroflow'">
+                                    <form [formGroup]="form" #userForm="ngForm">
+                                        <div class="row">
+                                            <mat-form-field appearance="outline" class="col-md-12 col-sm-12">
+                                                <mat-label i18n="Old Password">Old Password</mat-label>
+                                                <input matInput [type]="hideOld ? 'password' : 'text'"
+                                                    formControlName="oldPassword">
+                                                <button mat-icon-button matSuffix (click)="hideOld = !hideOld"
+                                                    [attr.aria-label]="'Hide password'"
+                                                    [attr.aria-pressed]="'Hide password'">
+                                                    <mat-icon>{{hideOld ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="row">
+                                            <mat-form-field appearance="outline" class="col-md-12 col-sm-12">
+                                                <mat-label i18n="New Password">New Password</mat-label>
+                                                <input matInput [type]="hideNew ? 'password' : 'text'"
+                                                    formControlName="password">
+                                                <mat-error class="text-danger" id="passwordRequired" *ngIf="form.get('password').errors?.required
+                                    &&(userForm.submitted || form.get('password').touched 
+                                    || form.get('password').dirty)" i18n="Password is required">
+                                                    Password is required</mat-error>
+                                                <mat-error class="text-danger" id="passwordLowerRequired" *ngIf="form.get('password').errors?.lower
+                                                      &&(userForm.submitted || form.get('password').touched 
+                                                      || form.get('password').dirty)"
+                                                    i18n="Password must contain atleast one lowercase letter">
+                                                    Password must contain atleast one lowercase letter
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="passwordUpperRequired" *ngIf="form.get('password').errors?.upper
+                                                                    &&(userForm.submitted || form.get('password').touched 
+                                                                    || form.get('password').dirty)"
+                                                    i18n="Password must contain atleast one uppercase letter">
+                                                    Password must contain atleast one uppercase letter
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="passwordNumberRequired" *ngIf="form.get('password').errors?.number
+                                                                                  &&(userForm.submitted || form.get('password').touched 
+                                                                                  || form.get('password').dirty)"
+                                                    i18n="Password must contain atleast one number">
+                                                    Password must contain atleast one number
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="passwordSplCharRequired"
+                                                    *ngIf="form.get('password').errors?.splChar
+                                                                                                &&(userForm.submitted || form.get('password').touched 
+                                                                                                || form.get('password').dirty)"
+                                                    i18n="Password must contain atleast one special character">
+                                                    Password must contain atleast one special character
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="passwordMinRequired"
+                                                    *ngIf="form.get('password').errors?.min
+                                                                                                &&(userForm.submitted || form.get('password').touched 
+                                                                                                || form.get('password').dirty)"
+                                                    i18n="Password must contain minimum 6 character">
+                                                    Password must contain minimum 6 character
+                                                </mat-error>
+                                                <mat-error class="text-danger" id="passwordMaxRequired"
+                                                    *ngIf="form.get('password').errors?.max
+                                                                                                &&(userForm.submitted || form.get('password').touched 
+                                                                                                || form.get('password').dirty)"
+                                                    i18n="Password must contain maximum 50 character">
+                                                    Password must contain maximum 50 character
+                                                </mat-error>
+
+
+                                                <button mat-icon-button matSuffix (click)="hideNew = !hideNew"
+                                                    [attr.aria-label]="'Hide password'"
+                                                    [attr.aria-pressed]="'Hide password'">
+                                                    <mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="row">
+                                            <mat-form-field appearance="outline" class="col-md-12 col-sm-12 ">
+                                                <mat-label i18n="Confirm Password">Confirm Password</mat-label>
+                                                <input matInput [type]="hideConfirm ? 'password' : 'text'"
+                                                    formControlName="confirmPassword">
+                                                <mat-error class="text-danger" id="confirmPasswordRequired" *ngIf="form.get('confirmPassword').errors?.required
+                      &&(userForm.submitted || form.get('confirmPassword').touched 
+                      || form.get('confirmPassword').dirty)" i18n="Confirm Password is required">
+                                                    Confirm Password is required</mat-error>
+                                                <mat-error class="text-danger" id="confirmPasswordNotEqual" *ngIf="
+                      form.get('confirmPassword').errors?.notEqual && !form.get('confirmPassword').errors?.required"
+                                                    i18n="Password and Confirm Password does not match.">
+                                                    Password and Confirm Password does not match.
+                                                </mat-error>
+                                                <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm"
+                                                    [attr.aria-label]="'Hide password'"
+                                                    [attr.aria-pressed]="'Hide password'">
+                                                    <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}
+                                                    </mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="row justify-content-end">
+                                            <button mat-raised-button color="warn" class="mr-3"
+                                                (click)="resetPassword(userForm)" i18n="Reset">Reset</button>
+
+                                            <button mat-raised-button color="primary" class="mr-3"
+                                                (click)="changePassword(userForm)" i18n="Change Password">Change
+                                                Password</button>
+                                        </div>
+                                    </form>
+                                </ng-contanier>
+                                <ng-contanier *ngIf="authType === 'Google' || authType === 'Microsoft'">
+                                    <div style="text-align: center;" i18n="You don't have access to change the password here.
+                                    Please go to your {{authType}} account
+                                    to change the password."> You don't have access to change the password here.
+                                        Please go to your <span style="font-weight: bold;">{{authType}} account</span>
+                                        to change the password.</div>
+                                </ng-contanier>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
+
+                <!-------=Custome Attribute-------->
+
+                <div class="col-md-10" *ngIf="enableCustomAttribute">
+                    <app-user-custom-attributes *ngIf="enableCustomAttribute" from="update-org">
+                    </app-user-custom-attributes>
+
+                    <!-- <div class="color_dev p-0 m-0">
+                    <h1 class="text-white font-weight-bold title">Custom Attribute</h1>
+                </div>
+                <div class="row justify-content-center profile_mat_card">
+                    <div class="col-md-10 col-sm-10">
+                        <div id="tabs_user_setting" class="justify-content-center">
+                            <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                                <mat-button-toggle value="bold">Bold</mat-button-toggle>
+                                <mat-button-toggle value="italic">Italic</mat-button-toggle>
+                                <mat-button-toggle value="underline">Underline</mat-button-toggle>
+                            </mat-button-toggle-group>
+                        </div>
+                        <h1 class=" font-weight-bold text-center" id="tabs_user_setting">Custome Attribute</h1>
+                        <mat-card>
+                            <form [formGroup]="form" #userForm="ngForm">
+                                <div class="row">
+                                    <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                        <mat-label>Date Of Birth</mat-label>
+                                        <input matInput [matDatepicker]="picker">
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="col-md-6 col-sm-12">
+                                        <mat-label>Attribute Name</mat-label>
+                                        <input matInput placeholder="Placeholder">
+                                    </mat-form-field>
+                                </div>
+                                <div class="row">
+                                    <mat-form-field appearance="outline" class="col-md-6 col-sm-12 ">
+                                        <mat-label>Location</mat-label>
+                                        <input matInput placeholder="Placeholder">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="col-md-6 col-sm-12 ">
+                                        <mat-label>AVM</mat-label>
+                                        <input matInput placeholder="Placeholder">
+                                    </mat-form-field>
+                                </div>
+                                <div class="row justify-content-end">
+                                    <button mat-raised-button color="primary" class="mr-3">Save</button>
+                                </div>
+                            </form>
+                        </mat-card>
+                    </div>
+                </div> -->
+                </div>
+
+
+                <!-- api-->
+                <div class="col-md-10" *ngIf="enableApiKey">
+                    <div class="color_dev p-0 m-0 ">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h1 class="text-white font-weight-bold title text-dark" i18n="Create API">Create API
+                                </h1>
+                            </div>
+                            <div class="col-md-6 justify-content-end title">
+                                <button mat-raised-button type="button" color="primary" style="height: 40px; "
+                                    id="newFirstApi" class="mr-3 float-right" (click)="openApiKey('')"
+                                    i18n="Create API Key">Create API
+                                    Key</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h1 class=" font-weight-bold text-center text-dark" id="tabs_user_setting" i18n="Create API">Create
+                        API</h1>
+                    <mat-card>
+                        <mat-card-title i18n="API Key List">API Key List</mat-card-title>
+                        <app-yorogrid #apiKey gridId="Api List" (messageEvent)="receiveMessage($event)"
+                            defaultColumn="columnName">
+                        </app-yorogrid>
+                    </mat-card>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

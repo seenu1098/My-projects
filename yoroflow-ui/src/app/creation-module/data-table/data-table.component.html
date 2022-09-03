@@ -1,0 +1,395 @@
+<mat-card class="m-2" id="data-table">
+    <div class="row w-100 mb-4 mx-0">
+        <div class="col-md-12 px-0 py-0 bg-white" style="width:84%; overflow-y: scroll;">
+            <div class="row w-100 mx-0" [style.width]="screenWidth" fxLayoutAlign="space-between center">
+                <div fxLayout="column" class="ml-2 mt-2">
+                    <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center">
+                        <button mat-button class="circle-button" (click)="route()" *ngIf="!from">
+                            <mat-icon class="fs-css">arrow_back</mat-icon>
+                        </button>
+                        <mat-card-title style="padding: 15px 10px;" class="mt-2">{{dataTableName}}
+                        </mat-card-title>
+                    </div>
+                </div>
+                <div class="row mx-0 justify-content-center mt-2" *ngIf="updateAllowed===true || deleteAllowed===true ">
+                    <mat-button-toggle-group appearance="legacy">
+                        <ng-container *ngFor="let mode of modes; let i = index">
+                            <mat-button-toggle [class.active-view]="viewMode === mode.name" [matTooltip]="mode.name"
+                                (click)="changeMode(mode?.name)">
+                                <!-- [class.activeMode]="viewMode === mode.name" -->
+                                <div class="row w-100 mx-0">
+                                    <mat-icon class="w_14 toggle_btn" [class.active-icon]="viewMode === mode.name">
+                                        {{mode?.icon}}</mat-icon>
+                                    <span class="h_14"
+                                        [style.color]="viewMode === mode.name?'white':'grey'">{{mode?.name |
+                                        translate}}</span>
+                                </div>
+                            </mat-button-toggle>
+                        </ng-container>
+                    </mat-button-toggle-group>
+                </div>
+                <div fxLayout="column">
+                    <div fxLayout="row" class="w-100 mx-0 justify-content-end">
+                        <div fxLayout="column" class="mr-3">
+                            <div fxLayout="row" *ngIf="documentOwnerList?.tableOwnersId?.length>0">
+                                Owners
+                            </div>
+                            <div fxLayout="row" class="mt-1">
+                                <ng-container *ngFor="let userId of documentOwnerList?.tableOwnersId;let i = index;">
+                                    <div *ngIf="i<=3" class="hover-class round_firstletter"
+                                        [style.margin-left]="i>0?'-4px':''" [matTooltip]="getUserName(userId)"
+                                        [style.background]="getUserColor(userId)">
+                                        <span
+                                            class=" round_firstletter_size">{{getUserFirstAndLastNamePrefix(userId)}}</span>
+                                    </div>
+                                    <ng-container *ngIf="i===4">
+                                        <div class="hover-class round_add_count"
+                                            [matTooltip]="getUserNames(documentOwnerList?.tableOwnersId)">
+                                            <span
+                                                class=" round_firstletter_count">+{{getRemainingAssigneeUserCount(documentOwnerList?.tableOwnersId)}}</span>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div fxLayout="column" class="mr-2">
+                            <div fxLayout="row" *ngIf="documentOwnerList?.securityTeamVOList?.length>0">
+                                Teams
+                            </div>
+                            <div fxLayout="row" class="mt-1">
+                                <ng-container
+                                    *ngFor="let group of documentOwnerList?.securityTeamVOList;let i = index;">
+                                    <div *ngIf="i<=3" class="hover-class round_firstletter"
+                                        [style.margin-left]="i>0?'-4px':''" [matTooltip]="getGroupName(group.groupId)"
+                                        [style.background]="getGroupColor(group.groupId)">
+                                        <span
+                                            class=" round_firstletter_size">{{getGroupFirstAndLastNamePrefix(group.groupId)}}</span>
+                                    </div>
+                                    <ng-container *ngIf="i===4">
+                                        <div class="hover-class round_add_count"
+                                            [matTooltip]="getGroupNames(documentOwnerList?.securityTeamVOList)">
+                                            <span
+                                                class=" round_firstletter_count">+{{getRemainingAssigneeGroupCount(documentOwnerList?.securityTeamVOList)}}</span>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <span *ngIf="ownerAllowed" class="flag-container-css mr-3  mt-4 mb-0" (click)="readDialog()"
+                            matTooltip="{{'Add permissions' | translate}}">
+                            <mat-icon appearance="filled" class="flag-css">person</mat-icon>
+                            <mat-icon class="circle-css">add_circle</mat-icon>
+                        </span>
+                        <button mat-raised-button class="mr-3 mt-3" style="line-height: 20px;height: 30px;"
+                            type="button" color="accent" (click)="clearAllFilter()" i18n="Clear"
+                            *ngIf="viewMode === 'Viewing'">Clear Filters</button>
+                        <mat-icon [matMenuTriggerFor]="configMenu" #configMenuMenuTrigger="matMenuTrigger"
+                            class="config-icon">more_vert
+                        </mat-icon>
+                        <mat-menu #configMenu="matMenu">
+                            <div fxLayout="column">
+                                <span class="menu-action-css">Actions:</span>
+                                <button mat-button id="export" (click)="excelService()" class="fs_12">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css fs_18 w_14 h_14 mt-2"
+                                            fontSet="material-icons-outlined"
+                                            [style.color]="taskboardService.iconsColorArray[0]">
+                                            file_upload</mat-icon>
+                                        <span i18n="Configuration"> Export</span>
+                                    </div>
+                                </button>
+                                <button mat-button id="import" (click)="fileInput.click()" class="fs_12"
+                                    *ngIf="updateAllowed===true">
+                                    <div fxLayout="row" fxLayoutGap="10px">
+                                        <mat-icon class="column-icon-css fs_18 w_14 h_14 mt-2"
+                                            fontSet="material-icons-outlined"
+                                            [style.color]="taskboardService.iconsColorArray[1]">
+                                            file_download</mat-icon>
+                                        <span i18n="Configuration"> Import</span>
+                                    </div>
+                                    <input type="file" #fileInput (change)="fileImport($event)" style="display:none;"
+                                        accept=".xlsx, .xls, .csv" id="import" (click)="$event.target.value=null" />
+                                </button>
+                            </div>
+                        </mat-menu>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+    <form #userForm="ngForm" [formGroup]="form" *ngIf="viewMode === 'Viewing'" class="viewing-table mat_ui">
+
+        <table>
+            <tr>
+                <ng-container *ngFor="let column of dataTableColumns; let i=index;">
+                    <th>
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="ml-2">
+                            <mat-label fxLayout="row"
+                                style="font-weight: bold;margin-top:10px !important;cursor:pointer;"
+                                (click)="sort($event,column)" class="show-icon-by-hover">
+                                <div>{{column.columnName}}
+                                    <!-- <mat-icon style="font-size:12px" *ngIf="column.isSort===false"></mat-icon> -->
+                                </div>
+                                <div class="h-0 w-20">
+                                    <mat-icon style="font-size:13px;"
+                                        [class]="column.columnIdentifier===activeSortColumn?'show-icon':'hide-icon'">
+                                        {{column.isSort===true?'arrow_upward':'arrow_downward'}}</mat-icon>
+                                </div>
+                                <!-- <span *ngIf="column.isRequired === true" style="color: red;"> *</span> -->
+                            </mat-label>
+                            <div>
+                                <mat-icon id="taskid" class="icon-css sub_status_filter fs_14 w_14 h_14"
+                                    [matMenuTriggerFor]="dropdownMenuOne" #matMenuTriggerdataTable="matMenuTrigger"
+                                    style="cursor: pointer; margin-top: 14px;" [style]="column.style"
+                                    (click)="setDataType(column)">
+                                    filter_list
+                                </mat-icon>
+
+                            </div>
+
+                        </div>
+                    </th>
+                </ng-container>
+            </tr>
+            <ng-container *ngIf="dataTableValuesList?.length > 0 && dataError === false">
+                <ng-container formArrayName="tableObjectsColumns"
+                    *ngFor="let column of getDataTableFormarray().controls; let i = index;">
+                    <ng-container [formGroupName]="i">
+                        <tr>
+
+                            <ng-container formArrayName="values"
+                                *ngFor="let valueGroup of column['controls'].values['controls']; let iw = index">
+                                <ng-container [formGroupName]="iw">
+                                    <td id="bg_input"
+                                        [class]="valueGroup.get('columnValue').errors?.required?'showErrorCss':none">
+                                        <span
+                                            *ngIf="valueGroup.get('dataType').value !== 'timestamp' && valueGroup.get('dataType').value !== 'date'">{{valueGroup.get('columnValue').value}}</span>
+                                        <span
+                                            *ngIf="valueGroup.get('dataType').value === 'date' || valueGroup.get('dataType').value === 'timestamp'">{{getDate(valueGroup.get('columnValue').value,
+                                            valueGroup.get('dataType').value)}}</span>
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </table>
+        <ng-container *ngIf="(dataTableValuesList?.length === 0 || dataError === true) && isLoad === false">
+            <div i18n="Table does not exists" class="no-data-css">
+                No data available
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="dataTableValuesList?.length === 0 && dataError">
+            <div i18n="Table does not exists" class="no-data-css">
+                Table does not exists
+            </div>
+        </ng-container>
+    </form>
+
+    <form #userForm="ngForm" [formGroup]="form" *ngIf="viewMode !== 'Viewing'">
+        <div fxLayout="row" fxLayoutAlign="start" style="padding-bottom: 5px;">
+            <button *ngIf="isCheckBoxSelected()" mat-raised-button color="accent" id="btnsave"
+                [disabled]="!isCheckBoxSelected()" (click)="deleteRow()" i18n="Delete"
+                class="float-right mt-2">Delete</button>
+        </div>
+        <table>
+            <tr>
+                <th class="table_light_bg" *ngIf="deleteAllowed === true">
+                    <mat-checkbox style="margin-left: 2px;margin-right: 3px;" [checked]="selectAllRow"
+                        (change)="setSelection($event)">
+                    </mat-checkbox>
+                </th>
+                <ng-container *ngFor="let column of dataTableColumns; let i=index;">
+                    <th class="table_light_bg">
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                            <mat-label style="font-weight: bold;margin-top:10px !important;"
+                                (click)="sort($event,column)">
+                                <span>{{column.columnName}}
+                                    <!-- <mat-icon style="font-size:12px" *ngIf="sortb===true">
+                                        north</mat-icon>
+                                    <mat-icon style="font-size:12px" *ngIf="sortb===false">south</mat-icon> -->
+                                </span>
+                                <span *ngIf="column.isRequired === true" style="color: red;"> *</span>
+                            </mat-label>
+                            <div>
+                                <!-- <mat-icon id="taskid" class="icon-css sub_status_filter fs_14 w_14 h_14"
+                                    [matMenuTriggerFor]="dropdownMenuOne" #matMenuTriggerdataTable="matMenuTrigger"
+                                    style="cursor: pointer; margin-top: 14px;" [style]="column.style" (click)="setDataType(column)">
+                                    filter_list
+                                </mat-icon> -->
+                                <mat-icon class="float-right" *ngIf="ownerAllowed"
+                                    (click)="columnProcessChanges(column, i)" [matMenuTriggerFor]="columnProcess"
+                                    #menuTriggerColumn="matMenuTrigger" style="cursor: pointer; margin-top: 14px;">
+                                    keyboard_arrow_down</mat-icon>
+                            </div>
+
+                        </div>
+                    </th>
+                </ng-container>
+                <th class="table_light_bg" *ngIf="ownerAllowed">
+                    <button mat-mini-fab color="primary" [matMenuTriggerFor]="addFields"
+                        #menuTriggerMap="matMenuTrigger" aria-label="Add column" class="ml-1 mr-2">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </th>
+            </tr>
+            <ng-container *ngIf="dataTableValuesList?.length > 0 || dataError === false">
+                <ng-container formArrayName="tableObjectsColumns"
+                    *ngFor="let column of getDataTableFormarray().controls; let i = index;">
+                    <ng-container [formGroupName]="i">
+                        <tr>
+                            <td class="table_light_bg show-css" *ngIf="deleteAllowed === true">
+                                <!-- <span *ngIf="column.get('isSelected').value === false" class="s-no-css">
+                                    {{i + 1}}
+                                    [class]="column.get('isSelected').value === true?'show':'checkbox-show'"
+                                </span> -->
+                                <mat-checkbox formControlName="isSelected"
+                                    [class]="column.get('isSelected').value === true?'show':'checkbox-show'"
+                                    (change)="setRowSelection(column,$event)">
+                                </mat-checkbox>
+                            </td>
+                            <ng-container formArrayName="values"
+                                *ngFor="let valueGroup of column['controls'].values['controls']; let iw = index">
+                                <ng-container [formGroupName]="iw">
+                                    <td id="bg_input" [class]="valueGroup.get('columnValue').errors?.required ||
+                                        valueGroup.get('columnValue').errors?.pattern?'showErrorCss':none">
+                                        <ng-container
+                                            *ngIf="valueGroup.get('dataType').value === 'float' || valueGroup.get('dataType').value === 'long'">
+                                            <input (focusout)="saveValuesWhileFocusout($event, i)" id="columnIdentifier"
+                                                formControlName="columnValue" matInput
+                                                [readonly]="deleteAllowed===true && updateAllowed===false && ownerAllowed===false"
+                                                oninput="this.value = Math.abs(this.value)" type="number">
+                                        </ng-container>
+                                        <ng-container
+                                            *ngIf="valueGroup.get('dataType').value !== 'float' && valueGroup.get('dataType').value !== 'long'
+                                            && valueGroup.get('dataType').value !== 'date' && valueGroup.get('dataType').value !== 'timestamp'">
+                                            <input (focusout)="saveValuesWhileFocusout($event, i)" id="columnIdentifier"
+                                                [readonly]="deleteAllowed===true && updateAllowed===false && ownerAllowed===false"
+                                                formControlName="columnValue" matInput type="text">
+                                        </ng-container>
+                                        <ng-container *ngIf="valueGroup.get('dataType').value === 'date'">
+                                            <div fxLayout="row">
+                                                <input (dateChange)="saveValuesWhileFocusout($event, i)" matInput
+                                                    [readonly]="deleteAllowed===true && updateAllowed===false && ownerAllowed===false"
+                                                    [matDatepicker]="picker" formControlName="columnValue">
+                                                <mat-datepicker-toggle matSuffix [for]="picker">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker></mat-datepicker>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="valueGroup.get('dataType').value === 'timestamp'">
+                                            <div fxLayout="row">
+                                                <input (dateChange)="saveValuesWhileFocusout($event, i)" matInput
+                                                    [readonly]="deleteAllowed===true && updateAllowed===false && ownerAllowed===false"
+                                                    [ngxMatDatetimePicker]="picker2" formControlName="columnValue">
+                                                <mat-datepicker-toggle matSuffix [for]="picker2">
+                                                </mat-datepicker-toggle>
+                                                <ngx-mat-datetime-picker #picker2 color="primary"
+                                                    [enableMeridian]="true">
+                                                </ngx-mat-datetime-picker>
+                                            </div>
+                                        </ng-container>
+                                        <!-- <mat-error id="tableNameError"
+                                        *ngIf="valueGroup.get('columnValue').errors?.required" i18n="Value is required">
+                                        Value is required
+                                    </mat-error> -->
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+                            <td *ngIf="ownerAllowed" class="table_light_bg border-none" rowspan="1">
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+                <tr class="table_light_bg" *ngIf="updateAllowed ===true">
+                    <td *ngIf="dataTableColumns.length > 0" id="row_input" [attr.colspan]="dataTableColumns.length + 2">
+                        <div class="ml-1 h-40">
+                            <button mat-raised-button id="addRows" i18n="Add a row" type="button" color="primary"
+                                (click)="addRows()" class="btn-css">
+                                Add a row
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+
+        <ng-container *ngIf="dataTableValuesList?.length === 0 && dataError">
+            <div i18n="Table does not exists" style="margin-left: 20px; margin-top: 5px;">
+                Table does not exists
+            </div>
+        </ng-container>
+    </form>
+    <div fxLayout="row" fxLayoutAlign="end" style="margin-right:10px;">
+        <app-paginator *ngIf="(dataTableValuesList?.length > 0 && dataError === false) && length"
+            id="mat_table_page_selector" [length]="length" [pageSize]="paginationVO.size"
+            [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)">
+        </app-paginator>
+    </div>
+    <mat-menu #addFields="matMenu" class="column-menu-map">
+        <ng-container *ngFor="let names of dataColumnsList; let i = index">
+            <button (click)="openColumnFields(names)" mat-menu-item class="px-1" type="button">
+                {{names.name | translate}}
+            </button>
+        </ng-container>
+    </mat-menu>
+    <mat-menu #columnProcess="matMenu" class="column-menu-map">
+        <ng-container *ngFor="let names of columnProcessList; let i = index">
+            <button (click)="processColumnFields(names)" mat-menu-item class="px-1" type="button">
+                {{names.name | translate}}
+            </button>
+        </ng-container>
+    </mat-menu>
+    <form [formGroup]="dataTableForm" #userForm="ngForm">
+        <mat-menu #dropdownMenuOne="matMenu" class="remaining-menu" id="workflow_operator">
+            <div class="row w-100 mx-0 justify-content-center" (click)="$event.stopPropagation()">
+                <mat-form-field class="field-size">
+                    <mat-label i18n="@@Operator">Operator</mat-label>
+                    <mat-select formControlName="operator" required>
+                        <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                            {{data.description}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="dataTableForm.get('operator').errors?.required" i18n="@@OperatorRequired">Operator
+                        is
+                        required</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="row w-100 mx-0 justify-content-center mt-3" (click)="$event.stopPropagation()">
+                <mat-form-field class="field-size" *ngIf="isDateField===false">
+                    <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                    <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+                        formControlName="filterValue" required>
+                    <input matInput *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue"
+                        type="number" formControlName="filterValue" required>
+                    <mat-error *ngIf="dataTableForm.get('filterValue').errors?.required"
+                        i18n="@@Filter Value is Required">
+                        Filter value is required</mat-error>
+                </mat-form-field>
+                <mat-form-field class="field-size" *ngIf="filterOperator==='number' && isDateField===true">
+                    <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+                    <input matInput [id]="columnValue" [matDatepicker]="picker" formControlName="filterValue" required>
+                    <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="dataTableForm.get('filterValue').errors?.required"
+                        i18n="@@Filter Value is Required">
+                        Filter value is required</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+                style="margin-top:30px">
+                <button mat-raised-button type="submit" color="primary" style="color: white;" i18n="Apply"
+                    (click)="dynamicFilterApply()">Apply</button>
+                <button mat-raised-button type="button" color="accent" (click)="clearFilterForDynamic()"
+                    i18n="Clear">Clear</button>
+            </div>
+        </mat-menu>
+    </form>
+
+
+</mat-card>

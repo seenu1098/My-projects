@@ -1,0 +1,338 @@
+<ng-container *ngIf=data.pageName>
+    <mat-dialog-content i18n="Are you sure want to open this {{data.pageName}}?">
+        Are you sure want to open this {{data.pageName}}?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="openPage()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data === 'delete-section'">
+    <mat-dialog-content i18n="Are you sure want to Delete this Section?">
+        Are you sure want to Delete this Section?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteSection()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data === 'reset-page'">
+    <mat-dialog-content i18n="Do You Want to Reset the Whole Page?">
+        Do You Want to Reset the Whole Page?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetPage()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type === 'field-dropped'">
+    <mat-dialog-content i18n="Do you want to replace control with label [{{data.name}}]?">
+        Do you want to replace control with label [{{data.name}}]?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'allow-submit-button-action'">
+    <mat-dialog-content i18n="Page doesn't have button action, do you want proceed ?">
+        Page doesn't have button action, do you want proceed ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'remove-row'">
+    <mat-dialog-content i18n="Are you sure you want to remove the row?">
+        Are you sure you want to remove the row?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="resetControl()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'navigation'">
+    <mat-dialog-content i18n="Are you sure You have unsaved changes! If you leave, your changes will be lost.">
+        Are you sure You have unsaved changes! If you leave, your changes will be lost.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="navigation()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'delete-application'">
+    <div [formGroup]="appicationForm">
+        <mat-dialog-content>
+            <ng-container i18n="Do you want to delete this application?.">Do you want to delete this application?.
+            </ng-container><br>
+            <ng-container i18n="Type application name">Type application name</ng-container>
+            <mat-form-field style="width:33%">
+                <input matInput type="text" id="applicationName" formControlName="applicationName"
+                    placeholder="Appication Name *" i18n-placeholder="Appication Name *">
+                <mat-error *ngIf="appicationForm.get('applicationName').errors?.required"
+                    i18n="Application Name is required">Application Name is required
+                </mat-error>
+                <mat-error *ngIf="appicationForm.get('applicationName').errors?.notExists" i18n="Application Name is does not
+                exist">Application Name is does not
+                    exist</mat-error>
+                <mat-error *ngIf="appicationForm.get('applicationName').errors?.notMatch" i18n="Application Name does not
+                match">Application Name does not
+                    match</mat-error>
+            </mat-form-field>
+            <ng-container i18n="and click yes to delete.">and click yes to delete.</ng-container>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" id="confirmDelete" (click)="deleteApplication()"
+                i18n="Yes">Yes</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="onCloseClick()" i18n="No">No</button>
+        </mat-dialog-actions>
+    </div>
+</ng-container>
+<ng-container *ngIf="data === 'grid-config'">
+    <mat-dialog-content i18n="Do You Want to Configure the New Grid?">
+        Do You Want to Configure the New Grid?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="openGridConfiguration()"
+            i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data === 'cancel-task'">
+    <mat-dialog-content i18n="Are you sure want to cancel this task?">
+        Are you sure want to cancel this task?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="confirmDelete" (click)="cancalTask()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type === 'submit-task'">
+    <mat-dialog-content *ngIf="data.status !== 'LAUNCH'">
+        {{data.message}}
+    </mat-dialog-content>
+    <mat-dialog-content *ngIf="data.status === 'LAUNCH'" i18n="Do you want to launch this workflow?">
+        Do you want to launch this workflow?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="submitTask" (click)="submitTask()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type === 'assignee-user'">
+    <form [formGroup]="appicationForm" #userForm="ngForm" (ngSubmit)="saveAssignee(userForm)">
+        <mat-card-title i18n="Assign Task To">Assign Task To</mat-card-title>
+        <div fxLayout="row" fxLayoutGap="10px" style="margin:1%">
+            <label i18n="Assign To:">Assign to:</label>
+            <div style="width: 80%;">
+                <mat-radio-group aria-label="Assign To" id="assignee" formControlName="assignee"
+                    (change)="getAssignedValue($event)">
+                    <mat-radio-button value="user" i18n="User">User</mat-radio-button>
+                    <mat-radio-button value="group" style="margin-left: 10px;" i18n="Group">Team</mat-radio-button>
+                </mat-radio-group>
+                <mat-error style="font-size: 11.5px;margin: 1%;" *ngIf="appicationForm.get('assignee').errors?.required && 
+                userForm.submitted" i18n="Assigne to user or group is required">Assigne to user or team is required
+                </mat-error>
+            </div>
+        </div>
+        <div fxLayout="row" style="margin:1%">
+            <ng-container *ngIf="appicationForm.get('assignee').value==='user'">
+                <div style="width: 100%;">
+                    <mat-form-field style="width: 100%;">
+                        <input type="text" id="userName" placeholder="User Name" matInput formControlName="userName"
+                            i18n-placeholder="User Name" [matAutocomplete]="autoUser">
+                        <mat-autocomplete #autoUser="matAutocomplete">
+                            <mat-option *ngFor="let user of userVOList" [value]="user.userName"
+                                (onSelectionChange)="setUserId($event,user)">
+                                {{user.firstName}}{{user.lastName}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error *ngIf="appicationForm.get('userName').errors?.required && 
+                        userForm.submitted" i18n="User Name is required">User Name is required</mat-error>
+                        <mat-error *ngIf="appicationForm.get('userName').errors?.unique" i18n="User Name not exist">User
+                            Name not exist</mat-error>
+                    </mat-form-field>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="appicationForm.get('assignee').value==='group'">
+                <div style="width: 100%;">
+                    <mat-form-field style="width: 100%;">
+                        <input type="text" id="groupName" placeholder="Team Name" i18n-placeholder="Group Name" matInput
+                            formControlName="groupName" [matAutocomplete]="autoGroup">
+                        <mat-autocomplete #autoGroup="matAutocomplete">
+                            <mat-option *ngFor="let groupVO of groupVOList" [value]="groupVO.groupName"
+                                (onSelectionChange)="setGroupId($event,groupVO)">
+                                {{groupVO.groupName}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error *ngIf="appicationForm.get('groupName').errors?.required && 
+                userForm.submitted" i18n="Group Name is required">Group Name is required</mat-error>
+                        <mat-error *ngIf="appicationForm.get('groupName').errors?.unique" i18n="Group Name not exist">
+                            Team name not exist
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </ng-container>
+        </div>
+        <div fxLayout="row" style="width: 100%;">
+            <mat-form-field style="width: 100%;">
+                <mat-label i18n="Add a referral comment...">Add a referral comment...</mat-label>
+                <textarea matInput id="comments" i18n-placeholder="Add a comment..." placeholder="Add a comment..."
+                    formControlName="comments"></textarea>
+                <mat-error i18n="Add a referral comment to assign this task">Add a referral comment to assign this task
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" style="margin-top:4%">
+            <button mat-raised-button id="assign" color="primary" i18n="Assign">Assign</button>
+            <button mat-raised-button id="cancel" color="accent" type="button" (click)="onNoClick()"
+                i18n="Cancel">Cancel</button>
+        </div>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'pa-utilization'">
+    <div innerHTML="<app-pa-utilization ></app-pa-utilization>">
+
+    </div>
+</ng-container>
+
+<ng-container *ngIf="data==='deleteConfirmation'">
+    <mat-dialog-content i18n="Are you sure? you want to delete this data">
+        Are you sure? you want to delete this data
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deletedata()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="btnNo" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='exportAspdf'">
+    <mat-dialog-content i18n="Do you want to include or exclude buttons in pdf.">
+        Do you want to include or exclude buttons in pdf.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="include" (click)="includeButton()" i18n="Include">Include</button>
+        <button mat-raised-button color="accent" id="exclude" (click)="excludeButton()" i18n="Exclude">Exclude</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='includeButton'">
+    <mat-card>
+        <div id="include" #include>
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <mat-card-title>{{data.data.pageName}}</mat-card-title>
+            </div>
+            <dynamic-form [page]="data.data" [form]="data.json"></dynamic-form>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button id="download" color="primary" (click)="generatePdf()"
+                i18n="Download">Download</button>
+            <button mat-raised-button id="cancel" color="accent" (click)="cancel()" i18n="Cancel">Cancel</button>
+        </mat-dialog-actions>
+    </mat-card>
+</ng-container>
+<ng-container *ngIf="data.type==='excludeButton'">
+    <mat-card>
+        <div id="exclude" #exclude>
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+                <mat-card-title>{{data.data.pageName}}</mat-card-title>
+            </div>
+            <dynamic-form [page]="data.data" [isExclude]="true" [form]="data.json"></dynamic-form>
+        </div>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button id="btnDownload" color="primary" (click)="generatePdf()"
+                i18n="Download">Download</button>
+            <button mat-raised-button id="cancel" color="accent" (click)="cancel()" i18n="Cancel">Cancel</button>
+        </mat-dialog-actions>
+    </mat-card>
+</ng-container>
+<ng-container *ngIf="data==='noMenu'" align="end">
+    <mat-dialog-content i18n="This application has no menu. You need to create a menu">
+        This application has no menu. You need to create a menu
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary" id="btnYes" (click)="menuRoute()" i18n="Yes,create a menu">Yes,create
+            a menu</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="cancel()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type === 'send-back'">
+    <mat-card-title i18n="Send Back Comments">Send Back Comments</mat-card-title>
+    <form [formGroup]="appicationForm" #userForm="ngForm" (submit)="sendBack()">
+        <div fxLayout="row" style="width: 100%;">
+            <mat-form-field style="width: 100%;">
+                <mat-label i18n="Add a referral comment...">Add a referral comment...</mat-label>
+                <textarea matInput id="sendBackComments" i18n-placeholder="Add a comment..."
+                    placeholder="Add a comment..." formControlName="comments"></textarea>
+                <mat-error i18n="Add a referral comment to send back this task">Add a referral comment to send back this
+                    task</mat-error>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" style="margin-top:4%">
+            <button mat-raised-button id="assign" color="primary" i18n="Send Back">Send Back</button>
+            <button mat-raised-button id="cancel" color="accent" type="button" (click)="onNoClick()"
+                i18n="Cancel">Cancel</button>
+        </div>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="data.data==='permission'">
+    <mat-dialog-content i18n="{{data.response}}. Create a permission to access this page">
+        {{data.response}}. Create a permission to access this page
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="createPermission" (click)="getPermission()"
+            i18n="Create Permission">Create Permission</button>
+        <button mat-raised-button color="accent" id="no" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='cancelTask'">
+    <mat-dialog-content i18n="Do you want to cancel this task ?">
+        Do you want to cancel this task ?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="submitTask()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="btnNo" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+
+</ng-container>
+<ng-container *ngIf="data.type==='reject-task'">
+    <mat-dialog-content>
+        {{data.message}}
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="submitTask()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="btnNo" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='taskboard'">
+    <mat-dialog-content i18n="Your form has been submitted successfully">
+        Your form has been submitted successfully
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="closeDialog()" i18n="OK">OK</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='deleteFile'">
+    <div *ngIf="!spinnerShow">
+        <mat-dialog-content i18n="Do you want to delete {{data.file.fileName}} ?">
+            Do you want to delete {{data.file.fileName}} ?
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" type="button" id="delete_file" (click)="deleteFile()"
+                i18n="Yes">Yes</button>
+            <button mat-raised-button color="accent" type="button" id="cancel" (click)="onNoclick()"
+                i18n="No">No</button>
+        </mat-dialog-actions>
+    </div>
+    <div *ngIf="spinnerShow" fxLayout="row" fxLayoutAlign="center center">
+        <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+</ng-container>

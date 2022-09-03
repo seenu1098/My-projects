@@ -1,0 +1,43 @@
+.sms_header_icon{
+    cursor: context-menu;
+    margin-top: 8px;
+}
+@media screen and (min-width: 768px) {
+.sms_header_icon_1{
+    cursor: context-menu;
+    margin-top: 8px;
+}
+}
+@media screen and (max-width: 768px) {
+.sms_header_icon_1{
+    cursor: context-menu;
+    // margin-top: 8px;
+}
+}
+
+.msg-overlay-container {
+    height: 0;
+    position: fixed;
+    z-index: 1000;
+    bottom: 0;
+    right: 0;
+    overflow: visible;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+}
+
+.msg-icon{
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    background: var(--theme-main-color);
+    padding-left: 13px;
+}
+
+ #message ::ng-deep .mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content{
+    top: 4px;
+    right: 3px;
+}

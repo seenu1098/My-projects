@@ -1,0 +1,138 @@
+.line-style {
+    border-top: 0.5px solid rgb(211, 211, 211);
+    width: 80%;
+    margin: 12px 0px 0px 5px;
+}
+
+.labelList-style {
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 24px;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    padding: 2px 6px 0px 6px;
+}
+
+.create_label {
+    color: #039be5;
+    cursor: pointer;
+}
+
+#quill ::ng-deep .ql-container {
+    font-size: 20px;
+}
+
+.apply-button-css {
+    margin: 10px;
+}
+
+#quill ::ng-deep .ql-toolbar.ql-snow{
+    height: 0px !important;
+    padding: 0px !important;
+    border: none;
+    border-bottom: 1px solid #ccc;
+}
+
+/*** quill mention css***/
+
+#quill ::ng-deep .ql-mention-list-container {
+    width: 240px;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    z-index: 9999;
+    box-shadow: 0 2px 12px 0 #1e1e1e5c;
+}
+
+#quill ::ng-deep .ql-mention-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: scroll;
+    min-height: 50px;
+    max-height: 150px;
+}
+
+#quill ::ng-deep .ql-mention-list-item {
+    cursor: pointer;
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+    padding: 0 20px;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    width: 100%;
+    white-space: nowrap;
+}
+
+#quill ::ng-deep .ql-mention-list-item.selected {
+    background-color: #d3e1eb;
+    text-decoration: none;
+}
+
+#quill ::ng-deep .mention {
+    height: 24px;
+    width: 65px;
+    border-radius: 6px;
+    background-color: #d3e1eb;
+    padding: 3px 0;
+}
+
+#quill ::ng-deep .mention > span {
+    margin: 0 3px;
+}
+.filter_option{
+    padding: 4px 8px;
+    border-radius: 5px;
+    background-color: #e1e9ff;
+    color: #6993ff;
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    line-height: 25px;
+  }
+
+/*** end ***/
+
+.send-button-css{
+    position: absolute;
+    z-index: 9999;
+    margin-left: 92%;
+    margin-top: 13px;
+}
+
+.icon-css{
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.quill-form-css{
+    position: relative;
+    padding-top: 5px;
+    background-color: white;
+    z-index: 9999;
+}
+
+.filter_option{
+    padding: 4px 8px;
+    border-radius: 5px;
+    background-color: #e1e9ff;
+    color: #6993ff;
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    line-height: 25px;
+  }
+
+  .filter_option_field{
+    padding: 0px 8px;
+    border-radius: 5px;
+    background-color: #e1e9ff;
+    color: #6993ff;
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    line-height: 25px;
+  }

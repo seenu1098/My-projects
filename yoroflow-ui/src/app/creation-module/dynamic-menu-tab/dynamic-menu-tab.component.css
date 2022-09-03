@@ -1,0 +1,35 @@
+/* .side-nav-container {
+  position: absolute;
+  top: 87px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 550px;
+  background: #eee;
+  overflow: auto;
+  }
+
+
+  .sidenav {
+    width: 200px;
+  }
+
+  mat-action-list .mat-list-item {
+    color : black;
+  } */
+
+  .active-list-item {
+    color: #0078ff !important; /* Note: You could also use a custom theme */
+    border-right: 4px solid #0078ff;
+  }
+
+  .mat-list-base .mat-list-item, .mat-list-base .mat-list-option {
+
+    height: 32px;
+}
+
+  a{
+    /* font-family: Roboto, "Helvetica Neue", sans-serif; */
+    font-size: 14px;
+    font-weight: 500;
+  }

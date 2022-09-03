@@ -1,0 +1,6 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" *ngIf="selector===false">
+  <h3>{{'File Attachment' | translate}}</h3>
+  <mat-icon (click)="close()" style="cursor: pointer;">close</mat-icon>
+</div>
+<ng-uppy *ngIf="show" [config]="settings" (onFileAdd)="onFileAdd($event)" (onFileUpload)="onFileUpload($event)"
+  (uploadResult)="uploadResult($event)"></ng-uppy>

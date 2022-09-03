@@ -1,0 +1,518 @@
+<div class="mb-5 row w-100 mx-0">
+    <mat-card class="w-100">
+        <div class="row mx-0 w-100 mb-3">
+            <div class="col-md-6 col-sm-12 pl-0">
+                <mat-card-title i18n="Users Management">Users Management</mat-card-title>
+            </div>
+            <div class="col-md-6 col-sm-12 justify-content-end">
+                <div class="justify-content-end">
+                    <button class=" align-self-center justify-content-end  float-right  clear_filter" mat-raised-button
+                        type="button" id="clear_filter" color="accent" (click)="clearFilterFromGrid()"
+                        *ngIf="isClearFilter" i18n="Clear Filters">
+                        Clear Filters</button>
+                </div>
+                <div class="mr-3">
+                    <button id="two_factor" *ngIf="isTwoFactor === true" (click)="enableTwoFactorAuth()"
+                        class="align-self-center justify-content-end float-right mr-2 clear_filter" mat-raised-button
+                        type="button" color="primary" i18n="Enable Two Factor Authentication">Enable Two Factor
+                        Authentication</button>
+                    <button id="invite_user" *ngIf="isTwoFactor=== false" (click)="inviteUser()"
+                        class="align-self-center justify-content-end float-right mr-2 clear_filter" mat-raised-button
+                        type="button" color="primary" i18n="Invite Users">Invite Users</button>
+                    <div *ngIf="isAllSelected=== false && inActivateUser" class="mr-3">
+                        <button id="inactivate_user"
+                            class="align-self-center justify-content-end float-right mr-2 clear_filter"
+                            mat-raised-button color="primary" type="button" id="btndeactivate"
+                            (click)="inActivateUserFromGrid()" i18n="Inactivate
+                        User">Inactivate
+                            User</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <mat-card-content>
+            <mat-table [dataSource]="userVOlist" matSort [matSortDisableClear]="true"
+                (matSortChange)="sortData($event)">
+                <ng-container matColumnDef="checkbox">
+                    <mat-header-cell [matTooltip]="'Select All'" *matHeaderCellDef>
+                        <mat-checkbox id="isAllSelected" [checked]="isAllSelected" style="cursor: pointer;"
+                            (change)="selectAllUsers($event)"></mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="'Choose here to inactivate and enable two factor authentication'"
+                        *matCellDef="let user; let i = index;">
+                        <mat-checkbox [id]="'isSelected_'+i" [checked]="isSelected[i]" style="cursor: pointer;"
+                            (change)="openUserConfig($event, user,i)"></mat-checkbox>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="userName">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="Login Email">Login Email</span>
+                        <mat-icon id="loginEmail" (click)="setDataType('loginEmail', 'string')" class="icon-css"
+                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('loginEmail')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="user.userName" style="cursor: pointer;" *matCellDef="let user"
+                        (click)="receiveMessage(user)">
+                        <span [id]="user.userName" style="cursor: pointer; ">
+                            {{user.userName}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="firstName">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="First Name">First Name</span>
+                        <mat-icon id="firstName" (click)="setDataType('firstName', 'string')" class="icon-css"
+                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('firstName')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="user.firstName" *matCellDef="let user" (click)="receiveMessage(user)">
+                        <span [id]="user.firstName" style="cursor: pointer;">{{user?.firstName}}</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="lastName">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="Last Name">Last Name </span>
+
+                        <mat-icon id="lastName" (click)="setDataType('lastName', 'string')" id="last_name"
+                            class="icon-css" [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('lastName')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="user.lastName" *matCellDef="let user" (click)="receiveMessage(user)">
+                        <span [id]="user.lastName" style="cursor: pointer;"> {{user.lastName}} </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="lastLogin">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="Last Logged in at">Last Logged in at</span>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="user?.lastLogin | date:'medium'" *matCellDef="let user" style="width:30%">
+                        <span style="cursor: pointer;">{{user?.lastLogin | date:'medium'}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="authType">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="Login Type">Login Type</span>
+                        <mat-icon id="authType" (click)="setDataType('authType', 'string')" class="icon-css"
+                            [matMenuTriggerFor]="loginTypeMenu" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 15px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('authType')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" style="width:30%" (click)="receiveMessage(user)">
+                        <div [matTooltip]="user?.authType"
+                            [style.background-color]="user.authType==='Microsoft'?'#ddbea9ff':'#f0efebff'"
+                            style="cursor: pointer;color:black;" *ngIf="user?.authType" [id]="'roles_'+i"
+                            class="roles_filter_option float-right mr-2" fxLayout="column" fxLayoutGap="5px">
+                            {{user?.authType}}
+                        </div>
+                        <div [matTooltip]="'Yoroflow'" style="cursor: pointer;color:black;background-color: #fff1e6ff;"
+                            *ngIf="user?.authType === undefined || user?.authType === null || user?.authType === ''"
+                            [id]="'roles_'+i" class="roles_filter_option float-right mr-2" fxLayout="column"
+                            fxLayoutGap="5px">
+                            Yoroflow
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="roles">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span i18n="Roles">Roles </span>
+
+                        <mat-icon id="roles" (click)="setDataType('roles', 'string')" class="icon-css"
+                            [matMenuTriggerFor]="rolesMenu" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 15px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('roles')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" (click)="receiveMessage(user)">
+                        <!-- <span style="cursor: pointer;"> {{user.roleId}} </span> -->
+                        <ng-container *ngIf="user.userRoleList!==null && user.userRoleList.length>0">
+                            <!-- <mat-chip-list #chiplist>
+                                <mat-chip (click)="receiveMessage(user)" [matTooltip]="holder" style="cursor: pointer;"
+                                    *ngFor="let holder of getRoleNamebyRoleId(user.roleId)">
+                                    {{holder}}
+                                </mat-chip>
+                            </mat-chip-list> -->
+                            <div fxLayout="row wrap">
+                                <ng-container *ngFor="let holder of user.userRoleList;let i = index;">
+                                    <span [id]="'roles_'+i" class="roles_filter_option mr-2"
+                                        [style.background-color]="holder.roleColor"
+                                        style="color:black;max-width: 100%;">
+                                        {{holder.rolesNames}}
+                                    </span>
+                                </ng-container>
+                            </div>
+
+                        </ng-container>
+                    </mat-cell>
+                </ng-container>
+
+
+                <ng-container matColumnDef="groups">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span i18n="Groups">Teams </span>
+
+                        <mat-icon id="groups" (click)="setDataType('groups', 'string')" class="icon-css"
+                            [matMenuTriggerFor]="groupMenu" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 15px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('groups')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" (click)="receiveMessage(user)">
+                        <!-- <span style="cursor: pointer;"> {{user.roleId}} </span> -->
+                        <ng-container *ngIf="user.groupVOList &&  user.groupVOList.length>0">
+                            <!-- <mat-chip-list #chiplist>
+                                <mat-chip (click)="receiveMessage(user)" [matTooltip]="group.groupName"
+                                    style="cursor: pointer;" *ngFor="let group of user.groupVOList">
+                                    {{group.groupName}}
+                                </mat-chip>
+                            </mat-chip-list> -->
+
+                            <div fxLayout="row">
+                                <ng-container *ngFor="let group of user.groupVOList;let k = index;">
+                                    <div *ngIf="k<=3" class="hover-class round_firstletter"
+                                        [style.margin-left]="k>0?'-4px':''" [matTooltip]="group.groupName"
+                                        [style.background]="getUserColor(group)">
+                                        <span
+                                            class=" round_firstletter_size">{{getGroupFirstAndLastNamePrefix(group.groupName)}}</span>
+                                    </div>
+                                    <ng-container *ngIf="k===4">
+                                        <div class="hover-class round_add_count"
+                                            [matTooltip]="getGroupNames(user.groupVOList)">
+                                            <span
+                                                class=" round_firstletter_count">+{{getRemainingAssignedGroupCount(user.groupVOList)}}</span>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+
+
+                        </ng-container>
+
+
+
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="isTwoFactor">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span i18n="2FA">2FA</span>
+                        <mat-icon id="taskid" class="icon-css" [matMenuTriggerFor]="twoFA" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('isTwoFactor')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell style="cursor: pointer;" *matCellDef="let user" (click)="receiveMessage(user)">
+                        <span *ngIf="user.isTwoFactor==='Y'"
+                            style="cursor: pointer;width: 100%; text-overflow: ellipsis;overflow: hidden;white-space: normal;"
+                            i18n="Yes">
+                            Yes</span>
+                        <span *ngIf="!user.isTwoFactor || user.isTwoFactor==='N'"
+                            style="cursor: pointer;width: 100%; text-overflow: ellipsis;overflow: hidden;white-space: normal;"
+                            i18n="No">
+                            No</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="activeFlag">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="Active User">Active User</span>
+                        <mat-icon id="taskid" class="icon-css" [matMenuTriggerFor]="isActive"
+                            #menuTrigger="matMenuTrigger" style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('activeFlag')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="user.contactEmailId" style="cursor: pointer;" *matCellDef="let user"
+                        (click)="receiveMessage(user)">
+                        <span *ngIf="user.activeFlag==='Y'"
+                            style="cursor: pointer;width: 100%; text-overflow: ellipsis;overflow: hidden;white-space: normal;"
+                            i18n="Yes">
+                            Yes</span>
+                        <span *ngIf="!user.activeFlag || user.activeFlag==='N'"
+                            style="cursor: pointer;width: 100%; text-overflow: ellipsis;overflow: hidden;white-space: normal;"
+                            i18n="No">
+                            No</span>
+
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="contactEmailId">
+                    <mat-header-cell *matHeaderCellDef>
+                        <span mat-sort-header i18n="Contact Email">Contact Email</span>
+                        <mat-icon id="contactEmailId" (click)="setDataType('contactEmailId', 'string')" class="icon-css"
+                            [matMenuTriggerFor]="dropdownMenuOne" #menuTrigger="matMenuTrigger"
+                            style="cursor: pointer; margin-left: 4px;"
+                            [ngClass]="{'active_filter': isSelectedColumn('contactEmailId')}">
+                            filter_list
+                        </mat-icon>
+                    </mat-header-cell>
+                    <mat-cell [matTooltip]="user.contactEmailId" style="cursor: pointer;" *matCellDef="let user"
+                        (click)="receiveMessage(user)">
+                        <span
+                            style="cursor: pointer;width: 100%; text-overflow: ellipsis;overflow: hidden;white-space: normal;">
+                            {{user.contactEmailId}}</span>
+
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns;">
+                </mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+            <ng-container *ngIf="totalRecords == 0">
+                <div fxLayout="row" fxLayoutAlign="center" style="margin-top: 1%;">
+                    <div style="font-weight: bold;" i18n="No data available">No data available</div>
+                </div>
+            </ng-container>
+            <div *ngIf="isPaginator && isLength && totalRecords != 0" class="w-100 row justify-content-end"
+                style="margin-right:10px;">
+                <app-paginator id="mat_table_page_selector" [length]="totalRecords" [pageSize]="defaultPageSize"
+                    [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEvent($event)"></app-paginator>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <form [formGroup]="form" #userForm="ngForm" style="padding: 10px;">
+        <mat-menu #dropdownMenuOne="matMenu" class="remaining-menu" id="operator_menu">
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()">
+                <mat-form-field class="field-size">
+                    <mat-label i18n="Operator">Operator</mat-label>
+                    <mat-select id="operator" formControlName="operator" required>
+                        <mat-option [id]="data.value" *ngFor="let data of dataType[filterOperator]" [value]="data.value"
+                            selected>
+                            {{data.description}}</mat-option>
+                    </mat-select>
+                    <mat-error i18n="Operator is required">Operator is required</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+                style="margin-top:20px">
+                <mat-form-field class="field-size" *ngIf="isDateField===false">
+                    <mat-label i18n="Filter Value">Filter Value</mat-label>
+                    <input matInput [id]="filterValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+                        formControlName="filterValue" required>
+                    <mat-error i18n="Filter value is required">
+                        Filter value is required</mat-error>
+                </mat-form-field>
+                <mat-form-field class="field-size" *ngIf="filterOperator==='date' && isDateField===true">
+                    <mat-label i18n="Filter value">Filter Value</mat-label>
+                    <input matInput [id]="filterValue" [matDatepicker]="picker" formControlName="filterValue" required>
+                    <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error i18n="Filter value is required">
+                        Filter value is required</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+                style="margin-top:30px">
+                <button id="apply" mat-raised-button type="submit" color="primary" (click)="filterApply()"
+                    i18n="Apply">Apply</button>
+                <button id="clear" mat-raised-button type="button" color="accent" (click)="clearFilter()"
+                    i18n="Clear">Clear</button>
+            </div>
+        </mat-menu>
+
+        <mat-menu id="role-menu" class="filter-menu" #rolesMenu="matMenu">
+            <div (click)="$event.stopPropagation();">
+                <div class="input-group mb-3 px-2">
+                    <input id="searchRoles" type="text" formControlName="searchRoles" class="form-control"
+                        placeholder="search..." i18n-placeholder="search...">
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <mat-icon matSuffix>search</mat-icon>
+                        </span>
+                    </div>
+                </div>
+                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                    <mat-checkbox (change)="getAllUsersWithNoRolesOrUnAssigned($event)" id="isNoRoles"
+                        formControlName="isNoRoles" style="margin-left: 16px;">
+                        <div fxLayout="row" class="label-css" style="background-color: black;">
+                            <div fxLayout="column" style="color:white;padding: 2px 12px 0px 9px;" i18n="No Roles">
+                                No Roles
+                            </div>
+                        </div>
+                    </mat-checkbox>
+                    <mat-divider></mat-divider>
+                    <ng-container *ngIf="filterRolesList && filterRolesList.length>0">
+                        <ng-container *ngFor="let role of filterRolesList;let j = index;">
+                            <div *ngIf="role.rolesNames!=='Account Administrator'"
+                                style="margin-left: 15px;margin-top: 5px;" fxLayout="row">
+                                <mat-checkbox [checked]="role.isSelected"
+                                    (change)="addFilterForRolesOrGroups($event, 'roles',role.id)"
+                                    [id]="'role_option_'+j">
+                                    <div fxLayout="row" class="label-css" [style.background-color]="role.roleColor">
+                                        <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;">
+                                            {{role.rolesNames}}
+                                        </div>
+                                    </div>
+                                </mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </perfect-scrollbar>
+            </div>
+        </mat-menu>
+
+        <mat-menu id="role-menu" class="filter-menu" #groupMenu="matMenu">
+            <div (click)="$event.stopPropagation();">
+                <div class="input-group mb-3 px-2">
+                    <input id="searchGroup" type="text" formControlName="searchGroup" class="form-control"
+                        placeholder="search..." i18n="search...">
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <mat-icon matSuffix>search</mat-icon>
+                        </span>
+                    </div>
+                </div>
+                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                    <mat-checkbox (change)="getAllUsersWithNoRolesOrUnAssigned($event)" id="isUnAssigned"
+                        formControlName="isUnAssigned" style="margin-left: 16px;">
+                        <div fxLayout="row">
+                            <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;" i18n="Unassigned">
+                                Unassigned
+                            </div>
+                        </div>
+                    </mat-checkbox>
+                    <mat-divider></mat-divider>
+                    <ng-container *ngIf="filterGroupList && filterGroupList.length>0">
+                        <ng-container *ngFor="let group of filterGroupList;let j = index;">
+                            <div style="margin-left: 15px;margin-top: 5px;" fxLayout="row">
+                                <mat-checkbox [checked]="group.isSelected"
+                                    (change)="addFilterForRolesOrGroups($event, 'groups',group.id)"
+                                    [id]="'group_option_'+j">
+                                    <div fxLayout="row">
+                                        <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;">
+                                            {{group?.name}}
+                                        </div>
+                                    </div>
+                                </mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </perfect-scrollbar>
+            </div>
+        </mat-menu>
+
+        <mat-menu id="role-menu" class="filter-menu" #loginTypeMenu="matMenu">
+            <div (click)="$event.stopPropagation();">
+                <mat-label style="margin-left: 15px;margin-top: 5px;" i18n="Login Type">Login Type</mat-label>
+                <mat-divider style="margin-top: 5px;"></mat-divider>
+                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                    <div fxLayout="column" style="margin-left: 15px;margin-top: 5px;">
+                        <div>
+                            <mat-checkbox id="google" formControlName="google"
+                                (change)="addFilterForRolesOrGroups($event, 'authType','Google')">
+                                <div fxLayout="row" class="label-css" style="background-color:  #f0efebff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;">
+                                        Google
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-checkbox id="microsoft" formControlName="microsoft"
+                                (change)="addFilterForRolesOrGroups($event, 'authType','Microsoft')">
+                                <div fxLayout="row" class="label-css" style="background-color: #ddbea9ff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;">
+                                        Microsoft
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-checkbox id="yoroflow" formControlName="yoroflow"
+                                (change)="addFilterForRolesOrGroups($event, 'authType','Yoroflow')">
+                                <div fxLayout="row" class="label-css" style="background-color: #fff1e6ff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;">
+                                        Yoroflow
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+
+                    </div>
+                </perfect-scrollbar>
+            </div>
+        </mat-menu>
+
+        <mat-menu id="twoFA" class="filter-menu" #twoFA="matMenu">
+            <div (click)="$event.stopPropagation();">
+                <mat-divider style="margin-top: 5px;"></mat-divider>
+                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                    <div fxLayout="column" style="margin-left: 15px;margin-top: 5px;">
+                        <div>
+                            <mat-checkbox id="isTwoFactorTrue" formControlName="isTwoFactorTrue"
+                                (change)="addFilterForRolesOrGroups($event, 'isTwoFactor','Y')">
+                                <div fxLayout="row" class="label-css" style="background-color:  #f0efebff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;" i18n="Yes">
+                                        Yes
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-checkbox id="isTwoFactorFalse" formControlName="isTwoFactorFalse"
+                                (change)="addFilterForRolesOrGroups($event, 'isTwoFactor','N')">
+                                <div fxLayout="row" class="label-css" style="background-color: #ddbea9ff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;" i18n="No">
+                                        No
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+
+
+                    </div>
+                </perfect-scrollbar>
+            </div>
+        </mat-menu>
+
+        <mat-menu id="isActive" class="filter-menu" #isActive="matMenu">
+            <div (click)="$event.stopPropagation();">
+                <mat-divider style="margin-top: 5px;"></mat-divider>
+                <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:300px;">
+                    <div fxLayout="column" style="margin-left: 15px;margin-top: 5px;">
+                        <div>
+                            <mat-checkbox id="isActiveTrue" formControlName="isActiveTrue"
+                                (change)="addFilterForRolesOrGroups($event, 'activeFlag','Y')">
+                                <div fxLayout="row" class="label-css" style="background-color:  #f0efebff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;" i18n="Yes">
+                                        Yes
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-checkbox id="isActiveFalse" formControlName="isActiveFalse"
+                                (change)="addFilterForRolesOrGroups($event, 'activeFlag','N')">
+                                <div fxLayout="row" class="label-css" style="background-color: #ddbea9ff;">
+                                    <div fxLayout="column" style="color:black;padding: 2px 12px 0px 9px;" i18n="No">
+                                        No
+                                    </div>
+                                </div>
+                            </mat-checkbox>
+                        </div>
+
+
+                    </div>
+                </perfect-scrollbar>
+            </div>
+        </mat-menu>
+
+    </form>
+
+
+</div>

@@ -1,0 +1,37 @@
+<form #userForm="ngForm" [formGroup]="form" class="default-theme">
+    <div style="width: 100%; background: whitesmoke;">
+        <div fxLayout="row" *ngIf="subscriptionScreenType!=='done'" fxLayoutAlign="space-between center">
+            <mat-card-title class="card-title" i18n="Subscription">
+                Subscription
+            </mat-card-title>
+            <button mat-raised-button style="margin-right:15px;" (click)="goBack()" i18n="Go Back" color="primary">Go
+                Back</button>
+        </div>
+        <ng-container>
+            <ng-container *ngIf="subscriptionScreenType==='payment'">
+                <ng-container *ngIf="enablePayment===false">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <h2> Processing....</h2>
+                    </div>
+
+                </ng-container>
+                <app-payment-process *ngIf="enablePayment===true" (PaymentSuccess)="paymentSuccess($event)"
+                    (previous)="previous()" [subscriptionDetails]="form.value" [showPayment]="true"
+                    [isUpgradeSubscription]="true">
+                </app-payment-process>
+                <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 4%;">
+                </div>
+            </ng-container>
+            <ng-container *ngIf="subscriptionScreenType==='done'">
+                <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" style="margin-top: 100px;">
+                    <img src="../../../assets/gif/Subscription_GIF.gif">
+
+                </div>
+                <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="center center" style="margin-top: 60px;">
+                    <button mat-button style="color: white;margin-right:15px;" (click)="goBackToLoginPage()"
+                        i18n="Go Back" class="background-color-css">Go to login page</button>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+</form>

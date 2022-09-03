@@ -1,0 +1,152 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+  <div fxFlex="100%">
+    <mat-card style="background-color:rgb(154, 199, 212)">
+      <mat-card>
+        <form [formGroup]="checkListForm" #userForm="ngForm">
+       <div fxLayout="row" fxLayoutGap="10px">
+            <mat-form-field style="width:20%">
+              <mat-label for="environmentNameList">
+                Environment Names
+              </mat-label>
+
+              <mat-select id="environmentName" formControlName="environmentName" #environmentName>
+                <mat-option id="environmentNameList" [value]="environment.id" *ngFor="let environment of response">
+                  {{environment.environmentNames}}
+                </mat-option>
+              </mat-select>
+              <mat-error class="text-danger" id="environmentNameRequired"
+                *ngIf="checkListForm.get('environmentName').errors?.required
+                &&(userForm.submitted || checkListForm.get('environmentName').touched || checkListForm.get('environmentName').dirty)">
+                Environment Name is required
+              </mat-error>
+            </mat-form-field>
+          
+            <mat-form-field style="width: 40%">
+              <mat-label>Batch Name</mat-label>
+              <input matInput type="text" id="batchName" placeholder="Batch Name" formControlName="batchName">
+              <mat-error class="text-danger" id="environmentNameRequired"
+                *ngIf="checkListForm.get('batchName').errors?.required
+                    &&(userForm.submitted || checkListForm.get('batchName').touched || checkListForm.get('batchName').dirty)">
+                Batch Name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <mat-card style="margin-top: 3%; background-color:rgb(154, 199, 212);">
+            <mat-card-title>Testcase Groups List</mat-card-title>
+
+            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" id="testcase" style="padding: 10px;">
+
+              <mat-tree-node id="treeNode" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding style="margin-top: 1%">
+                <button mat-icon-button disabled></button>
+
+                <mat-checkbox  class="checklist-leaf-node" style="width: 100%" 
+                  [checked]="checklistSelection.isSelected(node)" (change)="todoLeafItemSelectionToggle(node)"
+                  [value]=node.value >
+
+                  <mat-expansion-panel style="width: 100%;background-color:rgb(154, 199, 212);">
+                    <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'" >
+                      <mat-panel-title>
+                        <mat-label id="matlabel">Testcase Name:&nbsp;</mat-label>{{node.item}}
+                        <div *ngIf="node.claim">
+                          &nbsp;(<mat-label>Claim Type:&nbsp;</mat-label>{{node.claim.claimType}},
+                          <mat-label>Form:&nbsp;</mat-label>{{node.claim.formType}},
+                          <mat-label>Billing NPI:&nbsp;</mat-label>{{node.claim.billing.npi}},
+                          <mat-label>Frequency:&nbsp;</mat-label>{{node.claim.claimHeader.frequency }},
+                          <mat-label>Source:&nbsp;</mat-label>{{node.claim.claimHeader.source }})
+                        </div>
+                      </mat-panel-title>
+                      <br/><br/>
+                    </mat-expansion-panel-header>
+
+                    <div *ngIf="node.claim">
+                      <mat-card style="margin: 1%;">
+                        <p>
+                          <mat-label>Claim Type:&nbsp;</mat-label>{{node.claim.claimType}}
+                        </p>
+                        <p>
+                          <mat-label>Form:&nbsp;</mat-label>{{node.claim.formType}}
+                        </p>
+                        <p>
+                          <mat-label>Beneficiary Name:&nbsp;</mat-label>
+                            {{node.claim.beneficiary.firstName}}&nbsp;{{node.claim.beneficiary.lastName}}
+                           
+                        </p>
+                        <!-- <p>
+                          <mat-label>Beneficiary LastName:&nbsp;</mat-label>{{node.claim.beneficiary.lastName}}
+                        </p> -->
+                        <br>
+                        <p>
+                          <mat-label>Billing NPI:&nbsp;</mat-label>{{node.claim.billing.npi}}
+                        </p>
+                        <p>
+                          <mat-label>Billing Taxonomy:&nbsp;</mat-label>{{node.claim.billing.taxonomy}}
+                        </p>
+                        <p>
+                          <mat-label>From Date:&nbsp;</mat-label>
+                          {{node.claim.claimHeader.fromDate | date:'MM/dd/yyyy'}}
+                        </p>
+                        <p>
+                          <mat-label>To Date:&nbsp;</mat-label>{{node.claim.claimHeader.toDate | date:'MM/dd/yyyy'}}
+                        </p>
+                        <br>
+                        <p>
+                          <mat-label>Billing Amount:&nbsp;</mat-label>{{node.claim.claimHeader.billedAmount}}
+                        </p>
+                        <p>
+                          <mat-label>Billed Units:&nbsp;</mat-label>{{node.claim.claimHeader.billedUnits }}
+                        </p>
+
+                        <p>
+                          <mat-label>Frequency:&nbsp;</mat-label>{{node.claim.claimHeader.frequency }}
+                        </p>
+                        <p>
+                          <mat-label>Source:&nbsp;</mat-label>{{node.claim.claimHeader.source }}
+                        </p>
+                        <br>
+                        <mat-label>Service Lines:</mat-label>
+                        <br>
+                        <br>
+                        <div *ngFor="let service of node.claim.services; let i=index">
+                          <p>
+                            <mat-label>#{{i+1}}&nbsp;From Date:&nbsp;</mat-label>{{service.fromDate | date:'MM/dd/yyyy'}}
+                          </p>
+                          <p>
+                            <mat-label>To Date:&nbsp;</mat-label>{{service.toDate | date:'MM/dd/yyyy'}}
+                          </p>
+                          <p>
+                            <mat-label>Procedure Code:&nbsp;</mat-label>{{service.procedureCode}}
+                          </p>
+                          <p>
+                            <mat-label>Revenue Code:&nbsp;</mat-label>{{service.revenueCode}}
+                          </p>
+                        </div>
+                      </mat-card>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-checkbox>
+              </mat-tree-node>
+              
+              <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding >
+                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                  <mat-icon class="mat-icon-rtl-mirror">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                  </mat-icon>
+                </button>
+                <mat-checkbox [checked]="descendantsAllSelected(node)"
+                  [indeterminate]="descendantsPartiallySelected(node)" (change)="todoItemSelectionToggle(node)">
+                  {{node.item}}
+                </mat-checkbox>
+              </mat-tree-node>
+            </mat-tree>
+          </mat-card>
+          <div fxLayoutAlign="end start" style="margin-top:1%">
+            <button mat-raised-button (click)="replaceOption(userForm)" color="primary" id="btnReplacement">Replacement Option</button>&nbsp;
+            <button mat-raised-button id="clear" color="accent" type="reset"
+              (click)="clearSearch(userForm)">Reset</button>
+          </div>
+        </form>
+      </mat-card>
+    </mat-card>
+  </div>
+</div>
+

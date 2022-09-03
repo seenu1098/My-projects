@@ -1,0 +1,125 @@
+<ng-container *ngIf="data.type==='notes'">
+    <mat-dialog-content i18n="Are you sure want to delete?">
+        Are you sure want to delete?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteNotes()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type==='files'">
+    <mat-dialog-content i18n="Are you sure want to delete this {{data.name}} file?">
+        Are you sure want to delete this {{data.name}} file?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="deleteFiles()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+
+<ng-container *ngIf="data.type==='task-property'">
+    <mat-dialog-content i18n="Do you have form?">
+        Do you have form?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="openPage()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='undoChanges'">
+    <mat-dialog-content i18n="Do you want undo all changes? If yes your all changes will be removed.">
+        Do you want undo all changes? If yes your all changes will be removed.
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="openPage()" i18n="Yes">Yes</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='export'">
+    <mat-dialog-content i18n="Your session has been expired. Do you want to export this workflow">
+        Your session has been expired. Do you want to export this workflow
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="exportUI" (click)="exportUI()" i18n="Export">Export</button>
+        <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data==='isWorkflowName'">
+    <mat-card>
+        <div fxLayoutAlign="end end">
+            <mat-icon (click)="onNoClick()" id="close" style="cursor: pointer;">close</mat-icon>
+        </div>
+        <mat-dialog-content i18n="You need to fill workflow name for create a public form"> 
+            You need to fill workflow name for create a public form
+        </mat-dialog-content>
+    </mat-card>
+</ng-container>
+<ng-container *ngIf="data.type==='exportFromWorkflow'">
+    <form #userForm="ngForm" [formGroup]="form">
+        <mat-dialog-content style="height: 60px;">
+            <ng-container i18n="Do you want to export this workflow ?">Do you want to export this workflow ?</ng-container>
+            <mat-radio-group id="export" formControlName="export" style="margin-top:2%;margin-left:1%">
+                <div fxLayout="row" fxLayoutGap="20px">
+                    <mat-radio-button value="includingForms" style="margin-top:2%;" (change)="radioChange($event)" i18n="Including Forms"
+                        id="includingForms">Including Forms
+                    </mat-radio-button>
+                    <mat-radio-button value="excludingForms" style="margin-top:2%;" (change)="radioChange($event)" i18n="Excluding Forms"
+                        id="excludingForms">Excluding Forms
+                    </mat-radio-button>
+                </div>
+            </mat-radio-group>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-raised-button color="primary" id="exportWithoutForms" (click)="exportUI()" i18n="Export Workflow">Export
+                Workflow</button>
+            <button mat-raised-button color="accent" id="cancel" (click)="onNoClick()" i18n="No">No</button>
+        </mat-dialog-actions>
+    </form>
+</ng-container>
+<ng-container *ngIf="data.data==='importPermission'">
+    <form #userForm="ngForm" [formGroup]="permissionForm">
+        <mat-card>
+            <mat-card-title i18n="Page Permission">Page Permission</mat-card-title>
+            <div formArrayName="permissionFormArray" *ngFor="let permission of getPermissionFormGroup();let i = index;">
+                <div fxLayout="row" fxLayoutGap="20px" [formGroupName]="i">
+                    <mat-form-field style="width:30%">
+                        <input matInput type="text" [id]="'taskType_'+i" placeholder="Task type" i18n-placeholder="Task type"
+                            formControlName="taskType">
+                    </mat-form-field>
+                    <mat-form-field style="width:30%">
+                        <input matInput type="text" [id]="'pageName_'+i" placeholder="Page Name" i18n-placeholder="Page Name"
+                            formControlName="pageName">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label i18n="Assignee User">Assignee User</mat-label>
+                        <mat-select [id]="'usertask_assigneeUser_'+i" formControlName="assigneeUser">
+                            <mat-option value=""></mat-option>
+                            <mat-option *ngFor="let user of userList" [value]="user.userId" [id]="'user.userName_'+i">
+                                {{user.userName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label i18n="Assignee Group">Assignee Group</mat-label>
+                        <mat-select id="'usertask_assigneeGroup_'+i" formControlName="assigneeGroup" multiple>
+                            <mat-option *ngFor="let group of groupList" [value]="group.groupId"
+                                [id]="'group.groupName_'+i">
+                                {{group.groupName}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card>
+        <div style="margin-top: 1%;" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+            <mat-error *ngIf="required" i18n="Select Assignee User or
+            Assignee Group">Select Assignee User or
+                Assignee Group</mat-error>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="end">
+            <button mat-raised-button type="submit" color="primary" (click)="submit(userForm)" i18n="Submit">Submit</button>
+            <button mat-raised-button color="accent" (click)="onNoClick()" i18n="Cancel">Cancel</button>
+        </div>
+    </form>
+</ng-container>

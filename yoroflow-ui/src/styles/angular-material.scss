@@ -1,0 +1,401 @@
+@use '@angular/material' as mat;
+@import "./variables";
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import "@angular/material/theming";
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// $p: (
+//     50: #e1f3f8,
+//     100: #9bdaf1,
+//     200: #02bfe7,
+//     300: #008abe,
+//     400: #046b99,
+//     500: #0071bc,
+//     600: #084a9c,
+//     700: #084a9c,
+//     800: #084a9c,
+//     900: #112e51,
+//     contrast: (
+//         50: #000000,
+//         100: #000000,
+//         200: #000000,
+//         300: #ffffff,
+//         400: #ffffff,
+//         500: #ffffff,
+//         600: #ffffff,
+//         700: #ffffff,
+//         800: #ffffff,
+//         900: #ffffff,
+//         A100: #000000,
+//         A200: #000000,
+//         A400: #000000,
+//         A700: #000000,
+//     ),
+// );
+
+$p:(
+
+);
+
+$a: (
+    50: #e7f4e4,
+    100: #e7f4e4,
+    200: #e7f4e4,
+    300: #94bfa2,
+    400: #4aa564,
+    500: #2e8540,
+    600: #2a7a3b,
+    700: #266e35,
+    800: #174320,
+    900: #174320,
+    contrast: (
+        50: #000000,
+        100: #000000,
+        200: #000000,
+        300: #000000,
+        400: #ffffff,
+        500: #ffffff,
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+        A100: #000000,
+        A200: #000000,
+        A400: #000000,
+        A700: #000000,
+    ),
+);
+
+$w: (
+    50: #f9dede,
+    100: #f9dede,
+    200: #f9dede,
+    300: #f5adb9,
+    400: #e59393,
+    500: #e31c3d,
+    600: #cd2026,
+    700: #b31e22,
+    800: #981b1e,
+    900: #981b1e,
+    contrast: (
+        50: #000000,
+        100: #000000,
+        200: #000000,
+        300: #000000,
+        400: #ffffff,
+        500: #ffffff,
+        600: #ffffff,
+        700: #ffffff,
+        800: #ffffff,
+        900: #ffffff,
+        A100: #000000,
+        A200: #000000,
+        A400: #000000,
+        A700: #000000,
+    ),
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+// $pr: mat.define-palette(mat.$indigo-palette,300);
+// $ac: mat.define-palette(mat.$deep-orange-palette,A100);
+
+$pr: mat.define-palette(mat.$light-blue-palette,600);
+$ac: mat.define-palette(mat.$pink-palette,500);
+
+// The warn palette is optional (defaults to red).
+$wa: mat.define-palette($w);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$theme: mat.define-light-theme($pr, $ac, $wa);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($theme);
+
+$custom-typography: mat.define-typography-config(
+    $font-family: "sans-serif",
+    /**$font-family: "Muli, Helvetica Neue, Arial, sans-serif",**/
+);
+@include mat.all-component-typographies($custom-typography);
+
+/** Overriding base Angular Material Styles to match design **/
+
+// apply this class "base-form-field" to any mat-form-field to make it look like design.
+.base-form-field {
+    &.dense {
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+    }
+    &.filled-gray {
+        .mat-form-field-outline {
+            background-color: $gray-lightest;
+            border-radius: 3px;
+        }
+    }
+    &.filled-white {
+        .mat-form-field-outline {
+            background-color: $white;
+            border-radius: 3px;
+        }
+    }
+    &:not(.mat-focused):not(:hover) {
+        .mat-form-field-outline-start,
+        .mat-form-field-outline-gap,
+        .mat-form-field-outline-end {
+            border: unset !important;
+        }
+    }
+    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+        .mat-form-field-label {
+        transform: translateY(-30px);
+    }
+
+    .mat-form-field-label {
+        /** Ensures text is not cutoff at bottom **/
+        padding-bottom: 10px;
+    }
+
+    &:not(.mat-focused) {
+        .mat-form-field-label {
+            color: $black;
+        }
+    }
+
+    &.bold-placeholder {
+        ::placeholder {
+            color: $gray !important;
+        }
+    }
+    &.mat-form-field {
+        &:not(.no-label) {
+            padding-top: 30px;
+        }
+        ::placeholder {
+            color: rgba($gray, 0.6);
+        }
+
+        .mat-form-field-flex > .mat-form-field-infix {
+            padding: 0.4em 0px !important;
+        }
+        .mat-form-field-label-wrapper {
+            top: -1.5em;
+        }
+
+        .mat-form-field-label-wrapper {
+            overflow: visible !important;
+        }
+        .mat-form-field-can-float.mat-form-field-should-float
+            .mat-form-field-label,
+        .mat-form-field-empty.mat-form-field-label {
+            transform: translateY(-30px);
+            overflow: visible;
+        }
+
+        .mat-input-element,
+        .mat-select-value {
+            transform: translateY(-4px);
+            overflow: visible;
+        }
+
+        .mat-form-field-suffix {
+            transform: translateY(-2px);
+        }
+        .mat-form-field-outline-gap {
+            border-top-color: unset !important;
+        }
+
+        label {
+            width: 100% !important;
+            text-overflow: unset !important;
+            font-size: 12px;
+        }
+    }
+}
+
+/** Mat Chip Overrides */
+.mat-standard-chip {
+    // font-weight: bold;
+    cursor: pointer !important;
+    &:not(.mat-chip-selected) {
+        // border: 1px solid $primary;
+        // background-color: $white;
+        // color: $primary;
+        background-color: rgb(202, 202, 202);
+        color: black;
+    }
+}
+
+/** Button Overrides **/
+.base-button {
+    &.mat-stroked-button:not([disabled]) {
+        &.mat-primary {
+            // border-color: $primary;
+            // font-weight: bold;
+            background-color: $white;
+        }
+    }
+
+    .mat-icon {
+        transform: translateY(-1px);
+    }
+
+    // &.primary-dark {
+    //     background-color: $primary-dark !important;
+    // }
+}
+
+.mat-button-base {
+    // font-weight: bold;
+}
+
+.mat-drawer-container {
+    background-color: unset;
+}
+.drawer-content {
+    padding-left: unset !important;
+}
+
+.base-dialog {
+    /* Mat dialog overrides */
+    .mat-dialog-content {
+        margin: 0;
+        padding: 0;
+    }
+
+    .mat-dialog-container {
+        padding: 0px;
+    }
+}
+
+/* Mat Expansion Panel Overrides */
+.mat-expansion-panel {
+    &.filled-gray {
+        background-color: $gray-lightest;
+    }
+
+    &.primary {
+        .mat-expansion-indicator:after {
+            color: $primary;
+        }
+    }
+}
+
+/* Mat Table Overrides */
+.base-table {
+    &.striped {
+        tr:nth-child(even) {
+            background-color: $gray-lightest;
+        }
+    }
+
+    th:first-child,
+    td:first-child {
+        border-left: 1px solid $gray-lighter;
+    }
+    th:last-child,
+    td:last-child {
+        border-right: 1px solid $gray-lighter;
+    }
+    .mat-header-row {
+        height: 35px;
+        border-radius: 4px;
+
+        & > th:first-of-type {
+            border-top-left-radius: 4px;
+        }
+        & > th:last-of-type {
+            border-top-right-radius: 4px;
+        }
+        th {
+            color: $gray;
+            background-color: $gray-lightest;
+            // font-weight: 600;
+        }
+    }
+    td,
+    th {
+        padding-left: 10px !important;
+    }
+    th {
+        border-top: 1px solid $gray-lighter;
+    }
+}
+
+/* Mat Menu Overrides **/
+.base-menu {
+    &.mat-menu-panel {
+        max-width: unset !important;
+    }
+}
+
+/* Quill overrides */
+
+.ql-toolbar.ql-snow {
+    button {
+        width: 26px;
+        height: 26px;
+        margin-right: 12px;
+
+        // &:focus {
+        //     outline: 2px solid $primary;
+        // }
+    }
+
+    .ql-stroke {
+        stroke: $black;
+        color: $black;
+    }
+    .ql-fill {
+        fill: $black;
+    }
+
+    button.ql-active {
+        .ql-stroke {
+            stroke: $primary !important;
+            color: $primary !important;
+        }
+
+        .ql-fill {
+            fill: $primary !important;
+        }
+    }
+}
+
+.ql-container {
+    // font-family: "Muli, Helvetica Neue, Arial, sans-serif" !important;
+    font-family: "sans-serif";
+}
+
+// Accessibility reasons, darkening the active option color for mat auto completes
+.mat-option.mat-active {
+    // outline: 1px solid $primary;
+}
+
+.mat-dialog-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.mat-menu-item {
+    // &:focus {
+    //     outline: 2px solid $primary;
+    // }
+}
+
+.mat-button-base {
+    // &:focus {
+    //     outline: 2px solid $primary;
+    // }
+}
+

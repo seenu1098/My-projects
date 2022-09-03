@@ -1,0 +1,204 @@
+	{
+  "linkNodeList": [
+    {
+      "key": "USER_TASK1ayx6k5e3ueb448gyi93hlh5r28r54olp",
+      "source": "START_TASKuk6hgwl72nb78ztgiw4p6",
+      "target": "USER_TASK1ayx6k5e3ueb448gyi93hl",
+      "linkLabel": ""
+    },
+    {
+      "key": "USER_TASK1ayx6k5e3ueb448gyi93hlh5r28r54olp",
+      "source": "START_TASKuk6hgwl72nb78ztgiw4p6",
+      "target": "USER_TASK_branched",
+      "linkLabel": ""
+    },
+    {
+      "key": "DECISION_TASK0z2z4qtwt0e0tv2plt1dklvs40jmtjaa",
+      "source": "USER_TASK_branched",
+      "target": "DECISION_TASK0z2z4qtwt0e0tv2plt1dkl",
+      "linkLabel": ""
+    },
+    {
+      "key": "DECISION_TASK0z2z4qtwt0e0tv2plt1dklvs40jmtjaa",
+      "source": "USER_TASK1ayx6k5e3ueb448gyi93hl",
+      "target": "DECISION_TASK0z2z4qtwt0e0tv2plt1dkl",
+      "linkLabel": ""
+    },
+    {
+      "key": "USER_TASKkk3145qem6llqnnknn7i9gde3mkikfj",
+      "source": "DECISION_TASK0z2z4qtwt0e0tv2plt1dkl",
+      "target": "USER_TASKkk3145qem6llqnnknn7i",
+      "linkLabel": "Matches"
+    },
+    {
+      "key": "USER_TASKwbbjxfrs5sfn13bq09jtukfe7dy30lf",
+      "source": "DECISION_TASK0z2z4qtwt0e0tv2plt1dkl",
+      "target": "USER_TASKwbbjxfrs5sfn13bq09jtu",
+      "linkLabel": "Not Matches"
+    },
+    {
+      "key": "END_TASKr104xbquavlt2wfres0lvj2dwz7ap2f",
+      "source": "USER_TASKkk3145qem6llqnnknn7i",
+      "target": "END_TASKr104xbquavlt2wfres0lv",
+      "linkLabel": ""
+    },
+    {
+      "key": "END_TASKr104xbquavlt2wfres0lvofsorqafsc",
+      "source": "USER_TASKwbbjxfrs5sfn13bq09jtu",
+      "target": "END_TASKr104xbquavlt2wfres0lv",
+      "linkLabel": ""
+    }
+  ],
+  "taskNodeList": [
+    {
+      "key": "START_TASKuk6hgwl72nb78ztgiw4p6",
+      "taskType": "START_TASK",
+      "label": "",
+      "taskProperty": {
+        "propertyName": "",
+        "propertyValue": {
+          "assigneeUser": "user1",
+          "assigneeGroup": "value1",
+          "propertyType": "launch",
+          "jsonText": "{\n    \"textFieldOne\":\"test\",\n    \"B\":\"200\"\n}"
+        }
+      },
+      "position": {
+        "x": 103,
+        "y": 127
+      }
+    },
+    {
+      "key": "USER_TASK1ayx6k5e3ueb448gyi93hl",
+      "taskType": "USER_TASK",
+      "label": "Decision task with text",
+      "taskProperty": {
+        "propertyName": "",
+        "propertyValue": {
+          "formIdentifier": "leaveform",
+          "assigneeUser": "user1",
+          "assigneeGroup": "value1",
+          "dueDate": 3,
+          "name": "Decision task with text",
+          "reminderTime": "10",
+          "reminderUnits": "seconds",
+          "isApprovalForm": false,
+          "fieldMapping": {
+            "emplayeeName": "fieldId4"
+          }
+        }
+      },
+      "position": {
+        "x": 347,
+        "y": 121
+      }
+    },
+    {
+      "key": "DECISION_TASK0z2z4qtwt0e0tv2plt1dkl",
+      "taskType": "DECISION_TASK",
+      "label": "",
+      "taskProperty": {
+        "propertyName": "",
+        "propertyValue": {
+          "ifTargetTask": "USER_TASKkk3145qem6llqnnknn7i",
+          "elseTargetTask": "USER_TASKwbbjxfrs5sfn13bq09jtu",
+          "decisionLogic": {
+            "logicOperator": "OR",
+            "rules": [
+              {
+                "leftAssignment": {
+                  "dataType": "text",
+                  "variableType": "pagefield",
+                  "variableName": "textFieldOne"
+                },
+                "operator": "ne",
+                "rightAssignment": {
+                  "dataType": "text",
+                  "variableType": "pagefield",
+                  "variableName": "text"
+                }
+              },
+              {
+                "leftAssignment": {
+                  "dataType": "number",
+                  "variableType": "constant",
+                  "variableName": "21"
+                },
+                "operator": "lt",
+                "rightAssignment": {
+                  "dataType": "number",
+                  "variableType": "constant",
+                  "variableName": "10"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "position": {
+        "x": 580,
+        "y": 121
+      }
+    },
+    {
+      "key": "USER_TASKkk3145qem6llqnnknn7i",
+      "taskType": "USER_TASK",
+      "label": "Any one condition matches",
+      "taskProperty": {
+        "propertyName": "",
+        "propertyValue": {
+          "formIdentifier": "fieldmapping",
+          "assigneeUser": "user1",
+          "assigneeGroup": "value1",
+          "dueDate": 2,
+          "name": "Any one condition matches",
+          "reminderTime": "5",
+          "reminderUnits": "minutes",
+          "isApprovalForm": false,
+          "fieldMapping": {}
+        }
+      },
+      "position": {
+        "x": 789,
+        "y": 26
+      }
+    },
+    {
+      "key": "USER_TASKwbbjxfrs5sfn13bq09jtu",
+      "taskType": "USER_TASK",
+      "label": "Not matches",
+      "taskProperty": {
+        "propertyName": "",
+        "propertyValue": {
+          "formIdentifier": "testforkarthi2",
+          "assigneeUser": "user1",
+          "assigneeGroup": "value1",
+          "dueDate": 2,
+          "name": "Not matches",
+          "reminderTime": "4",
+          "reminderUnits": "hours",
+          "isApprovalForm": false,
+          "fieldMapping": {}
+        }
+      },
+      "position": {
+        "x": 806,
+        "y": 207
+      }
+    },
+    {
+      "key": "END_TASKr104xbquavlt2wfres0lv",
+      "taskType": "END_TASK",
+      "label": "",
+      "taskProperty": {},
+      "position": {
+        "x": 996,
+        "y": 77
+      }
+    }
+  ],
+  "name": "Any one condition matches test",
+  "key": "any-one-condition-matches-test",
+  "workflowId": null,
+  "startKey": "START_TASKuk6hgwl72nb78ztgiw4p6"
+}

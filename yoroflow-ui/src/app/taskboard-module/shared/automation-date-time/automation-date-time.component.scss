@@ -1,0 +1,57 @@
+.line-style {
+    border-top: 0.5px solid rgb(211, 211, 211);
+    width: 80%;
+    margin: 12px 0px 0px 5px;
+}
+
+.labelList-style {
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 24px;
+    border-radius: 3px;
+    color: black;
+    cursor: pointer;
+    padding: 2px 6px 0px 6px;
+}
+
+.selected-field-css{
+    margin-top: 10px;
+    margin-left: 5px;
+    height: 24px;
+    border-radius: 3px;
+    color: white;
+    background: #0bad0b;
+    cursor: pointer;
+    padding: 2px 6px 0px 6px;
+}
+
+.create_label {
+    color: #039be5;
+    cursor: pointer;
+}
+
+.time-zone-css{
+    width: 33%;margin-top: 28px;
+}
+
+.margin-css{
+ margin-left: 10px !important;
+}
+
+::ng-deeep table.ngx-mat-timepicker-table{
+    width: 130px !important;
+}
+
+::ng-deep .ngx-mat-timepicker form .ngx-mat-timepicker-table .ngx-mat-timepicker-tbody tr td .mat-icon-button{
+    margin-left: -21px !important;
+}
+
+::ng-deep .ngx-mat-timepicker form .ngx-mat-timepicker-table .ngx-mat-timepicker-tbody tr td.ngx-mat-timepicker-meridian .mat-button{
+    min-width: 42px !important;
+    height: 40px !important;
+}
+
+::ng-deep .ngx-mat-timepicker form .ngx-mat-timepicker-table .ngx-mat-timepicker-tbody tr td .mat-form-field{
+    width: 30px !important;
+    max-width: none !important;
+}

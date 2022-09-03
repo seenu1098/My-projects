@@ -1,0 +1,19 @@
+<div fxLayout="row" fxLayoutAlign="center center" [style.height]="unReadMessageCount >0?'50px':'45px'" *ngIf="!isOpen"
+    id="message">
+    <ng-container *ngIf="unReadMessageCount >0">
+        <mat-icon (click)="openMessages()" class="msg-icon" [matBadge]="unReadMessageCount" matBadgeColor="warn"
+            [style.font-size]="isMobile?'15px':''">sms</mat-icon>
+    </ng-container>
+    <ng-container *ngIf="unReadMessageCount === 0">
+        <mat-icon (click)="openMessages()" class="msg-icon" [style.font-size]="isMobile?'22px':''">sms
+        </mat-icon>
+    </ng-container>
+</div>
+<div fxLayout="row" fxLayoutAlign="center center" style="height: 50px;" *ngIf="isOpen && !isMobile">
+    <mat-icon (click)="closeMessage()" class="msg-icon">close</mat-icon>
+</div>
+
+
+<app-message-passing *ngIf="isOpen" class="msg-overlay-container" (collapsed)="getCollapsed($event)"
+    (unreadCount)="getCount($event)">
+</app-message-passing>

@@ -1,0 +1,83 @@
+<div fxLayout="row" style="margin: 0%" fxLayoutGap="0px" fxLayout.xs="column" fxLayoutAlign="start center"
+  class="header">
+  <div fxFlex="10%" fxLayoutAlign="start center">
+    <img src="assets/images/live-tester.png" alt="" />
+  </div>
+
+  <div fxFlex="90%" class="menuAlign" fxLayout.xs="column" fxLayoutAlign="start none" fxLayoutGap="2px" fxShow="true">
+    <h3></h3>
+    <button mat-button id="templateMenu" [matMenuTriggerFor]="templateMenu">Templates<mat-icon> arrow_drop_down
+      </mat-icon>
+    </button>
+    <mat-menu #templateMenu="matMenu">
+      <button mat-menu-item routerLink="create-template" id="createTemplate">Create Testcase Template</button>
+      <button mat-menu-item routerLink="list-template" id="listTemplate">Edit Testcase Templates</button>
+    </mat-menu>
+    <button mat-button id="claimsMenu" [matMenuTriggerFor]="claimsMenu">Testcase<mat-icon> arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #claimsMenu="matMenu">
+      <button mat-menu-item routerLink="create-claims" id="createClaims">Create Testcase (Claim)</button>
+      <button mat-menu-item routerLink="list-claims" id="listClaims">Edit Testcase (Claim)</button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="testcaseExecutinMenu" id="testcaseExecutinMenu">Batch - Execution<mat-icon> arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #testcaseExecutinMenu="matMenu">
+      <button mat-menu-item routerLink="execution" id="execution">Create Batch (Execute Testcases)</button>
+      <button mat-menu-item routerLink="testcase-results">Batch Results (Testcases Results)</button>
+    </mat-menu>
+
+    <button mat-button *ngIf="isAdmin" [matMenuTriggerFor]="reportsMenu">Reports<mat-icon> arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #reportsMenu="matMenu">
+      <button mat-menu-item routerLink="batch-report">Batch Report</button>
+      <button mat-menu-item routerLink="day-based-report">Day Based Report</button>
+      <button mat-menu-item routerLink="formtype-based-report">Form Type Based Report</button>
+    </mat-menu>
+
+    <button mat-button *ngIf="isAdmin" [matMenuTriggerFor]="administratorMenu">Administrator<mat-icon> arrow_drop_down
+      </mat-icon>
+    </button>
+    <mat-menu #administratorMenu="matMenu">
+      <button mat-menu-item routerLink="signup">Create Account</button>
+      <button mat-menu-item routerLink="user-list">User Management</button>
+    </mat-menu>
+
+
+    <button mat-button id="configurationMenu" [matMenuTriggerFor]="settingsMenu">Configuration<mat-icon> arrow_drop_down
+      </mat-icon>
+    </button>
+    <mat-menu #settingsMenu="matMenu">
+      <button mat-menu-item routerLink="create-testgroup" id="testGroupMenu">Test Groups</button>
+      <button mat-menu-item routerLink="lookup-data" id="lookupMenu">Lookup Data</button>
+      <!--<button mat-menu-item routerLink="claim_type" id="claimTypeMenu">Claim Type</button>-->
+      <button mat-menu-item routerLink="element-configuration" id="elementConfigsMenu">Expected Elements</button>
+      <button mat-menu-item [matMenuTriggerFor]="environmentPresetMenu" id="environmentMenu">Test Environment</button>
+    </mat-menu>
+
+    <mat-menu #environmentPresetMenu="matMenu">
+      <button mat-menu-item id="manageEnvironment" routerLink="environment">Manage Environment</button>
+      <button mat-menu-item id="addPresetMenu" [matMenuTriggerFor]="PresetsMenu">Add Environment Presets</button>
+    </mat-menu>
+
+    <mat-menu #PresetsMenu="matMenu">
+      <button mat-menu-item id="beneficiaryMenu" routerLink="beneficiary-preset">Beneficiary</button>
+      <button mat-menu-item id="providerMenu" routerLink="provider-preset">Provider</button>
+      <button mat-menu-item id="payorMenu" routerLink="payor-preset">Payor</button>
+      <button mat-menu-item id="paMenu" routerLink="pa-preset">Prior Auth</button>
+    </mat-menu>
+
+  </div>
+  <div fxFlex="10%">
+    <button mat-button id="userMenu" [matMenuTriggerFor]="userMenu">{{userVo.firstName}} {{userVo.lastName}}<mat-icon>
+        arrow_drop_down
+      </mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item routerLink="change-password">Change Password</button>
+      <button mat-menu-item id="logout" (click)="logout()">Logout</button>
+    </mat-menu>
+  </div>
+
+</div>

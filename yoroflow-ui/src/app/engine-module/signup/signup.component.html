@@ -1,0 +1,193 @@
+<div class="container-fluid p-0 m-0" id="horizontal-stepper">
+    <div class="row mx-0 w-100" style="overflow-y: hidden;" [style.height]="screenHeight">
+        <div class="col-md-6 pr-0 col-sm-12" style="overflow-y: scroll;">
+            <div fxLayout="column" fxLayoutAlign="center center" style="height: 100%;padding: 10px;">
+                <form [formGroup]="form" #userForm="ngForm">
+                    <ng-container *ngIf="!detailsShow">
+                        <div class="scrollbar-css" *ngIf="detailsType === 'showFields'">
+                            <div class="row w-100 mx-0 justify-content-center">
+                                <img src="../assets/logo/newlogo3.svg" class="img-fluid mx-auto d-block" width="50%">
+                            </div>
+                            <div fxLayout="row" fxLayoutGap="10px" class="w-100 pt-2">
+                                <mat-form-field appearance="outline" class="w-50">
+                                    <mat-label>First Name</mat-label>
+                                    <input matInput type="text" name="firstName" formControlName="firstName"
+                                        id="firstName" required>
+                                    <mat-icon matSuffix>person</mat-icon>
+                                    <mat-error>First name is required</mat-error>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" class="w-50">
+                                    <mat-label>Last Name</mat-label>
+                                    <input matInput type="text" name="lastName" formControlName="lastName" id="lastName"
+                                        required>
+                                    <mat-icon matSuffix>person</mat-icon>
+                                    <mat-error>Last name is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div fxLayout="row" fxLayoutGap="10px" class="w-100 pt-2">
+                                <mat-form-field appearance="outline" class="w-50">
+                                    <mat-label>Email</mat-label>
+                                    <input matInput type="text" name="email" formControlName="email" id="email" required
+                                        placeholder="Login Email">
+                                    <mat-icon matSuffix>mail</mat-icon>
+                                    <mat-error class="text-danger" id="emailRequired"
+                                        *ngIf="form.get('email').errors?.required">Email is required </mat-error>
+                                    <mat-error class="text-danger" id="emailValid"
+                                        *ngIf="form.get('email').errors?.email
+                                           &&(userForm.submitted || form.get('email').touched || form.get('email').dirty)">Email is
+                                        not valid</mat-error>
+                                    <mat-error *ngIf="form.get('email').errors?.exist">Account already in this email
+                                    </mat-error>
+                                </mat-form-field>
+                                <div fxLayout="column" class="w-50 mt-1">
+                                    <app-telephone *ngIf="telephoneClear" class="w-100"
+                                        [telephoneInput]="form.get('phoneNumber').value"
+                                        (phoneEmit)="getTelephoneNumber($event)" (country)="getCountry($event)">
+                                    </app-telephone>
+                                </div>
+                            </div>
+                            <mat-checkbox formControlName="terms" class="example-margin" required>Agree <span><a
+                                        href="https://www.yorosis.com/terms-and-conditions/" target=_blank
+                                        class="color_blue">Terms And Conditions</a><b style="color:red">
+                                        *</b></span></mat-checkbox>
+                            <p fxLayoutAlign="center" class="label-css">*No need for credit card details*</p>
+                            <div fxLayout="row" fxLayoutAlign="end" style="margin-top: 10px;">
+                                <re-captcha #captchaRef="reCaptcha" siteKey="6Lf20dkZAAAAAHYrQB4CC3TWYXVxV4xPKu9wXICn"
+                                    id="captcha" formControlName="recaptcha"
+                                    (resolved)="getCaptchaResponse($event,'final')">
+                                </re-captcha>
+                            </div>
+                            <div fxLayout="row" fxLayoutGap="5px" style="margin-top: 10px;">
+                                <button *ngIf="buttonShow" mat-raised-button
+                                    class="btn btn-primary btn-block text-uppercase" (click)="save(userForm)"
+                                    [disabled]="buttonDisable===true || !form.get('terms').valid || !form.get('email').valid || !form.get('firstName').valid 
+                                || !form.get('lastName').valid || disabled">Create
+                                    free
+                                    account</button>
+                                <div *ngIf="!buttonShow" fxLayout="row" fxLayoutAlign="center center"
+                                    class="loader-div-css" fxLayoutGap="20px">
+                                    <span>Creating account</span>
+                                    <span class="dot-falling"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="detailsType === 'accountCreate'">
+                            <div class="row w-100 mx-0 justify-content-center">
+                                <img src="../assets/logo/newlogo3.svg" class="img-fluid mx-auto d-block">
+                            </div>
+                            <p fxLayout="row" fxLayoutAlign="center" class="label-css font-weight-bold mt-3">
+                                Thanks for signing up with Yoroflow!
+                            </p>
+                            <p fxLayout="row" fxLayoutAlign="center" class="label-css font-weight-bold mt-3">
+                                Please check your email to verify and initiate the creation of your account.
+                            </p>
+                        </ng-container>
+                    </ng-container>
+                </form>
+                <form [formGroup]="accountCreationForm" #userForm="ngForm">
+                    <ng-container *ngIf="detailsShow">
+                        <div *ngIf="detailsType==='showFields'">
+                            <perfect-scrollbar [config]="config" class="scrollbar-css" [style.height]="screenHeight1">
+                                <div class="row w-100 mx-0 justify-content-center">
+                                    <img src="../assets/logo/newlogo3.svg" class="img-fluid mx-auto d-block"
+                                        width="50%">
+                                </div>
+                                <p fxLayout="row" fxLayoutAlign="center" class="label-css font-weight-bold mt-3">Thanks
+                                    for
+                                    your email verification, just need
+                                    two
+                                    more information to finalize
+                                    your account creation.</p>
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <mat-label>Company Name</mat-label>
+                                    <input matInput type="text" name="companyName" formControlName="companyName"
+                                        id="companyName" required>
+                                    <mat-icon matSuffix>business</mat-icon>
+                                    <mat-error>Company name is required</mat-error>
+                                </mat-form-field>
+                                <div fxLayout="row wrap" class="w-100" fxLayoutGap="5px">
+                                    <span class="mt-2">Your URL would be</span>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Subdomain Name</mat-label>
+                                        <input matInput type="text" name="subdomainName" formControlName="subdomainName"
+                                            id="subdomainName" required>
+                                        <mat-error *ngIf="accountCreationForm.get('subdomainName').errors?.required">
+                                            Subdomain name is required</mat-error>
+                                        <mat-error *ngIf="accountCreationForm.get('subdomainName').errors?.exist">
+                                            Subdomain name already exist</mat-error>
+                                    </mat-form-field>
+                                    <span class="mt-2">.yoroflow.com</span>
+                                </div>
+                                <p fxLayoutAlign="center" class="label-css">*No need for credit card details*</p>
+                                <p class="fs_16 font-weight-bold">Please select one of the plan for a 7 day trial
+                                    period,</p>
+                                <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px">
+                                    <ng-container *ngFor="let plan of planList;">
+                                        <div fxLayout="column" fxLayoutAlign="center center"
+                                            [class]="plan.isSelected===true?'select-plan-css':'plan-css'"
+                                            (click)="planSelection(plan)">
+                                            <b fxLayout="row" style="font-size: 15px;">{{plan.name}}</b>
+                                            <p fxLayout="row" style="margin-top: 5px;">{{plan.desc}}</p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="center" style="margin-top: 10px;">
+                                    <a href="https://www.yoroflow.com/free-workflow-software-solution/" target=_blank
+                                        class="color_blue">More
+                                        details</a>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="end" style="margin-top: 10px;">
+                                    <re-captcha #captchaRef="reCaptcha"
+                                        siteKey="6Lf20dkZAAAAAHYrQB4CC3TWYXVxV4xPKu9wXICn" id="captcha"
+                                        formControlName="recaptcha" (resolved)="getCaptchaResponse($event,'final')">
+                                    </re-captcha>
+                                </div>
+                                <div fxLayout="row" fxLayoutGap="5px" style="margin-top: 20px;">
+                                    <button *ngIf="buttonShow" mat-raised-button
+                                        class="btn btn-primary btn-block text-uppercase"
+                                        (click)="createAccount(userForm)"
+                                        [disabled]="accountCreationForm.invalid || disabled">Create
+                                        account</button>
+                                    <div *ngIf="!buttonShow" fxLayout="row" fxLayoutAlign="center center"
+                                        class="loader-div-css" fxLayoutGap="20px">
+                                        <span>Creating account</span>
+                                        <span class="dot-falling"></span>
+                                    </div>
+                                </div>
+                            </perfect-scrollbar>
+                        </div>
+                        <ng-container *ngIf="detailsType==='invalidToken'">
+                            <div class="row w-100 mx-0 justify-content-center">
+                                <img src="../assets/logo/newlogo3.svg" class="img-fluid mx-auto d-block">
+                            </div>
+                            <p fxLayout="row" fxLayoutAlign="center" class="label-css font-weight-bold mt-3">You
+                                have already created a free account.</p>
+                        </ng-container>
+                        <ng-container *ngIf="detailsType==='accountCreate'">
+                            <div class="row w-100 mx-0 justify-content-center">
+                                <img src="../assets/logo/newlogo3.svg" class="img-fluid mx-auto d-block">
+                            </div>
+                            <p fxLayout="row" fxLayoutAlign="center" class="label-css font-weight-bold mt-3">
+                                Welcome to Yoroflow family..!
+                            </p>
+                            <p fxLayout="row" fxLayoutAlign="center" class="acc-label-css font-weight-bold mt-3">
+                                Your account has been created successfully. Please check your email for login
+                                credentials.
+                            </p>
+                        </ng-container>
+                    </ng-container>
+                </form>
+            </div>
+        </div>
+        <div fxLayout="column" class="col-md-6 col-sm-12 " fxLayoutAlign="center center"
+            style="background-color: #0265ff;overflow-y: hidden;">
+            <div class="align-self-center">
+                <h1 class="text-white right_head">
+                    Connect Your <br>Favorite Workplace Tools<br> And
+                    Automate Your<br> Workflows Today!
+                </h1>
+                <h4 class="text-white"><i>Register - Create Account - Automate Workflows</i></h4>
+            </div>
+        </div>
+    </div>
+</div>

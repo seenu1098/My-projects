@@ -1,0 +1,255 @@
+<!-- <div fxLayout="row" fxLayoutGap="10px" *ngIf="show">
+	<div style="width: 100%;">
+		<form [formGroup]="messagePassingForm">
+			<div fxLayout="row" style="background-color:#e6e6e6;width: 100%;" *ngIf="show">
+				<div fxLayout="column" fxLayoutGap="7px" class="dialog-width">
+					<div></div>
+					<div fxLayout="row" fxLayoutGap="15px" class="chat-margin">
+						<div></div>
+						<div *ngIf="userVO.profilePicture !==null && userVO.profilePicture !==''">
+							<img mat-card-avatar [src]="transformImage(userVO.profilePicture)"
+								class="login-header-image" alt="User Avatar">
+						</div>
+						<div class="user-circle" *ngIf="userVO.profilePicture ===null || 
+						userVO.profilePicture ==='' || !userVO.profilePicture">{{userProfile(userVO.firstName)}}</div>
+						<div>
+							<p style="margin-top: 13px;font-weight: 600 ;">{{userVO.firstName}} {{userVO.lastName}}</p>
+						</div>
+					</div>
+					<div fxLayout="row" fxLayoutAlign="center center" *ngIf="showNoUserMessage">
+						<span style="font-weight: bold;">No Users To Display</span>
+					</div>
+					<div fxLayout="column" fxLayoutGap="10px" class="chat-margin user-chat-list-container scrollbar-css"
+						style="margin: 0;">
+						<ng-container *ngIf="userVOList">
+							<ng-container *ngFor="let user of userVOList">
+								<div fxLayout="row" class="chat-margin active-user-container " fxLayoutGap="15px"
+									(click)="loadChatDetails(user,0)"
+									*ngIf="userVO.userId !==user.userId && user.userId ===messageHistoryVO.userId">
+									<div></div>
+									<div *ngIf="user.profilePicture !==null && user.profilePicture !==''">
+										<img mat-card-avatar [src]="transformImage(user.profilePicture)"
+											class="chat-prof-pic" alt="User Avatar">
+									</div>
+									<div class="circle"
+										*ngIf="user.profilePicture ===null || user.profilePicture ==='' || !user.profilePicture">
+										{{userProfile(user.firstName)}}</div>
+									<div>
+										<p style="margin-top: 13px;color: white;font-weight: bold;">{{user.firstName}}
+											{{user.lastName}}</p>
+									</div>
+									<div *ngIf="user.unReadMessageCount>0">
+										<p style="margin-top: 13px;">({{user.unReadMessageCount}})</p>
+									</div>
+								</div>
+								<div fxLayout="row" class="chat-margin user-list-container" fxLayoutGap="15px"
+									(click)="loadChatDetails(user,0)" style="margin: 1%;"
+									*ngIf="userVO.userId !==user.userId&& user.userId !==messageHistoryVO.userId">
+									<div></div>
+									<div *ngIf="user.profilePicture !==null && user.profilePicture !==''">
+										<img mat-card-avatar [src]="transformImage(user.profilePicture)"
+											class="chat-prof-pic" alt="User Avatar">
+									</div>
+
+									<div class="circle"
+										*ngIf="user.profilePicture ===null || user.profilePicture ==='' || !user.profilePicture">
+										{{userProfile(user.firstName)}}</div>
+
+									<div>
+										<p style="font-weight: 500 ;margin-top: 13px;">{{user.firstName}}
+											{{user.lastName}}</p>
+									</div>
+									<div *ngIf="user.unReadMessageCount>0">
+										<p style="margin-top: 13px;font-weight: 500 ;">({{user.unReadMessageCount}})</p>
+									</div>
+								</div>
+								<div fxLayout="row" fxLayoutAlign="center center" *ngIf="showNoUserMessage">
+									<span style="font-weight: bold;">No Users To Display</span>
+								</div>
+							</ng-container>
+						</ng-container>
+						<ng-container *ngIf="messageGroupVOList">
+							<ng-container *ngFor="let messageGroup of messageGroupVOList">
+
+								<div fxLayout="row" class="chat-margin active-user-container" fxLayoutGap="15px"
+									(click)="loadGroupChatDetails(messageGroup,0)"
+									*ngIf="messageGroup.id === messageHistoryVO.userId;else elseGroup">
+									<div></div>
+									<div class="circle">{{userProfile(messageGroup.groupName)}}</div>
+									<div>
+										<p style="margin-top: 13px;font-weight: 500 ;">{{messageGroup.groupName}}</p>
+									</div>
+									<div *ngIf="messageGroup.groupUnreadMessageCount>0">
+										<p style="margin-top: 13px;font-weight: 500;">
+											({{messageGroup.groupUnreadMessageCount}})
+										</p>
+									</div>
+								</div>
+								<ng-template #elseGroup>
+
+									<div fxLayout="row" class="chat-margin user-list-container" fxLayoutGap="15px"
+										(click)="loadGroupChatDetails(messageGroup,0)"
+										*ngIf="messageGroup.id !== messageHistoryVO.userId">
+										<div></div>
+										<div class="circle">{{userProfile(messageGroup.groupName)}}</div>
+										<div>
+											<p style="margin-top: 13px;font-weight: 500 ;">{{messageGroup.groupName}}
+											</p>
+										</div>
+										<div *ngIf="messageGroup.groupUnreadMessageCount>0">
+											<p style="margin-top: 13px;font-weight: 500;">
+												({{messageGroup.groupUnreadMessageCount}})
+											</p>
+										</div>
+									</div>
+								</ng-template>
+							</ng-container>
+						</ng-container>
+					</div>
+				</div>
+				<div fxLayout="column" style="width: 1%;border-left: 2px solid #cccccc;">
+
+				</div>
+				<div fxLayout="column" style="width: 75%;margin: 1%;">
+					 <div *ngIf="!showUserChatHistory && !showGroupChatHistory && showSpinner " fxLayout="row" fxLayoutAlign="space-between center">
+						<div></div>
+						<div>
+							<mat-spinner strokeWidth="4" [diameter]="30"></mat-spinner>
+						</div>
+						<div fxLayout="column">
+							<mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+						</div>
+						
+					</div> 
+					<div  fxLayout="row" fxLayoutAlign="end end" *ngIf="showNoUserMessage">
+						<mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+					</div>
+
+					<div *ngIf="showUserChatHistory || showGroupChatHistory " class="user-list-container">
+						<div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-between center" style="margin:1%">
+
+							<ng-container *ngIf="showUserChatHistory">
+								<div fxLayout="row" fxLayoutGap="15px">
+									<div
+										*ngIf="messageHistoryVO.profilePicture !==null && messageHistoryVO.profilePicture !==''">
+										<img mat-card-avatar [src]="transformImage(messageHistoryVO.profilePicture)"
+											class="chat-prof-pic" alt="User Avatar">
+									</div>
+									<div class="circle" *ngIf="messageHistoryVO.profilePicture ===null || messageHistoryVO.profilePicture ==='' || 
+								   !messageHistoryVO.profilePicture">
+										{{userProfile(messageHistoryVO.firstName)}}</div>
+									<div>
+										<p style="margin-top: 13px;color: black;">{{messageHistoryVO.firstName}}
+											{{messageHistoryVO.lastName}}</p>
+									</div>
+									<div>
+										<mat-icon (click)="addUserToGroup()" style="margin-top: 10px;">add</mat-icon>
+									</div>
+								</div>
+								<div>
+									<mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+								</div>
+							</ng-container>
+							<ng-container *ngIf="showGroupChatHistory">
+								<div fxLayout="row" fxLayoutGap="15px">
+									<div fxLayout="row" fxLayoutGap="15px">
+										<div class="circle">{{userProfile(messageHistoryVO.firstName)}}</div>
+										<div>
+											<p style="margin-top: 13px;color: black;">{{messageHistoryVO.firstName}}</p>
+										</div>
+									</div>
+									<div>
+										<mat-icon (click)="addUserToExistingGroup()" style="margin-top: 10px;">add
+										</mat-icon>
+									</div>
+								</div>
+								<div>
+									<mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+								</div>
+							</ng-container>
+						</div>
+					</div>
+					
+					<ng-container *ngIf="showUserChatHistory || showGroupChatHistory">
+						<div class="chat-history-container scrollbar-css" #scrollMe>
+							<div fxLayout="row" fxLayoutAlign="center center"
+								*ngIf="allowToLoad && messageHistoryVO.messageVOList.length>=20">
+								<button mat-raised-button (click)="loadPreviousUserMessages($event)"
+									*ngIf="showUserChatHistory" class="button-css">Load Previous
+									Messages</button>
+								<button mat-raised-button (click)="loadPreviousGroupMessages($event)"
+									*ngIf="showGroupChatHistory" class="button-css">Load Previous
+									Messages</button>
+							</div>
+							<div *ngIf="showChatLoader" style="margin-top: 1%;" fxLayout="row" fxLayoutAlign="center center">
+								<mat-spinner strokeWidth="4" [diameter]="30" ></mat-spinner>
+							</div>
+							<ng-container *ngFor="let message of messageHistoryVO.messageVOList;let i=index;">
+								<div fxLayout="row" fxLayoutAlign="start start" class="margin"
+									*ngIf="message.fromId !== userVO.userId" fxLayoutGap="10px">
+									<div *ngIf="message.profilePicture !==null && message.profilePicture !==''"
+										style="width: 5%;">
+										<img mat-card-avatar [src]="transformImage(message.profilePicture)"
+											class="message-prof-pic" alt="User Avatar" style="margin-top: 15px;">
+									</div>
+									<div style="width: 5%;"
+										*ngIf="message.profilePicture ===null || message.profilePicture ==='' || !message.profilePicture">
+										<div class="chat-history-circle" style="margin-top: 20px;">
+											{{userProfile(message.fromUserName)}}</div>
+									</div>
+									<div class="message-container" fxLayout="column">
+										<div style="font-size: 15px;" fxLayout="row" fxLayoutAlign="start start"
+											fxLayoutGap="10px">
+											<div>
+												{{message.fromUserName}}
+											</div>
+											<div style="font-size: smaller;">
+												{{message.createdOn | date :'M/d  h:mm a'}}
+											</div>
+										</div>
+										<div style="font-size: small;">{{message.message}}</div>
+									</div>
+								</div>
+								<div fxLayout="row" fxLayoutAlign="end end" class="margin"
+									*ngIf="message.fromId === userVO.userId">
+									<div class="right-message-container" fxLayout="column">
+										<div style="font-size: 15px;" fxLayout="row" fxLayoutAlign="start start"
+											fxLayoutGap="10px">
+											<div style="font-size: smaller;">
+												{{message.createdOn | date :'M/d  h:mm a'}}
+											</div>
+										</div>
+										<div style="font-size: small;">{{message.message}}</div>
+									</div>
+									<mat-spinner strokeWidth="3" [diameter]="18" class="loader-margin" *ngIf="showMessageLoader&& i===messageHistoryVO.messageVOList.length-1"></mat-spinner>
+								</div>
+							</ng-container>
+						</div>
+					</ng-container>
+					<div fxLayout="row" fxLayoutGap="10px" *ngIf="showUserChatHistory || showGroupChatHistory"
+						style="margin-top: 2px;">
+						<div style="width: 92%;">
+							<input matInput (keydown.enter)="keydown($event)" placeholder="Write your message..."
+								formControlName="message" class="enter-message">
+
+						</div>
+						<div>
+							<mat-icon style="font-size: 20px;cursor: pointer;" class="send-circle"
+								(click)="sendMessageUsingSocket()">send</mat-icon>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="end end" *ngIf="!show">
+	<mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+</div>
+
+<mat-spinner [diameter]="40" *ngIf="!show" style="margin-left: 48%;margin-top: 25%;"></mat-spinner> -->
+
+<!-- <ng-chat [adapter]="adapter" [userId]="userId" theme="dark-theme" [isViewportOnMobileEnabled]="true"
+	viewportWidthCalculationEnabled="true"></ng-chat> -->

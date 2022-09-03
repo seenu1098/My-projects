@@ -1,0 +1,62 @@
+.labelButton-css {
+  width: 99%;
+  // height: 45px;
+  margin-top: 3px;
+  color: #333 !important;
+  text-decoration: none;
+}
+
+.labelSelectedIcon-css {
+  color: rgb(0, 128, 0);
+  cursor: pointer;
+  margin-left: -10px;
+}
+
+.labelIcon-css {
+  margin-top: 7px;
+}
+
+#task-details ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+  padding: 12px 5px 7px 5px !important;
+  border: 5px !important;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: none !important;
+    box-shadow: inset 0 0 5px rgb(254, 255, 255);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10rem;
+    border: 1px solid #fff;
+}
+
+#task-details
+  ::ng-deep
+  .mat-form-field-flex
+  > .mat-form-field-infix
+  .mat-form-field-appearance-outline
+  .mat-form-field-suffix {
+  top: 0.45em;
+}
+
+#task-details ::ng-deep .mat-form-field-appearance-outline .mat-form-field-label {
+  margin-top: 4px;
+}
+
+#task-details ::ng-deep .mat-form-field-hide-placeholder .mat-form-field-label-wrapper {
+  top: -17px;
+}
+
+.createLabel-button {
+  height: 30px;
+  margin-top: 3px;
+  line-height: 30px;
+}

@@ -1,0 +1,42 @@
+<ng-container *ngIf="isFreePlan===false">
+    <form [formGroup]="emailTemplate" #userForm="ngForm">
+        <mat-card>
+            <mat-card-title i18n="Email Template">Email Template</mat-card-title>
+            <div fxLayout="row" fxLayoutGap="10px">
+                <mat-form-field style="width: 17%;" appearance="outline">
+                    <mat-label i18n="Email Template Name">Email Template Name</mat-label>
+                    <input matInput id="emailTemplateName" (focusout)="generateId()" (keypress)="omit_number($event)"
+                        (input)="inputChange()" placeholder="Email Template Name" formControlName="emailTemplateName"
+                        required i18n-placeholder="Email Template Name">
+                    <mat-error i18n="Email Template Name Is Required">Email Template Name Is Required</mat-error>
+                </mat-form-field>
+            </div>
+            <mat-form-field style="width: 100%;" appearance="outline">
+                <mat-label i18n="Email Template Subject">Email Template Subject</mat-label>
+                <textarea matInput id="emailTemplateSubject" formControlName="emailTemplateSubject" rows="1" required
+                    (input)="textChange()">
+            </textarea>
+                <mat-error i18n="Email Template Subject Is Required">Email Template Subject Is Required
+                </mat-error>
+            </mat-form-field>
+            <div fxLayout="column" fxLayoutGap="10px" style="margin-top: 1%;">
+                <app-quill-editor [inputMessage]="templateData" [fromEmailTemplate]="true" [templateObject]="this"
+                    (editorValue)="getData($event,userForm)" (resetEmitter)="reset(userForm)">
+                </app-quill-editor>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+                <div fxFlex="100">
+                    <mat-card>
+                        <mat-card-title i18n="Email Template List">Email Template List</mat-card-title>
+                        <app-yorogrid #emailTemplateGrid gridId="Email Template" (messageEvent)="receiveMessage($event)"
+                            defaultColumn="id">
+                        </app-yorogrid>
+                    </mat-card>
+                </div>
+            </div>
+        </mat-card>
+    </form>
+</ng-container>
+<mat-card *ngIf="isFreePlan===true" class="w-100">
+    <app-expire-dialog></app-expire-dialog>
+</mat-card>

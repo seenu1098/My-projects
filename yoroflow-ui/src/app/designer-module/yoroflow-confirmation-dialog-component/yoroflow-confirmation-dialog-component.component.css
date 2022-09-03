@@ -1,0 +1,7 @@
+.mat-dialog-container {
+  margin: 0px 20px !important;
+}
+
+#toggle-button ::ng-deep .mat-slide-toggle-content{
+  margin-top: 0px !important;
+}

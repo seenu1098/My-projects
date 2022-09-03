@@ -1,0 +1,330 @@
+logging:
+  pattern:
+    console: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentTenantId}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    file: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentTenantId}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    
+  level:
+    org.springframework.web: INFO
+    org.springframework.amqp: INFO
+    com.yorosis.yoroflow: INFO 
+
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
+server.servlet.context-path: /creation-service
+
+server:
+  port: 9090
+
+spring:
+  profiles:
+    active: default, dev
+
+---
+spring:
+  profiles: default
+ 
+  data: 
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: false
+    generate-ddl: false
+    ddl-auto: validate
+    open-in-view: false
+    default_schema: yoroflow
+
+  mail:
+    host: smtp.office365.com
+    username: yoroflowbot@yoroflow.com
+    password: xxxx
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+     enabled: true
+     max-file-size: 1MB
+     max-request-size: 1MB
+
+use:
+  grid:
+    configuration:
+      from: db
+
+file:
+  bucket-name: yf-dv-bckt
+  access-key: VFCNX77DPNTV2EVZ5FYE
+  access-secret: hWzE73+S81qKFRxCWZtZBP+/9MDX/myq3yDLQLVVO04
+  service-endpoint: https://sgp1.digitaloceanspaces.com/
+  service-region: sgp1
+  
+api:
+  stripe:
+    key: sk_test_51I6HkzHqNZ9Ew4yGuycSApcOzC6EdlPuKZuZNrKnvfgu00Po2PsMG7IjkLRoAI1DMBMb8aJufhaJAimWgmliFTes00VQRm8xPp  
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+
+---
+spring:
+  profiles: dev 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 3
+      pool-name: yoroflow
+      auto-commit: false
+    
+    url: jdbc:postgresql://india-db.yorosis.com:5544/liveapps?currentSchema=yoroflow
+    username: liveappsuser
+    password: oZXu10d09$@$LK90U6b]Z$Uv
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    ddl-auto: update
+              
+  mail:
+    host: smtp.office365.com
+    username: yoroflowbot@yoroflow.com
+    password: KTmp>{eJKAACSZe'=42k=t
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            trust: smtp.office365.com      
+          starttls:
+            enable: true
+            required: true 
+            
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    
+queue:
+  enabled: true
+
+workflow:
+  base: 
+    url: http://localhost:4040/workflow-service
+
+authnz-service:
+  base:
+    url: http://localhost:2020/authnz-service/
+    
+db-deployment-service:
+  base:
+    url: http://localhost:8181/db-deployment-service/
+     
+file:
+  bucket-name: yf-dv-bckt
+  access-key: VFCNX77DPNTV2EVZ5FYE
+  access-secret: hWzE73+S81qKFRxCWZtZBP+/9MDX/myq3yDLQLVVO04
+  service-endpoint: https://sgp1.digitaloceanspaces.com/
+  service-region: sgp1
+    
+api:
+  stripe:
+    key: sk_test_51I6HkzHqNZ9Ew4yGuycSApcOzC6EdlPuKZuZNrKnvfgu00Po2PsMG7IjkLRoAI1DMBMb8aJufhaJAimWgmliFTes00VQRm8xPp     
+    
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    
+liquibase:
+  db:
+    deployment:
+      enable: ${LIQUIBASE_DB_DEPLOYMENT_FLAG:true}
+
+---
+spring:
+  profiles: test 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 5
+      pool-name: yoroapps
+      auto-commit: false
+      
+    url: jdbc:h2:mem:cchn;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+    
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    generate-ddl: true
+    ddl-auto: create-drop
+    
+  mail:
+    host: smtp.office365.com
+    username: yoroflowbot@yoroflow.com
+    password: KTmp>{eJKAACSZe'=42k=t
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            trust: smtp.office365.com      
+          starttls:
+            enable: true
+            required: true
+logging.level.org.hibernate.SQL: TRACE
+logging.level.org.hibernate.type.descriptor.sql: INFO
+
+liquibase:
+  db:
+    deployment:
+      enable: ${LIQUIBASE_DB_DEPLOYMENT_FLAG:false}
+
+db-deployment-service:
+  base:
+    url: http://localhost:8181/db-deployment-service/  
+---
+spring:
+  profiles: us-dev 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 3
+      maximum-pool-size: 5
+      pool-name: yoroapps-creation-service-pool
+      auto-commit: false
+    
+    url: jdbc:postgresql://db.yorosis.com:5544/liveapps?currentSchema=yoroflow
+    username: liveappsuser
+    password: "oZXu10d09$@$LK90U6b]Z$Uv"
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    ddl-auto: update
+
+workflow:
+  base: 
+    url: https://india.yoroflow.com/workflow-service
+
+authnz-service:
+  base:
+    url: https://india.yoroflow.com/authnz-service/ 
+    
+db-deployment-service:
+  base:
+    url: https://india.yoroflow.com/db-deployment-service/
+    
+api:
+  stripe:
+    key: sk_test_51I6HkzHqNZ9Ew4yGuycSApcOzC6EdlPuKZuZNrKnvfgu00Po2PsMG7IjkLRoAI1DMBMb8aJufhaJAimWgmliFTes00VQRm8xPp  
+    
+liquibase:
+  db:
+    deployment:
+      enable: ${LIQUIBASE_DB_DEPLOYMENT_FLAG:true}
+      
+jasypt:
+  encryptor:
+    password: yorosis-secret
+---
+spring:
+  profiles: prod 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: ${CONNECTION_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${CONNECTION_POOL_MAX_SIZE:5}
+      pool-name: creation-service-pool
+      auto-commit: false
+    
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: false
+    generate-ddl: false
+    ddl-auto: update
+    
+        
+  mail:
+    host: smtp.office365.com
+    username: yoroflowbot@yoroflow.com
+    password: KTmp>{eJKAACSZe'=42k=t
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            trust: smtp.office365.com      
+          starttls:
+            enable: true
+            required: true
+            
+  rabbitmq:
+    host: ${QUEUE_SERVICE_NAME}
+    port: 5672
+    username: ${QUEUE_USER}
+    password: ${QUEUE_PASSWORD}
+    
+queue:
+  enabled: true
+  
+file:
+  bucket-name: ${S3_BUCKET_NAME}
+  access-key: ${S3_ACCESS_KEY}
+  access-secret: ${S3_ACCESS_SECRET}
+  service-endpoint: ${S3_URL}
+  service-region: ${S3_REGION}
+  
+  
+api:
+  stripe:
+    key: sk_test_51I6HkzHqNZ9Ew4yGuycSApcOzC6EdlPuKZuZNrKnvfgu00Po2PsMG7IjkLRoAI1DMBMb8aJufhaJAimWgmliFTes00VQRm8xPp    
+
+jasypt:
+  encryptor:
+    password: ${ENCRYPTION_KEY}
+    
+workflow:
+  base: 
+    url: http://workflow-service:8080/workflow-service    
+
+authnz-service:
+  base:
+    url: http://authnz-service:8080/authnz-service/
+    
+db-deployment-service:
+  base:
+    url: http://db-deployment-service:8080/db-deployment-service/
+
+server: 
+  port: 8080
+
+liquibase:
+  db:
+    deployment:
+      enable: ${LIQUIBASE_DB_DEPLOYMENT_FLAG:true}
+      

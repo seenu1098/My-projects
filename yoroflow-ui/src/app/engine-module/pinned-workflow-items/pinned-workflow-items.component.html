@@ -1,0 +1,26 @@
+<mat-spinner [diameter]="40" *ngIf="!show" style="margin-left: 48%;margin-top: 30%;"></mat-spinner>
+<mat-card style="background-color: #ffffff;" *ngIf="show">
+    <div fxLayout="row" fxLayoutAlign="space-between center" style="height: 44px; background-color: #e6e6e6;border-bottom: 0.5px solid #a2a2a2;">
+        <mat-card-title style="margin-left: 2%; margin-top: 7px;">Workflow List</mat-card-title>
+        <mat-icon (click)="onNoClick()" style="cursor: pointer;">close</mat-icon>
+    </div>
+    <ng-container
+        *ngIf="workFlowList && show">
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <span style="font-weight: bold;" *ngIf="noPinnedWorkflow">No Pinned Workflows To Display</span>
+        </div>
+        <ng-container *ngFor="let workflow of workFlowList">
+            <!-- <mat-card style="margin-top: 2%; background-color: #ffffff;"> -->
+                <div fxLayout="row" 
+                fxLayoutAlign="space-between center" style="margin-top: 3px; border-bottom: 0.5px solid #ececec;">
+                <mat-label style="font-weight: bold; margin-left: 2%;">{{workflow.processDefinitionName}}</mat-label>
+                <button *ngIf="workflow.launchButtonName !== null && workflow.launchButtonName !== ''" mat-raised-button (click)="launch(workflow.key, workflow.workflowVersion, workflow.propertyType)" type="button"
+                style="margin-right: 2%;" color="primary">{{workflow.launchButtonName}}</button>
+                <button *ngIf="workflow.launchButtonName === null || workflow.launchButtonName === ''" mat-raised-button (click)="launch(workflow.key, workflow.workflowVersion, workflow.propertyType)" type="button"
+                style="margin-right: 2%;" color="primary">Launch</button>
+            </div>
+            <!-- </mat-card> -->
+            
+        </ng-container>
+    </ng-container>
+</mat-card>

@@ -1,0 +1,273 @@
+<!-- <mat-card style="width:100%">
+    <mat-card-title>Section Details </mat-card-title> -->
+<div>
+    <form [formGroup]="form" #userForm="ngForm" id="workflow_formfield_popup">
+        <div class="row w-100 mx-0">
+            <div class="col-md-5 pl-0">
+                <h2 class="fs_14 font-weight-bold" i18n="Section Settings">Section
+                    Settings</h2>
+            </div>
+            <div class="col-md-7 pr-0">
+                <div class="row w-100 mx-0 justify-content-end">
+                    <ng-container>
+                        <button mat-raised-button color="primary" type="button" id="btnSave" class="mr-2"
+                            (click)="sectionDetails(userForm)" i18n="Save">Save</button>
+                    </ng-container>
+                    <ng-container *ngIf="this.data[0].sections.length >= 1">
+                        <button mat-raised-button color="accent" class="mr-2" type="button" id="deleteBtn"
+                            (click)="delete()" i18n="Delete">Delete</button>
+                    </ng-container>
+                    <ng-container>
+                        <button mat-raised-button color="accent" type="button" id="closeBtn" (click)="close()"
+                            i18n="Close">Close</button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-1 mx-0 mb-0 b-0">
+
+        <!-- <mat-tab-group id="sectionSideTab"> -->
+        <!-- <mat-accordion class="example-headers-align" multi> -->
+
+        <div class="row mx-0 w-100 mt-1">
+            <div class="col-md-3 border_right_lgray pl-0 pr-2">
+                <span class="category-label-css fs_14" i18n="Settings">Settings</span>
+                <ng-container>
+                    <button mat-button class="category-button-css" (click)="changeTab('Configuration')"
+                        [style.color]="selectedTab === 'Configuration' ? '#039be5':'black'"
+                        [style.background]="selectedTab === 'Configuration' ? '#e5f4ff':''">
+                        <mat-icon style="color: blue;" class="fs_14 h_14 w_14 mt-2">settings</mat-icon>
+                        <span i18n="Configuration">Configuration</span>
+                    </button>
+                    <button mat-button class="category-button-css" (click)="changeTab('Validation')"
+                        [style.color]="selectedTab === 'Validation' ? '#039be5':'black'"
+                        [style.background]="selectedTab === 'Validation' ? '#e5f4ff':''"
+                        *ngIf="formControlNames.length>0">
+                        <mat-icon style="color: lightblue;" class="fs_14 h_14 w_14 mt-2">rule</mat-icon>
+                        <span i18n="Validation">Validation</span>
+                    </button>
+                    <button mat-button class="category-button-css" (click)="changeTab('Settings')"
+                        [style.color]="selectedTab === 'Settings' ? '#039be5':'black'"
+                        [style.background]="selectedTab === 'Settings' ? '#e5f4ff':''">
+                        <mat-icon style="color: green;" class="fs_14 h_14 w_14 mt-2">manage_accounts</mat-icon>
+                        <span i18n="Settings">Settings</span>
+                    </button>
+                    <button mat-button class="category-button-css" (click)="changeTab('Style')"
+                        [style.color]="selectedTab === 'Style' ? '#039be5':'black'"
+                        [style.background]="selectedTab === 'Style' ? '#e5f4ff':''">
+                        <mat-icon style="color: #ffb100;" class="fs_14 h_14 w_14 mt-2">style</mat-icon>
+                        <span i18n="Style">Style</span>
+                    </button>
+                </ng-container>
+            </div>
+            <div *ngIf="selectedTab === 'Configuration'" class="col-md-8 mx-0 px-0">
+                <!-- <ng-template mat-tab-label>
+                        <mat-icon matTooltip="Configuration">manage_accounts</mat-icon>
+                    </ng-template> -->
+                <!-- <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Configuration
+                        </mat-panel-title>
+                    </mat-expansion-panel-header> -->
+                <div fxLayout="row" style="margin-left: 10px;">
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Title">Title</mat-label>
+                        <input matInput id="name" formControlName="name" type="text"
+                            (focusout)="focusOutForSectionName($event)">
+                        <mat-error *ngIf="form.get('name').errors?.cannotSetSameName">Should not be the same name as
+                            page name</mat-error>
+                        <mat-error *ngIf="form.get('name').errors?.alreadyExist">Section name already exist</mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- <mat-form-field>
+                        Width in Percentage: <input matInput id="width" oninput="this.value = Math.abs(this.value)"
+                            formControlName="width" type="number">
+                        <mat-error>Please enter a value between 0 and 100</mat-error>
+                    </mat-form-field> -->
+                <div fxLayout="row" style="margin-left: 10px;">
+                    <mat-slide-toggle color="accent" id="collapsible" formControlName="collapsible" i18n="Collapsible">
+                        Collapsible
+                    </mat-slide-toggle>
+                </div>
+                <div fxLayout="row" style="margin-left: 10px;">
+                    <mat-slide-toggle color="accent" id="border" formControlName="border" i18n="Show Border"> Show
+                        Border
+                    </mat-slide-toggle>
+                </div>
+                <!-- </mat-expansion-panel> -->
+            </div>
+            <div *ngIf="selectedTab === 'Settings'" class="col-md-8 mx-0 px-0">
+                <div fxLayout="column">
+                    <!-- <ng-template mat-tab-label>
+                        <mat-icon matTooltip="Settings">settings</mat-icon>
+                    </ng-template> -->
+                    <!-- <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Settings
+                            </mat-panel-title>
+                        </mat-expansion-panel-header> -->
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Associated Database Table Name">Associated Database Table Name</mat-label>
+                        <input matInput id="tableName" formControlName="tableName" type="text"
+                            (focusout)="tableNameCamelize($event)">
+                        <mat-error i18n="Database Table Name is required">Database Table Name is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Description">Description</mat-label>
+                        <textarea matInput id="description" formControlName="description"></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Primary Key Columns">Primary Key Columns</mat-label>
+                        <input matInput id="primaryKey" formControlName="primaryKey" type="text">
+                        <!--   <mat-chip-list #primaryKey aria-label="Primary Key Columns">
+                                    <mat-chip *ngFor="let primaryKey of primaryKeys" [selectable]="selectable"
+                                             [removable]="removable" (removed)="remove(primaryKey)">
+                                      {{primaryKey.name}}
+                                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                    </mat-chip>
+                                    <input placeholder="Primary Key Columns"
+                                           [matChipInputFor]="primaryKey"
+                                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                           [matChipInputAddOnBlur]="addOnBlur"
+                                           (matChipInputTokenEnd)="add($event)">
+                                  </mat-chip-list>-->
+                        <mat-error i18n="Primary Key Columns is required">Primary Key Columns is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- </mat-expansion-panel> -->
+            </div>
+            <div *ngIf="selectedTab === 'Validation'" class="col-md-8 mx-0 px-0">
+                <div fxLayout="column">
+                    <!-- <ng-template mat-tab-label>
+                        <mat-icon matTooltip="Validation">rule</mat-icon>
+                    </ng-template> -->
+                    <!-- <mat-expansion-panel *ngIf="formControlNames.length>0" [expanded]="step === 2" (opened)="setStep(2)">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Validation
+                        </mat-panel-title>
+                    </mat-expansion-panel-header> -->
+                    <div formGroupName="groupValidation">
+                        <mat-slide-toggle id="required" color="accent" formControlName="required"
+                            i18n="Group Validation"> Group Validation
+                        </mat-slide-toggle>
+                        <ng-container *ngIf="form.get('groupValidation').get('required').value === true">
+                            <div>
+                                <span i18n="Condtional Fields">Condtional Fields</span>
+                                <div formArrayName="conditionalFields"
+                                    *ngFor="let conditionalCheck of getConditionalFieldsFormArray().controls; let i= index">
+                                    <div [formGroupName]="i">
+                                        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px"
+                                            fxLayoutGap.lt-md="0px">
+                                            <mat-form-field style="width:34%" appearance="outline" class="w-95 px-0">
+                                                <mat-label i18n="Field Name">Field Name</mat-label>
+                                                <input matInput id="fieldName" formControlName="fieldName"
+                                                    [matAutocomplete]="fieldName" type="text">
+                                                <mat-autocomplete #fieldName="matAutocomplete">
+                                                    <mat-option *ngFor="let option of formControlNames; let c = index;"
+                                                        [value]="option.name"
+                                                        (onSelectionChange)="setFieldLabelCondtion($event,option.label,i)">
+                                                        {{option.label}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                                <mat-error i18n="Field Name is required">Field Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <!-- <mat-form-field style="width:30%">
+                                                    <mat-label>Value</mat-label>
+                                                    <input matInput formControlName="value" type="text">
+                                                    <mat-error>Value is required</mat-error>
+                                                </mat-form-field> -->
+
+                                            <button mat-mini-fab type="button" color="primary"
+                                                (click)="addCondtionalFieldsFormGroup()" id="btnAdd" class="add">
+                                                <mat-icon style="font-size: 16px;margin-bottom: 2px;font-weight: bold;">
+                                                    add</mat-icon>
+                                            </button>
+
+                                            <button *ngIf="getConditionalFieldsFormArray().length>1" type="button"
+                                                mat-mini-fab color="primary" id="remove"
+                                                (click)="removeCondtionalFieldsFormGroup(i)" class="add">
+                                                <mat-icon style="font-size: 16px;margin-bottom: 2px;font-weight: bold;">
+                                                    remove</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <span>Required Fields</span>
+                                <div formArrayName="requiredFields"
+                                    *ngFor="let requiredField of getRequiredConditionalFormArray().controls; let j= index">
+                                    <div [formGroupName]="j">
+                                        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px"
+                                            fxLayoutGap.lt-md="0px">
+                                            <mat-form-field style="width:34%" appearance="outline" class="w-95 px-0">
+                                                <mat-label i18n="Field Name">Field Name</mat-label>
+                                                <input matInput id="fieldName" formControlName="fieldName"
+                                                    [matAutocomplete]="fieldName" type="text">
+                                                <mat-autocomplete #fieldName="matAutocomplete">
+                                                    <mat-option *ngFor="let option of formControlNames; let r = index;"
+                                                        [value]="option.name"
+                                                        (onSelectionChange)="setFieldLabel($event,option.label,j)">
+                                                        {{option.label}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                                <mat-error i18n="Field Name is required">Field Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <mat-form-field style="width:30%" appearance="outline" class="w-95 px-0">
+                                                <mat-label i18n="Value">Value</mat-label>
+                                                <input matInput id="value" formControlName="value" type="text">
+                                                <mat-error i18n="Value is required">Value is required</mat-error>
+                                            </mat-form-field>
+
+                                            <button mat-mini-fab type="button" color="primary"
+                                                (click)="addRequiredFieldsFormGroup()" id="btnAdd" class="add">
+                                                <mat-icon style="font-size: 16px;margin-bottom: 2px;font-weight: bold;">
+                                                    add
+                                                </mat-icon>
+                                            </button>
+
+                                            <button *ngIf="getRequiredConditionalFormArray().length>1" type="button"
+                                                mat-mini-fab color="primary" id="remove"
+                                                (click)="removeRequiredFieldsFormGroup(j)" class="add">
+                                                <mat-icon style="font-size: 16px;margin-bottom: 2px;font-weight: bold;">
+                                                    remove</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <!-- </mat-expansion-panel> -->
+            </div>
+            <div *ngIf="selectedTab === 'Style'" class="col-md-8 mx-0 px-0">
+                <div fxLayout="column">
+                    <!-- <ng-template mat-tab-label>
+                        <mat-icon matTooltip="Style">style</mat-icon>
+                    </ng-template> -->
+                    <!-- <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Styles
+                        </mat-panel-title>
+                    </mat-expansion-panel-header> -->
+                    <mat-form-field appearance="outline" class="w-95 px-0">
+                        <mat-label i18n="Style">Style</mat-label>
+                        <textarea matInput id="style" formControlName="style" cols="3" rows="3" type="text">
+                                          </textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- </mat-expansion-panel>
+                </mat-accordion> -->
+            <!-- </mat-tab-group> -->
+        </div>
+    </form>
+</div>
+<!-- </mat-card> -->

@@ -1,0 +1,61 @@
+// @media only screen and (max-width: 1600px) {
+.list-row-css{
+    width: 98%;
+    margin: 10px 10px;
+    border-radius: 6px;
+}
+// }
+
+// @media only screen and (min-width: 1600px) {
+// .list-row-css{
+//     width: 48%;
+//     margin: 10px 10px;
+//     border-radius: 6px;
+// }
+// }
+
+.icon-margin{
+    margin-left: 20px;
+}
+
+// .icon-margin-2{
+//     margin-top: 16px;
+// }
+
+.org-summary-card-css{
+    width: 98%;
+    margin: 10px 10px;
+    border-radius: 6px;
+    height: 70px;
+}
+
+.workspace-avatar-css{
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    border-radius: 10%;
+    text-align: center;
+    padding: 0px;
+    color: white;
+}
+
+.header-css{
+    color: grey;
+    font-weight: 500;
+}
+
+.count-css{
+    min-height: 20px;
+    margin-top: 2px;
+}
+
+.count-label-css{
+    cursor: pointer;
+    &:hover{
+        color: var(--theme-main-color);
+    }
+}
+
+.org-summary-count-css{
+    cursor: pointer;
+}

@@ -1,0 +1,492 @@
+<div class="row w-100 mx-0">
+  <div class="col-md-2 px-0 add-space">
+    <perfect-scrollbar suppressScrollX="true" [config]="config" [style.height]="screenHeight"
+      style="border-right: 1px solid gray;" [class]="themeService.layoutName">
+      <div [style.height]="screenHeight"
+        style="max-width: 100%;border: 0px solid whitesmoke;background-color: #f5f5f5;padding-right: 15px;">
+        <div class="row w-100 pt-2 pl-2">
+          <div class="col-md-12 col-sm-12">
+            <h1 class="my-2 font-weight-bold" i18n="My Task">My Task</h1>
+          </div>
+        </div>
+        <mat-list>
+          <mat-list-item (click)="openAll('all',-1)" class="list-item-btn-css" [style.backgroundColor]="backGroundColor"
+            [ngStyle]="{'text-align':'left','cursor':'pointer'}">
+            <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%;">
+              <div fxLayout="row" fxLayoutGap="5px">
+                <mat-icon class="task-icon-css" [ngStyle]="{color: -1 === selectedIndex ? 'white' : 'black'}">
+                  view_headline</mat-icon>
+                <span (click)="openAll('all',-1)" [ngStyle]="{color: -1 === selectedIndex ? 'white' : 'black'}"
+                  class="task-text-css" i18n="All">
+                  All
+                </span>
+              </div>
+              <div fxLayout="row" fxLayoutGap="27px">
+                <span [matBadge]="totalGroupRecordsCount" [ngClass]="(-1===selectedIndex)?'selected':'group'"></span>
+                <span [matBadge]="totalAssignedRecordsCount" [ngClass]="(-1===selectedIndex)?'selected':'user'"></span>
+              </div>
+            </div>
+          </mat-list-item>
+        </mat-list>
+        <div fxLayout="row" fxLayoutAlign="space-between center" style="margin-top: .5%;">
+          <mat-label class="filter-header-css text-dark" i18n="FILTERS">
+            FILTERS
+          </mat-label>
+        </div>
+        <div style="margin-top:3px;">
+          <ng-container *ngFor="let task of taskNameList;let i=index">
+            <mat-list>
+              <mat-list-item (click)="openTask(task,i)" class="list-item-btn-css" [ngStyle]="{backgroundColor: i === selectedIndex ? themeService.primaryColor : 'whitesmoke', 
+                'text-align':'left'}">
+                <div fxLayout="row" fxLayoutAlign="space-between center" style="width: 100%;">
+                  <div fxLayout="row" fxLayoutGap="5px" style="width: 100%;">
+                    <mat-icon class="task-icon-css" [style.color]="task.randomColor">
+                      label_outline</mat-icon>
+                    <div fxLayout="column wrap" style="text-align: left;width: 75%;" class="task-text-css fs_12"
+                      [ngStyle]="{color: i === selectedIndex ? 'white' : 'black'}">
+                      {{task.taskName}}
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="27px">
+                    <span [matBadge]="task.groupCount" [ngClass]="(i===selectedIndex)?'selected':'group'"></span>
+                    <span [matBadge]="task.userCount" [ngClass]="(i===selectedIndex)?'selected':'user'"></span>
+                  </div>
+                </div>
+              </mat-list-item>
+            </mat-list>
+          </ng-container>
+        </div>
+      </div>
+    </perfect-scrollbar>
+  </div>
+  <div class="col-md-10 pt-3  px-0">
+    <div class="w-100 " [style.min-height]="screenHeight1">
+      <form [formGroup]="form" #userForm="ngForm">
+        <div class="row w-100 mx-0 px-5 justify-content-end">
+          <mat-icon style="margin-bottom: 20px;
+                margin-right: 20%;" *ngIf="ipadResolution.matches || ipadProResolution.matches" id="list"
+            (click)="sidenav.toggle()">
+            view_headline
+          </mat-icon>
+          <!-- <mat-select class="legacy " (selectionChange)="filterByTask($event)" formControlName="taskType"
+            id="tast_dropdown">
+            <mat-option value="all" i18n="All Task" class="fs_12">All Task
+            </mat-option>
+            <mat-option value="user" i18n="My Assigned Task" class="fs_12">My Assigned Task
+            </mat-option>
+            <mat-option value="group" i18n="My Group Task" class="fs_12">My Team Task
+            </mat-option>
+          </mat-select> -->
+          <div fxLayout="row" class="group_by_css fs_12 mb-2">
+            <b class="fs_12">Filter by: </b>
+            <span [matMenuTriggerFor]="groupByMenu" #groupByMenuTrigger="matMenuTrigger"
+              class="group_by_name_css fs_12">{{filterBy}}</span>
+            <mat-icon [matMenuTriggerFor]="groupByMenu" #groupByMenuTrigger="matMenuTrigger"
+              style="font-size: 20px;cursor:pointer;">arrow_drop_down
+            </mat-icon>
+            <mat-menu class="groupByMenu" #groupByMenu="matMenu">
+              <ng-container>
+                <button mat-button (click)="filterByTask('all')" class="fs_12 w-100">
+                  <div fxLayout="row" fxLayoutGap="10px">
+                    <span i18n="All Task">All Task</span>
+                  </div>
+                </button>
+                <button mat-button (click)="filterByTask('user')" class="fs_12 w-100">
+                  <div fxLayout="row" fxLayoutGap="10px">
+                    <span i18n="My Assigned Task">My Assigned Task</span>
+                  </div>
+                </button>
+                <button mat-button (click)="filterByTask('group')" class="fs_12 w-100">
+                  <div fxLayout="row" fxLayoutGap="10px">
+                    <span i18n="My Group Task">My Team Task</span>
+                  </div>
+                </button>
+              </ng-container>
+            </mat-menu>
+          </div>
+          <mat-slide-toggle id="autoRefresh" color="accent" [checked]="checked" (change)="AutoRefresh($event)"
+            i18n="Auto Refresh" class="fs_12 ml-2">
+            Auto Refresh
+          </mat-slide-toggle>
+        </div>
+      </form>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <mat-spinner [diameter]="40" *ngIf="pendingUserTask"></mat-spinner>
+      </div>
+      <ng-container>
+        <mat-card-content *ngIf="showAll === true">
+          <div class="row mx-0 w-100 ">
+            <div class="col-md-6 col-sm-12 pl-0">
+            </div>
+            <div class="col-md-6 col-sm-12 justify-content-end">
+              <button class="align-self-center justify-content-end float-right mr-2 clear_filter" mat-raised-button
+                type="button" color="accent" (click)="clearFilterForAll()"
+                *ngIf="checkAssignedTo || selectedItem.length > 0" i18n="@@isFromTaskboard Clear Filters">Clear
+                Filters</button>
+            </div>
+          </div>
+          <div class="px-2">
+            <mat-table [dataSource]="workflowVO" matSort [matSortDisableClear]="true"
+              (matSortChange)="sortDataForWorkflow($event)" class="p-3">
+              <ng-container matColumnDef="processDefinitionTask.taskName">
+                <mat-header-cell *matHeaderCellDef [style.width]="columnWidth">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span mat-sort-header i18n="@@Workflow Task Name">Task Name </span>
+                    <mat-icon class="icon-css filter_list_css" id="workflow_task" [matMenuTriggerFor]="dropdownMenuOne"
+                      #menuTriggerWorkflow="matMenuTrigger" (click)="setDataTypeForWorkflow('Task Name', 'string')"
+                      [ngClass]="{'active_filter': isSelectedColumn('Task Name')}"
+                      style="margin-right: 8px;cursor: pointer;">
+                      filter_list
+                    </mat-icon>
+                  </div>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let task" [style.width]="columnWidth">
+                  {{task?.taskName || '-'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="createdDate" [style.width]="columnWidth">
+                <mat-header-cell *matHeaderCellDef>
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span mat-sort-header mat-sort-header i18n="@@Workflow Created Date"> Created Date </span>
+                    <mat-icon class="icon-css filter_list_css" id="workflow_date" [matMenuTriggerFor]="dropdownMenuOne"
+                      #menuTrigger="matMenuTrigger" (click)="setDataTypeForWorkflow('Created Date', 'number')"
+                      [ngClass]="{'active_filter': isSelectedColumn('Created Date')}"
+                      style="margin-right: 8px;cursor: pointer;">
+                      filter_list
+                    </mat-icon>
+                  </div>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let task" [style.width]="columnWidth">
+                  {{task?.createdDate | date:'medium'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="dueDate">
+                <mat-header-cell *matHeaderCellDef [style.width]="columnWidth">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span mat-sort-header i18n="@@Workflow Due Date"> Due Date </span>
+                    <mat-icon class="icon-css filter_list_css" id="workflow_due" [matMenuTriggerFor]="dropdownMenuOne"
+                      #menuTrigger="matMenuTrigger" (click)="setDataTypeForWorkflow('Due Date', 'number')"
+                      [ngClass]="{'active_filter': isSelectedColumn('Due Date')}"
+                      style="margin-right: 8px;cursor: pointer;">
+                      filter_list
+                    </mat-icon>
+                  </div>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let task" [style.width]="columnWidth">
+                  {{task?.dueDate | date:'medium'}} </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="assigned_to">
+                <mat-header-cell *matHeaderCellDef [style.width]="asssigneeColumnWidth">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span i18n="@@Workflow Assigned To">Assigned To
+                    </span>
+                  </div>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let task" [style.width]="asssigneeColumnWidth">
+                  <div class="hover-class1 round_firstletter" [style.background]="getUserColor(task?.assignedTo)"
+                    *ngIf="task?.assignedTo !== null">
+                    <span class="round_firstletter_size">{{getUserFirstAndLastNamePrefix(task?.assignedTo)}}</span>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="assigned_to_group">
+                <mat-header-cell *matHeaderCellDef>
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <span i18n="@@Workflow Assigned To Group" [style.width]="asssigneeColumnWidth">Assigned
+                      To Team</span>
+                    <mat-icon id="workflow_group" class="icon-css filter_list_css" [matMenuTriggerFor]="dropdownMenuTwo"
+                      #menuTrigger="matMenuTrigger" (click)="setDataTypeForWorkflow('assignedToGroupWorkflow',  null)"
+                      [ngClass]="{'active_filter': isSelectedColumn('assignedToGroupWorkflow')}"
+                      style="margin-right: 8px;cursor: pointer;">
+                      filter_list
+                    </mat-icon>
+                  </div>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let task" [style.width]="asssigneeColumnWidth">
+                  <div fxLayout="row">
+                    <ng-container *ngFor="let user of task?.assignedToGroup;let k = index;">
+                      <div *ngIf="k<=3" class="hover-class round_firstletter" [style.margin-left]="k>0?'-4px':''"
+                        [matTooltip]="user" [style.background]="getTeamColor(user)">
+                        <span class="round_firstletter_size text-white">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                      </div>
+                      <ng-container *ngIf="k===4">
+                        <div class="hover_class_plus round_firstletter_count"
+                          [matTooltip]="getUserNames(task?.assignedToGroup)">
+                          <span
+                            class="fs_12 text-gray round_add_count">+{{getRemainingAssigneeUserCount(task?.assignedToGroup)}}</span>
+                        </div>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef class="mat-elevation-z8">
+                  <span i18n="Actions"> Actions</span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let task" class="mat-elevation-z8">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <button mat-raised-button color="primary" [id]="task.taskName"
+                      (click)="openTable(task?.id,'userTask')" i18n="@@View Details">{{task?.viewDetailsButtonName}}
+                    </button>
+                    <div *ngIf="task?.assignedToGroup.length === 0 && task.cancellableWorkflow === false"
+                      class="more_vert">
+                      <mat-icon>more_vert</mat-icon>
+                    </div>
+                    <div *ngIf="task?.assignedToGroup.length > 0 || task.cancellableWorkflow === true" class="more_vert"
+                      [matMenuTriggerFor]="userMenu">
+                      <mat-icon>more_vert</mat-icon>
+                    </div>
+                  </div>
+                  <mat-menu #userMenu="matMenu">
+                    <ng-container>
+                      <button *ngIf="task?.assignedToGroup.length > 0" mat-menu-item
+                        (click)="assignedToMe(task,'userTask')" i18n="Assign To Me">Assign
+                        To
+                        Me</button>
+                      <button *ngIf="task.cancellableWorkflow === true" mat-menu-item (click)="cancelTask(task)"><span
+                          i18n="Cancel">{{task.cancelButtonName | translate}}</span></button>
+                    </ng-container>
+                  </mat-menu>
+                </mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumnsForWorkflow;"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsForWorkflow"></mat-row>
+            </mat-table>
+          </div>
+          <div class="w-100 row justify-content-center" style="margin-top: 1%;"
+            *ngIf="workflowVO?.length === 0 && showAll === true">
+            <div style="font-weight: bold;font-size: 20px;" i18n="No data available">No data available</div>
+          </div>
+          <div *ngIf="isWorkflowPaginator && workflowVO.length !== 0 && showAll === true"
+            class="w-100 row justify-content-end" style="margin-right:10px;">
+            <app-paginator id="mat_table_page_selector" [length]="workflowLength" [pageSize]="defaultPageSize"
+              [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEventForWorkflow($event)">
+            </app-paginator>
+          </div>
+        </mat-card-content>
+      </ng-container>
+      <form [formGroup]="workflowForm" #userForm="ngForm">
+        <mat-menu #dropdownMenuOne="matMenu" class="remaining-menu" id="workflow_operator">
+          <div class="row w-100 mx-0 justify-content-center" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-size">
+              <mat-label i18n="@@Operator">Operator</mat-label>
+              <mat-select formControlName="operator" required>
+                <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                  {{data.description}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="workflowForm.get('operator').errors?.required" i18n="@@OperatorRequired">Operator is
+                required</mat-error>
+            </mat-form-field>
+          </div>
+          <div class="row w-100 mx-0 justify-content-center mt-3" (click)="$event.stopPropagation()">
+            <mat-form-field class="field-size" *ngIf="isDateField===false">
+              <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+              <input matInput [id]="columnValue" *ngIf="isDateField===false && type==='text'" [type]="type"
+                formControlName="filterValue" required>
+              <input matInput *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue" type="number"
+                formControlName="filterValue" required>
+              <mat-error *ngIf="workflowForm.get('filterValue').errors?.required" i18n="@@Filter Value is Required">
+                Filter value is required</mat-error>
+            </mat-form-field>
+            <mat-form-field class="field-size" *ngIf="filterOperator==='number' && isDateField===true">
+              <mat-label i18n="@@Filter Value">Filter Value</mat-label>
+              <input matInput [id]="columnValue" [matDatepicker]="picker" formControlName="filterValue" required>
+              <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker">
+              </mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="workflowForm.get('filterValue').errors?.required" i18n="@@Filter Value is Required">
+                Filter value is required</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" (click)="$event.stopPropagation()"
+            style="margin-top:30px">
+            <button mat-raised-button type="submit" color="primary" (click)="filterApplyForWorkflow()"
+              i18n="Apply">Apply</button>
+            <button mat-raised-button type="button" color="accent" (click)="clearFilterForWorkflow()"
+              i18n="Clear">Clear</button>
+          </div>
+        </mat-menu>
+        <mat-menu id="workflow_group" class="filter-menu" #dropdownMenuTwo="matMenu">
+          <div (click)="$event.stopPropagation();">
+            <perfect-scrollbar [config]="config" id="menu_with_icon" style="height:200px;">
+              <mat-checkbox [checked]="checkAssignedTo === true"
+                (change)="getAssignedToGroup($event, 'unAssigned', 'assignedToGroupWorkflow', 'string', checkAssignedTo)"
+                class="ml-3 mt-1">Unassigned
+              </mat-checkbox>
+              <mat-divider></mat-divider>
+              <ng-container *ngFor="let group of assignedWorkflowGroup;let j = index;">
+                <div class="row w-100 mx-0 ml-3 mt-1">
+                  <mat-checkbox #checkboxes [checked]="group?.isSelected"
+                    (change)="getAssignedToGroup($event, group?.groupId, 'assignedToGroupWorkflow', 'string', group?.isSelected)">
+                    <div class="row w-100 mx-0">
+                      <div class="user-margin">
+                        <div class="grp_name">
+                          {{group?.groupName}}
+                        </div>
+                      </div>
+                    </div>
+                  </mat-checkbox>
+                </div>
+              </ng-container>
+            </perfect-scrollbar>
+          </div>
+        </mat-menu>
+      </form>
+      <ng-container *ngIf="showAll === false" class="pr-3">
+        <form [formGroup]="dynamicForm" #userForm="ngForm">
+          <ng-container *ngFor="let task of taskList;let i=index">
+            <div [style.marginTop.%]="(mobileQuery.matches || ipadResolution.matches)?10:2" style="margin-right: 2%;">
+              <div class="row mx-0 w-100 mb-3">
+                <div class="col-md-6 col-sm-12 pl-0">
+                  <span style="font-weight: bold;font-size: 20px;">{{task.taskName}}</span>
+                </div>
+                <div *ngIf="selectedItem.length>0" class="col-md-6 col-sm-12 justify-content-end">
+                  <button class="align-self-center justify-content-end float-right mr-2 clear_filter" mat-raised-button
+                    type="button" color="accent" (click)="clearFilterForAll()"
+                    i18n="@@isFromTaskboard Clear Filters">Clear
+                    Filters</button>
+                </div>
+              </div>
+              <perfect-scrollbar [config]="config" style="max-width:100%;">
+                <div class="p-3">
+                  <mat-card-content>
+                    <mat-table [dataSource]="task.fieldValues" matSort [matSortDisableClear]="true"
+                      (matSortChange)="sortData($event)">
+                      <ng-container *ngFor="let column of task.fieldHeaders; let i=index;">
+                        <ng-container *ngIf="column.headerName!=='star'" matColumnDef="{{column.headerName}}">
+                          <mat-header-cell *matHeaderCellDef [style.flex.%]="column.widthPercentage">
+                            <div fxLayout="row" fxLayoutAlign="space-between center">
+                              <span i18n="Board Name" *ngIf="column.headerName!=='test'">{{column.headerName}}</span>
+                              <mat-icon id="board_name" [style.margin-left]="column.sortable?'':'5px'" class="icon-css"
+                                #menuTrigger1="matMenuTrigger" [matMenuTriggerFor]="dropdownMenuFour"
+                                style="cursor: pointer;margin-right: 8px;" (click)="setDataType(column)"
+                                [ngClass]="{'active_filter': isSelectedColumn(column.headerName)}">
+                                filter_list
+                              </mat-icon>
+                            </div>
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let data" style="width:20%">
+                            <span class="task-id"
+                              *ngIf="(data[column.headerName] !== null && data[column.headerName] !== '' && data[column.headerName] !== 'null' && column.headerName!=='test')">
+                              {{getData(data[column.headerName])}}</span>
+                          </mat-cell>
+                        </ng-container>
+                        <ng-container *ngIf="column.headerName==='star'" matColumnDef="star" stickyEnd class="mr-3">
+                          <mat-header-cell *matHeaderCellDef>
+                            <span i18n="Board Name" class="float-right">Actions</span>
+                          </mat-header-cell>
+                          <mat-cell *matCellDef="let data">
+                            <div fxLayout="row" fxLayoutGap="5px" style="float: right;">
+                              <button *ngIf="task.viewDetailsButtonName !== null" mat-raised-button color="primary"
+                                style="height: 35px;margin-top: 5px;" (click)="openForm(data['task'],'userTask')"
+                                [id]="task.taskName+task.viewDetailsButtonName"><span class="button-text-css"
+                                  i18n="View Details">
+                                  View Details
+                                </span></button>
+                              <button *ngIf="task.viewDetailsButtonName === null" mat-raised-button color="primary"
+                                (click)="openForm(data['task'],'userTask')" style="height: 35px;margin-top: 5px;"
+                                [id]="task.taskName+'View Details'" i18n="View Details">View
+                                Details</button>
+                              <div
+                                *ngIf="data['task'].taskType.split('_')[0]!=='group' && task.cancellableWorkflow !== true"
+                                class="more_vert">
+                                <mat-icon>more_vert</mat-icon>
+                              </div>
+                              <div
+                                *ngIf="data['task'].taskType.split('_')[0]==='group' || task.cancellableWorkflow === true"
+                                class="more_vert" [matMenuTriggerFor]="userMenu">
+                                <mat-icon>more_vert</mat-icon>
+                              </div>
+                              <mat-menu #userMenu="matMenu">
+                                <button *ngIf="data['task'].taskType.split('_')[0]==='group'" mat-menu-item
+                                  (click)="assignedToMe(data['task'],'userTask')" [id]="task.taskName+'Assign To Me'"
+                                  i18n="Assign To Me">Assign
+                                  To
+                                  Me</button>
+                                <button mat-menu-item *ngIf="task.cancellableWorkflow === true"
+                                  (click)="cancelTask(data['task'])" [id]="task.taskName+task.cancelButtonName"><span
+                                    i18n="Cancel">Cancel</span></button>
+                              </mat-menu>
+                            </div>
+                          </mat-cell>
+                        </ng-container>
+                      </ng-container>
+                      <mat-header-row *matHeaderRowDef="task.fieldHeadersNameList;">
+                      </mat-header-row>
+                      <mat-row *matRowDef="let row; columns: task.fieldHeadersNameList"></mat-row>
+                    </mat-table>
+
+                  </mat-card-content>
+                </div>
+              </perfect-scrollbar>
+
+
+              <mat-menu #dropdownMenuFour="matMenu">
+                <div style="padding: 10px;">
+                  <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center"
+                    (click)="$event.stopPropagation()">
+                    <mat-form-field class="field-size">
+                      <mat-label i18n="Operator">Operator</mat-label>
+                      <mat-select formControlName="operator" required>
+                        <mat-option *ngFor="let data of dataType[filterOperator]" [value]="data.value" selected>
+                          {{data.description}}</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="dynamicForm.get('operator').errors?.required" i18n="Operator is required">
+                        Operator is required</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center"
+                    (click)="$event.stopPropagation()" style="margin-top:20px">
+                    <mat-form-field class="field-size" *ngIf="isDateField===false">
+                      <mat-label i18n="Filter Value">Filter Value</mat-label>
+                      <input matInput placeholder="Filter Value" [id]="columnValue"
+                        *ngIf="isDateField===false && type==='text'" formControlName="filterValue">
+                      <input matInput placeholder="Filter Value"
+                        *ngIf="filterOperator==='number' && isDateField===false" [id]="columnValue" type="number"
+                        formControlName="filterValue">
+                      <mat-error *ngIf="dynamicForm.get('filterValue').errors?.required"
+                        i18n="Filter value is required">
+                        Filter value is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="field-size" *ngIf="filterOperator==='number' && isDateField===true">
+                      <input matInput placeholder="Filter Value" [id]="columnValue" [matDatepicker]="picker"
+                        formControlName="filterValue">
+                      <mat-datepicker-toggle class="matdatepicker" matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                      <mat-error *ngIf="dynamicForm.get('filterValue').errors?.required"
+                        i18n="Filter value is required">
+                        Filter value is required</mat-error>
+                    </mat-form-field>
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center"
+                    (click)="$event.stopPropagation()" style="margin-top:30px">
+                    <button mat-raised-button type="submit" color="primary" style="color: white;" i18n="Apply"
+                      (click)="dynamicFilterApply()">Apply</button>
+                    <button mat-raised-button type="button" color="accent" (click)="clearFilterForDynamic()"
+                      i18n="Clear">Clear</button>
+                  </div>
+                </div>
+              </mat-menu>
+              <mat-label style="font-size: larger;" *ngIf="mobileQuery.matches">
+                {{task.taskName}}
+              </mat-label>
+            </div>
+          </ng-container>
+          <div class="w-100 row justify-content-center" style="margin-top: 1%;"
+            *ngIf="(((taskCount ==='0' || taskCount=== null) || (length && (length === '0' || length === undefined))) && (showAll === false))">
+            <div *ngIf="taskType==='all'" style="font-weight: bold;font-size: 20px;">No data available</div>
+            <div *ngIf="taskType==='group'" style="font-weight: bold;font-size: 20px;">No group task available</div>
+            <div *ngIf="taskType==='user'" style="font-weight: bold;font-size: 20px;">No user task available</div>
+          </div>
+          <div *ngIf="isSingleWorkflowPaginator  && showAll === false" class="w-100 row justify-content-end"
+            style="margin-right:10px;">
+            <app-paginator id="mat_table_dynamic_page_selector"
+              [length]="paginationworkflowVO.filterValue.length>0?taskCount:length" [pageSize]="defaultPageSize"
+              [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500, 1000]" (page)="pageEventForSingleTask($event)">
+            </app-paginator>
+          </div>
+
+        </form>
+      </ng-container>
+    </div>
+  </div>
+</div>

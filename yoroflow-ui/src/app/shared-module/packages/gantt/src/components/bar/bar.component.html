@@ -1,0 +1,40 @@
+<div class="gantt-bar-layer">
+  <div *ngIf="item.draggable && ganttUpper.draggable && !item.origin.isCompleted && item.origin.isUpdate"
+    class="drag-handles">
+    <ng-container>
+      <span class="handle" (mousedown)="stopPropagation($event)"></span>
+      <span class="handle" (mousedown)="stopPropagation($event)"></span>
+    </ng-container>
+  </div>
+  <div *ngIf="item.linkable && ganttUpper.linkable && !item.origin.isCompleted && item.origin.isUpdate"
+    class="link-handles">
+    <span class="handle"><span class="point"></span></span>
+    <span class="handle"> <span class="point"></span></span>
+  </div>
+</div>
+<div class="gantt-bar-border"></div>
+<ng-template #HtmlContent>
+  <div>
+    <b>{{item.origin.title}}</b>
+    <div fxLayout="row" style="margin-top: 10px;" fxLayoutGap="5px">
+      <div fxLayout="column">{{'Start Date' | translate}} : {{item.origin.start | date:'dd-MMM-yyyy'}}</div>
+    </div>
+    <div fxLayout="row" style="margin-top: 10px;">
+      <div fxLayout="column">{{'Due Date' | translate}} &nbsp;: {{item.origin.end | date:'dd-MMM-yyyy'}}</div>
+    </div>
+    <div fxLayout="row" style="margin-top: 10px;">
+      <section class="example-section">
+        <mat-progress-bar class="progressbar-css" appProgressbarColor
+          [progressColor]="item.origin.isCompleted?'#0fac0f':'#FF7575'" mode="buffer" [value]="item.origin.percentage"
+          bufferValue="0">
+        </mat-progress-bar>
+        <div class="percentage-text-css"> {{item.origin.percentage}}% </div>
+      </section>
+    </div>
+  </div>
+</ng-template>
+<div #content class="gantt-bar-content" (click)="onBarClick($event)" [tooltip]="HtmlContent" [options]="myOptions"
+  contentType="template">
+  <div class="gantt-bar-content-progress" *ngIf="item.progress >= 0" [style.width.%]="item.progress * 100"></div>
+  <span class="title-css">{{item.origin.title}}</span>
+</div>

@@ -1,0 +1,236 @@
+<mat-horizontal-stepper [linear]="false" #stepper>
+
+    <mat-step [stepControl]="form" label="Name">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+            <h2 class="mt-3" i18n="Import Data Table">Import Data Table</h2>
+            <mat-icon id="clear" style="cursor: pointer" fxLayoutAlign="end" (click)="closeDialog()">clear</mat-icon>
+        </div>
+        <div style="padding-top: 3%;">
+            <form [formGroup]="form" #userForm="ngForm">
+                <div fxLayout="column" fxLayoutGap="10px" *ngIf="cardType==='option'">
+                    <mat-card (click)="openCardType('skip')" class="inner_card_user" style="cursor: pointer;"
+                        appMaterialElevation>
+
+                        <h5 class="mb-0 text-uppercase font-weight-bold">
+                            Skip duplicate columns</h5>
+
+
+                    </mat-card>
+                    <mat-card (click)="openCardType('update')" class="inner_card_user" style="cursor: pointer;"
+                        appMaterialElevation>
+
+                        <h5 class="mb-0 text-uppercase font-weight-bold">
+                            update duplicate columns </h5>
+
+                    </mat-card>
+                </div>
+
+                <ng-container *ngIf="cardType==='update'">
+
+                    <div fxLayout="row">
+
+                        <mat-form-field class="w-100" appearance="outline">
+                            <mat-label>Select columns to be unique</mat-label>
+                            <mat-select formControlName="duplicateColumns" id="fieldList" multiple>
+                                <mat-option [value]="dataTable.columnIdentifier"
+                                    *ngFor="let dataTable of dataTableColumnsArray; let i = index">
+                                    {{ dataTable.columnName }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error>Column is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+
+                </ng-container>
+                <ng-container *ngIf="cardType==='update' || cardType==='skip'">
+                    <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <h2 i18n="Field Mapping">{{data.dataTableName}}</h2>
+                    </div>
+                    <div style="padding-top: 3%;">
+                        <form [formGroup]="mappingForm">
+                            <div class="row mx-0 w-100 justify-content-center">
+                                <table>
+                                    <tr>
+                                        <th>
+                                            <h4 class="mb-0" i18n="Data table fields">
+                                                Data table fields</h4>
+                                        </th>
+                                        <th>
+                                            <h4 class="mb-0" i18n="Selection fields">Excel fields</h4>
+                                        </th>
+                                    </tr>
+                                    <ng-container>
+                                        <tr *ngFor="let field of dataTableColumns;let i = index;">
+
+                                            <ng-container [formGroupName]="getMainSectionFieldGroup(field)">
+                                                <td>
+                                                    <div fxLayout="row">
+                                                        <h4 class="f_12">
+                                                            <ng-container *ngIf="field.isRequired">
+                                                                <ng-container
+                                                                    *ngIf="(mappingForm.get(field.columnIdentifier).get('value').value==='' || 
+                                                                mappingForm.get(field.columnIdentifier).get('value').value===null ||
+                                                                mappingForm.get(field.columnIdentifier).get('value').value===undefined)">
+                                                                    <span>
+                                                                        <b>{{field.columnName}}</b></span><a
+                                                                        style="color: red !important;">*</a>
+                                                                </ng-container>
+
+                                                                <ng-container
+                                                                    *ngIf="(mappingForm.get(field.columnIdentifier).get('value').value!=='' && 
+                                                                mappingForm.get(field.columnIdentifier).get('value').value!==null && 
+                                                                mappingForm.get(field.columnIdentifier).get('value').value!==undefined)">
+                                                                    <span>
+                                                                        {{field.columnName}}</span>
+                                                                </ng-container>
+
+
+
+                                                            </ng-container>
+                                                            <ng-container *ngIf="field.isRequired===false">
+                                                                <span>
+                                                                    {{field.columnName}}</span>
+                                                            </ng-container>
+
+                                                        </h4>
+                                                    </div>
+                                                </td>
+                                                <td id="bg_input">
+                                                    <div fxLayout="row">
+                                                        <ng-container
+                                                            *ngIf="(field.dataType!=='date' && field.dataType!=='timestamp') || mappingForm.get(field.columnIdentifier).value.variableType==='pagefield'">
+                                                            <input matInput placeholder="Variable"
+                                                                i18n-placeholder="Variable" [id]="'fieldName_'+i"
+                                                                readonly class="border-css"
+                                                                [value]="getValue(mappingForm.get(field.columnIdentifier).value)">
+                                                        </ng-container>
+                                                        <ng-container
+                                                            *ngIf="field.dataType==='date' && mappingForm.get(field.columnIdentifier).value.variableType==='constant'">
+                                                            <input matInput placeholder="Variable"
+                                                                i18n-placeholder="Variable" [id]="'fieldName_'+i"
+                                                                readonly class="border-css"
+                                                                [value]="getDateValue(mappingForm.get(field.columnIdentifier).value)">
+                                                        </ng-container>
+                                                        <ng-container
+                                                            *ngIf="field.dataType==='timestamp' && mappingForm.get(field.columnIdentifier).value.variableType==='constant'">
+                                                            <input matInput placeholder="Variable"
+                                                                i18n-placeholder="Variable" [id]="'fieldName_'+i"
+                                                                readonly class="border-css"
+                                                                [value]="getDateTimeValue(mappingForm.get(field.columnIdentifier).value)">
+                                                        </ng-container>
+                                                        <button mat-icon-button [matMenuTriggerFor]="menu1"
+                                                            #menuTrigger1="matMenuTrigger" class="float-right"
+                                                            aria-label="Example icon-button with a menu"
+                                                            (mousedown)="mousedown(field)" [id]="'field_'+i"
+                                                            (click)="getConstantValue(field)">
+                                                            <mat-icon>more_vert</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </td>
+
+                                            </ng-container>
+
+                                        </tr>
+                                    </ng-container>
+                                </table>
+                            </div>
+                            <mat-menu #menu1="matMenu" class="column-menu">
+                                <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                                    <div class="col-md-6 pr-1">
+                                        <p class="text-dark font-weight-bold mb-2" i18n="Constant">
+                                            Constant</p>
+                                    </div>
+                                    <div class="col-md-12 pl-2 pr-1">
+                                        <div fxLayout="row" id="search">
+                                            <div class="input-group mb-3 px-2">
+                                                <ng-container *ngIf="selectedField && selectedField.dataType!=='date'
+                                                    && selectedField.dataType!=='timestamp'">
+                                                    <input [type]="getFieldType()" formControlName="constantValue"
+                                                        class="form-control" placeholder="Variable value"
+                                                        i18n-placeholder="Variable value">
+                                                </ng-container>
+                                                <ng-container *ngIf="selectedField && selectedField.dataType==='date'">
+                                                    <input matInput [matDatepicker]="picker"
+                                                        formControlName="constantValue" class="form-control"
+                                                        placeholder="Variable value" i18n-placeholder="Variable value">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker></mat-datepicker>
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="selectedField && selectedField.dataType==='timestamp'">
+
+                                                    <input formControlName="constantValue" matInput
+                                                        [ngxMatDatetimePicker]="picker2" class="form-control"
+                                                        placeholder="Variable value" i18n-placeholder="Variable value">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker2">
+                                                    </mat-datepicker-toggle>
+                                                    <ngx-mat-datetime-picker #picker2 color="primary"
+                                                        [enableMeridian]="true">
+                                                    </ngx-mat-datetime-picker>
+
+
+                                                </ng-container>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <mat-icon matSuffix style="cursor: pointer;"
+                                                            (click)="setConstantValue()">
+                                                            done
+                                                        </mat-icon>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div fxLayout="row" (click)="$event.stopPropagation()">
+                                    <hr class="hr_style">
+                                    <span i18n="OR">
+                                        OR
+                                    </span>
+                                    <hr class="hr_style">
+                                </div>
+                                <div fxLayout="row" (click)="$event.stopPropagation()">
+                                    <p class="pl-3 text-dark font-weight-bold mb-2" i18n="Page Field">
+                                        Page Field</p>
+                                    <hr class="hr_style_pagefield">
+                                </div>
+                                <button mat-menu-item class="px-0"
+                                    (click)="setSelectionChange(selectedField.columnIdentifier,'')">
+                                    <span fxLayoutAlign="end" style="margin-right: 10px;" i18n="(empty)">(empty)</span>
+                                </button>
+                                <div class="row mx-0  w-100" (click)="$event.stopPropagation()">
+                                    <div class=" col-md-12 mx-0 w-100" *ngFor="let fields of fieldList"
+                                        style="margin-top:10px;">
+
+
+                                        <button mat-menu-item class="px-0"
+                                            (click)="setSelectionChange(selectedField.columnIdentifier,fields)">
+                                            <span>{{fields}}</span>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </mat-menu>
+                            <div class="pt-3" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+                                <button mat-raised-button (click)="openCardType('option')"
+                                    color="accent">Previous</button>
+                                <button mat-raised-button color="primary" type="submit" [disabled]="!mappingForm.valid"
+                                    (click)="submit()">Submit</button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <span class="mt-1 text-danger" i18n="Note : * fields are mandatory">Note :
+                        * fields are mandatory</span>
+                </ng-container>
+
+            </form>
+        </div>
+
+        <!-- * fields are mandatory -->
+    </mat-step>
+
+</mat-horizontal-stepper>

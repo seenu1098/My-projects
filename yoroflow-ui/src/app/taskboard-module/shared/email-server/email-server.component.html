@@ -1,0 +1,15 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;width: 180px;" i18n="Select email server">Select email server</h4>
+    <span class="line-style"></span>
+</div>
+<div fxLayout="row" *ngIf="spinnerShow" fxLayoutAlign="center center" style="margin-top:20px" fxLayoutGap="20px">
+    <span i18n="Loading email servers">Loading email servers</span>
+    <span class="dot-falling"></span>
+</div>
+<div fxLayout="row wrap" *ngIf="!spinnerShow" style="margin-bottom: 40px;">
+    <ng-container *ngFor="let server of emailServers;let i = index;">
+        <div class="server-name-style" (click)="getEmailServer(server)" [id]="'server_'+i" appMaterialElevation>
+            {{server.settingName}}
+        </div>
+    </ng-container>
+</div>

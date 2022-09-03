@@ -1,0 +1,336 @@
+<div style="margin: 1%" id="task-security">
+  <form [formGroup]="taskboardPermissionsForm" #userForm="ngForm">
+    <mat-horizontal-stepper #stepper id="taskboard-horizontalStepper">
+      <mat-step *ngIf="data.securityType==='task-security'">
+        <div class="mb-3" fxLayout="row" fxLayoutAlign="space-between center">
+          <h2 class="text-capitalize" i18n="Taskboard Security">Taskboard Security</h2>
+          <mat-icon id="clear" style="cursor: pointer;font-size: 22px;" fxLayoutAlign="end" (click)="closeDialog()">
+            clear</mat-icon>
+        </div>
+        <ng-container>
+
+          <div *ngIf="taskboardOwnerList && taskboardOwnerList.length>0" fxLayout="column" class="assignto-column">
+            <div fxLayout="row">
+              <h5 class="text-style" i18n="Taskboard Owners">Taskboard Owners</h5>
+              <span class="border-style"></span>
+            </div>
+            <div class="mb-3" fxLayout="row">
+              <ng-container *ngFor="let user of taskboardOwnerList;let i = index;">
+                <div *ngIf="i<=3" class="hover-class round_firstletter" [style.margin-left]="i>0?'-4px':''"
+                  [matTooltip]="getUserName(user)" [style.background]="assigneeUserColorArray[i]">
+                  <span class="round_firstletter_size">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                </div>
+                <ng-container *ngIf="i===4">
+                  <div class="hover-class round_add_count" [matTooltip]="getUserNames(taskboardOwnerList)">
+                    <span class="round_firstletter_count">+{{getRemainingAssigneeUserCount(taskboardOwnerList)}}</span>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <mat-icon (click)="openTaskOwnerDialog()" style="font-size: 22px;cursor: pointer;margin-top: 4px;
+                margin-left: 5px;">edit
+              </mat-icon>
+            </div>
+          </div>
+          <div fxLayout="column" class="assignto-column">
+            <div fxLayout="row">
+              <h5 class="text-style" i18n="Launch Permission">Launch Permission</h5>
+              <span class="border-style"></span>
+            </div>
+            <div class="mb-3 mt-2" fxLayout="row">
+              <!-- <button mat-raised-button type="button" id="launchPermission" color="primary" (click)="launchPermission()"
+              i18n="Launch Permission">
+              Launch Permission
+            </button> -->
+              <!-- <div class="launch-permissions-css">Workspace Users</div> -->
+              <div fxLayout="row" *ngIf="launchPermissionVo.taskboardId && launchData === true">
+                <div *ngIf="launchPermissionVo.allowLoggedInUser" class="launch-permissions-css">All Logged In Users
+                </div>
+                <div *ngIf="launchPermissionVo.allowWorkspaceUsers" class="launch-permissions-css">Workspace Users</div>
+                <div *ngIf="launchPermissionVo.allowTaskboardUser" class="launch-permissions-css">Taskboard Users</div>
+                <div *ngIf="launchPermissionVo.allowTaskboardTeams" class="launch-permissions-css">Taskboard Teams</div>
+                <ng-container *ngIf="launchPermissionVo?.allowUsersList?.length>0">
+                  <mat-icon style="font-size: 22px;margin-top: 4px;
+            margin-left: 5px;">person
+                  </mat-icon>
+                  <ng-container *ngFor="let user of launchPermissionVo?.allowUsersList;let i = index;">
+                    <div *ngIf="i<=3" class="hover-class round_firstletter" [style.margin-left]="i>0?'-4px':''"
+                      [matTooltip]="getUserNameForLaunch(user)" [style.background]="assigneeUserColorArray[i]">
+                      <span class="round_firstletter_size">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                    </div>
+                    <ng-container *ngIf="i===4">
+                      <div class="hover-class round_add_count"
+                        [matTooltip]="getUserNamesForLaunch(launchPermissionVo?.allowUsersList)">
+                        <span
+                          class="round_firstletter_count">+{{getRemainingAssigneeUserCount(launchPermissionVo?.allowUsersList)}}</span>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <div style="margin-left: 5px;"></div>
+                <ng-container *ngIf="launchPermissionVo?.allowTeamsList?.length>0">
+                  <mat-icon style="font-size: 22px;margin-top: 4px;
+            margin-left: 5px;">groups
+                  </mat-icon>
+                  <ng-container *ngFor="let team of launchPermissionVo?.allowTeamsList;let i = index;">
+                    <div *ngIf="i<=3" class="hover-class round_firstletter" [style.margin-left]="i>0?'-4px':''"
+                      [matTooltip]="getGroupName(team)" [style.background]="assigneeUserColorArray[i]">
+                      <span class="round_firstletter_size">{{getGroupFirstAndLastNamePrefix(team)}}</span>
+                    </div>
+                    <ng-container *ngIf="i===4">
+                      <div class="hover-class round_add_count"
+                        [matTooltip]="getGroupNames(launchPermissionVo?.allowTeamsList)">
+                        <span
+                          class="round_firstletter_count">+{{getRemainingTeamsCount(launchPermissionVo?.allowTeamsList)}}</span>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </div>
+              <mat-icon (click)="launchPermission()" style="font-size: 22px;cursor: pointer;margin-top: 4px;
+            margin-left: 5px;">edit
+              </mat-icon>
+            </div>
+          </div>
+          <div class="row col-md-12" fxLayoutGap="30px" fxLayoutAlign="space-between center"
+            *ngIf="getPermissionsFormArray().length > 0">
+            <div class="col-md-3">
+              <mat-label fxLayout="column" style="font-weight: 600" i18n="Team Name">Team Name</mat-label>
+            </div>
+            <div class="col-md-5 mr-0 pl-0">
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <mat-label fxLayout="column" class="pl-0" style="font-weight: 600" i18n="Read">Read
+                </mat-label>
+                <mat-label fxLayout="column" class="pl-2" style="font-weight: 600" i18n="Update">Update
+                </mat-label>
+                <mat-label fxLayout="column" class="pl-0" style="font-weight: 600" i18n="Delete">Delete</mat-label>
+                <mat-label fxLayout="column" class="pl-0" style="font-weight: 600" i18n="All">All</mat-label>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center">
+                <mat-label fxLayout="column" style="font-weight: 600" i18n="Actions">Actions</mat-label>
+              </div>
+            </div>
+          </div>
+          <div formArrayName="securityList" *ngFor="let permission of getPermissionsFormArray().controls;let a = index"
+            style="margin-bottom: 15px;">
+            <div [formGroupName]="a" class="row col-md-12" fxLayoutGap="30px" fxLayoutAlign="space-between center">
+              <div class="col-md-3">
+                <mat-form-field fxLayout="column">
+                  <input (focusout)="setAutocompleteValidation(a)" matInput id="groupId" formControlName="groupId"
+                    [matAutocomplete]="auto" />
+                  <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option type="text" [value]="name.name" *ngFor="let name of yoroGroups"
+                      [id]="name.name + '-' + name.description">
+                      {{ name.name }}-{{ name.description }}</mat-option>
+                  </mat-autocomplete>
+                  <mat-error *ngIf="permission.get('groupId').errors?.required" i18n="Team Name is required">Team Name
+                    is required</mat-error>
+                  <mat-error *ngIf="permission.get('groupId').errors?.validators" i18n="Team Name already selected">
+                    Team Name already selected
+                  </mat-error>
+                  <mat-error *ngIf="permission.get('groupId').errors?.invalidGroupName" i18n="Invalid Team Name">Invalid
+                    Team Name
+                  </mat-error>
+                  <mat-error *ngIf="permission.get('groupId').errors?.groupExist" i18n="Team does not exist">Team does
+                    not exist</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-md-5">
+                <div fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="space-between center">
+                  <mat-slide-toggle fxLayout="column" [id]="'readAllowed' + a" class="mat-checkbox"
+                    formControlName="readAllowed" (change)="unCheckValue($event, a)">
+                  </mat-slide-toggle>
+                  <mat-slide-toggle fxLayout="column" [id]="'updateAllowed' + a" formControlName="updateAllowed"
+                    (change)="unCheckValue($event, a)">
+                  </mat-slide-toggle>
+
+                  <mat-slide-toggle fxLayout="column" formControlName="deleteAllowed" [id]="'deleteAllowed_' + a"
+                    (change)="unCheckValue($event, a)">
+                  </mat-slide-toggle>
+                  <mat-slide-toggle fxLayout="column" formControlName="allChecked" [id]="'allChecked' + a"
+                    (change)="setAllChecked($event, a)">
+                  </mat-slide-toggle>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="row w-100 mx-0">
+                  <button class="mr-2" mat-mini-fab type="button" [id]="'btnAddGroup' + a" color="primary"
+                    (click)="addPermission()" [disabled]="isDisable">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button type="button" mat-mini-fab color="warn" [id]="'removeGroup' + a" (click)="removePermission(a)"
+                    [disabled]="
+                     isDisable
+                    ">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="getPermissionsFormArray().length === 0" class="pl-2 font-weight-bold">
+            <p i18n="No groups selected for security">No groups selected for security</p>
+            <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="end ">
+              <button mat-raised-button type="button" [id]="'btnAddGroup' + a" color="primary" (click)="addPermission()"
+                [disabled]="isDisable" i18n="Add Security">
+                Add Security
+              </button>
+              <button mat-raised-button color="primary" (click)="saveClose()" i18n="Save Permission">
+                Save
+              </button>
+            </div>
+          </div>
+          <div style="margin-top: 1%; margin-right: 35px" fxLayout="row" fxLayoutAlign="end end">
+            <button [disabled]="userGroupExist" mat-raised-button color="primary" (click)="save()" id="btnSave"
+              style="margin-right: 8px" *ngIf="getPermissionsFormArray().length > 0">
+              <span i18n="Next">Next</span></button>
+          </div>
+
+        </ng-container>
+      </mat-step>
+      <mat-step>
+        <ng-container>
+
+          <div class="mb-3" fxLayout="row" fxLayoutAlign="space-between center">
+            <h2 class="text-capitalize" i18n="Taskboard Column Security">Taskboard Column Security</h2>
+            <mat-icon id="clear" style="cursor: pointer;font-size: 22px;" fxLayoutAlign="end" [mat-dialog-close]="true">
+              clear</mat-icon>
+          </div>
+          <div *ngIf="taskboardSecurityList.length !== 0">
+            <div formArrayName="columnSecurityList"
+              *ngFor="let permissionArray of getColumnPermissionsArray().controls;let k = index">
+              <div class="mb-4">
+                <div [formGroupName]="k" class="row col-md-12" fxLayoutGap="30px" fxLayoutAlign="space-between center">
+                  <mat-label fxLayout="column" style="font-weight: 600">{{
+                    taskboardColumns[k].columnName
+                    }}</mat-label>
+
+                  <mat-card [style.border]="taskboardColumns[k].columnColor+' 1px solid'" class="w-100">
+                    <div class="row col-md-12" fxLayoutGap="30px" fxLayoutAlign="space-between center"
+                      *ngIf="getColumnPermissionsFormArray(k).length > 0">
+                      <div class="col-md-3">
+                        <mat-label fxLayout="column" style="font-weight: 600" i18n="Group Name">Team Name</mat-label>
+                      </div>
+                      <div class="col-md-6 mr-0">
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                          <mat-label fxLayout="column" class="pl-4" style="font-weight: 600" i18n="Read">
+                            Read</mat-label>
+                          <mat-label fxLayout="column" class="pl-3" style="font-weight: 600" i18n="Update">
+                            Update</mat-label>
+                          <mat-label fxLayout="column" class="pl-2" style="font-weight: 600" i18n="Delete">Delete
+                          </mat-label>
+                          <mat-label fxLayout="column" class="pl-3" style="font-weight: 600" i18n="All">All</mat-label>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center">
+                          <mat-label fxLayout="column" class="pl-4" style="font-weight: 600" i18n="Actions">Actions
+                          </mat-label>
+                        </div>
+                      </div>
+                    </div>
+                    <div formArrayName="columnPermissions" *ngFor="let permission of permissionArray['controls'].columnPermissions['controls'];
+                        let i = index" style="margin-bottom: 15px;">
+                      <div [formGroupName]="i" fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center">
+                        <div class="col-md-3">
+                          <mat-form-field fxLayout="column">
+                            <input (focusout)="setAutocompleteValidationForColumns(k,i)" matInput
+                              [id]="groupId + '_' + k + '_' + i" formControlName="groupId" [matAutocomplete]="auto" />
+                            <mat-autocomplete #auto="matAutocomplete">
+                              <mat-option type="text" [value]="name.groupId" *ngFor="let name of taskboardSecurityList"
+                                [id]="name.name + '-' + name.description">
+                                {{ name.groupId }}</mat-option>
+                            </mat-autocomplete>
+                            <mat-error *ngIf="submitted &&
+                                permission.get('groupId').errors?.required
+                              " i18n="Team Name is required">Team Name is required</mat-error>
+                            <mat-error *ngIf="
+                                permission.get('groupId').errors?.validators
+                              " i18n="Team Name already selected">Team Name already selected</mat-error>
+                            <mat-error *ngIf="
+                                permission.get('groupId').errors?.groupExist
+                              " i18n="Team does not exist">Team does not exist</mat-error>
+                            <mat-error *ngIf="permission.get('groupId').errors?.invalidGroupName"
+                              i18n="Invalid Team Name">Invalid Team Name
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-md-5">
+                          <div fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="space-between center">
+                            <mat-slide-toggle fxLayout="column" [id]="'readAllowed' + '_' + k + '_' + i"
+                              class="mat-checkbox" formControlName="readAllowed"
+                              (change)="unCheckColumnValue($event, i, k)">
+                            </mat-slide-toggle>
+                            <mat-slide-toggle fxLayout="column" [id]="'updateAllowed' + '_' + k + '_' + i"
+                              formControlName="updateAllowed" (change)="unCheckColumnValue($event, i, k)">
+                            </mat-slide-toggle>
+
+                            <mat-slide-toggle fxLayout="column" formControlName="deleteAllowed"
+                              [id]="'deleteAllowed' + '_' + k + '_' + i" (change)="unCheckColumnValue($event, i, k)">
+                            </mat-slide-toggle>
+                            <mat-slide-toggle fxLayout="column" formControlName="allChecked"
+                              [id]="'allColumnChecked' + '_' + k + '_' + i" (change)="
+                                setColumnAllChecked($event, i, k)
+                              ">
+                            </mat-slide-toggle>
+                          </div>
+                        </div>
+                        <div class="col-md-2">
+                          <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between center">
+                            <button mat-mini-fab type="button" fxLayout="column" class="mr-2"
+                              [id]="'btnColumnAddGroup' + '_' + k + '_' + i" color="primary"
+                              (click)="addColumnPermission(k)">
+                              <mat-icon style="margin:0px 3px !important;">add</mat-icon>
+                            </button>
+                            <button type="button" fxLayout="column" mat-mini-fab color="warn" class="mr-2"
+                              [id]="'columnRemoveGroup' + '_' + k + '_' + i" (click)="removeColumnPermission(i, k)">
+                              <mat-icon style="margin:0px 3px !important;">remove</mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div *ngIf="getColumnPermissionsFormArray(k).length == 0" class="pl-2 font-weight-bold"
+                      fxLayout="row" fxLayoutAlign="space-between center">
+                      <p i18n="No teams selected for security">No teams selected for security</p>
+                      <button mat-raised-button type="button" [id]="'btnAddGroup' + a" color="primary"
+                        (click)="addColumnPermission(k)" [disabled]="isDisable" i18n="Add Security">
+                        Add Security
+                      </button>
+                    </div>
+
+                  </mat-card>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div *ngIf="taskboardSecurityList.length === 0" class="pl-2 font-weight-bold"
+            i18n="No team selected for this board. Please select security team for this taskboard.">
+            <p>No team selected for this board. Please select a security team for this taskboard.</p>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="end" class="mt-3">
+            <button *ngIf="data.securityType==='task-security'" (click)="previous()" mat-raised-button i18n="Previous"
+              matStepperPrevious color="primary" class="mr-2">
+              Previous
+            </button>
+
+            <button *ngIf="data.securityType==='task-column-security' && taskboardSecurityList.length !== 0"
+              [mat-dialog-close]="true" mat-raised-button i18n="Cancel" matStepperPrevious color="accent" class="mr-2">
+              Cancel
+            </button>
+
+            <button mat-raised-button matStepperNext color="primary" *ngIf="taskboardSecurityList.length !== 0"
+              (click)="saveClose()" i18n="Save Permission">
+              Save Permission
+            </button>
+          </div>
+        </ng-container>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </form>
+</div>

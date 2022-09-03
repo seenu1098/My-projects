@@ -1,0 +1,446 @@
+<div class="row w-100 mx-0">
+    <div class="col-md-6 px-2">
+        <h3 class="text-uppercase  font-weight-bold" *ngIf="data.type==='validation'">
+            Validations</h3>
+        <h3 class="text-uppercase  font-weight-bold" *ngIf="data.type==='option'">Option
+            Values</h3>
+    </div>
+</div>
+<hr class="mt-0">
+<form [formGroup]="validationForm" #userForm="ngForm" *ngIf="data.type==='validation'">
+    <div class="row w-100 mx-0" *ngIf="data.allowMinMaxVal">
+        <div class="col-md-6 px-2">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Minimum Length</mat-label>
+                <input matInput id="minNumber" type="number" formControlName="minLength" min="0"
+                    oninput="this.value = Math.abs(this.value)" (focusout)="lengthValidation()">
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 px-2">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Maximum Length</mat-label>
+                <input matInput type="number" formControlName="maxLength" min="0"
+                    oninput="this.value = Math.abs(this.value)" id="maxlength" (focusout)="lengthValidation()">
+                <mat-error *ngIf="validationForm.get('maxLength').errors?.maxLogicalError">
+                    Maximum length should be greater than Minimum length.
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row w-100 mx-0">
+        <div class="col-md-6 mb-3 px-2">
+            <mat-slide-toggle color="accent" formControlName="required" id="required">
+                Required
+            </mat-slide-toggle>
+        </div>
+        <div class="col-md-6 mb-3 px-2">
+            <mat-slide-toggle color="accent" formControlName="editable" id="editable'">
+                Editable
+            </mat-slide-toggle>
+        </div>
+        <div class="col-md-6 mb-3 px-2" *ngIf="data.allowMinMaxVal===false && data.datatype==='date'">
+            <mat-slide-toggle color="accent" id="allowPastDate" formControlName="allowPastDate">
+                Allow Past Date
+            </mat-slide-toggle>
+        </div>
+        <div class="col-md-6 mb-3 px-2" *ngIf="data.allowMinMaxVal===false && data.datatype==='date'">
+            <mat-slide-toggle color="accent" id="allowFutureDate" formControlName="allowFutureDate">
+                Allow Future Date
+            </mat-slide-toggle>
+        </div>
+    </div>
+    <div formGroupName="conditionalChecks">
+        <div formGroupName="required">
+            <div class="row w-100 mx-0">
+                <div class="col-md-6 mb-3 px-2">
+                    <mat-slide-toggle id="option" color="accent" formControlName="option"
+                        (change)="changeConditionallyRequiredTableColumns($event)">
+                        Required When
+                    </mat-slide-toggle>
+                </div>
+            </div>
+            <ng-container>
+                <div formArrayName="fields"
+                    *ngFor="let conditionalCheck of getTableConditionalLevelFormArrayControl(); let j= index">
+                    <div [formGroupName]="j">
+                        <div class="row w-100 mx-0">
+                            <div class="col-md-5 mb-3 px-2">
+                                <mat-form-field class="w-100" appearance="outline">
+                                    <mat-label>Field Name *</mat-label>
+                                    <mat-select [id]="j+'fieldName'" formControlName="fieldName">
+                                        <ng-container
+                                            *ngFor="let option of columnHeadersCondtionalFields; let o = index;">
+                                            <ng-container *ngIf="columnHeadersCondtionalFields.length>0">
+                                                <mat-option
+                                                    *ngIf="option.fieldLabel && option.fieldId!==null&& option.fieldId!=='' && option.fieldId!==originalFieldId && option.type"
+                                                    (onSelectionChange)="setInputTypeForTableColumns($event,option.type,j)"
+                                                    [value]="option.fieldId" [id]="j+o+option.fieldId">
+                                                    {{option.fieldLabel}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </ng-container>
+                                    </mat-select>
+                                    <mat-error>Field Name is required</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <ng-container *ngIf="tableControlInputType[j] === 'text' || !tableControlInputType[j]">
+                                <div class="col-md-5 mb-3 px-2">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label>Value *</mat-label>
+                                        <input matInput [id]="j+'value'" formControlName="value" type="text">
+                                        <mat-error>Value is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="tableControlInputType[j] === 'number'">
+                                <div class="col-md-5 mb-3 px-2">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label>Value *</mat-label>
+                                        <input matInput [id]="j+'value'" formControlName="value" type="number">
+                                        <mat-error>Value is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="tableControlInputType[j] === 'date'">
+                                <div class="col-md-5 mb-3 px-2">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <input matInput [id]="j+'value'" [matDatepicker]="picker"
+                                            formControlName="value" placeholder="Date">
+                                        <mat-datepicker-toggle matSuffix [for]="picker">
+                                            <mat-icon matDatepickerToggleIcon>
+                                                date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                        <mat-error>Value is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                            <div class="col-md-2 px-0">
+                                <div class="row w-100 mx-0 pt-3">
+                                    <button mat-mini-fab [id]="j+'btnAdd'" type="button" color="primary" class="mr-1"
+                                        (click)="addRequiredConditionalChecksArrayInTableColumns()">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <button *ngIf="getTableControlRequiredValidationFormArray().length>1" type="button"
+                                        mat-mini-fab color="accent" [id]="j+'remove'"
+                                        (click)="removeRequiredConditionalChecksInTableColumns(j)">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="row w-100 mx-0 justify-content-end">
+        <button mat-raised-button id="btnSave" (click)="submit(userForm)" type="submit" class="mr-2"
+            color="primary">Add</button>&nbsp;
+        <button mat-raised-button id="btnCancel" type="button" (click)="cancel(userForm)" color="accent">Cancel</button>
+    </div>
+</form>
+<form [formGroup]="optionsFormGroup" #userForm="ngForm" *ngIf="data.type==='option'">
+    <div class="row w-100 mx-0">
+        <div class="col-md-10 px-2">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Option From *</mat-label>
+                <mat-select id="optionType" formControlName="optionType" (selectionChange)="optionTypeChange($event)">
+                    <mat-option value="s" id="Static">Static</mat-option>
+                    <mat-option value="d" id="Dynamic">Dynamic</mat-option>
+                </mat-select>
+                <mat-error id="optionTypeError">Option From is required</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div *ngIf="optionsFormGroup.get('optionType').value === 's' && show">
+        <div formArrayName="optionsValues" *ngFor="let option of getOptionValuesFormArray(); let i= index">
+            <div [formGroupName]="i" class="row w-100 mx-0">
+                <div class="col-md-4 px-2">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <input [id]="'code'+i" matInput type="text" placeholder="Code *" formControlName="code">
+                        <mat-error>Code is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6 px-2">
+                    <mat-form-field class="w-100" appearance="outline">
+                        <input [id]="'description'+i" matInput type="text" placeholder="Description *"
+                            formControlName="description">
+                        <mat-error>Description is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-2 px-0">
+                    <div class="row w-100 mx-0 pt-3">
+                        <button mat-mini-fab [id]="'btnAddOptions'+i" type="button" color="primary"
+                            (click)="addOptions()" class="btn btn-space mr-1">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <button *ngIf="getOptionValuesFormArray().length>1" mat-mini-fab color="accent"
+                            [id]="'removeOptions'+i" (click)="removeOptions(i)">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---new-->
+    <div *ngIf="optionsFormGroup.get('optionType').value === 'd' && show">
+        <div fxLayout="column">
+            <div fxLayout="row" style="margin-top: 2%;">
+                <!-- <div formGroupName="defaultValues"> -->
+                <mat-slide-toggle id="defaultValue" color="accent" formControlName="defaultValue"
+                    (change)="changeDefaultValue($event)"> Default Option
+                </mat-slide-toggle>
+            </div>
+
+            <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 2%;">
+                <ng-container *ngIf="defaultValue">
+                    <mat-form-field>
+                        <mat-label>Default Key Column *</mat-label>
+                        <input matInput id="keyValue" type="text" formControlName="keyValue">
+                        <mat-error>Default Key Column is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Default Description Column *</mat-label>
+                        <input matInput id="descValue" type="text" formControlName="descValue">
+                        <mat-error>Default Description Column is required</mat-error>
+                    </mat-form-field>
+                    <!-- </div> -->
+                </ng-container>
+            </div>
+            <div fxLayout="row" style="margin-top: 1%;">
+                <mat-slide-toggle formControlName="loadFirstOption">
+                    Default first option when the result is one
+                </mat-slide-toggle>
+            </div>
+            <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 2%;">
+                <mat-form-field>
+                    <mat-label>Page Name *</mat-label>
+                    <input id="pageName" formControlName="pageName" (click)="getAllPageNames()" matInput type="text"
+                        [matAutocomplete]="pageName" (focusout)="setAutocompleteValidation()">
+                    <mat-autocomplete #pageName="matAutocomplete">
+                        <mat-option *ngFor="let option of pageNameOptions; let i = index;"
+                            [id]="i+'pageNameAutoComplete'" [value]="option.pageName"
+                            (onSelectionChange)="loadPageFieldsAndTableName($event, option.pageId,option.version)">
+
+                            {{option.pageName}}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-error id="pageNameError" *ngIf="optionsFormGroup.get('pageName').errors?.required">
+                        Page Name is required</mat-error>
+                    <mat-error id="invalidpageNameError"
+                        *ngIf="optionsFormGroup.get('pageName').errors?.invalidPageName">
+                        Invalid Page Name
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Key Column Name *</mat-label>
+                    <mat-select id="keyColumnName" formControlName="keyColumnName">
+                        <mat-option [value]="field.fieldName" *ngFor="let field of pageFields;let i=index;"
+                            [id]="i+'keyColumnNameOption'">
+                            {{field.fieldName}}</mat-option>
+                    </mat-select>
+                    <mat-error id="keyColumnError">Key Column Name is required</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Description Column Name *</mat-label>
+                    <mat-select id="descriptionColumnName" formControlName="descriptionColumnName">
+                        <mat-option [value]="field.fieldName" *ngFor="let field of pageFields">
+                            {{field.fieldName}}</mat-option>
+                    </mat-select>
+                    <mat-error id="DescriptionError">Description Column Name is required</mat-error>
+                </mat-form-field>
+            </div>
+            <!-- <div *ngIf="dynamicpageName!==undefined"> -->
+            <div fxLayout="row" style="margin-top: 2%;">
+                <mat-slide-toggle color="accent" id="sortOption" formControlName="sortOption"
+                    (change)="sortOption($event)">
+                    Sort Option
+                </mat-slide-toggle>
+            </div>
+            <ng-container *ngIf="sortOptionBoolean">
+                <div formArrayName="sortBy" *ngFor="let option of getSortByFormArray(); let i= index">
+                    <!-- <mat-label>Sort By</mat-label> -->
+                    <div [formGroupName]="i">
+                        <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 2%;">
+
+                            <mat-form-field>
+                                <mat-label>Sort Column Name *</mat-label>
+                                <mat-select id="i+'_sortColumnName'" formControlName="sortColumnName">
+                                    <mat-option [value]="field.fieldName" *ngFor="let field of pageFields;let i=index;"
+                                        [id]="i+'_sortColumnNameOption'">
+                                        {{field.fieldName}}</mat-option>
+                                </mat-select>
+                                <mat-error id="sortColumnNameError">Sort Column Name is required
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-slide-toggle formControlName="sortType" [id]="'sortType_'+i" style="margin-right: 40px;
+                                        margin-top: 10px;">
+                                Desc
+                            </mat-slide-toggle>
+                            <div fxLayoutAlign="end">
+                                <button mat-mini-fab [id]="'btnAddOptions'+i" type="button" color="primary"
+                                    (click)="addSortOptions()">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button style="margin-left: 10px;" *ngIf="getSortByFormArray().length>1" mat-mini-fab
+                                    color="accent" [id]="'removeOptions'+i" (click)="removeSortOptions(i)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </ng-container>
+            <!-- <div *ngIf="dynamicpageName!==undefined"> -->
+            <div fxLayout="row" style="margin-top: 2%;">
+                <mat-slide-toggle color="accent" id="filterOption" formControlName="filterOptions"
+                    (change)="filterOption($event)">
+                    Filter Option
+                </mat-slide-toggle>
+            </div>
+
+            <ng-container *ngIf="filterOptionBoolean">
+
+                <!-- <div formGroupName="field">
+                        <div formGroupName="control"> -->
+                <div formArrayName="filters" *ngFor="let filter of getFiltersArray(); let i=index">
+                    <mat-card style="background-color: #f9f9f9;margin-top: 2%;width: 80%;">
+                        <div class="row w-100 mx-0" fxLayoutAlign="space-between center">
+                            <div class="col-md-6">
+                                <h4 class="py-3 mb-0" i18n="Column#{{i+1}}">Filter#{{i+1}}</h4>
+                            </div>
+                            <div class="col-md-6 w-100 mx-0 justify-content-end" fxLayoutAlign="end">
+                                <!-- <div class="w-100 mx-0 justify-content-end" id="add_remove"> -->
+                                <button mat-mini-fab [id]="i+'btnAdd'" type="button" color="primary"
+                                    (click)="addFilterOption()">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button *ngIf="getFiltersArray().length>1" type="button" mat-mini-fab
+                                    style="margin-left: 10px;" color="accent" [id]="i+'remove'"
+                                    (click)="removeFilterOption(i)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                        <div [formGroupName]="i">
+                            <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 1%;margin-left: 20px;">
+                                <mat-form-field>
+                                    <mat-label>Column Name *</mat-label>
+                                    <mat-select id="columnName" formControlName="columnName">
+                                        <mat-option [value]="field.fieldName"
+                                            *ngFor="let field of pageFields;let i=index;" [id]="i+'columnNameOption'">
+                                            {{field.fieldName}}</mat-option>
+                                    </mat-select>
+                                    <mat-error id="keyColumnError">Column Name is required</mat-error>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Operator *</mat-label>
+                                    <mat-select class="legacy" id="operator" formControlName="operator"
+                                        placeholder="Operator">
+                                        <mat-option value="li" id="like">Like</mat-option>
+                                        <mat-option value="eq" id="equals">equals</mat-option>
+                                        <mat-option value="ne" id="notEquals">not equals</mat-option>
+                                        <mat-option value="bw" id="beginsWith">begins with</mat-option>
+                                        <mat-option value="ew" id="endsWith">ends with</mat-option>
+                                        <mat-option value="cn" id="contains">contains</mat-option>
+                                        <mat-option value="gt" id="greaterThan">greater than </mat-option>
+                                        <mat-option value="ge" id="greaterThanOrEqual">greater than or equal to
+                                        </mat-option>
+                                        <mat-option value="lt" id="lessThan">less than</mat-option>
+                                        <mat-option value="le" id="lessThanOrEqual">less than or equal to
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error id="keyOperatorError">Operator is Required</mat-error>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 1%;margin-left: 20px;">
+                                <mat-form-field>
+                                    <mat-label>Data Type *</mat-label>
+                                    <mat-select id="dataType" formControlName="dataType"
+                                        (selectionChange)="datatypeChange($event)">
+                                        <mat-option value="string" [id]="i+'String'">String </mat-option>
+                                        <mat-option value="float" [id]="i+'Float'">Float </mat-option>
+                                        <mat-option value="long" [id]="i+'Long'">Long </mat-option>
+                                        <mat-option value="date" [id]="i+'Date'">Date </mat-option>
+
+                                    </mat-select>
+                                    <mat-error id="dataTypeError">Data Type is Required</mat-error>
+                                </mat-form-field>
+                                <!-- <div *ngIf="showDateFormat"> -->
+                                <mat-form-field>
+                                    <mat-label>Date Format</mat-label>
+                                    <mat-select id="dateFormat" formControlName="dateFormat"
+                                        [disabled]="!showDateFormat">
+                                        <mat-option value='MM/dd/yyyy' id="MM/dd/yyyy">MM/dd/yyyy</mat-option>
+                                        <mat-option value='dd/MM/yyyy' id="dd/MM/yyyy">dd/MM/yyyy</mat-option>
+                                        <mat-option value='yyyy-mm-dd' id="yyyy-mm-dd">yyyy-mm-dd</mat-option>
+                                    </mat-select>
+                                    <!-- <mat-error id="dateFormatError">Date Format is Required</mat-error> -->
+                                </mat-form-field>
+                                <!-- </div> -->
+                            </div>
+                            <ng-container>
+                                <div fxLayout="row" fxLayoutGap="20px" style="margin-top: 1%; margin-left: 20px;">
+                                    <mat-radio-group [id]="i+'_radio'" aria-label="Label Option"
+                                        formControlName="valueType">
+                                        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+                                            fxLayoutGap.lt-md="0px">
+                                            <mat-label>Value Type *:</mat-label>
+                                            <mat-radio-button (change)="valueOptionTypeChange($event,i)"
+                                                value="constant">
+                                                Constant
+                                            </mat-radio-button>
+                                            <mat-radio-button (change)="valueOptionTypeChange($event,i)"
+                                                value="fieldName">
+                                                Page
+                                                Field
+                                                Name</mat-radio-button>
+                                        </div>
+                                    </mat-radio-group>
+                                </div>
+                                <div *ngIf="valueType ==='constant'" fxLayout="row"
+                                    style="margin-top: 1%;margin-left: 20px;">
+                                    <mat-form-field>
+                                        <mat-label>Value *</mat-label>
+                                        <input matInput id="value" type="text" formControlName="value">
+                                        <mat-error id="constantValueError">Value is Required</mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                                <div *ngIf="valueType ==='fieldName'" fxLayout="row"
+                                    style="margin-top: 1%; margin-left: 20px;">
+                                    <mat-form-field>
+                                        <mat-label>Page Field Name *</mat-label>
+                                        <!-- <input matInput formControlName="descriptionColumnName">
+                                                <mat-error>Description Column Name is required</mat-error> -->
+                                        <mat-select id="fieldName" formControlName="fieldName">
+                                            <mat-option [value]="field" *ngFor="let field of samePageFields">
+                                                {{field}}</mat-option>
+                                        </mat-select>
+                                        <mat-error id="pageFieldNameError">Page Field Name is Required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                            <!-- <div fxLayout="row" style="margin-top:3%" fxLayoutAlign="space-between  center"> -->
+
+                            <!-- </div> -->
+                        </div>
+                    </mat-card>
+
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div fxLayoutAlign="center center" style="margin: 5%">
+        <button mat-raised-button id="btnSave" (click)="submitOptions(optionsFormGroup)" type="submit"
+            color="primary">Add</button>&nbsp;
+        <button mat-raised-button id="btnCancel" type="button" (click)="cancel(userForm)" color="accent">Cancel</button>
+    </div>
+</form>

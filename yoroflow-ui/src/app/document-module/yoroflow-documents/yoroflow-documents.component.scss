@@ -1,0 +1,283 @@
+.example-tree-invisible {
+  display: none;
+}
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+.example-tree ::ng-deep .mat-tree {
+  background-color: transparent !important;
+}
+.fs_20 {
+  font-size: 20px;
+}
+.tree {
+  overflow-x: scroll !important;
+  box-shadow: inset -10px 0px 12px -7px #e0dcdc;
+  box-shadow: inset -10px 0px 12px -7px #e0dcdc;
+}
+.example-tree .mat-nested-tree-node div[role="group"] {
+  padding-left: 10px;
+}
+.example-tree div[role="group"] > .mat-tree-node {
+  padding-left: 5px;
+}
+
+.example-tree ::ng-deep .mat-tree-node {
+  min-height: 30px;
+}
+
+// .example-tree .mat-icon {
+//   width: 10px !important;
+//   height: 15px !important;
+// }
+.example-tree .mat-icon-button .mat-icon {
+  margin-top: -27px;
+}
+::ng-deep .mat-tree-node {
+  align-items: top !important;
+}
+.example-tree .mat-icon-button {
+  width: 20px !important;
+  height: 20px !important;
+}
+.example-tree .doc_add_btn {
+  cursor: pointer;
+  float: right;
+  right: 15px;
+  height: 13px !important;
+  width: 13px !important;
+  color: #fff !important;
+  border-radius: 50%;
+  padding-left: 0.5px;
+  font-size: 12px;
+  font-weight: bold;
+  &:hover {
+    background: #0265ff;
+    color: #fff !important;
+  }
+}
+.edit-desc-css {
+  margin-left: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--theme-main-color);
+}
+.example-tree .doc_dot_btn {
+  cursor: pointer;
+  float: right;
+  position: absolute;
+  right: 25px;
+  height: 13px !important;
+  width: 13px !important;
+  font-size: 16px;
+  font-weight: bold;
+  &:hover {
+    background: #0265ff;
+    color: #fff !important;
+  }
+}
+.des {
+  display: flex;
+  align-items: top;
+  justify-content: top;
+}
+.example-tree .doc_name {
+  font-size: 12px;
+  // font-family: "Source Sans Pro", sans-serif !important;
+  line-height: 16px;
+  cursor: pointer;
+  width: 60%;
+}
+.input_class {
+  background: none;
+  border: none;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 40px;
+  color: #292d34;
+  cursor: text;
+}
+.background-highlight {
+  font-weight: bolder;
+}
+.flag-container-css {
+  width: 25px;
+  height: 25px;
+  border: 2px dashed grey;
+  border-radius: 50%;
+  line-height: 25px;
+  position: relative;
+  cursor: pointer;
+  margin-top: 8px;
+  color: grey;
+}
+.flag-css {
+  margin-left: 3px;
+  margin-top: 2px;
+  font-size: 17px;
+  color: lightgray;
+}
+.circle-css {
+  background-color: white;
+  position: absolute;
+  font-size: 15px;
+  margin-left: 12px;
+  margin-top: -16px;
+  z-index: 9999;
+  width: 14px;
+  height: 13px;
+  border-radius: 50%;
+}
+.mirror {
+  transition: fill 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  flex-shrink: 0;
+  width: 11px;
+  height: 12px;
+  padding: 2px 1px 2px 0;
+  cursor: pointer;
+  fill: #b9bec7;
+  z-index: 10;
+  align-self: flex-start;
+  top: 50%;
+  margin-top: -6px;
+  left: 14px;
+  position: absolute;
+}
+.description {
+  position: relative;
+  align-self: flex-start;
+  width: 12px;
+  height: 14px;
+  margin-top: 1px;
+  cursor: pointer;
+  fill: #292d34;
+}
+.background_node {
+  background-color: whitesmoke;
+}
+.icon_background {
+  color: white;
+  background-color: #8f8888;
+}
+.doc_new_btn {
+  cursor: pointer;
+  right: 15px;
+  height: 13px !important;
+  width: 13px !important;
+  color: #fff !important;
+  border-radius: 50%;
+  padding-left: 0.5px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #0265ff;
+  color: #fff !important;
+}
+.add-new {
+  cursor: pointer;
+}
+
+.doc_delete {
+  &:hover {
+    color: red !important;
+  }
+}
+.icon_delete {
+  color: #8f8888;
+  height: 13px !important;
+  width: 13px !important;
+  cursor: pointer;
+  font-size: 15px;
+}
+.column-icon-css {
+  font-size: 20px;
+  margin-top: 8px;
+  color: red;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 0px;
+}
+#task-configur ::ng-deep .ps--active-x > .ps__rail-x {
+  display: none;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: none !important;
+  box-shadow: inset 0 0 5px rgb(254, 255, 255);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 10rem;
+  border: 1px solid #fff;
+}
+::ng-deep .mention{
+  color: #7b68ee;
+  font-weight: bold;
+}
+.blog-post {
+  word-break: break-all;
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+.done_btn{
+  background-color: var(--theme-main-color)!important;
+  color: white!important;
+}
+.close_btn{
+  background-color:var(--theme-accent-color) !important ;
+  color: white!important;
+}
+.update_quill_editor_container {
+  padding: 10px !important;
+  word-break: break-all;
+  overflow-y: scroll !important;
+}
+@media screen and (min-width: 1270px) and (max-width: 1599px) {
+  .update_quill_editor_container {
+    max-height: 530px !important;
+  }
+}
+@media screen and (min-width: 1680px) {
+  .update_quill_editor_container {
+    max-height: 800px !important;
+  }
+}
+
+::ng-deep .doc-menu-css{
+  min-height: 25px;
+}
+
+.mt-css{
+  margin-top: 5px;
+}
+
+#task-configur ::ng-deep h1{
+  font-size: 32px !important;
+}
+
+#task-configur ::ng-deep h2{
+  font-size: 24px !important;
+}
+
+@media screen and (max-width: 768px) {
+.tree{
+  height: 200px!important;
+}
+.blog-post{
+  margin-top: 80px;
+  height: 440px;
+}
+}
+@media screen and (min-width: 768px) {
+.descktop_document{
+ width:84%!important;
+}
+}

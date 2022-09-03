@@ -1,0 +1,31 @@
+{
+  "angular.enable-strict-mode-prompt": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // To prevent any formatting of JavaScript and TypeScript files,
+  // because ESLint is set up to handle that; do not want any formatting
+  // to happen outside of ESLint.
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "cSpell.words": [
+    "authnz",
+    "changelang",
+    "Jwks",
+    "oidc",
+    "openid",
+    "ouath",
+    "Recaptcha",
+    "taskboard",
+    "yoro",
+    "Yoroflow"
+  ]
+}

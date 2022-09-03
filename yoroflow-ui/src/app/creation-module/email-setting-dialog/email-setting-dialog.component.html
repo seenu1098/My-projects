@@ -1,0 +1,95 @@
+<mat-card *ngIf="data.type !== 'delete'" style="width: 100%;">
+    <form #userForm="ngForm" [formGroup]="form">
+        <mat-card-title style="margin-top: 1%">Email Settings
+        </mat-card-title>
+        <div formArrayName="orgEmailsettingsArray"
+            *ngFor="let email of getEmailSettingsFormArray().controls; let i = index">
+            <div [formGroupName]="i">
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <mat-form-field style="width: 30%;" appearance="outline">
+                        <mat-label>Setting Name *</mat-label>
+                        <input matInput [id]="'settingName_'+i" type="text" formControlName="settingName"
+                            placeholder="Setting Name *" (focusout)="checkDuplicateEmailSettingName(i)">
+                        <mat-error *ngIf="email.get('settingName').errors?.required">
+                            Setting Name is
+                            required</mat-error>
+                        <mat-error *ngIf="email.get('settingName').errors?.unique">
+                            Setting Name is
+                            unique</mat-error>
+                    </mat-form-field>
+                    <ng-container formGroupName="settingData">
+                        <mat-form-field style="width: 30%;" appearance="outline">
+                            <mat-label>Host Name </mat-label>
+                            <input matInput [id]="'hostName_'+i" type="text" formControlName="hostName"
+                                placeholder="Host Name ">
+                            <mat-error>Host Name is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field style="width: 33%;" appearance="outline">
+                            <mat-label>Username *</mat-label>
+                            <input matInput [id]="'username_'+i" placeholder="Username" type="text"
+                                formControlName="username">
+                            <mat-error>Username is required
+                            </mat-error>
+                        </mat-form-field>
+                    </ng-container>
+                </div>
+                <div fxLayout="row" fxLayoutGap="10px">
+                    <ng-container formGroupName="settingData">
+                        <mat-form-field style="width: 30%;" appearance="outline">
+                            <mat-label>Password *</mat-label>
+                            <input matInput [id]="'password_'+i" placeholder="Password" type="text"
+                                formControlName="password">
+                            <mat-error>Password is required
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field style="width: 30%;" appearance="outline">
+                            <mat-label>Port Number *
+                            </mat-label>
+                            <input matInput formControlName="port" placeholder="Port Number" [id]="'port_'+i"
+                                type="number">
+                            <mat-error>Port Number is
+                                required
+                            </mat-error>
+                        </mat-form-field>
+                        <div fxLayout="row" style="width: 33%;">
+                            <div>
+                                <mat-slide-toggle style="margin-top: 5px;" color="primary" formControlName="smtpAuth">
+                                    SMTP Auth
+                                </mat-slide-toggle>
+                            </div>
+                            <div>
+                                <mat-slide-toggle style="margin-left: 20px; margin-top: 5px;" color="primary"
+                                    formControlName="starttlsEnable">
+                                    Enable TLS
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+            <button *ngIf="data.type==='edit'" mat-raised-button color="primary" (click)="save()"
+                style="margin-left: 45%; margin-top: 4%;" id="edit">Update</button>
+            <button *ngIf="data.type==='create'" mat-raised-button color="primary" (click)="save()"
+                style="margin-left: 45%; margin-top: 4%;" id="save">Save</button>
+            <button mat-raised-button color="accent" (click)="cancel()" style="margin-left: 45%; margin-top: 4%;"
+                id="save">Cancel</button>
+        </div>
+    </form>
+</mat-card>
+
+<ng-container *ngIf="data.type === 'delete'" style="width: 100%;">
+    <mat-dialog-content>
+        Are you sure to delete this email settings?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="yes()">
+            Yes
+        </button>
+        <button mat-raised-button color="accent" id="btnNo" (click)="cancel()">
+            No
+        </button>
+    </mat-dialog-actions>
+</ng-container>

@@ -1,0 +1,384 @@
+<div class="row w-100 mx-0 px-3 pt-3" id="outline_id">
+    <form #userForm="ngForm" [formGroup]="gridConfigurationForm" (ngSubmit)="onSubmit(userForm)" class="w-100">
+        <input type="hidden" name="gridId" formControlName="gridId" />
+        <mat-card class="bg-whitesmoke w-100">
+            <ng-container *ngIf=id>
+                <mat-card-title i18n="@@Grid Configuration For Page -">Grid Configuration For Page - [{{pageName}}]
+                </mat-card-title>
+            </ng-container>
+            <ng-container *ngIf=!id>
+                <mat-card-title i18n="@@Grid Configuration">Grid Configuration</mat-card-title>
+            </ng-container>
+            <mat-card class="mt-3">
+                <mat-card-title i18n="Grid">Grid </mat-card-title>
+                <mat-card-content>
+                    <div class="row w-100 mx-0">
+                        <div class="col-md-3 col-sm-12 pr-2 pl-0">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Grid Name">Grid Name</mat-label>
+                                <input matInput type="text" formControlName="gridName" id="gridName"
+                                    readonly={{gridNameReadOnlyValue}} (focusout)="checkGridNameExists()"
+                                    (keypress)="omit_number($event)">
+                                <mat-error id="gridNameError"
+                                    *ngIf="gridConfigurationForm.get('gridName').errors?.required"
+                                    i18n="Grid Name is required">
+                                    Grid Name is required
+                                </mat-error>
+                                <mat-error *ngIf="gridConfigurationForm.get('gridName').errors?.alreadyExist"
+                                    i18n="Grid Name already exist">
+                                    Grid Name already exist
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 col-sm-12 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Page/Table Name">Page/Table Name</mat-label>
+                                <input matInput type="text" id="moduleName" formControlName="pageName"
+                                    [matAutocomplete]="pageName" (keypress)="omit_number($event)"
+                                    readonly={{tableNameReadOnlyValue}}>
+                                <mat-autocomplete #pageName="matAutocomplete">
+                                    <mat-option *ngFor="let option of pageNameOptions; let i = index;"
+                                        [value]="option.pageIdWithPrefix"
+                                        (onSelectionChange)="setPageId(option,$event)">
+                                        <ng-container *ngIf="option.version">
+                                            {{option.pageName}} (Version {{option.version}})
+                                        </ng-container>
+                                        <ng-container *ngIf="option.version==='' || option.version===null">
+                                            {{option.pageName}}
+                                        </ng-container>
+                                    </mat-option>
+                                </mat-autocomplete>
+                                <mat-error *ngIf="gridConfigurationForm.get('pageName').errors?.required"
+                                    i18n="Page/Table Name is required">
+                                    Page/Table Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 col-sm-12 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Number Of Rows to show in the grid">Number Of Rows to show in the grid
+                                </mat-label>
+                                <mat-select id="defaultNoOfRows" formControlName="defaultNoOfRows" id="defaultNoOfRows">
+                                    <mat-option value='10' id="10">10</mat-option>
+                                    <mat-option value='25' id="25">25</mat-option>
+                                    <mat-option value='50' id="50">50</mat-option>
+                                    <mat-option value='100' id="100">100</mat-option>
+                                    <mat-option value='200' id="200">200</mat-option>
+                                    <mat-option value='500' id="500">500</mat-option>
+                                    <mat-option value='1000' id="1000">1000</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3 col-sm-12 px-2">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label i18n="Width Percentage">Width Percentage</mat-label>
+                                <input matInput id="number" type="number" min="0" max="100"
+                                    oninput="this.value = Math.abs(this.value)" formControlName="widthPercentage"
+                                    id="widthPercentage">
+                                <mat-error id="moduleNameError" i18n="Width Percentage is required"
+                                    *ngIf="gridConfigurationForm.get('widthPercentage').errors?.required">
+                                    Width Percentage is required
+                                </mat-error>
+                                <mat-error *ngIf="gridConfigurationForm.get('widthPercentage').errors?.max"
+                                    i18n="maximum Width Percentage can be 100">
+                                    Maximum Width Percentage can be 100
+                                </mat-error>
+                                <mat-error *ngIf="gridConfigurationForm.get('widthPercentage').errors?.min"
+                                    i18n="Minimum Width Percentage can be 10">
+                                    Minimum Width Percentage can be 10
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row w-100 mx-0">
+                        <div class="col-md-8 px-0">
+                            <div class="row w-100 mx-0">
+                                <div class="mt-3 mr-3">
+                                    <mat-slide-toggle id="filterable" color="accent" i18n="Filterable"
+                                        (change)="activeColumnFilterable($event)" formControlName="filterable">
+                                        Filterable
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="mt-3 mr-3">
+                                    <mat-slide-toggle id="exportable" color="accent" formControlName="exportable"
+                                        i18n="Exportable">
+                                        Exportable
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="mt-3 mr-3">
+                                    <mat-slide-toggle id="showCheckBox" color="accent" formControlName="showCheckBox"
+                                        i18n="Show
+                                    Checkbox">
+                                        Show
+                                        Checkbox
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="mt-3 mr-3">
+                                    <mat-slide-toggle id="userSpecificGridData" color="accent" i18n="Show
+                                    User Specific Grid Data" formControlName="userSpecificGridData"
+                                        (change)="hideFieldValues($event)">
+                                        Show
+                                        User Specific Grid Data
+                                    </mat-slide-toggle>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 px-0"
+                            *ngIf="gridConfigurationForm.get('userSpecificGridData').value===true">
+                            <div class="row w-100 mx-0">
+                                <div class="col-md-6 mt-3 px-2">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Grid Column Field">Grid Column Field </mat-label>
+                                        <mat-select formControlName="gridColumnNames" id="gridColumnNames">
+                                            <mat-option [value]="field.name"
+                                                (onSelectionChange)="getDataType($event,field.dataType)"
+                                                *ngFor="let field of gridColumnNames" id="field.name">
+                                                {{field.label}}</mat-option>
+                                        </mat-select>
+                                        <mat-error i18n="Grid Column Field is Required"> Grid Column Field is Required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6 mt-3 px-2">
+                                    <mat-form-field class="w-100" appearance="outline" *ngIf="showFieldValues">
+                                        <mat-label i18n="Fields">Fields</mat-label>
+                                        <mat-select id="fields" formControlName="fieldValues">
+                                            <ng-container *ngFor="let field of fieldsListForMapping">
+                                                <mat-option
+                                                    *ngIf="gridConfigurationForm.get('dataType').value === field.dataType"
+                                                    [value]='field.fieldId'>
+                                                    {{field.fieldName}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error i18n="Field Value is Required">Field Value is Required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <div formArrayName="gridColumns" class="mt-2"
+                *ngFor="let column of getGridColumnsFormArray(); let columnIndex = index">
+                <div [formGroupName]="columnIndex">
+                    <mat-card>
+                        <div class="row w-100 mx-0">
+                            <div class="col-md-6 col-sm-12 pl-0 pr-2">
+                                <mat-card-title i18n="Grid Column #">Grid Column #{{columnIndex+1}}</mat-card-title>
+                            </div>
+                            <div class="col-md-6 col-sm-12 justify-content-end pr-0">
+                                <div class="row justify-content-end">
+                                    <button mat-mini-fab [id]="'btnAdd'+columnIndex" type="button" color="primary"
+                                        (click)="addAnotherGridColumn(columnIndex)" class="mr-2">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <button [type]="'button'+columnIndex" *ngIf="getGridColumnsFormArray().length>1"
+                                        mat-mini-fab color="accent" class="mr-2" [id]="columnIndex+'menuRemove'"
+                                        (click)="removeThisGridColumn(columnIndex,$event)">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+                        <mat-card-content>
+                            <div class="row w-100 mx-0">
+                                <div class="col-md-3 col-sm-12 pr-2 pl-0">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Field Name">Field Name</mat-label>
+                                        <input matInput [id]="'columnName'+columnIndex" type="text"
+                                            formControlName="columnName" (focusout)="setColumnName(columnIndex)">
+
+                                        <mat-error [id]="'nameError_name'+columnIndex" i18n="Column Name is required"
+                                            *ngIf="column.get('columnName').errors?.required">
+                                            Column Name is required
+                                        </mat-error>
+                                        <mat-error [id]="'nameError_unique'+columnIndex" i18n="Invalid column Name"
+                                            *ngIf="column.get('columnName').errors?.columnNameRequired">
+                                            Invalid column Name
+                                        </mat-error>
+                                        <mat-error [id]="'nameError_unique'+columnIndex" i18n="Give unique column name"
+                                            *ngIf="column.get('columnName').errors?.unique">
+                                            Give unique column name
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3 col-sm-12 px-2">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Display Name">Display Name</mat-label>
+                                        <input matInput type="text" formControlName="displayName"
+                                            [id]="'displayName'+columnIndex"
+                                            (focusout)="setGridColumnName(columnIndex)">
+                                        <mat-error id="displayNameError" i18n="Display Name is required"
+                                            *ngIf="column.get('displayName').errors?.required">
+                                            Display Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2 col-sm-12 px-2">
+                                    <mat-form-field class="w-100" appearance="outline" *ngIf=!id>
+                                        <mat-label i18n="Field Data Type">Field Data Type</mat-label>
+                                        <mat-select formControlName="fieldType" [id]="'fieldType'+columnIndex">
+                                            <mat-option value="text" [id]="'fieldType'+'text'+columnIndex"> Text
+                                            </mat-option>
+                                            <mat-option value="uuid" [id]="'fieldType'+'uuid'+columnIndex"> UUID
+                                            </mat-option>
+                                            <mat-option value="long" [id]="'fieldType'+'long'+columnIndex"> Long
+                                            </mat-option>
+                                            <mat-option value="double" [id]="'fieldType'+'double'+columnIndex">
+                                                Double
+                                            </mat-option>
+                                            <mat-option value="date" [id]="'fieldType'+'date'+columnIndex"> Date
+                                            </mat-option>
+                                            <mat-option value="timeStamp" [id]="'fieldType'+'timeStamp'+columnIndex">
+                                                Time Stamp
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error [id]="'fieldTypeError'+columnIndex"
+                                            i18n="Field Data Type is required"
+                                            *ngIf="column.get('fieldType').errors?.required">
+                                            Field Data Type is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2 col-sm-12 px-2" *ngIf="column.get('fieldType').value === 'date'">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Date Format">Date Format</mat-label>
+                                        <mat-select [id]="'dateTimeFormat' + columnIndex"
+                                            formControlName="dateTimeFormat">
+                                            <mat-option [id]="'dateTimeFormat' + 'MM/dd/yyyy' + columnIndex"
+                                                value='MM/dd/yyyy'>MM/dd/yyyy</mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'dd/MM/yyyy' +columnIndex"
+                                                value='dd/MM/yyyy'>dd/MM/yyyy</mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'dd MMMM yyyy' + columnIndex"
+                                                value='dd MMMM yyyy'>dd MMMM yyyy</mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'yyyy-MM-dd' + columnIndex"
+                                                value='yyyy-MM-dd'>yyyy-MM-DD</mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'MMM d, y' + columnIndex"
+                                                value='MMM d, y'>MMM d, y</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2 col-sm-12 px-2"
+                                    *ngIf="column.get('fieldType').value === 'timeStamp'">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Time Stamp Format">Time Stamp Format</mat-label>
+                                        <mat-select id="dateTimeFormat" formControlName="dateTimeFormat">
+                                            <mat-option [id]="'dateTimeFormat' + 'MM/dd/yyyy hh:mm:ss a' + columnIndex"
+                                                value='MM/dd/yyyy hh:mm:ss a'>MM/dd/yyyy HH:MM:SS XM</mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'dd/MM/yyyy hh:mm:ss a' +columnIndex"
+                                                value='dd/MM/yyyy hh:mm:ss a'>dd/MM/yyyy HH:MM:SS XM</mat-option>
+                                            <mat-option
+                                                [id]="'dateTimeFormat' + 'dd MMMM yyyy HH:mm:ss a' + columnIndex"
+                                                value='dd MMMM yyyy HH:mm:ss a'>dd MMMM yyyy HH:MM:SS XM
+                                            </mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'yyyy-MM-dd hh:mm:ss a' + columnIndex"
+                                                value='yyyy-MM-dd hh:mm:ss a'>yyyy-MM-DD HH:MM:SS XM</mat-option>
+                                            <mat-option [id]="'dateTimeFormat' + 'MMM d, y hh:mm:ss a' + columnIndex"
+                                                value='MMM d, y hh:mm:ss a'>MMM d, y HH:MM:SS XM</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-1 col-sm-12 px-1">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Column Sequence No">Column Sequence No</mat-label>
+                                        <input matInput [id]="'seq_number'+columnIndex" type="number" min="0"
+                                            oninput="this.value = Math.abs(this.value)"
+                                            formControlName="columnSequenceNo" id="columnSequenceNo">
+                                        <mat-error [id]="'columnSequenceNoError'+columnIndex"
+                                            i18n="Column Sequence No is required"
+                                            *ngIf="column.get('columnSequenceNo').errors?.required">
+                                            Column Sequence No is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-1 col-sm-12 px-1">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label i18n="Width Percentage">Width Percentage</mat-label>
+                                        <input matInput [id]="'column_width'+columnIndex" type="number" min="0"
+                                            max="100" oninput="this.value = Math.abs(this.value)"
+                                            formControlName="widthPercentage" id="widthPercentage"
+                                            placeholder="Width Percentage">
+                                        <mat-error [id]="'widthPercentageError'+columnIndex"
+                                            *ngIf="column.get('widthPercentage').errors?.required"
+                                            i18n="Width Percentage is required">
+                                            Width Percentage is required
+                                        </mat-error>
+                                        <mat-error *ngIf="column.get('widthPercentage').errors?.max"
+                                            [id]="'maximum_width'+columnIndex"
+                                            i18n="maximum Width Percentage can be 100">
+                                            Maximum Width Percentage can be 100
+                                        </mat-error>
+                                        <mat-error *ngIf="column.get('widthPercentage').errors?.min"
+                                            [id]="'min_width'+columnIndex" i18n="minimum Width Percentage can be 10">
+                                            Minimum Width Percentage can be 10
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row w-100 mx-0">
+                                <mat-slide-toggle color="accent" formControlName="sortable"
+                                    [id]="'sortable'+columnIndex" class="mt-3 mr-2" i18n="Sortable">
+                                    Sortable
+                                </mat-slide-toggle>
+                                <ng-container *ngIf="hideFilterableOption">
+
+                                    <mat-slide-toggle color="accent" formControlName="filterable" class="mt-3 mr-2"
+                                        [id]="'filterable'+columnIndex" i18n="Filterable">Filterable
+                                    </mat-slide-toggle>
+                                </ng-container>
+                                <mat-slide-toggle color="accent" formControlName="hiddenValue"
+                                    [id]="'hide_column'+columnIndex" class="mt-3 mr-2" i18n="Hide Column">
+                                    Hide Column
+                                </mat-slide-toggle>
+                                <mat-slide-toggle color="accent" (change)="getColumnValue($event,columnIndex)"
+                                    formControlName="defaultSortableColumn" [id]="'default_sortable'+columnIndex"
+                                    class="mt-3 mr-2" i18n="Set as default sortable column">
+                                    Set as default sortable column
+                                </mat-slide-toggle>
+
+                                <!--<mat-slide-toggle
+                                            *ngIf="sortDirectionBoolean && (columnIndex===sortDirectionIndex)"
+                                            (change)="getSortDirectionAscValue($event,columnIndex)" color="accent"
+                                            formControlName="asc">
+                                            Asc
+                                        </mat-slide-toggle>-->
+
+                                <mat-slide-toggle class="mt-3 mr-2" i18n="Desc"
+                                    *ngIf="sortDirectionBoolean && (columnIndex===sortDirectionIndex)"
+                                    (change)="getSortDirectionDescValue($event,columnIndex)" color="accent"
+                                    formControlName="desc" [id]="'desc'+columnIndex">
+                                    Desc
+                                </mat-slide-toggle>
+                                <mat-slide-toggle color="accent" formControlName="passParams"
+                                    [id]="'pass_parameter'+columnIndex" class="mt-3 mr-1"
+                                    i18n="Pass these column as parameters when the row is clicked">
+                                    Pass these column as parameters when the row is clicked
+                                </mat-slide-toggle>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+            <mat-card-actions>
+                <div class="row mx-0 justify-content-end">
+                    <button mat-raised-button color="primary" id="btnsave" class="mr-3" i18n="Save">Save</button>
+                    <button mat-raised-button color="accent" type="button" (click)="reset(userForm)" id="btnreset"
+                        i18n="Reset">Reset</button>
+                </div>
+            </mat-card-actions>
+        </mat-card>
+    </form>
+</div>
+
+<div class="row w-100 mx-0 px-3 mt-3">
+    <mat-card class="w-100">
+        <mat-card-title i18n="Grid List">Grid List</mat-card-title>
+        <app-yorogrid #gridConfig gridId="grid-configuration" (messageEvent)="receiveMessage($event)"
+            defaultColumn="columnName"></app-yorogrid>
+    </mat-card>
+</div>

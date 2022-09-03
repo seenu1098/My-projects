@@ -1,0 +1,32 @@
+.mat-mini-fab {
+  height: 25px!important;
+  width: 25px!important;
+  line-height: 16px!important;
+  padding:1px!important;
+}
+
+  .alert-warning {
+    color: black;
+    background-color: whitesmoke;
+    border-color:white;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.close {
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .2;
+}
+
+ 

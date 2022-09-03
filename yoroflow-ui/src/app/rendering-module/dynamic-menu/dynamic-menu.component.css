@@ -1,0 +1,119 @@
+/* .header {
+  padding: 5px;
+  padding-left: 7px;
+  background: #0078ff;
+  color: #fff;
+  margin: 0%
+} */
+  .menuAlign {
+    direction: ltr;
+    display: flex;
+    justify-content: end-end;
+  }
+   
+    mat-form-field {
+      width: 60%;
+    }
+   
+    .mat-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button{
+   line-height: 42px;
+    }
+   
+    .logo{
+      width: 110px;
+      height: 36px;
+      position:relative;
+      
+  }
+   
+  .buttonCss{
+    /* height: 50px; */
+    line-height: 35px;
+    max-block-size: 37px;
+  }
+
+  .logo{
+    width: 110px;
+    height: 36px;
+    position:relative;
+    
+}
+
+.buttonCss{
+  /* height: 50px; */
+  line-height: 35px;
+  max-block-size: 37px;
+}
+
+/* .mat-card-avatar{
+  margin-top: 2px;
+} */
+.chat-prof-pic{
+  height: 30px;
+  width: 30px;
+  background-size: cover;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.chat-prof-picture{
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.circle {
+  /* margin-top: 4px; */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 15px;
+  color: #fff;
+  line-height: 30px;
+  text-align: center center;
+  background: #c2c2a3;
+  background-position: center center;
+}
+
+.circle-class {
+  /* margin-top: 4px; */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 15px;
+  color: #fff;
+  line-height: 30px;
+  text-align: center center;
+  background: #c2c2a3;
+  background-position: center center;
+}
+
+.tp-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #eee;
+}
+.tp-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 40px;
+  width: 100px;
+  color: white;
+}
+
+.sidenav-container{
+  min-height: 670px;
+  overflow: hidden !important;
+}
+
+::ng-deep .specific-class > .mat-expansion-indicator:after {
+  color: white;
+}

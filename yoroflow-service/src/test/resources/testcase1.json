@@ -1,0 +1,35 @@
+{
+	"ifTargetTask": "IFTASK",
+	"elseTargetTask": "ELSETASK",
+	"decisionLogic": {
+		"logicOperator": "AND",
+		"rules": [
+			{
+				"leftAssignment": {
+					"dataType": "text",
+					"variableType": "constant",
+					"variableName": "A"
+				},
+				"operator": "eq",
+				"rightAssignment": {
+					"dataType": "text",
+					"variableType": "constant",
+					"variableName": "A"
+				}
+			},
+			{
+				"leftAssignment": {
+					"dataType": "number",
+					"variableType": "constant",
+					"variableName": "A"
+				},
+				"operator": "gt",
+				"rightAssignment": {
+					"dataType": "number",
+					"variableType": "constant",
+					"variableName": "5"
+				}
+			}
+		]
+	}
+}

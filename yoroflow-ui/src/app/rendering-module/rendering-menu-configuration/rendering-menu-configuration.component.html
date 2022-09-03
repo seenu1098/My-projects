@@ -1,0 +1,132 @@
+<ng-container *ngIf="applicationCount === 0">
+    <app-warning type="menu"></app-warning>
+</ng-container>
+<ng-container *ngIf="applicationCount > 0">
+    <mat-card style="background-color:rgb(154, 199, 212)">
+        <form #userForm="ngForm" [formGroup]="form">
+            <mat-card class="w-100 mt-1">
+                <mat-card-title>
+                    Menu Configuration
+                </mat-card-title>
+                <input type="hidden" name="id" formControlName="menuId" />
+                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                    <mat-form-field style="width:24%">
+                        <input matInput id="menuName" formControlName="menuName" type="text" placeholder="Menu Name*">
+                        <mat-error>Menu Name is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width:24%">
+                        <mat-label>Menu Orientation *</mat-label>
+                        <mat-select formControlName="menuOrientation" id="menuOrientation">
+                            <mat-option id="Top" value="Top">Top</mat-option>
+                            <mat-option id="Bottom" value="Bottom">Bottom</mat-option>
+                            <mat-option id="Left" value="Left">Left</mat-option>
+                            <mat-option id="Right" value="Right">Right</mat-option>
+                        </mat-select>
+                        <mat-error>Menu Orientation is required</mat-error>
+                    </mat-form-field>
+                    <mat-form-field style="width:24%">
+                        <mat-label>Application Name *</mat-label>
+                        <mat-select formControlName="applicationName" id="applicationName">
+                            <mat-option [value]="app.applicationName" *ngFor="let app of applicationsList"
+                                (onSelectionChange)="setApplicationId($event,app.id)">{{app.applicationName}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>Application Name is required</mat-error>
+                    </mat-form-field>
+                    <div class="mat-slide-toggle-content">
+                        <mat-slide-toggle color="accent" formControlName="collapsible">
+                            Collapsible
+                        </mat-slide-toggle>
+                    </div>
+                </div>
+            </mat-card>
+            <div formArrayName="menuDetails" style="margin-top: 1%"
+                *ngFor="let column of getMenuDetailsFormArray(); let columnIndex = index">
+                <div [formGroupName]="columnIndex">
+                    <mat-card>
+                        <div fxLayout="row" fxLayoutAlign="space-between  center">
+                            <mat-card-title>Menu Details #{{columnIndex+1}}</mat-card-title>
+                            <div fxLayoutAlign="end start">
+                                <button mat-mini-fab id="cancel" type="button" color="primary"
+                                    (click)="addAnotherMenuDetails(columnIndex)">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <button style="margin-left: 10%;" type="button" *ngIf="form.get('menuDetails').length>1"
+                                    mat-mini-fab color="primary" id="remove" (click)="removeMenuDetails(columnIndex)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <mat-card-content>
+                            <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                                <mat-form-field style="width:24%">
+                                    <input matInput id="menuName" type="text" formControlName="menuName"
+                                        placeholder="Menu Name *">
+                                    <mat-error *ngIf="column.get('menuName').errors?.required">
+                                        Menu Name is required
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field style="width:24%">
+                                    <input matInput id="pageName" type="text" formControlName="pageName"
+                                        placeholder="Page Name" [matAutocomplete]="pageName">
+                                    <mat-autocomplete #pageName="matAutocomplete">
+                                        <mat-option *ngFor="let option of pageNameOptions; let i = index;"
+                                            [value]="option.pageName"
+                                            (onSelectionChange)="setPageId(columnIndex,option.pageId)">
+                                            {{option.pageName}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <mat-error *ngIf="column.get('pageName').errors?.required">
+                                        Page Name is required
+                                    </mat-error>
+                                </mat-form-field>
+                                <!-- <mat-form-field style="width:24%">
+                                                <input matInput type="text" formControlName="menuPath" placeholder="Path">
+                                            </mat-form-field> -->
+                                <mat-form-field style="width:24%">
+                                    <input matInput id="parentMenu" type="text" formControlName="parentMenu"
+                                        placeholder="Parent Menu" [matAutocomplete]="parentMenu">
+                                    <mat-autocomplete #parentMenu="matAutocomplete">
+                                        <mat-option *ngFor="let option of parentNameOptions; let i = index;"
+                                            [value]="option.menuName"
+                                            (onSelectionChange)="setParentId(columnIndex,option.id)">
+                                            {{option.menuName}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field style="width:24%">
+                                    <input matInput id="displayOrder" type="number" min="0"
+                                        oninput="this.value = Math.abs(this.value)" formControlName="displayOrder"
+                                        placeholder="Display Order">
+                                </mat-form-field>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+            <div fxLayoutAlign="center center">
+                <div class="alert alert-warning" style="width: 50%;" *ngIf="showMenuWarning">
+                    <div>
+                        There no pages for this menu. Please
+                        <a routerLink="/page" class="alert-link"> click here </a> to create.
+                    </div>
+                </div>
+            </div>
+            <mat-card-actions>
+                <div fxLayoutAlign="center center">
+                    <button mat-raised-button color="primary" id="btnsave" (click)="save(userForm)">Save</button>
+                    <button mat-raised-button color="accent" id="reset" type="reset" (click)="reset(userForm)"
+                        id="btnreset">Reset</button>
+                </div>
+            </mat-card-actions>
+        </form>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center">
+            <mat-card class="w-100">
+                <mat-card-title>Menu List</mat-card-title>
+                <app-yorogrid #MenuConfig gridId="MenuConfig" (messageEvent)="receiveMessage($event)"
+                    defaultColumn="menuName">
+                </app-yorogrid>
+            </mat-card>
+        </div>
+    </mat-card>
+</ng-container>

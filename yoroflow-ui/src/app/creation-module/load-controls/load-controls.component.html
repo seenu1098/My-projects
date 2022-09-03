@@ -1,0 +1,300 @@
+<div class="example-full-width" *ngIf="column.controlType">
+  <ng-container *ngIf="column.controlType ==='label'">
+    <!-- <mat-icon>label</mat-icon> -->
+    <div *ngIf="column.field.label.labelPosition==='center'">
+      <label [style.font-size.px]="column.field.label.labelSize" [style.font-family]="column.field.label.labelStyle"
+        [style.height.px]="column.field.label.labelSize" style="display: block;text-align: center;">
+        {{column.field.label.labelName}}</label>
+    </div>
+    <div *ngIf="column.field.label.labelPosition==='left'|| column.field.label.labelPosition==='right'">
+      <label [style.font-size.px]="column.field.label.labelSize" [style.font-family]="column.field.label.labelStyle"
+        [style.height.px]="column.field.label.labelSize" [style.float]="column.field.label.labelPosition">
+
+        {{column.field.label.labelName}}</label>
+    </div>
+
+
+
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='userField'">
+    <!-- <mat-icon>arrow_drop_down</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <mat-select id="select">
+        <mat-option>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='input'">
+    <!-- <mat-icon>text_fields</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="input" placeholder="{{column.field.label.labelName}}">
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='computeFields'">
+    <!-- <mat-icon>text_fields</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="input" placeholder="{{column.field.label.labelName}}">
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='password'">
+    <!-- <mat-icon>text_fields</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="password" placeholder="{{column.field.label.labelName}}">
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='email'">
+    <!-- <mat-icon>text_fields</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="email" placeholder="{{column.field.label.labelName}}">
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='tel'">
+    <!-- <mat-icon>text_fields</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="telephone" placeholder="{{column.field.label.labelName}}">
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="column.controlType ==='currency'">
+    <!-- <mat-icon>text_fields</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="currency" placeholder="{{column.field.label.labelName}}">
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='date'">
+    <!-- <mat-icon>today</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput id="date" [matDatepicker]="picker" placeholder="{{column.field.label.labelName}}">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='datetime'">
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <input matInput [ngxMatDatetimePicker]="picker2">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #picker2 color="primary" [enableMeridian]="true">
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='select'">
+    <!-- <mat-icon>arrow_drop_down</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <mat-select id="select">
+        <ng-container *ngIf="column.field.control && column.field.control.optionType==='s'">
+          <mat-option *ngFor="let option of column.field.control.optionsValues" [value]=" option.code">
+            {{option.description}}
+          </mat-option>
+        </ng-container>
+        <ng-container *ngIf="column.field.control && column.field.control.optionType!=='s'">
+          <mat-option *ngFor="let value of values" [value]=" value.name">
+            {{value.name}}
+          </mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='multipleselect'">
+    <!-- <mat-icon>more_vert</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>{{column.field.label.labelName}}</mat-label>
+      <mat-select multiple id="multipleselect">
+        <ng-container *ngIf="column.field.control && column.field.control.optionType==='s'">
+          <mat-option *ngFor="let option of column.field.control.optionsValues" [value]=" option.code">
+            {{option.description}}
+          </mat-option>
+        </ng-container>
+        <ng-container *ngIf="column.field.control && column.field.control.optionType!=='s'">
+          <mat-option *ngFor="let value of values" [value]=" value.name">
+            {{value.name}}
+          </mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='textarea'">
+    <!-- <mat-icon>short_text</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <textarea matInput id="textarea" placeholder="{{column.field.label.labelName}}"></textarea>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='radiobutton'">
+    <!-- <mat-icon>radio_button_unchecked</mat-icon> -->
+    <label>{{column.field.label.labelName}}:</label>
+    <mat-radio-group id="radiobutton" style="margin-right: 100px;">
+      <ng-container *ngIf="column.field.control && column.field.control.optionType==='s'">
+        <mat-radio-button *ngFor="let option of column.field.control.optionsValues" [value]="option.code"
+          style="margin-left:7px;margin-top:7px;">
+          <span style="margin-left: -5px"> {{option.description}}</span>
+        </mat-radio-button>
+      </ng-container>
+      <ng-container *ngIf="column.field.control && column.field.control.optionType!=='s'">
+        <mat-radio-button *ngFor="let value of values" [value]="value.name" style="margin-left:7px;margin-top:7px;">
+          <span style="margin-left: -5px">{{value.name}}</span>
+        </mat-radio-button>
+      </ng-container>
+
+    </mat-radio-group>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='checkbox'">
+    <!-- <mat-icon>check_box</mat-icon> -->
+    <mat-checkbox id="checkbox">{{column.field.label.labelName}}</mat-checkbox>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='chip'">
+    <!-- <mat-icon>settings_ethernet</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-chip-list #chipList aria-label="value selection">
+        <mat-chip *ngFor="let value of values" [selectable]="selectable" [removable]="removable"
+          (removed)="remove(value)">
+          {{value.name}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input id="chip" placeholder="{{column.field.label.labelName}}" [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+          (matChipInputTokenEnd)="add($event)">
+      </mat-chip-list>
+    </mat-form-field>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='button'">
+    <!-- <mat-icon>save_alt</mat-icon> -->
+    <ng-container *ngIf="column.field.control">
+      <button mat-raised-button id="button"
+        [color]="getButtonColor(column.field.control.buttonType)">{{column.field.label.labelName}}</button>
+    </ng-container>
+
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='grid'">
+    <mat-icon>list</mat-icon>
+    <ng-container *ngIf="column.field.control">
+      <app-yorogrid [gridId]="column.field.control.gridId" #gridConfig
+        (individualSelect)="individualSelectCheckbox($event)" (isSelect)="isSelectAll($event)"
+        (messageEvent)="receiveMessage($event)" style="width: 100%"></app-yorogrid>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='divider'">
+    <hr id="divider" class="example-full-width">
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='paragraph'">
+    <div fxLayout="row" fxLayoutGap="3px">
+      <mat-icon>notes</mat-icon>
+      <ng-container *ngIf="enableParagraph">
+        <div id="paragraph" [innerHTML]="column.field.control.paragraph"></div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="column.controlType ==='autocomplete'">
+    <!-- <mat-icon>format_indent_increase</mat-icon> -->
+    <mat-form-field class="example-full-width" appearance="outline">
+      <input id="autocomplete" type="text" placeholder="{{column.field.label.labelName}}" aria-label="Number" matInput
+        [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let value of values" [value]="value.name">
+          {{value.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="column.controlType ==='Divider'" class=icon>
+    <mat-icon id="remove">remove</mat-icon>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='fileupload'" class=icon>
+    <button mat-raised-button id="fileupload" color="primary">{{column.field.label.labelName}}</button>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='extractaspdf'" class=icon>
+    <button mat-raised-button id="extractaspdf" color="primary">{{column.field.label.labelName}}</button>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='signaturecontrol'" class=icon>
+    <div fxLayout="column" fxLayoutGap="2px">
+      <div>{{column.field.label.labelName}}</div>
+      <signature-pad id="signaturecontrol" [options]="signaturePadOptions"></signature-pad>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='hiddencontrol'" class=icon>
+    <div fxLayout="row" fxLayoutGap="2px">
+      <div style="padding-top: 5px;">
+        <mat-icon>lock</mat-icon>
+      </div>
+      <div id="hiddencontrol" style="padding-top: 10px;">{{column.field.label.labelName}}</div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='imagegrid'" class=icon>
+    <div fxLayout="row" fxLayoutGap="2px">
+      <div style="padding-top: 5px;">
+        <mat-icon>developer_board</mat-icon>
+      </div>
+      <div id="developerBoard" style="padding-top: 10px;"
+        *ngIf="column.field.control && column.field.control.imageGridLabel">
+        {{column.field.control.imageGridLabel}}</div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='card'">
+    <div fxLayout="row" fxLayoutGap="2px">
+      <mat-icon>line_style</mat-icon>
+      <div id="card" *ngIf="column.field.name">
+        {{column.field.label.labelName}}</div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='hyperlink'" class=icon>
+    <div fxLayout="row" fxLayoutGap="2px">
+      <mat-icon>bookmark</mat-icon>
+      <div id="hyperlink">{{column.field.name}}</div>
+    </div>
+
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='shoppingcart'" class=icon>
+    <div fxLayout="row" fxLayoutGap="2px">
+      <mat-icon>shopping_cart</mat-icon>
+      <div id="shoppingcart" *ngIf="column.field.control">{{column.field.control.shoppingCartLabel}}</div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='page'" class=icon>
+    <div fxLayout="row" fxLayoutGap="2px">
+      <mat-icon>ballot</mat-icon>
+      <div id="page" *ngIf="column.field.control">{{column.field.control.pageName}}</div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='table'" class=icon>
+    <div fxLayout="row" fxLayoutGap="2px">
+      <mat-card-title id="table" *ngIf="column.field.control">{{column.field.control.tableName}}</mat-card-title>
+    </div>
+
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='tabbedmenu' && column.field.control && column.field.control.menuId
+  &&column.field.control.menuOrientation">
+    <app-dynamic-menu-tab [id]="column.field.control.menuId" [type]="column.field.control.menuOrientation">
+    </app-dynamic-menu-tab>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='table'">
+    <app-table [field]="column.field" [group]="group"></app-table>
+  </ng-container>
+  <ng-container *ngIf="column.controlType ==='image' && column.field.control && column.field.control.image
+&&column.field.control.height">
+    <div *ngIf="isLoad && (column.field.control.imagePosition==='left'|| column.field.control.imagePosition==='right')">
+      <img [src]="transform()" id="logo" class="logo" alt="YOROSIS LOGO" [style.width.px]="column.field.control.width"
+        [style.height.px]="column.field.control.height" [style.float]="column.field.control.imagePosition">
+    </div>
+
+    <div *ngIf="isLoad && column.field.control.imagePosition==='center'">
+      <img [src]="transform()" id="logo" class="logo" alt="YOROSIS LOGO" [style.width.px]="column.field.control.width"
+        [style.height.px]="column.field.control.height" style="display: block;margin-left: auto; margin-right: auto;">
+    </div>
+  </ng-container>
+  <div *ngIf="column.controlType ==='image' && !isLoad && column.field && column.field.label.labelName" fxLayout="row"
+    fxLayoutGap="2px">
+    <mat-icon>perm_media</mat-icon>
+    <div id="imageName">{{column.field.label.labelName}}</div>
+  </div>
+</div>

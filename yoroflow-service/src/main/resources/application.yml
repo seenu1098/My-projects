@@ -1,0 +1,295 @@
+spring:
+  profiles:
+    active: default, dev
+ 
+  liquibase:
+    enabled: false 
+
+  application:
+    name: workflow-service
+    
+server.servlet.context-path: /workflow-service
+
+logging:
+  pattern:
+    console: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentTenantId}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    file: "%d %-5level [%X{x-yoroflow-request-id}] [%X{currentTenantId}] [%X{currentLoggedInUserName}] [%thread] %logger [%F:%L] - %msg%n"
+    
+  level.org:
+    org.springframework.web: INFO
+    org.springframework.amqp: INFO
+    com.yorosis.yoroflow: DEBUG
+
+server:
+  port: 4040
+
+google:
+  recaptcha:
+    secret:
+      key: 6Lfz7KIZAAAAAGynlJZ-zrR-4MVC3D0sot0HTy_Z
+     
+    verify:
+      url: https://www.google.com/recaptcha/api/siteverify
+       
+---
+spring:
+  profiles: default
+  
+  data: 
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    ddl-auto: none
+    open-in-view: false
+    default_schema: yoroflow
+
+  mail:
+    host: smtp.office365.com
+    username: muruga@yorosis.com
+    password: xxxxxxxxxxx
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  servlet:
+    multipart:
+     enabled: true
+     max-file-size: 10MB
+     max-request-size: 10MB
+
+
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator 
+    algorithm: PBEWithMD5AndDES
+    
+file:
+  bucket-name: yf-dv-bckt
+  access-key: VFCNX77DPNTV2EVZ5FYE
+  access-secret: hWzE73+S81qKFRxCWZtZBP+/9MDX/myq3yDLQLVVO04
+  service-endpoint: https://sgp1.digitaloceanspaces.com/
+  service-region: sgp1
+
+hibernate:
+  scan:
+    packages: com.yorosis.yoroflow.entities
+
+org.jobrunr.job-scheduler.enabled: true
+org.jobrunr.background-job-server.enabled: true
+org.jobrunr.dashboard.enabled: false
+
+scheduler:
+  schema: ${SCHEDULER_SCHEMA:scheduler}   
+---
+spring:
+  profiles: dev 
+
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 2
+      maximum-pool-size: 3
+      pool-name: yoroflow
+      auto-commit: false
+     
+    url: jdbc:postgresql://india-db.yorosis.com:5544/liveapps?currentSchema=yoroflow
+    username: liveappsuser
+    password: oZXu10d09$@$LK90U6b]Z$Uv
+
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: yoroapps
+        format_sql : true
+        dialect: com.vladmihalcea.book.hpjp.hibernate.type.json.PostgreSQL10JsonDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+queue:
+  enabled: false
+
+scheduler:
+  process:
+    tasks:
+      #cron: "* */10 * * * *"
+      cron: "*/10 * * * * *"    
+
+rendering-service:
+  base: 
+    url: http://localhost:6060/rendering-service/
+    
+creation-service:
+  base:
+    url: http://localhost:9090/creation-service/ 
+    
+messaging-service:
+  base: 
+    url: http://localhost:3030/messaging-service/
+ 
+authnz-service:
+  base:
+    url: http://localhost:2020/authnz-service/
+    
+jasypt:
+  encryptor:
+    password: yorosis-secret
+    
+notify:
+  sms:
+    access_key: AKIAYGHH6PSEOTULI32B
+    access-secret: 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
+    
+file:
+  bucket-name: yf-dv-bckt
+  access-key: VFCNX77DPNTV2EVZ5FYE
+  access-secret: hWzE73+S81qKFRxCWZtZBP+/9MDX/myq3yDLQLVVO04
+  service-endpoint: https://sgp1.digitaloceanspaces.com/
+  service-region: sgp1
+  
+  servlet:
+    multipart:
+     enabled: true
+     max-file-size: 10MB
+     max-request-size: 10MB
+
+---
+spring:
+  profiles: prod 
+  data:
+    web:
+      pageable.default-page-size: 10
+      one-indexed-parameters: false
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: ${CONNECTION_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${CONNECTION_POOL_MAX_SIZE:5}
+      pool-name: workflow-service-pool
+      auto-commit: false
+    
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    hibernate:
+      generate-ddl: false
+      ddl-auto: none
+      show_sql: true
+    properties:
+      hibernate:
+        format_sql : true
+
+  rabbitmq:
+    host: ${QUEUE_SERVICE_NAME}
+    port: 5672
+    username: ${QUEUE_USER}
+    password: ${QUEUE_PASSWORD}
+    
+  servlet:
+    multipart:
+     enabled: true
+     max-file-size: 10MB
+     max-request-size: 10MB
+    
+queue:
+  enabled: true
+
+scheduler:
+  process:
+    tasks:
+      cron: "* */10 * * * *"
+      #cron: "*/60 * * * * *"
+
+jasypt:
+  encryptor:
+    password: ${ENCRYPTION_KEY}
+
+rendering-service:
+  base: 
+    url: http://rendering-service:8080/rendering-service/
+    
+creation-service:
+  base:
+    url: http://creation-service:8080/creation-service/
+
+messaging-service:
+  base: 
+    url: http://messaging-service:8080/messaging-service/
+ 
+authnz-service:
+  base:
+    url: http://authnz-service:8080/authnz-service/
+
+    
+server:
+  port: 8080
+  
+file:
+  bucket-name: ${S3_BUCKET_NAME}
+  access-key: ${S3_ACCESS_KEY}
+  access-secret: ${S3_ACCESS_SECRET}
+  service-endpoint: ${S3_URL}
+  service-region: ${S3_REGION}
+   
+---
+spring:
+  profiles: test 
+  datasource: 
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 5
+      maximum-pool-size: 5
+      pool-name: yoroflow
+      auto-commit: false
+      
+    url: jdbc:h2:mem:cchn;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS YOROAPPS
+    username: sa
+    password: sa
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    hibernate:
+      generate-ddl: true
+      ddl-auto: none
+      show_sql: true
+    properties:
+      hibernate:
+        default_schema: yoroapps
+
+rendering-service:
+  base: 
+    url: http://localhost:6060/rendering-service/
+    
+yoroapps-service:
+  base:
+    url: http://localhost:8080/common-service/ 
+    
+creation-service:
+  base:
+    url: http://localhost:9090/creation-service/ 

@@ -1,0 +1,228 @@
+<form [formGroup]="form" #userForm="ngForm" id="cron_form">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-button id="hourly" type="button" (click)="setTimePeriodType('Hourly')"
+            [class]="timePeriodType==='Hourly'?'timePeriod_selected_style':'timePriodType_style'">Hourly</button>
+        <button mat-button id="daily_button" type="button" (click)="setTimePeriodType('Daily')"
+            [class]="timePeriodType==='Daily'?'timePeriod_selected_style':'timePriodType_style'">Daily</button>
+        <button mat-button id="weekly_button" type="button" (click)="setTimePeriodType('Weekly')"
+            [class]="timePeriodType==='Weekly'?'timePeriod_selected_style':'timePriodType_style'">Weekly</button>
+        <button mat-button id="monthly_button" type="button" (click)="setTimePeriodType('Monthly')"
+            [class]="timePeriodType==='Monthly'?'timePeriod_selected_style':'timePriodType_style'">Monthly</button>
+    </div>
+    <div style="margin-top:20px;">
+        <ng-container *ngIf="timePeriodType==='Hourly'">
+            <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="10px" style="margin:10px 0px 0px 0px;height: 50px;">
+                <span class="label-css">Every</span>
+                <mat-form-field id="number-field" style="width: 51px;" appearance="outline">
+                    <input matInput type="number" formControlName="number" id="number" min="1" max="12"
+                        oninput="this.value = Math.abs(this.value)">
+                </mat-form-field>
+                <span class="label-css" *ngIf="form.get('number').value===1 || form.get('number').value===0">hour</span>
+                <span class="label-css" *ngIf="form.get('number').value>1">hours</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center" style="height:5px;">
+                <mat-error *ngIf="form.get('number').errors">Hours should between 1 and 12
+                </mat-error>
+            </div>
+            <div fxLayout="row wrap" fxLayoutAlign="center center" style="margin:10px 0px 0px 0px">
+                Every
+                <ng-container *ngIf="form.get('number').value!==0 && form.get('number').value<13">
+                    {{form.get('number').value===1?'hour':form.get('number').value+' hours'}}
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value>12">
+                    12 hours
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value===0">
+                    hour
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="timePeriodType==='Daily'">
+            <div fxLayout="row" fxLayoutGap="10px" style="margin:10px 0px 0px 0px;height: 50px;">
+                <span class="label-css">Every</span>
+                <mat-form-field id="number-field" style="width: 51px;" appearance="outline">
+                    <input matInput type="number" formControlName="number" id="number" min="1" max="6"
+                        oninput="this.value = Math.abs(this.value)">
+                </mat-form-field>
+                <span class="label-css" *ngIf="form.get('number').value===1 || form.get('number').value===0">day, at</span>
+                <span class="label-css" *ngIf="form.get('number').value>1">days, at</span>
+                <mat-form-field style="width: 90px;" appearance="outline">
+                    <mat-select formControlName="time" id="time">
+                        <ng-container *ngFor="let time of timeArray">
+                            <mat-option [id]="time" [value]="time">{{time}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: 70px;" appearance="outline">
+                    <mat-select formControlName="minute" id="minute">
+                        <mat-option id="minute_1" value="00">00</mat-option>
+                        <mat-option id="minute_2" value="15">15</mat-option>
+                        <mat-option id="minute_3" value="30">30</mat-option>
+                        <mat-option id="minute_4" value="45">45</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span class="label-css">minutes</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" style="height:5px;">
+                <mat-error *ngIf="form.get('number').errors">Days should between 1 and 6
+                </mat-error>
+            </div>
+            <div fxLayout="row wrap" style="margin:10px 0px 0px 0px">
+                Every
+                <ng-container *ngIf="form.get('number').value<7 && form.get('number').value!==0">
+                    {{form.get('number').value===1?'day':form.get('number').value+' days'}}
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value>6">
+                    6 days
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value===0">
+                    day
+                </ng-container>
+                at {{form.get('time').value}} {{form.get('minute').value}} minutes
+            </div>
+        </ng-container>
+        <ng-container *ngIf="timePeriodType==='Weekly'">
+            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                <ng-conatiner *ngFor="let day of weekDays; let i = index;">
+                    <div fxLayoutAlign="center center" class="weekday_style" [id]="day.value" [matTooltip]="day.name"
+                        (click)="getSelectedDays(day,i)" [style.background]="day.isSelected?'#009aff26':''"
+                        [style.color]="day.isSelected?'#039be5':''">
+                        {{day.value}}
+                    </div>
+                </ng-conatiner>
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" style="margin:10px 0px 0px 0px;height: 50px;">
+                <span class="label-css">Every</span>
+                <mat-form-field style="width: 51px;" appearance="outline">
+                    <input matInput type="number" formControlName="number" id="number" min="1" max="3"
+                        oninput="this.value = Math.abs(this.value)">
+                </mat-form-field>
+                <span class="label-css" *ngIf="form.get('number').value===1 || form.get('number').value===0">week, at</span>
+                <span class="label-css" *ngIf="form.get('number').value>1">weeks, at</span>
+                <mat-form-field style="width: 90px;" appearance="outline">
+                    <mat-select formControlName="time">
+                        <ng-container *ngFor="let time of timeArray">
+                            <mat-option [value]="time">{{time}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: 70px;" appearance="outline">
+                    <mat-select formControlName="minute" id="minute">
+                        <mat-option id="minute_1" value="00">00</mat-option>
+                        <mat-option id="minute_2" value="15">15</mat-option>
+                        <mat-option id="minute_3" value="30">30</mat-option>
+                        <mat-option id="minute_4" value="45">45</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span class="label-css">minutes</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" style="height:5px;">
+                <mat-error *ngIf="form.get('number').errors">Weeks should between 1 and 3
+                </mat-error>
+            </div>
+            <div fxLayout="row wrap" style="margin:10px 0px 0px 0px">
+                Every
+                <ng-container *ngIf="form.get('number').value<4 && form.get('number').value!==0">
+                    {{form.get('number').value===1?'week':form.get('number').value+' weeks'}}
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value>3">
+                    3 weeks
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value===0">
+                    week
+                </ng-container>
+                <ng-container *ngIf="selectedWeekDayArray.length===1">
+                    on {{selectedWeekDayArray[0]}}
+                </ng-container>
+                <ng-container *ngIf="selectedWeekDayArray.length===2">
+                    on {{selectedWeekDayArray[0]}} and {{selectedWeekDayArray[1]}}
+                </ng-container>
+                <ng-container *ngIf="selectedWeekDayArray.length>2">
+                    <span style="margin: 0px 5px;">on</span>
+                    <ng-container *ngFor="let day of selectedWeekDayArray;let i = index;">
+                        <ng-container *ngIf="selectedWeekDayArray.length-2>i">
+                            <span style="margin-right: 10px;">{{day}},</span>
+                        </ng-container>
+                    </ng-container>
+                    {{selectedWeekDayArray[selectedWeekDayArray.length-2]}} and
+                    {{selectedWeekDayArray[selectedWeekDayArray.length-1]}}
+                </ng-container>
+                at
+                {{form.get('time').value}} {{form.get('minute').value}} minutes
+            </div>
+        </ng-container>
+        <ng-container *ngIf="timePeriodType==='Monthly'">
+            <div fxLayout="row wrap" fxLayoutGap="10px" class="monthly_number_css">
+                <ng-coontainer *ngFor="let number of numberArray;let i = index;">
+                    <div fxLayoutAlign="center center" class="weekday_style" [id]="number.value"
+                        (click)="getSelectedNumber(number,i)" [style.background]="number.isSelected?'#009aff26':''"
+                        [style.color]="number.isSelected?'#039be5':''">{{number.value}}</div>
+                </ng-coontainer>
+            </div>
+            <div fxLayout="row" fxLayoutGap="10px" style="margin:10px 0px 0px 0px;height: 50px;">
+                <span class="label-css">Every</span>
+                <mat-form-field style="width: 51px;" appearance="outline">
+                    <input matInput id="number" type="number" formControlName="number" min="1" max="12"
+                        oninput="this.value = Math.abs(this.value)">
+                </mat-form-field>
+                <span class="label-css" *ngIf="form.get('number').value===1 || form.get('number').value===0">month, at</span>
+                <span class="label-css" *ngIf="form.get('number').value>1">months, at</span>
+                <mat-form-field style="width: 90px;" appearance="outline">
+                    <mat-select formControlName="time">
+                        <ng-container *ngFor="let time of timeArray">
+                            <mat-option [value]="time">{{time}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: 70px;" appearance="outline">
+                    <mat-select formControlName="minute" id="minute">
+                        <mat-option id="minute_1" value="00">00</mat-option>
+                        <mat-option id="minute_2" value="15">15</mat-option>
+                        <mat-option id="minute_3" value="30">30</mat-option>
+                        <mat-option id="minute_4" value="45">45</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span class="label-css">minutes</span>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" style="height:5px;">
+                <mat-error *ngIf="form.get('number').errors">Months should between 1 and 12
+                </mat-error>
+            </div>
+            <div fxLayout="row wrap" style="margin: 10px 0px 0px 0px">
+                Every
+                <ng-container *ngIf="form.get('number').value<13 && form.get('number').value!==0">
+                    {{form.get('number').value===1?'month':form.get('number').value+' months'}}
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value>12">
+                    12 months
+                </ng-container>
+                <ng-container *ngIf="form.get('number').value===0">
+                    month
+                </ng-container>
+                <ng-container *ngIf="selectedNumbers.length===1">
+                    on the {{selectedNumbers[0]}}
+                </ng-container>
+                <ng-container *ngIf="selectedNumbers.length===2">
+                    on the {{selectedNumbers[0]}} and {{selectedNumbers[1]}}
+                </ng-container>
+                <ng-container *ngIf="selectedNumbers.length>2">
+                    <span style="margin: 0px 5px;">on the</span>
+                    <ng-container *ngFor="let number of selectedNumbers;let i = index;">
+                        <ng-container *ngIf="selectedNumbers.length-2>i">
+                            <span style="margin-right: 5px;">{{number}},</span>
+                        </ng-container>
+                    </ng-container>
+                    {{selectedNumbers[selectedNumbers.length-2]}} and
+                    {{selectedNumbers[selectedNumbers.length-1]}}
+                </ng-container>
+                at
+                {{form.get('time').value}} {{form.get('minute').value}} minutes
+            </div>
+        </ng-container>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px">
+        <button mat-raised-button color="primary" type="button" (click)="saveTimePeriodAutomation()"
+            [disabled]="!userForm.valid">Save</button>
+        <button mat-raised-button color="accent" type="button" (click)="close()">Close</button>
+    </div>
+</form>

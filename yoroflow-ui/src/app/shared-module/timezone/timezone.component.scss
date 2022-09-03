@@ -1,0 +1,38 @@
+::ng-deep .mat-select-panel::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+::ng-deep .mat-select-panel::-webkit-scrollbar:vertical {
+    width: 6px;
+    height: 30px;
+}
+
+::ng-deep .mat-select-panel::-webkit-scrollbar:horizontal {
+    height: 18px;
+}
+
+::ng-deep .mat-select-panel::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+    box-pack: center;
+
+
+}
+
+::ng-deep .mat-select-panel::-webkit-scrollbar:vertical:hover {
+    width: 10px;
+    max-height: 80vh !important;
+
+}
+::ng-deep .mat-select-panel::-webkit-scrollbar:horizontal:hover {
+    max-height: 80vh !important;
+}
+::-webkit-scrollbar-thumb{
+    height: 40px;
+}
+
+
+
+
+

@@ -1,0 +1,75 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+  <div fxFlex="100%">
+    <mat-card class="card-style">
+      <div class="accordion-form-section">
+        <form [formGroup]="claimType" #userForm="ngForm">
+          <mat-card style="margin-top: 1%">
+            <mat-card-title>Claim Type</mat-card-title>
+            <div fxLayoutAlign="space-between center" style="margin-top:1%">
+              <p style="width: 60%">
+              <mat-form-field>
+                <mat-label>Claim Type Code</mat-label>
+                <mat-select [(value)]="selected" id="claimTypeList">
+                  <mat-option id="claimTypeOption" [value]="claimType.id" (onSelectionChange)="loadClaimTypeInfo($event, userForm)"
+                    *ngFor="let claimType of response">
+                    {{claimType.claimTypeCode }} - {{claimType.description}} </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </p>
+            <div fxLayoutAlign="end center">
+            <button  *ngIf="deleteButtonVisible" mat-raised-button color="primary" (click)="editClaimType()" style="margin-right:5%" id="editBtn" >Edit</button>
+            <button  *ngIf="deleteButtonVisible" mat-raised-button color="warn" (click)="deleteClaimType(userForm)" id="deleteBtn">Delete</button>
+            </div>
+          </div>
+          </mat-card>
+
+          <mat-card style="margin-top: 1%">
+            <input type="hidden" name="environmentId" formControlName="id" />
+            <p style="width: 40%;">
+              <mat-form-field>
+                <mat-label>Claim Type Code</mat-label>
+                <input matInput type="text" formControlName="claimTypeCode" readonly="{{readonly}}" id="claimTypeCode">
+                <mat-error class="text-danger" id="claimTypeCodeRequired"
+                  *ngIf="claimType.get('claimTypeCode').errors?.required
+                                    &&(userForm.submitted || claimType.get('claimTypeCode').touched || claimType.get('claimTypeCode').dirty)">
+                  Claim Type Code is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p style="width: 40%;">
+              <mat-form-field>
+                <mat-label>Form Type</mat-label>
+                <mat-select formControlName="formType" id="formType">
+                  <mat-option value="I" id="i">Institutional</mat-option>
+                  <mat-option value="P" id="p">Professional</mat-option>
+                  <mat-option value="D" id="d">Dental</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="formTypeRequired"
+                  *ngIf="claimType.get('formType').errors?.required
+                                  &&(userForm.submitted || claimType.get('formType').touched || claimType.get('formType').dirty)">
+                  Form Type is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p style="width: 40%;">
+              <mat-form-field>
+                <mat-label>Description</mat-label>
+                <textarea matInput cols="30" rows="4" formControlName="description" id="description"></textarea>
+                <mat-error class="text-danger" id="descriptionRequired"
+                  *ngIf="claimType.get('description').errors?.required
+                                  &&(userForm.submitted || claimType.get('description').touched || claimType.get('description').dirty)">
+                  Description is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+
+          </mat-card>
+          <div fxLayoutAlign="end start" style="margin-top:1%">
+            <button mat-raised-button color="primary" style="margin-right: 1%" (click)="save(userForm)" id="btnSave">Save</button>
+            <button mat-raised-button color="accent" type="reset" (click)="clear('reset')" id="btnreset">Reset</button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+  </div>
+</div>

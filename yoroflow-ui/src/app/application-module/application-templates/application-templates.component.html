@@ -1,0 +1,21 @@
+<div fxLayout="row" fxLayoutAlign="space-between center" style="margin: 10px">
+    <h1>Applications</h1>
+</div>
+<div fxLayout="row wrap" class="temaplates-row-css">
+    <ng-container *ngFor="let template of applicationTemplatesVO; let i = index;">
+        <div fxLayout="column" class="app-card" appMaterialElevation defaultElevation=4 raisedElevation=4>
+            <div fxLayout="column" class="template-header">
+                <div fxLayout="row">
+                    <img class="app-image" src="../../../assets/Favicon/Favicon_16x16.svg" />
+                    <b style="margin-left: 10px">{{template.templateName}}</b>
+                </div>
+                <div fxLayout="row" class="description-class">
+                    {{template.description}}
+                </div>
+            </div>
+            <div fxLayout="column" style="border-top: 0.5px solid #381bc5;">
+                <button mat-button color="primary" (click)="installApplication(template)">Install</button>
+            </div>
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,55 @@
+.header-image {
+    background-image: url('/assets/images/product-logo.png');
+    background-size: cover;
+  }
+  .ctn {
+      position: relative;
+      text-align: center;
+      color: black;
+  }
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 30px;
+    transform: translate(-50%, -50%);
+  }
+  .workflow_dashboard{
+    padding: 15px;
+  }
+
+
+
+
+
+  #inProcess{
+    color: white; 
+    background-color: rgb(84, 195, 214);
+  }
+  #completed{
+    color: white; 
+    background-color: rgb(99, 190, 134);
+  }
+  #errorTask{
+    color: white; 
+    background-color: rgb(243, 95, 95);
+  }
+
+  @media screen and (max-width: 768px) {
+    .icon_size{
+      width:150px;
+      height:150px;
+    }
+    .col-sm-6{
+      width:50%!important;
+    }
+    .mobile_btn{
+      margin-top: 20px;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    .icon_size{
+      width:200px;
+      height:200px;
+    }
+  }

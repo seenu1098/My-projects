@@ -1,0 +1,10 @@
+@Library("yorosis-shared-library") _
+
+standardPipeline {
+    projectType = "java-service"
+    deploymentName = "workflow-service-deployment"
+    dockerImageName = "workflow-service"
+    canSkipSonarQubeCheck = true
+    canBuildDockerImage = true
+    canDeployImage = true
+}

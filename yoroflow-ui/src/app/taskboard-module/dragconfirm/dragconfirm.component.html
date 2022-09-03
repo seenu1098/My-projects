@@ -1,0 +1,26 @@
+<ng-container *ngIf="data.type==='subtask'">
+    <div fxLayout="row">
+        <p style="font-weight: bold;font-size: 15px;">
+            This task ({{data.taskId}}) has {{data.pendingSubTaskCount}} number sub-tasks that are not completed yet.
+            Please complete them before move this task to Completion.
+        </p>
+    </div>
+    <div class="cancel">
+        <button mat-raised-button color="warn" (click)="dialogClose()"
+            style="cursor: pointer;height:25px;line-height: 25px;">Cancel</button>
+    </div>
+</ng-container>
+<ng-container *ngIf="data.type==='dependency'">
+    <mat-dialog-content>
+        Following tasks are needs to be completed before this task ( <b>{{data.taskId}}</b> ) completion.
+        <ul *ngFor="let dependency of data.dependency;let i = index;"
+            style="margin-bottom: 0px;margin-top: 5px;font-weight: bold;">
+            <li>{{dependency.taskId}}</li>
+        </ul>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="cancel" (click)="dialogClose()">
+            OK
+        </button>
+    </mat-dialog-actions>
+</ng-container>

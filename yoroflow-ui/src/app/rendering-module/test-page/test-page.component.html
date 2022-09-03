@@ -1,0 +1,15 @@
+<mat-card>
+    <mat-form-field>
+        <mat-label for="pageNames">
+            Page Names List
+        </mat-label>
+        
+        <mat-select name="pageNames" id="pageNames" aria-label="pageNames">
+                <mat-option id="pageNames" (click)="openDialog(page)" [value]="page.pageName"
+                    *ngFor="let page of pageNames">
+                    {{page.pageName}}</mat-option>
+    
+        </mat-select>
+    </mat-form-field>
+
+</mat-card>

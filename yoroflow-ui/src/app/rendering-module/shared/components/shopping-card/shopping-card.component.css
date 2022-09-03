@@ -1,0 +1,32 @@
+.mat-stepper-vertical {
+    margin-top: 8px;
+  }
+  
+  .mat-form-field {
+    margin-top: 16px;
+  }
+
+  .selectedCart {
+    background-color: rgb(236, 248, 255);
+  }
+
+  .edit-button {
+    height: 36px;
+    /* width: 150px; */
+    /* font-size: 110%; */
+    border: 1px solid rgb(56, 149, 255) !important;
+    border-radius: 15px;
+  }
+
+    .delete-button {
+      height: 36px;
+      color: rgb(248, 137, 137);
+      /* width: 150px; */
+      /* font-size: 110%; */
+      border: 1px solid rgb(248, 137, 137) !important;
+      border-radius: 15px;
+      align-items: flex-end;
+    }
+  /* .mat-step-header:nth-of-type(2){ 
+    display:none;
+  } */

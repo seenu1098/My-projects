@@ -1,0 +1,57 @@
+.table-scroll{
+    // max-height: 800px !important;
+     height: 100% !important;
+     max-width: 90% !important;
+ }
+ .task-id{
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+  .task-id:hover{
+    color: #003399;
+    text-decoration-line: underline;
+    cursor: pointer;
+  }
+  .hover-class{
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    text-align: center;cursor: pointer;
+    padding: 0px;
+  }
+  .hover_class_plus{  
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: rgb(192, 192, 192);
+    text-align: center;
+    padding: 0px;cursor: pointer;
+    margin-left:-8px;
+  }
+  .fs_12{
+    font-size: 12px!important;
+  }
+  .filter_option {
+
+    padding: 4px 8px;
+  
+    border-radius: 5px;
+  
+    // background-color: var(--theme-lightmain-color);
+  
+    // background-color: #e1e9ff;
+  
+    // color: #6993ff;
+  
+    // color: var(--theme-main-color);
+  
+    font-size: 12px;
+  
+    cursor: pointer;
+  
+  }
+  

@@ -1,0 +1,79 @@
+<div fxLayout.xs="column" fxLayoutAlign="start none" style="margin: 1%">
+    <mat-card class="card-style">
+        <div fxFill="100">
+            <mat-card>
+                <mat-card-title>PA Preset</mat-card-title>
+                <form [formGroup]="form" #userForm="ngForm">
+                    <div formGroupName="paVO">
+                        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                            <mat-form-field style="width: 20%;">
+                                <input matInput type="text" formControlName="number" name="number" id="number" required
+                                    placeholder="PA Number" readonly="{{readonly}}">
+                                <mat-error class="text-danger" id="numberRequired"
+                                    *ngIf="form.get('paVO').get('number').errors?.required
+               &&(userForm.submitted || form.get('paVO').get('number').touched || form.get('paVO').get('number').dirty)">
+                                    PA Number is required
+                                </mat-error>
+
+                            </mat-form-field>
+
+                            <mat-form-field style="width: 37%;">
+                                <input matInput type="text" name="description" formControlName="description"
+                                    id="description" required placeholder="PA Description">
+                                <mat-error class="text-danger" id="descriptionRequired"
+                                    *ngIf="form.get('paVO').get('description').errors?.required
+             &&(userForm.submitted || form.get('paVO').get('description').touched || form.get('paVO').get('description').dirty)">
+                                    PA Description is required
+                                </mat-error>
+                            </mat-form-field>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+                        <mat-form-field style="width: 20%;">
+                            <mat-label for="environmentList">
+                                Environment Name
+                            </mat-label>
+                            <mat-select [(value)]="selected" formControlName="environmentId" id="environmentList">
+                                <mat-option style="display:none" value="Environment Name"></mat-option>
+                                <mat-option id="environmentOption" [value]="environment.id"
+                                    *ngFor="let environment of response">
+                                    {{environment.environmentNames}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error class="text-danger" id="environmentNameRequired" *ngIf="form.get('environmentId').errors?.required
+                    &&(userForm.submitted || form.get('environmentId').touched || form.get('environmentId').dirty)">
+                                Environment Name is required
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
+                    <mat-card-actions>
+                        <div fxLayoutAlign="center center">
+                            <button mat-raised-button color="primary" id="btnsave" class="ml-3 float-center"
+                                (click)="save(userForm)">Save</button>
+                            <button mat-raised-button color="primary" type="reset" id="btnreset" name="btnrset"
+                                class="resetbutton" (click)="clearSearch(userForm)">Reset</button>
+                            <button mat-raised-button id="delete" (click)="delete(userForm)"
+                                color="accent">Delete</button>
+                        </div>
+                    </mat-card-actions>
+                </form>
+            </mat-card>
+        </div>
+    </mat-card>
+</div>
+
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+    <div fxFill="100">
+        <mat-card class="card-style">
+            <mat-card-title>PA Preset List</mat-card-title>
+            <app-yorogrid #pa gridId="pa" (messageEvent)="receiveMessage($event)" defaultColumn="type">
+            </app-yorogrid>
+        </mat-card>
+    </div>
+</div>

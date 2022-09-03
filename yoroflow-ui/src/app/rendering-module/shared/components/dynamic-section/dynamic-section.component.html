@@ -1,0 +1,78 @@
+<mat-card [style.box-shadow]="showBorder" [style]="section.style"
+    *ngIf="showSection && !section.collapsible && section.repeatable !==true">
+    <mat-card-title>{{section.name}}</mat-card-title>
+    <mat-card-content>
+        <app-dynamic-rows [group]="group" [rows]="section.rows" [page]="page"
+            (getComponentFromRow)="getChipComponentInstance($event)">
+        </app-dynamic-rows>
+        <ng-container *ngFor="let section of section.sections">
+            <ng-container *ngIf="!section.collapsible && section.repeatable !==true">
+                <app-card-section [group]="group" [section]="section" [page]="page"
+                    (getChipComponentFromSection)="getChipComponentInstance($event)">
+                </app-card-section>
+            </ng-container>
+            <ng-container *ngIf="section.collapsible && section.repeatable !==true">
+                <app-collapsible-section [group]="group" [section]="section" [page]="page"
+                    (getChipComponentFromSection)="getChipComponentInstance($event)">
+                </app-collapsible-section>
+            </ng-container>
+            <ng-container *ngIf="section.repeatable === true && section.repeatableName !== null">
+                <app-dynamic-array [isAllowEdit]="isAllowEdit" [formArray]="group.get(section.repeatableName)"
+                    [section]="section" [page]="page" (getChipComponentFromArray)="getChipComponentFromArray($event)">
+                </app-dynamic-array>
+            </ng-container>
+        </ng-container>
+    </mat-card-content>
+</mat-card>
+
+<div [style]="section.style">
+    <mat-expansion-panel *ngIf="showSection && section.collapsible && section.repeatable !==true" [expanded]="true"
+        [style.box-shadow]="showBorder">
+        <mat-expansion-panel-header>
+            <mat-card-title>{{section.name}}</mat-card-title>
+        </mat-expansion-panel-header>
+        <app-dynamic-rows [group]="group" [rows]="section.rows" [page]="page"
+            (getChipComponentFromSection)="getChipComponentInstance($event)">
+        </app-dynamic-rows>
+        <ng-container *ngFor="let section of section.sections">
+            <ng-container *ngIf="!section.collapsible && section.repeatable !==true">
+                <app-card-section [group]="group" [section]="section" [page]="page"
+                    (getChipComponentFromSection)="getChipComponentInstance($event)">
+                </app-card-section>
+            </ng-container>
+            <ng-container *ngIf="section.collapsible && section.repeatable !==true">
+                <app-collapsible-section [group]="group" [section]="section" [page]="page"
+                    (getChipComponentFromSection)="getChipComponentInstance($event)">
+                </app-collapsible-section>
+            </ng-container>
+            <ng-container *ngIf="section.repeatable === true && section.repeatableName">
+                <app-dynamic-array [isAllowEdit]="isAllowEdit" [formArray]="group.get(section.repeatableName)"
+                    [section]="section" [page]="page" (getChipComponentFromArray)="getChipComponentFromArray($event)">
+                </app-dynamic-array>
+            </ng-container>
+        </ng-container>
+    </mat-expansion-panel>
+</div>
+
+<ng-container *ngIf="showSection && section.repeatable === true && section.repeatableName !==null">
+    <app-dynamic-array [isAllowEdit]="isAllowEdit" [formArray]="group.get(section.repeatableName)" [section]="section"
+        [page]="page" (getChipComponentFromArray)="getChipComponentFromArray($event)">
+    </app-dynamic-array>
+</ng-container>
+
+<div *ngIf="!showSection" style="margin-top: 12%;">
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <div fxFlex="50%">
+            <mat-card>
+                <mat-card-title style="margin-bottom:5%">
+                </mat-card-title>
+                <div class="accordion-form-section">
+                </div>
+                <div fxLayout="column" style="padding: 2%;" fxLayoutAlign="center center">
+                    <h2>You have created security for the page only, you also need to enable security for this section
+                    </h2>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+<form #userForm="ngForm" [formGroup]="form" class="team-css" id="team-list">
+    <div class="row w-100 mx-0">
+        <div class="col-md-6">
+            <h2 class="text-capitalize">{{'Document Security' | translate}}</h2>
+        </div>
+        <div class="col-md-6 ">
+            <mat-icon id="clear" style="cursor: pointer;font-size: 22px;" class="float-right" (click)="close()">
+                clear</mat-icon>
+        </div>
+    </div>
+    <div class="row w-100 mx-0">
+        <div fxLayout="column" class="assignto-column">
+            <div fxLayout="row">
+                <h5 class="text-style" style="font-weight: bold;color: black;">{{'Document Owners' | translate}}</h5>
+                <mat-icon style="font-size: 22px;cursor: pointer;margin-top: 0px;
+                    margin-left: 5px;" matTooltip="Add Owner" (click)="add()" *ngIf="teamList.length === 0">add
+                </mat-icon>
+            </div>
+            <div class="mb-3" fxLayout="row">
+                <ng-container *ngFor="let user of teamList;let i = index;">
+                    <div *ngIf="i<=3" style="
+                        width: 30px;
+                        height: 30px;
+                        line-height: 30px;
+                        border-radius: 50%;
+                        /* background-color: brown; */
+                        text-align: center;cursor: pointer;
+                        padding: 0px;
+                      " class="hover-class" [style.margin-left]="i>0?'-8px':''" [matTooltip]="getUserName(user)"
+                        [style.background]="getUserColor(user)">
+                        <span
+                            style="font-size: 12px; color: white;font-weight: 100;">{{getUserFirstAndLastNamePrefix(user)}}</span>
+                    </div>
+                    <ng-container *ngIf="i===4">
+                        <div style="
+                               width: 30px;
+                               height: 30px;
+                                 line-height: 30px;
+                                border-radius: 50%;
+                                background-color: rgb(192, 192, 192);
+                               text-align: center;
+                               padding: 0px;cursor: pointer;
+                                 margin-left:-8px;" class="hover-class" [matTooltip]="getUserNames(teamList)">
+                            <span
+                                style="font-size: 12px; color: grey;font-weight: 100;">+{{getRemainingAssigneeUserCount(teamList)}}</span>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <mat-icon style="font-size: 22px;cursor: pointer;margin-top: 4px;
+                      margin-left: 5px;" *ngIf="teamList.length !== 0" (click)="add()">edit
+                </mat-icon>
+            </div>
+        </div>
+    </div>
+    <div class="row w-100 mx-0">
+        <div class="col-md-8">
+            <h5 class="text-style" style="font-weight: bold;color: black;">{{'Teams' | translate}}</h5>
+        </div>
+    </div>
+    <div class="row w-100 mx-0">
+        <div class="col-md-6 ">
+            <mat-card class="w-100 ">
+                <div class="row w-100 mx-0">
+                    <div class="col-md-6">
+                        <h3 class="text-dark fs_12">{{'Read Access' | translate}}</h3>
+                    </div>
+                    <div class="col-md-6 px-0 float-right justify-content-end">
+                        <div class="row w-100 mx-0 justify-content-end">
+                            <span class="flag-container-css mr-3 mb-2" matTooltip="{{'Add Team(s)' | translate}}"
+                                (click)="addTeam('read')">
+                                <mat-icon appearance="filled" class="flag-css">person</mat-icon>
+                                <mat-icon class="circle-css">add_circle</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 mx-0 mt-2" style="overflow-y: scroll;height: 200px;">
+                    <mat-form-field class="example-chip-list" appearance="outline" class="w-100" id="for_popup_chip"
+                        *ngIf="readArray.length !== 0">
+                        <mat-chip-list #chipList aria-label="Fruit selection">
+                            <ng-container *ngFor="let user of readArray; let i = index;">
+                                <mat-chip [selectable]="selectable" [removable]="removable"
+                                    (removed)="removedAssigneeUser(user, i,'read')">
+                                    <span>{{user?.name}}</span>
+                                    <mat-icon matChipRemove *ngIf="removable" id="cancel">cancel</mat-icon>
+                                </mat-chip>
+                            </ng-container>
+                        </mat-chip-list>
+                    </mat-form-field>
+                </div>
+            </mat-card>
+        </div>
+        <div class="col-md-6">
+            <mat-card class="w-100">
+                <div class="row w-100 mx-0">
+                    <div class="col-md-8 px-0">
+                        <h4 class="text-dark fs_12">{{'Read & Update Access' | translate}}</h4>
+                    </div>
+                    <div class="col-md-4 px-0 float-right justify-content-end">
+                        <div class="row w-100 mx-0 justify-content-end">
+                            <span class="flag-container-css mr-3 mb-2" matTooltip="{{'Add Team(s)' | translate}}"
+                                (click)="addTeam('update')">
+                                <mat-icon appearance="filled" class="flag-css">person</mat-icon>
+                                <mat-icon class="circle-css">add_circle</mat-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row w-100 mx-0 mt-2" style="overflow-y: scroll;height: 200px;">
+                    <mat-form-field class="example-chip-list" appearance="outline" id="for_popup_chip" class="w-100"
+                        *ngIf="updateArray.length !== 0">
+                        <mat-chip-list #chipList aria-label="Fruit selection">
+                            <ng-container *ngFor="let user of updateArray; let i = index;">
+                                <mat-chip [selectable]="selectable" [removable]="removable"
+                                    (removed)="removedAssigneeUser(user, i,'update')">
+                                    <span>{{user?.name}}</span>
+                                    <mat-icon matChipRemove *ngIf="removable" id="cancel">cancel</mat-icon>
+                                </mat-chip>
+                            </ng-container>
+                        </mat-chip-list>
+                    </mat-form-field>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</form>

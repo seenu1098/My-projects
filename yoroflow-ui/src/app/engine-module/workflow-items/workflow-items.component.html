@@ -1,0 +1,245 @@
+<mat-card *ngIf="showDashboard">
+    <div class="row w-100 mx-0 ">
+        <div class="col-md-8">
+            <mat-card-title *ngIf="showButton" class="py-2" i18n="Workflow Applications">Workflow Applications
+            </mat-card-title>
+            <mat-card-title *ngIf="!showButton" class="py-2" i18n="Workflow Dashboard">Workflow Dashboard
+            </mat-card-title>
+        </div>
+        <div class="col-md-4 float-right text-right justify-content-end">
+            <button *ngIf="!isMobile  && !isTablet" mat-raised-button color="primary" (click)="routeWorkflow()"
+                [disabled]="!showButton" class="mt-4 mr-4" i18n="Create Workflow">Create Workflow</button>
+        </div>
+    </div>
+    <mat-tab-group (selectedTabChange)="record($event)">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span [matBadge]="manualListCount" matBadgeOverlap="true" class="fw-bolder fs_12" i18n="Manual
+                Workflows">Manual
+                    Workflows</span>
+            </ng-template>
+            <div *ngIf="show" class="bg-light">
+                <div class="row py-3 justify-content-center w-100 mx-0 px-3">
+                    <ng-container *ngFor="let workFlow of workFlowList;let i=index">
+                        <div class="col-md-4 col-sm-12 px-2 py-2">
+                            <mat-card appMaterialElevation class="w-100 mb-2">
+                                <mat-card-header class="workflow_items_title"
+                                    [style.background-color]="setBackground(i,workFlow.status)"
+                                    class="manual_workflow_card">
+                                    <div class=" row w-100 task_box_row mx-0 py-2">
+                                        <div class="col-md-8 col-sm-8">
+                                            <mat-card-title class="task_title my-0">
+                                                {{workFlow.processDefinitionName}}
+                                            </mat-card-title>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="row w-100 mx-0 justify-content-end">
+                                                <mat-icon *ngIf="workFlow.canEdit === true" [id]="'edit_'+i"
+                                                    (click)="editWorkFlow(workFlow.key, workFlow.workflowVersion)"
+                                                    class="fs_14 h_14 w_14"
+                                                    [matTooltip]="'Edit ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Edit + {{workFlow.processDefinitionName}}'">
+                                                    create
+                                                </mat-icon>
+                                                <mat-icon *ngIf="!workFlow.enablePin" class="fs_14 h_14 w_14 ml-1"
+                                                    [matTooltip]="'Pin ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Pin + {{workFlow.processDefinitionName}}'"
+                                                    [id]="'pin_'+i" (click)="enableBin('pin', workFlow)">push_pin
+                                                </mat-icon>
+                                                <mat-icon *ngIf="workFlow.enablePin" [id]="'unPin_'+i"
+                                                    class="fs_14 h_14 w_14 ml-1"
+                                                    [matTooltip]="'Unpin ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Unpin + {{workFlow.processDefinitionName}}'"
+                                                    (click)="enableBin('unpin', workFlow)">push_pin</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-header>
+                                <div class="py-3">
+                                    <div class="row w-100 mx-0 justify-content-center">
+                                        <span *ngIf="workFlow.status === 'published'" class="workflow_status fs_12"
+                                            i18n="Status:">Status:
+                                            {{workFlow.status}}</span>
+                                        <span *ngIf="workFlow.status === 'draft'" class="workflow_status fs_12" i18n="Status:
+                                        {{workFlow.status}} (Publish
+                                        to
+                                        enable Launch)">Status:
+                                            {{workFlow.status}} (Publish
+                                            to
+                                            enable Launch)</span>
+                                    </div>
+                                    <div class="gray_color row w-100 mx-0 justify-content-center" i18n="Version:
+                                    {{workFlow.workflowVersion}}">Version:
+                                        {{workFlow.workflowVersion}}
+                                    </div>
+                                </div>
+                                <hr class="my-0 new1">
+                                <div class="row w-100 mx-0 py-1 justify-content-center">
+                                    <button mat-button color="primary" [id]="workFlow.key"
+                                        (click)="launchWorkflow(workFlow,workFlow.key,workFlow.workflowVersion)"
+                                        *ngIf="workFlow.status === 'published'"
+                                        [disabled]="workFlow.canLaunch === false"
+                                        i18n="LAUNCH">{{getLaunchButtonName(workFlow)}}</button>
+                                    <button mat-button color="primary" *ngIf="workFlow.status === 'draft'"
+                                        [id]="'publish_'+i"
+                                        (click)="publishWorkFlow(workFlow.key, workFlow.workflowVersion)"
+                                        i18n="PUBLISH">PUBLISH</button>
+                                </div>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="showButton && isScheduleAllowed">
+            <ng-template mat-tab-label>
+                <span [matBadge]="schedueListCount" matBadgeOverlap="true" class="fw-bolder fs_12" i18n="Schedule
+                Workflows">Schedule
+                    Workflows</span>
+            </ng-template>
+            <div *ngIf="show" class="bg-light">
+                <div class="row py-3 justify-content-center w-100 mx-0 px-3">
+                    <ng-container *ngFor="let workFlow of workFlowList;let i=index">
+                        <div class="col-md-4 col-sm-12 px-2 py-2">
+                            <mat-card appMaterialElevation class="w-100 mb-2">
+                                <mat-card-header class="workflow_items_title Schedule_Workflows"
+                                    [style.background-color]="setBackground(i,workFlow.status)">
+                                    <div class=" row w-100 task_box_row mx-0 py-2">
+                                        <div class="col-md-8 col-sm-8">
+                                            <mat-card-title class="task_title">
+                                                {{workFlow.processDefinitionName}}
+                                            </mat-card-title>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="row w-100 mx-0 justify-content-end">
+                                                <mat-icon *ngIf="workFlow.canEdit === true" fxLayoutAlign="end"
+                                                    [id]="'edit_'+i"
+                                                    (click)="editWorkFlow(workFlow.key, workFlow.workflowVersion)"
+                                                    class="" [matTooltip]="'Edit ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Edit + {{workFlow.processDefinitionName}}'">
+                                                    create
+                                                </mat-icon>
+                                                <mat-icon *ngIf="!workFlow.enablePin" class=" ml-1"
+                                                    [matTooltip]="'Pin ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Pin + {{workFlow.processDefinitionName}}'"
+                                                    [id]="'pin_'+i" (click)="enableBin('pin', workFlow)">push_pin
+                                                </mat-icon>
+                                                <mat-icon *ngIf="workFlow.enablePin" [id]="'unPin_'+i" class=" ml-1"
+                                                    [matTooltip]="'Unpin ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Unpin + {{workFlow.processDefinitionName}}'"
+                                                    (click)="enableBin('unpin', workFlow)">push_pin</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-header>
+                                <div class="py-3">
+                                    <div class="row w-100 mx-0 justify-content-center">
+                                        <span *ngIf="workFlow.status === 'published'" class="workflow_status" i18n="Status:
+                                        {{workFlow.status}}">Status:
+                                            {{workFlow.status}}</span>
+                                        <span *ngIf="workFlow.status === 'draft'" class="workflow_status" i18n="Status:
+                                        {{workFlow.status}} (Publish to enable Launch)">Status:
+                                            {{workFlow.status}} (Publish to enable Launch)</span>
+                                    </div>
+                                    <div class="gray_color row w-100 mx-0 justify-content-center">Version:
+                                        {{workFlow.workflowVersion}}
+                                    </div>
+                                </div>
+                                <hr class="my-0 new1">
+                                <div class="row w-100 mx-0 py-1 justify-content-center">
+                                    <button mat-button color="primary" [id]="workFlow.key"
+                                        (click)="launchWorkflow(workFlow.key,workFlow.workflowVersion)"
+                                        *ngIf="workFlow.status === 'published'"
+                                        [disabled]="workFlow.canLaunch === false"
+                                        i18n="LAUNCH">{{getLaunchButtonName(workFlow)}}</button>
+                                    <button mat-button color="primary" *ngIf="workFlow.status === 'draft'"
+                                        [id]="'publish_'+i"
+                                        (click)="publishWorkFlow(workFlow.key, workFlow.workflowVersion)"
+                                        i18n="PUBLISH">PUBLISH</button>
+                                </div>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab *ngIf="showButton && isWebServiceAllowed">
+            <ng-template mat-tab-label>
+                <span [matBadge]="webserviceListCount" matBadgeOverlap="true" class="fw-bolder fs_12" i18n="Web Service
+                Workflows">Web Service
+                    Workflows</span>
+            </ng-template>
+            <div *ngIf="show" class="bg-light">
+                <div class="row py-3 justify-content-center w-100 mx-0 px-3">
+                    <ng-container *ngFor="let workFlow of workFlowList;let i=index">
+                        <div class="col-md-4 col-sm-12 px-2 py-2">
+                            <mat-card appMaterialElevation class="w-100 mb-2">
+                                <mat-card-header class="workflow_items_title Web_Service_Workflows"
+                                    [style.background-color]="setBackground(i,workFlow.status)">
+                                    <div class=" row w-100 task_box_row mx-0 py-2">
+                                        <div class="col-md-8 col-sm-8">
+                                            <mat-card-title class="task_title">
+                                                {{workFlow.processDefinitionName}}
+                                            </mat-card-title>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="row w-100 mx-0 justify-content-end">
+                                                <mat-icon *ngIf="workFlow.canEdit === true" fxLayoutAlign="end"
+                                                    [id]="'edit_'+i"
+                                                    (click)="editWorkFlow(workFlow.key, workFlow.workflowVersion)"
+                                                    class="" [matTooltip]="'Edit ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Edit + {{workFlow.processDefinitionName}}'">
+                                                    create
+                                                </mat-icon>
+                                                <mat-icon *ngIf="!workFlow.enablePin" class="ml-1"
+                                                    [matTooltip]="'Pin ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Pin + {{workFlow.processDefinitionName}}'"
+                                                    [id]="'pin_'+i" (click)="enableBin('pin', workFlow)">push_pin
+                                                </mat-icon>
+                                                <mat-icon *ngIf="workFlow.enablePin" [id]="'unPin_'+i" class="ml-1"
+                                                    [matTooltip]="'Unpin ' + workFlow.processDefinitionName"
+                                                    [i18n-matTooltip]="'Unpin + {{workFlow.processDefinitionName}}'"
+                                                    (click)="enableBin('Unpin', workFlow)">push_pin</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-header>
+                                <div class="py-3">
+                                    <div class="row w-100 mx-0 justify-content-center">
+                                        <span *ngIf="workFlow.status === 'published'" class="workflow_status" i18n="Status:
+                                        {{workFlow.status}}">Status:
+                                            {{workFlow.status}}</span>
+                                        <span *ngIf="workFlow.status === 'draft'" class="workflow_status" i18n="Status:
+                                        {{workFlow.status}} (Publish
+                                        to
+                                        enable Launch)">Status:
+                                            {{workFlow.status}} (Publish
+                                            to
+                                            enable Launch)</span>
+                                    </div>
+                                    <div class="gray_color row w-100 mx-0 justify-content-center" i18n="Version:
+                                    {{workFlow.workflowVersion}}">Version:
+                                        {{workFlow.workflowVersion}}
+                                    </div>
+                                </div>
+                                <hr class="my-0 new1">
+                                <div class="row w-100 mx-0 py-1 justify-content-center">
+                                    <button mat-button color="primary" [id]="workFlow.key"
+                                        (click)="launchWorkflow(workFlow.key,workFlow.workflowVersion)"
+                                        *ngIf="workFlow.status === 'published'"
+                                        [disabled]="workFlow.canLaunch === false"
+                                        i18n="LAUNCH">{{getLaunchButtonName(workFlow)}}</button>
+
+                                    <button mat-button color="primary" *ngIf="workFlow.status === 'draft'"
+                                        [id]="'publish_'+i"
+                                        (click)="publishWorkFlow(workFlow.key, workFlow.workflowVersion)"
+                                        i18n="PUBLISH">PUBLISH</button>
+                                </div>
+                            </mat-card>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

@@ -1,0 +1,18 @@
+<ng-container *ngIf="data.type==='switchWorkspace' || data.type==='deleteWorkspace' || data.type==='archieveWorkspace'">
+    <mat-dialog-content *ngIf="data.type==='switchWorkspace'">Do you want to switch workspace <b>{{data.name}}</b>?
+    </mat-dialog-content>
+    <mat-dialog-content *ngIf="data.type==='deleteWorkspace'">Do you want to delete workspace <b>{{data.name}}</b>?
+    </mat-dialog-content>
+    <mat-dialog-content *ngIf="data.type==='archieveWorkspace'">Do you want to archieve workspace <b>{{data.name}}</b>?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="confirm()">Yes</button>
+        <button mat-raised-button color="accent" id="btnClose" (click)="cancel()">Cancel</button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="data.type==='alreadyInstalled'">
+    <mat-dialog-content>{{data?.data.response}}</mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button color="primary" id="btnYes" (click)="save()">Ok</button>
+    </mat-dialog-actions>
+</ng-container>

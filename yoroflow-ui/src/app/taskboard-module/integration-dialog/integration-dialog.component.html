@@ -1,0 +1,70 @@
+<div *ngIf="!show" fxLayout="row" fxLayoutAlign="space-between center"
+    style="border-bottom: 0.5px solid rgb(214, 214, 214);margin: 0px -20px;">
+    <span style="margin-left:15px;font-size: 18px;font-weight: bold;">Integration Center - {{data.taskboardName}}</span>
+    <!-- <div fxLayout="column">
+        <div fxLayout="row">
+            <div [class]="tabType==='customAutomation'?'shadow-class':''">
+                <button id="integration_center" mat-button [color]="tabType==='customAutomation'?'primary':''"
+                    type="button" (click)="openAutomation('customAutomation')" style="font-size: 15px">
+                    Integrations Center</button>
+            </div>
+            <div [class]="tabType==='boardAutomation'?'shadow-class':''">
+                <button id="existing_integration" mat-button [color]="tabType==='boardAutomation'?'primary':''"
+                    type="button" (click)="openAutomation('boardAutomation')" style="font-size: 15px">Existing
+                    Integrations</button>
+            </div>
+        </div>
+    </div> -->
+    <mat-icon (click)="close()" style="cursor: pointer;margin-right: 15px;">close</mat-icon>
+</div>
+<div fxLayout="row" style="width:100%;height:90%">
+    <!-- <div fxLayout="column" id="category-column">
+        <span class="category-label-css">Categories</span>
+        <ng-conatiner *ngFor="let category of categoriesArray; let i = index;">
+            <button mat-button class="category-button-css" [style.color]="category.isSelected?'#039be5':'black'"
+                [style.background]="category.isSelected?'#e5f4ff':''" (click)="onCategorySelected(category)"
+                [id]="'catagory_'+i">
+                <mat-icon [style.color]="category.color" style="font-size: 20px;margin-right: 10px;">
+                    {{category.icon}}
+                </mat-icon>
+                <span>{{category.name}}</span>
+            </button>
+        </ng-conatiner>
+    </div> -->
+    <!-- <div fxLayout="column" style="width:87%;height:90%"> -->
+    <!-- <ng-conatiner *ngFor="let category of categoryAutomations; let i = index"> -->
+    <!-- <div fxLayout="row" class="categoryName-header-css">
+            <span class="category-headerName-css">Explore By App</span>
+            <span class="categoryName-heading-border-css"></span>
+        </div> -->
+    <ng-container *ngIf="!showIntegrations">
+        <div fxLayout="row wrap" style="width: 100%;" fxLayoutAlign="center center">
+            <mat-spinner></mat-spinner>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="showIntegrations">
+        <div fxLayout="row wrap" *ngIf="organizationApps.length===0" style="width: 100%;font-weight: bold;"
+            fxLayoutAlign="center center">
+            <h4>You have no applications to integrate, Please ask your admin to add applications.</h4>
+        </div>
+        <div fxLayout="row wrap" *ngIf="organizationApps.length>0" style="margin-top: 20px;">
+            <ng-conatiner *ngFor="let app of organizationApps; let j = index">
+                <div fxLayout="column" class="category-automation-card" appMaterialElevation defaultElevation=4 raisedElevation=16>
+                    <div fxLayout="row">
+                        <img [src]="getImage(app)" class="img-class">
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <button mat-button *ngIf="app.remove===false" class="add-button-css" (click)="addApplication(app)" [disabled]="disabled">
+                            Add</button>
+                        <button mat-button *ngIf="app.remove===true" class="remove-button-css" (click)="removeApplication(app)" [disabled]="disabled">
+                            Remove</button>
+                    </div>
+                </div>
+            </ng-conatiner>
+        </div>
+    </ng-container>
+    <!-- </ng-conatiner> -->
+    <!-- </div> -->
+</div>
+<div (mouseenter)="mouseenter('true')" *ngIf="tabType==='boardAutomation'">
+</div>

@@ -1,0 +1,271 @@
+<div fxLayout="row" fxLayoutAlign="space-around center" style="margin:1%">
+  <div fxFlex="100%">
+    <mat-card style="background-color:rgb(154, 199, 212)">
+      <div class="accordion-form-section">
+        <form [formGroup]="form" #userForm="ngForm">
+          <div fxLayoutAlign="space-between center" style="margin-top:1%">
+            <mat-form-field style="width: 70%">
+              <mat-label for="environmentList">
+                Environment Name
+              </mat-label>
+              <mat-select [(value)]="selected" id="environmentList">
+                <mat-option style="display:none" value="Environment Name"></mat-option>
+                <mat-option id="environmentOption" (onSelectionChange)="loadEnvironmentInfo($event, userForm)"
+                  [value]="environment.id" *ngFor="let environment of response">{{environment.environmentNames}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div fxLayoutAlign="end center">
+              <button id="editButton" *ngIf="deleteButtonVisible" mat-raised-button color="primary"
+                (click)="editEnvironment()" style="margin-right:5%">Edit</button>
+              <button type="button" id="deleteButton" *ngIf="deleteButtonVisible" mat-raised-button color="warn"
+                (click)="deleteEnvironment(userForm)">Delete</button>
+            </div>
+          </div>
+
+          <mat-card style="margin-top: 1%">
+            <input type="hidden" name="environmentId" formControlName="environmentId" />
+            <p style="width: 80%;">
+              <mat-form-field>
+                <mat-label>Environment Name *</mat-label>
+                <input matInput id="environmentName" type="text" placeholder="Environment Name" name="environmentName"
+                  formControlName="environmentName" readonly="{{readonly}}">
+                <mat-error class="text-danger" id="environmentNameRequired" *ngIf="form.get('environmentName').errors?.required
+            &&(userForm.submitted || form.get('environmentName').touched || form.get('environmentName').dirty)">
+                  Environment Name is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field class="top-buffer" style="width: 150%;">
+                <mat-label>Target Folder *</mat-label>
+                <input matInput id="targetFolder" type="text" placeholder="Target Folder" name="targetFolder"
+                  formControlName="targetFolder">
+                <mat-error class="text-danger" id="targetFolderRequired" *ngIf="form.get('targetFolder').errors?.required
+              &&(userForm.submitted || form.get('targetFolder').touched || form.get('targetFolder').dirty)">
+                  Target Folder is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+          </mat-card>
+          <mat-card style="margin-top: 1%">
+            <mat-card-subtitle>Connection Details</mat-card-subtitle>
+            <p>
+              <mat-form-field>
+                <mat-label>Protocol *</mat-label>
+                <mat-select id="protocol" name="protocol" formControlName="protocol">
+                  <mat-option id="SFTP" value="SFTP">SFTP</mat-option>
+                  <mat-option id="SSH" value="SSH">SSH</mat-option>
+                  <mat-option id="NFS" value="NFS">NFS</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="protocolRequired" *ngIf="form.get('protocol').errors?.required
+            &&(userForm.submitted || form.get('protocol').touched || form.get('protocol').dirty)">
+                  Protocol is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Host *</mat-label>
+                <input matInput id="host" type="text" formControlName="host" placeholder="Host" name="host">
+                <mat-error class="text-danger" id="hostRequired" *ngIf="form.get('host').errors?.required
+                &&(userForm.submitted || form.get('host').touched || form.get('host').dirty)">
+                  Host is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Port *</mat-label>
+                <input matInput id="port" type="number" formControlName="port" placeholder="Port" id="port">
+                <mat-error class="text-danger" id="portRequired" *ngIf="form.get('port').errors?.required
+                &&(userForm.submitted || form.get('port').touched || form.get('port').dirty)">
+                  Port is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+          </mat-card>
+          <mat-card style="margin-top: 1%">
+            <p>
+              <mat-form-field>
+                <mat-label>Logon Type *</mat-label>
+                <mat-select id="logonType" [(value)]="selected" name="logonType" formControlName="logonType">
+                  <mat-option id="none" (onSelectionChange)="none($event)" value="None">None</mat-option>
+                  <mat-option id="password" (onSelectionChange)="none($event)" value="Password">Password</mat-option>
+                  <mat-option id="pemFile" (onSelectionChange)="none($event)" value="Pem File">PEM File</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="logonTypeRequired" *ngIf="form.get('logonType').errors?.required
+                &&(userForm.submitted || form.get('logonType').touched || form.get('logonType').dirty)">
+                  Logon Type is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>User</mat-label>
+                <input matInput type="text" id="user" placeholder="User" formControlName="userName" name="user"
+                  readonly="{{disable}}">
+                <mat-error class="text-danger" id="userRequired" *ngIf="form.get('userName').errors?.required
+                  &&(userForm.submitted || form.get('userName').touched  || form.get('userName').dirty)">
+                  User is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput id="userPassword" [type]="hidePassword ? 'password' : 'text'" placeholder="Password"
+                  formControlName="password" name="pass" readonly="{{disable}}">
+                <mat-error class="text-danger" id="passwordRequired" *ngIf="form.get('password').errors?.required
+                  &&(userForm.submitted || form.get('password').touched || form.get('password').dirty)">
+                  Password is required
+                </mat-error>
+                <button id="hidePassword" type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="'Hide password'">
+
+                  <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field *ngIf="(selected === 'Pem File') || pemUpdate">
+                <textarea matInput id="userPemFile" type="text" placeholder="PEM File" formControlName="pemText"
+                  name="pem" rows="3">
+                  </textarea>
+                <mat-error class="text-danger" id="pemTextRequired" *ngIf="form.get('pemText').errors?.required
+                &&(userForm.submitted || form.get('pemText').touched || form.get('pemText').dirty)">
+                  PEM File is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+          </mat-card>
+
+          <mat-card style="margin-top: 1%">
+            <mat-card-subtitle>Database Connection</mat-card-subtitle>
+            <p>
+              <mat-form-field>
+                <mat-label>Database Type *</mat-label>
+                <mat-select id="dbType" name="dbType" placeholder="database" formControlName="dbType">
+                  <mat-option id="oracle" value="oracle">Oracle</mat-option>
+                  <mat-option id="postgres" value="postgres">Postgres</mat-option>
+                  <mat-option id="sqlserver" value="sqlserver">SQL Server</mat-option>
+                </mat-select>
+                <mat-error class="text-danger" id="dbTypeRequired" *ngIf="form.get('dbType').errors?.required
+                &&(userForm.submitted || form.get('dbType').touched || form.get('dbType').dirty)">
+                  Database Type is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Host *</mat-label>
+                <input matInput id="dbHost" type="text" placeholder="Host" formControlName="dbHost" name="dbHost">
+                <mat-error class="text-danger" id="hostRequired" *ngIf="form.get('dbHost').errors?.required
+                &&(userForm.submitted || form.get('dbHost').touched || form.get('dbHost').dirty)">
+                  Host is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Port *</mat-label>
+                <input matInput id="dbPort" type="number" placeholder="Port" formControlName="dbPort" name="dbPort">
+                <mat-error class="text-danger" id="portRequired" *ngIf="form.get('dbPort').errors?.required
+                &&(userForm.submitted || form.get('dbPort').touched || form.get('dbPort').dirty)">
+                  Port is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Username *</mat-label>
+                <input matInput id="dbUsername" type="text" placeholder="Username" formControlName="dbUsername"
+                  name="dbUsername">
+                <mat-error class="text-danger" id="UsernameRequired" *ngIf="form.get('dbUsername').errors?.required
+                &&(userForm.submitted || form.get('dbUsername').touched || form.get('dbUsername').dirty)">
+                  Username is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Password *</mat-label>
+                <input matInput id="dbPassword" [type]="hideDbPassword ? 'password' : 'text'" placeholder="Password"
+                  formControlName="dbPassword" name="dbPassword">
+                <button id="hideDbPassword" type="button" mat-icon-button matSuffix
+                  (click)="hideDbPassword = !hideDbPassword" [attr.aria-label]="'Hide password'"
+                  >
+                  <mat-icon>{{hideDbPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+
+                <mat-error class="text-danger" id="PasswordRequired" *ngIf="form.get('dbPassword').errors?.required
+                &&(userForm.submitted || form.get('dbPassword').touched || form.get('dbPassword').dirty)">
+                  Password is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Database Name *</mat-label>
+                <input matInput id="dbName" type="text" placeholder="Database Name" formControlName="dbName"
+                  name="dbName">
+                <mat-error class="text-danger" id="DatabaseRequired" *ngIf="form.get('dbName').errors?.required
+                &&(userForm.submitted || form.get('dbName').touched || form.get('dbName').dirty)">
+                  Database Name is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field>
+                <mat-label>Schema Name *</mat-label>
+                <input matInput id="schemaName" type="text" placeholder="Schema Name" formControlName="schemaName"
+                  name="schemaName">
+                <mat-error class="text-danger" id="schemaNameRequired" *ngIf="form.get('schemaName').errors?.required
+                  &&(userForm.submitted || form.get('schemaName').touched || form.get('schemaName').dirty)">
+                  Schema Name is required
+                </mat-error>
+              </mat-form-field>
+            </p>
+          </mat-card>
+          <mat-card style="margin-top: 1%">
+            <p style="width: 50%;">
+              <mat-form-field style="width: 95%;">
+                <mat-label>Completion Query *</mat-label>
+                <textarea id="completionQuery" formControlName="completionQuery" matInput cols="30" rows="4" type="text"
+                  placeholder="Completion Query  (ex., select 1 from claim where patient_account_number = :PCN and status in (10,20,40)) - This should match against the Patient control number column using :PCN"
+                  name="completionQuery">
+                    </textarea>
+                    <mat-error class="text-danger" id="completionQueryRequired" *ngIf="form.get('completionQuery').errors?.required
+                    &&(userForm.submitted || form.get('completionQuery').touched || form.get('completionQuery').dirty)">
+                    Completion Query is required
+                  </mat-error>
+              </mat-form-field>
+            </p>
+            <p style="width: 50%;">
+                <mat-form-field style="width: 95%;">
+                  <mat-label>TCN/ICN Query *</mat-label>
+                  <textarea id="tcnQuery" formControlName="tcnQuery" matInput cols="30" rows="4" type="text"
+                    placeholder="TCN/ICN Query  (ex., select tcn from claim where patient_account_number = :PCN) - This should match against the Patient control number column using :PCN"
+                    name="tcnQuery">
+                      </textarea>
+                      <mat-error class="text-danger" id="tcnQueryRequired" *ngIf="form.get('tcnQuery').errors?.required
+                      &&(userForm.submitted || form.get('tcnQuery').touched || form.get('tcnQuery').dirty)">
+                      TCN/ICN Query is required
+                    </mat-error>
+                </mat-form-field>
+              </p>
+
+          </mat-card>
+
+          <div fxLayoutAlign="end start" style="margin-top:1%">
+            <button mat-raised-button id="save" color="primary" style="margin-right: 1%"
+              (click)="save(userForm)">Save</button>
+            <button mat-raised-button id="clear" color="accent" type="reset"
+              (click)="clearSearch(userForm)">Reset</button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+
+  </div>
+</div>

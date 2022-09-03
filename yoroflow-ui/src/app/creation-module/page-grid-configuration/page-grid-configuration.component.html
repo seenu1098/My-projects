@@ -1,0 +1,262 @@
+<div fxLayout.xs="column" fxLayoutAlign="center" id="outline_id">
+    <div fxFill="100">
+        <form #userForm="ngForm" [formGroup]="gridConfigurationForm" (ngSubmit)="onSubmit(userForm)">
+            <input type="hidden" name="gridId" formControlName="gridId" />
+            <mat-card style="background-color:rgb(154, 199, 212)">
+                <div fxLayout="row" fxLayoutAlign="space-between  center">
+                    <ng-container>
+                        <mat-card-title>Grid Configuration</mat-card-title>
+                    </ng-container>
+                    <mat-icon id="close" (click)="cancel()" class="cursor" style="cursor: pointer;">close</mat-icon>
+                </div>
+                <mat-card>
+                    <mat-card-title>Grid </mat-card-title>
+                    <mat-card-content>
+                        <div class="row w-100 mx-0">
+                            <div class="col-md-3 col-sm-12">
+                                <mat-form-field class="w-100" appearance="outline">
+                                    <mat-label>Grid Name</mat-label>
+                                    <input matInput type="text" formControlName="gridName" id="gridName"
+                                        placeholder="" readonly={{gridNameReadOnlyValue}}
+                                        (focusout)="checkGridNameExists()">
+                                    <mat-error id="gridNameError"
+                                        *ngIf="gridConfigurationForm.get('gridName').errors?.required">
+                                        Grid Name is required
+                                    </mat-error>
+                                    <mat-error *ngIf="gridConfigurationForm.get('gridName').errors?.alreadyExist">
+                                        Grid Name is already exist
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <mat-form-field class="w-100" appearance="outline">
+                                    <mat-label>Page/Table Name</mat-label>
+                                    <mat-select id="moduleName" formControlName="moduleName" multiple>
+                                        <mat-option *ngFor="let option of pageNameOptions; let i = index;"
+                                            [value]="option.pageIdWithPrefix">
+                                            {{option.pageName}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <mat-form-field class="w-100" appearance="outline">
+                                    <mat-label>Number Of Rows to show in the grid</mat-label>
+                                    <mat-select formControlName="defaultNoOfRows" id="defaultNoOfRows">
+                                        <mat-option value='10'>10</mat-option>
+                                        <mat-option value='25'>25</mat-option>
+                                        <mat-option value='50'>50</mat-option>
+                                        <mat-option value='100'>100</mat-option>
+                                        <mat-option value='200'>200</mat-option>
+                                        <mat-option value='500'>500</mat-option>
+                                        <mat-option value='1000'>1000</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3 col-sm-12">
+                                <mat-form-field class="w-100" appearance="outline">
+                                    <mat-label>Width Percentage</mat-label>
+                                    <input matInput id="number" type="number" min="0"
+                                        oninput="this.value = Math.abs(this.value)" formControlName="widthPercentage"
+                                        id="widthPercentage">
+                                    <mat-error id="moduleNameError"
+                                        *ngIf="gridConfigurationForm.get('widthPercentage').errors?.required">
+                                        Width Percentage is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row w-100 mx-0">
+                            <div class="mr-3 mt-3">
+                                <mat-slide-toggle id="filterable" color="accent"
+                                    (change)="activeColumnFilterable($event)" formControlName="filterable">Filterable
+                                </mat-slide-toggle>
+                            </div>
+                            <div class="mr-3 mt-3">
+                                <mat-slide-toggle id="exportable" color="accent" formControlName="exportable">Exportable
+                                </mat-slide-toggle>
+                            </div>
+                            <div class="mr-3 mt-3">
+                                <mat-slide-toggle id="showCheckBox" color="accent" formControlName="showCheckBox">Show
+                                    Checkbox
+                                </mat-slide-toggle>
+                            </div>
+                            <div class="mr-3 mt-3">
+                                <mat-slide-toggle id="userSpecificGridData" color="accent"
+                                    formControlName="userSpecificGridData" (change)="hideFieldValues($event)">Show
+                                    User Specific Grid Data
+                                </mat-slide-toggle>
+                            </div>
+                            <ng-container >
+                                <!-- *ngIf="gridConfigurationForm.get('userSpecificGridData').value===true" -->
+                                <div fxLayout="column" style="margin-left:15px; width: 15%;">
+                                    <mat-form-field class="w-100" appearance="outline">
+                                        <mat-label>Grid Column Field </mat-label>
+                                        <mat-select formControlName="gridColumnNames" id="gridColumnNames">
+                                            <mat-option [value]="field.name"
+                                                (onSelectionChange)="getDataType($event,field.dataType)"
+                                                *ngFor="let field of gridColumnNames" id="field.name">
+                                                {{field.label}}</mat-option>
+                                        </mat-select>
+                                        <mat-error> Grid Column Field is Required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="column" style="margin-left:15px; width: 15%;">
+
+                                    <mat-form-field class="w-100" appearance="outline" *ngIf="showFieldValues">
+                                        <mat-label>Fields</mat-label>
+                                        <mat-select id="fields" formControlName="fieldValues">
+                                            <ng-container *ngFor="let field of fieldsListForMapping">
+                                                <mat-option
+                                                    *ngIf="gridConfigurationForm.get('dataType').value === field.dataType"
+                                                    [value]='field.fieldId'>
+                                                    {{field.fieldName}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                        <mat-error>Field Value is Required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+
+                <div formArrayName="gridColumns" style="margin-top: 1%"
+                    *ngFor="let column of getGridColumnsFormArray(); let columnIndex = index">
+                    <div [formGroupName]="columnIndex">
+                        <mat-card>
+                            <div fxLayout="row" fxLayoutAlign="space-between  center">
+                                <mat-card-title>Grid Column #{{columnIndex+1}}</mat-card-title>
+                                <div fxLayoutAlign="end start">
+                                    <button mat-mini-fab id="btnAdd" type="button" color="primary"
+                                        (click)="addAnotherGridColumn(columnIndex)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <button style="margin-left: 10%;" type="button"
+                                        *ngIf="getGridColumnsFormArray().length>1" mat-mini-fab color="primary"
+                                        id="remove" (click)="removeThisGridColumn(columnIndex,$event)">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <mat-card-content>
+                                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+                                    <mat-form-field class="w-100" appearance="outline" style="width:33%">
+                                        <mat-label>Display Name</mat-label>
+                                        <input matInput type="text" formControlName="displayName" id="displayName"
+                                             (focusout)="setGridColumnName(columnIndex)">
+                                        <mat-error id="displayNameError"
+                                            *ngIf="column.get('displayName').errors?.required">
+                                            Display Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+
+
+                                    <mat-form-field class="w-100" appearance="outline" style="width:33%">
+                                        <mat-label>Column Sequence No</mat-label>
+                                        <input matInput type="number" min="0"
+                                            oninput="this.value = Math.abs(this.value)"
+                                            formControlName="columnSequenceNo" id="columnSequenceNo">
+                                        <mat-error id="columnSequenceNoError"
+                                            *ngIf="column.get('columnSequenceNo').errors?.required">
+                                            Column Sequence No is required
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                    <mat-form-field class="w-100" appearance="outline" style="width:33%">
+                                        <mat-label>Width Percentage</mat-label>
+                                        <input matInput type="number" min="0"
+                                            oninput="this.value = Math.abs(this.value)"
+                                            formControlName="widthPercentage" id="widthPercentage">
+                                        <mat-error id="widthPercentageError"
+                                            *ngIf="column.get('widthPercentage').errors?.required">
+                                            Width Percentage is required
+                                        </mat-error>
+                                    </mat-form-field>
+
+
+
+                                </div>
+                                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+
+                                    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px"
+                                        fxLayoutGap.lt-md="0px">
+
+                                        <mat-slide-toggle [id]="'sortable_'+columnIndex" color="accent"
+                                            formControlName="sortable">
+                                            Sortable
+                                        </mat-slide-toggle>
+                                        <ng-container *ngIf="hideFilterableOption" style="width:24%">
+
+                                            <mat-slide-toggle [id]="'filterable_'+columnIndex" color="accent"
+                                                formControlName="filterable">Filterable
+                                            </mat-slide-toggle>
+                                        </ng-container>
+
+
+                                        <mat-slide-toggle [id]="'hiddenValue_'+columnIndex" color="accent"
+                                            formControlName="hiddenValue">
+                                            Hide Column
+                                        </mat-slide-toggle>
+
+
+
+                                        <mat-slide-toggle [id]="'defaultSortableColumn_'+columnIndex" color="accent"
+                                            (change)="getColumnValue($event,columnIndex)"
+                                            formControlName="defaultSortableColumn">
+                                            Set
+                                            as default sortable column
+                                        </mat-slide-toggle>
+
+                                        <!--  <mat-slide-toggle
+                                            *ngIf="sortDirectionBoolean && (columnIndex===sortDirectionIndex)"
+                                            (change)="getSortDirectionAscValue($event,columnIndex)" color="accent"
+                                            formControlName="asc">
+                                            Asc
+                                        </mat-slide-toggle>-->
+
+                                        <mat-slide-toggle
+                                            *ngIf="sortDirectionBoolean && (columnIndex===sortDirectionIndex)"
+                                            (change)="getSortDirectionDescValue($event,columnIndex)" color="accent"
+                                            formControlName="desc" [id]="'desc_'+columnIndex">
+                                            Desc
+                                        </mat-slide-toggle>
+
+
+                                        <mat-slide-toggle [id]="'passParams_'+columnIndex" color="accent"
+                                            formControlName="passParams">
+                                            Pass these column as parameters when the row is clicked
+                                        </mat-slide-toggle>
+
+
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </div>
+                <mat-card-actions>
+                    <div fxLayoutAlign="center center">
+                        <button mat-raised-button color="primary" id="btnsave">Save</button>
+                        <button mat-raised-button color="accent" type="button" (click)="reset(userForm)"
+                            id="btnreset">Reset</button>
+                    </div>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </div>
+</div>
+<!-- <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" style="margin: 1%">
+    <div fxFlex="100%">
+        <mat-card>
+            <mat-card-title>Grid List</mat-card-title>
+            <app-yorogrid #gridConfig gridId="grid-configuration" (messageEvent)="receiveMessage($event)"
+                defaultColumn="columnName"></app-yorogrid>
+        </mat-card>
+    </div>
+</div> -->

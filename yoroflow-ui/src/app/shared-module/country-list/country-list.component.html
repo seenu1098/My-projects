@@ -1,0 +1,13 @@
+<form [formGroup]="form" #userForm="ngForm">
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Country</mat-label>
+        <mat-select formControlName="country" (selectionChange)="countrySelection($event)"
+            style="max-height: 400px;overflow: auto;">
+            <input matInput placeholder="Search" autocomplete="off" formControlName="searchCountry" class="search-input"
+                style="height: 40px;">
+            <mat-option [value]="country.name"
+                *ngFor="let country of countries | zonefilter : this.form.value.searchCountry :'name'; let i = index;">
+                {{country.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>

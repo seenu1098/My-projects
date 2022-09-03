@@ -1,0 +1,69 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h4 i18n="Sub Status Configuration" i18n="Sub Status Configuration">Sub Status Configuration</h4>
+    <mat-icon (click)="subStatusClose()" id="closeSubStatus" style="margin-top: -20px;cursor: pointer;">close</mat-icon>
+</div>
+<form [formGroup]="subStatusForm" #userForm="ngForm" id="subStatusForm">
+    <div cdkDropList (cdkDropListDropped)="drop($event)">
+        <ng-container formArrayName="subStatus"
+            *ngFor="let subStatusArray of getSubStatusFormArray().controls;let i = index;">
+            <div [formGroupName]="i" fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="center center">
+                <mat-form-field appearance="outline" cdkDrag>
+                    <div matPrefix fxLayout="row">
+                        <span class="drag-icon-css" cdkDragHandle>
+                            <mat-icon>drag_indicator</mat-icon>
+                        </span>
+                        <div [id]="'subStatusColor_'+i" [style.background]="subStatusArray.get('color').value"
+                            class="subStatus_color_css" [matMenuTriggerFor]="dropdownMenuOne"
+                            #menuTrigger4="matMenuTrigger" (mousedown)="mousedown(i)"></div>
+                    </div>
+                    <input matInput [id]="'subStatusName_'+i" formControlName="name" placeholder="Sub Status Name"
+                        i18n-placeholder="Sub Status Name" (focusout)="checkSubStatusNameExist(i)" required>
+                    <mat-icon [id]="'removeSubStatus_'+i" matSuffix class="remove_subStatus_class"
+                        (click)="removeSubStatusArray(i)">highlight_off</mat-icon>
+                    <mat-error *ngIf="subStatusArray.get('name').errors?.required" i18n="Sub Status Name is required">
+                        Sub Status Name is required
+                    </mat-error>
+                    <mat-error *ngIf="subStatusArray.get('name').errors?.alreadyExist"
+                        i18n="Sub Status Name is already exist">Sub Status Name is already exist
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center">
+        <button mat-raised-button id="addSubStatus" type="button" (click)="addSubStatusArray()"
+            i18n="+ Add Sub Status">+ Add Sub Status</button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="10px" style="margin-top: 15px;">
+        <button mat-raised-button type="button" color="primary" id="createSubStatus" (click)="createSubStatus()"
+            [disabled]="userForm.invalid && userForm.dirty" i18n="Create">Create
+        </button>
+        <button mat-raised-button type="button" color="accent" id="cancelSubStatus" (click)="subStatusClose()"
+            i18n="Cancel">Cancel</button>
+    </div>
+</form>
+<mat-menu #dropdownMenuOne="matMenu">
+    <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center">
+        <div fxLayout="column">
+            <ng-container *ngFor="let color of subStatusColorArray1; let i = index;">
+                <div fxLayout="row" [id]="'statusColor1_'+i" (click)="setSubStatusColor(color)"
+                    [style.background]="color" style="height: 20px;width: 20px;border-radius: 50%;margin-top: 10px;">
+                </div>
+            </ng-container>
+        </div>
+        <div fxLayout="column">
+            <ng-container *ngFor="let color of subStatusColorArray2; let i = index;">
+                <div fxLayout="row" [id]="color" (click)="setSubStatusColor(color)" [style.background]="color"
+                    style="height: 20px;width: 20px;border-radius: 50%;margin-top: 10px;">
+                </div>
+            </ng-container>
+        </div>
+        <div fxLayout="column">
+            <div fxLayout="row" [id]="color" *ngFor="let color of subStatusColorArray3; let i = index;"
+                (click)="setSubStatusColor(color)"
+                style="height: 20px;width: 20px;border-radius: 50%;margin-top: 10px;border:0.5px solid black"
+                [style.background]="color">
+            </div>
+        </div>
+    </div>
+</mat-menu>

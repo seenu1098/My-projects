@@ -1,0 +1,431 @@
+#quill-editor ::ng-deep .ql-toolbar.ql-snow {
+  border: none;
+  padding: 0px !important;
+  text-align: center;
+}
+
+::ng-deep .ql-toolbar.ql-snow button {
+  height: 15px !important;
+  width: 15px !important;
+  margin-right: 2px !important;
+}
+
+::ng-deep .ql-snow .ql-picker.ql-font {
+  width: 100px;
+}
+
+::ng-deep .ql-snow .ql-picker.ql-size {
+  width: 70px;
+}
+
+#quill-editor ::ng-deep .ql-container.ql-snow {
+  border: none;
+  padding: 15px 0px !important;
+  word-break: break-all;
+  overflow-y: scroll !important;
+  height: calc(100vh - 50px);
+  border-radius: 0 0 8px 8px;
+  border-top: 1px solid #eee;
+  font-size: 18px;
+  height: 100%;
+}
+.fs_20 {
+  font-size: 20px;
+}
+#quill-editor ::ng-deep .quill-editor iframe {
+  pointer-events: none;
+}
+#quill-editor ::ng-deep .quill-editor {
+  color: red;
+  font-size: 30px;
+}
+#quill-editor ::ng-deep .ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0px !important;
+}
+.quill-editor iframe,
+.quill-editor video {
+  pointer-events: none;
+}
+.add {
+  transition: all 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86) 0s;
+  background: #7b68ee;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  padding: 0px;
+  cursor: pointer;
+  margin: 0 6px;
+  fill: #fff;
+  background-color: blue;
+  font-size: 16px;
+  color: white;
+}
+.editable {
+  transition: max-width 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86) 0s;
+  display: flex;
+  width: 100%;
+  max-width: 850px;
+  padding: 20px 52px 0;
+  margin: 0 auto 10px;
+
+  flex-shrink: 0;
+}
+.title_input {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 40px;
+  color: #292d34;
+  cursor: text;
+  border: none;
+}
+.mat-progress-spinner {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  z-index: 9999;
+}
+input:focus {
+  outline: none;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-tooltip {
+  left: 0px !important;
+}
+@media screen and (min-width: 1270px) and (max-width: 1599px) {
+  #quill-editor ::ng-deep .ql-container.ql-snow {
+    max-height: 530px !important;
+    overflow-y: scroll !important;
+  }
+}
+@media screen and (min-width: 1680px) {
+  #quill-editor ::ng-deep .ql-container.ql-snow {
+    max-height: 800px !important;
+    overflow-y: scroll !important;
+  }
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="10px"]::before {
+  content: "10";
+  font-size: 10px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="11px"]::before {
+  content: "11";
+  font-size: 11px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="12px"]::before {
+  content: "12";
+  font-size: 12px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="13px"]::before {
+  content: "13";
+  font-size: 13px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="14px"]::before {
+  content: "14";
+  font-size: 14px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="15px"]::before {
+  content: "15";
+  font-size: 15px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="16px"]::before {
+  content: "16";
+  font-size: 16px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="17px"]::before {
+  content: "17";
+  font-size: 17px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="18px"]::before {
+  content: "18";
+  font-size: 18px !important;
+}
+
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="19px"]::before {
+  content: "19";
+  font-size: 19px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="20px"]::before {
+  content: "20";
+  font-size: 20px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="21px"]::before {
+  content: "21";
+  font-size: 21px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="22px"]::before {
+  content: "22";
+  font-size: 22px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="23px"]::before {
+  content: "23";
+  font-size: 23px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="24px"]::before {
+  content: "24";
+  font-size: 24px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="25px"]::before {
+  content: "25";
+  font-size: 25px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="26px"]::before {
+  content: "26";
+  font-size: 26px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="27px"]::before {
+  content: "27";
+  font-size: 27px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="28px"]::before {
+  content: "28";
+  font-size: 28px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="29px"]::before {
+  content: "29";
+  font-size: 29px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="30px"]::before {
+  content: "30";
+  font-size: 30px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="31px"]::before {
+  content: "31";
+  font-size: 31px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="32px"]::before {
+  content: "32";
+  font-size: 32px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="33px"]::before {
+  content: "33";
+  font-size: 33px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="34px"]::before {
+  content: "34";
+  font-size: 34px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="35px"]::before {
+  content: "35";
+  font-size: 35px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="36px"]::before {
+  content: "36";
+  font-size: 24px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="37px"]::before {
+  content: "37";
+  font-size: 37px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="38px"]::before {
+  content: "38";
+  font-size: 38px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="39px"]::before {
+  content: "39";
+  font-size: 39px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="40px"]::before {
+  content: "40";
+  font-size: 40px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="41px"]::before {
+  content: "41";
+  font-size: 41px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="42px"]::before {
+  content: "42";
+  font-size: 42px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="43px"]::before {
+  content: "43";
+  font-size: 43px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="44px"]::before {
+  content: "44";
+  font-size: 44px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="45px"]::before {
+  content: "45";
+  font-size: 45px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="46px"]::before {
+  content: "46";
+  font-size: 46px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="47px"]::before {
+  content: "47";
+  font-size: 47px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="48px"]::before {
+  content: "48";
+  font-size: 48px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="49px"]::before {
+  content: "49";
+  font-size: 49px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-size .ql-picker-item[data-value="50px"]::before {
+  content: "50";
+  font-size: 50px !important;
+}
+#quill-editor ::ng-deep .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: attr(data-value);
+}
+#quill-editor ::ng-deep .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+  border-color: #ccc;
+  height: 310px;
+  overflow-y: scroll;
+}
+#quill-editor ::ng-deep .ql-snow .ql-picker-label::before {
+  line-height: 12px;
+}
+#quill-editor ::ng-deep .ql-mention-list-container {
+  width: 240px;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  z-index: 9999;
+  box-shadow: 0 2px 12px 0 #1e1e1e5c;
+}
+#quill-editor ::ng-deep .ql-mention-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: scroll;
+  min-height: 50px;
+  max-height: 150px;
+}
+
+#quill-editor ::ng-deep .ql-mention-list-item {
+  cursor: pointer;
+  height: 44px;
+  line-height: 44px;
+  font-size: 16px;
+  padding: 0 20px;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  width: 100%;
+  white-space: nowrap;
+}
+
+#quill-editor ::ng-deep .ql-mention-list-item.selected {
+  background-color: #d3e1eb;
+  text-decoration: none;
+}
+
+#quill-editor ::ng-deep .mention {
+  height: 24px;
+  width: 65px;
+  border-radius: 6px;
+  padding: 3px 0;
+  color: #7b68ee;
+}
+
+#quill-editor ::ng-deep .mention > span {
+  margin: 0 3px;
+}
+.navigate-close-css {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  margin: -6px -18px;
+  position: absolute;
+  cursor: pointer;
+  top: 26%;
+  right: 32.5%;
+  z-index: 9999;
+  border-color: #dedede;
+  background-color: #fff;
+  fill: #82868d;
+  border: 1px solid #e9ebf0;
+  padding: 3px 3px 3px 3px;
+}
+.h_14 {
+  height: 14px !important;
+}
+.w_14 {
+  width: 14px !important;
+}
+.animate-css {
+  font-size: 20px;
+  margin-left: 3px;
+  animation: spin-animation 1s;
+  margin: -4px;
+}
+
+.column-css {
+  border-right: 0.5px solid rgb(202, 202, 202);
+}
+.image-circle {
+  height: 32px;
+  width: 32px;
+  line-height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+}
+.comment {
+  background-color: #5c44ea;
+  line-height: 20px;
+  padding: 5px;
+  span {
+    font-size: 10px;
+  }
+}
+
+::ng-deep .mat-menu-css {
+  min-height: 46px !important;
+}
+
+.mat-menu-button-css {
+  height: 30px !important;
+  border: none !important;
+}
+
+.comment-icon-css {
+  color: rgb(123, 104, 238);
+  margin-top: 10px;
+}
+
+.comment_button {
+  color:#7b68ee;
+  cursor: pointer;
+}
+
+.error_message {
+  font-size: 12px;
+  color: red;
+}
+
+@media only screen and (max-width: 999px) {
+  .comments-container-css {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-bottom: 5px;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .comments-container-css {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-bottom: 5px;
+  }
+}
+
+#quill-editor ::ng-deep h1{
+  font-size: 32px !important;
+}
+
+#quill-editor ::ng-deep h2{
+  font-size: 24px !important;
+}

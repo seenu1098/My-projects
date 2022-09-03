@@ -1,0 +1,94 @@
+.gantt {
+    width: 100%;
+    height: 100%;
+    background-color: $gantt-bg-color;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    color: $gantt-color;
+    opacity: 0;
+
+    svg {
+        overflow: visible !important;
+    }
+
+    .gantt-side {
+        border-right: 1px solid $gantt-border-color;
+        position: relative;
+        z-index: 3;
+        // overflow-x: scroll;
+        box-shadow: $gantt-side-shadow;
+
+        .gantt-side-header {
+            box-sizing: border-box;
+            height: $gantt-header-height;
+        }
+
+        .gantt-side-container {
+            height: 100%;
+            background-color: $gantt-bg-color;
+            overflow-y: auto;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+    }
+
+    .gantt-container {
+        flex: 1;
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        background-color: $gantt-container-background-color;
+    }
+
+    .gantt-main-container {
+        width: 100%;
+        height: calc(100% - #{$gantt-header-height});
+        flex: 1;
+        position: absolute;
+        top: $gantt-header-height;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
+        background-color: $gantt-container-background-color;
+
+        .gantt-main-groups,
+        .gantt-main-items {
+            overflow: hidden;
+            min-height: 100%;
+        }
+
+        .gantt-group {
+            height: $gantt-group-height;
+            background: $gantt-group-background-color;
+            border-bottom: 1px solid $gantt-border-color;
+            box-sizing: border-box;
+        }
+
+        .gantt-item {
+            border-bottom: 1px solid $gantt-border-color;
+            box-sizing: border-box;
+            position: relative;
+        }
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        -webkit-box-shadow: none !important;
+        box-shadow: inset 0 0 5px rgb(254, 255, 255);
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 10rem;
+        border: 1px solid #fff;
+      }
+}

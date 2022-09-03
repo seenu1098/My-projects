@@ -1,0 +1,64 @@
+package com.yorosis.yoroflow.entities;
+
+import java.sql.Timestamp;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Table(name = "org_sms_settings")
+@Entity
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SMSKeys {
+	@Id
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	@Column(name = "id", unique = true, nullable = false, precision = 19)
+	private UUID id;
+
+	@Column(name = "provider_name")
+	private String providerName;
+
+	@Column(name = "secret_key")
+	private String secretKey;
+
+	@Column(name = "secret_token")
+	private String secretToken;
+
+	@Column(name = "from_phone_number")
+	private String fromPhoneNumber;
+
+	@Column(name = "service_name")
+	private String serviceName;
+
+	@Column(name = "tenant_id")
+	private String tenantId;
+
+	@Column(name = "active_flag")
+	private String activeFlag;
+
+	@Column(name = "created_by", nullable = false, length = 100)
+	private String createdBy;
+
+	@Column(name = "created_on", nullable = false)
+	private Timestamp createdOn;
+
+	@Column(name = "modified_by", nullable = false, length = 100)
+	private String modifiedBy;
+
+	@Column(name = "modified_on", nullable = false)
+	private Timestamp modifiedOn;
+}

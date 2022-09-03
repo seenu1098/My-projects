@@ -1,0 +1,80 @@
+.mat-table-responsive {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+  }
+  .mat-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    display: table;
+    border-collapse: collapse;
+    margin: 20px;
+    overflow-x: scroll !important;
+  }
+  .mat-cell {
+    word-wrap: initial;
+    line-break: unset;
+    width: auto;
+    overflow: hidden;
+    border-left: 0.5px solid rgb(241, 241, 241);
+    justify-content: left;
+    padding-left: 7px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  .mat-header-cell {
+    word-wrap: initial;
+    line-break: unset;
+    width: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-decoration: black;
+    font-size: 14px;
+    color: #000;
+    background-color: whitesmoke;
+    border-left: 0.5px solid rgb(241, 241, 241);
+    justify-content: left;
+    padding-left: 8px;
+    font-weight: bold;
+  }
+  .mat-row {
+    min-height: 35px;
+  }
+  .mat-header-row {
+    min-height: 40px;
+  }
+  .clear_filter{
+    height: 28px; 
+    line-height: 4px; 
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  ::ng-deep .filter-menu{
+    background-color: whitesmoke;
+    width: 100% !important;
+    overflow: visible;
+    max-height: 400px;
+    .ps--active-x > .ps__rail-x {
+    display: none;
+    }
+  }
+  .field-size{
+    width:180px;
+    height:50px;
+  }
+  ::ng-deep .remaining-menu{
+    width:200px;
+    background-color: whitesmoke;
+  }
+  .active{
+    cursor: pointer;
+    background-color: var(--theme-main-color);
+    color: white;
+    padding: 3px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+}

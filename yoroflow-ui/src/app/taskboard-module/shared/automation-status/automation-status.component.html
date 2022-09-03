@@ -1,0 +1,12 @@
+<div fxLayout="row">
+    <h4 style="color: #656565;" i18n="Select status">Select status</h4>
+    <span class="line-style"></span>
+</div>
+<div fxLayout="row wrap">
+    <ng-container *ngFor="let status of statusList;let i = index;">
+        <div class="statusList-style" [style.background]="status.color" (click)="getStatusName(status)"
+            [id]="'status_'+i" appMaterialElevation>
+            {{status.name | translate}}
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,27 @@
+<mat-card style="background-color:rgb(154, 199, 212)">
+  <button mat-button type="btn" id="closebtn" class="close" (click)="onNoClick($event)" aria-label="Close">
+    <mat-icon class="icon" svgIcon="clear"></mat-icon>
+  </button>
+  <mat-card-title>Batch TestCase - (Batch Name: {{batchName}}, Environment Name: {{environmentName}})
+    <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="end end">
+      <button id="printPdf" mat-raised-button style="margin-left:1%;margin-top:5%"
+        (click)="openDialogForPrintTestResults()" type="button" color="primary">
+        Print Test Results
+      </button>
+      <button id="requeryResult" mat-raised-button style="margin-left:1%;" color="primary"
+        (click)="requeryResult()">Requery Result</button>
+        <button id="requeryResult" mat-raised-button style="margin-left:1%;" color="primary"
+        (click)="rerunBatch(batchName)">Re-run Batch</button>
+        <button id="requeryResult" mat-raised-button style="margin-left:1%;background-color: #4dff88;" 
+        (click)="processDemoPassOrFail(batchId, 'pass')">Demo Pass</button>
+        <button id="requeryResult" mat-raised-button style="margin-left:1%;" color="accent"
+        (click)="processDemoPassOrFail(batchId, 'fail')">Demo Fail</button>
+    </div>
+
+  </mat-card-title>
+  <app-yorogrid gridId="batchtestcases" filterIdColumn='{{batchName}}' (messageEvent)="receiveMessageTestcases($event)"
+    defaultColumn="status" (individualSelect)="individualSelectCheckbox($event)" (isSelect)="isSelectAll($event)"
+    #yorogrid>
+  </app-yorogrid>
+
+</mat-card>

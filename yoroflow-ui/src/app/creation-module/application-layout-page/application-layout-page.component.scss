@@ -1,0 +1,196 @@
+.content{
+    margin: 0;overflow-y: hidden;height: 500px;
+  }
+  
+  /* .bottom-sheet-container{
+      position: absolute;
+      left: 30px;
+      width: 50%;
+      right: 40px;
+      background-color: white;
+    } */
+    .mat-form-field {
+        margin: 10px;
+        border: 0px;
+       
+    }
+    .mat-mini-fab {
+      height: 25px!important;
+      width: 25px!important;
+      line-height: 16px!important;
+      padding:1px!important;
+    }
+  
+    .example-list {
+      /* width: 100px; */
+      /* border: solid 1px rgb(255, 245, 245); */
+      /* min-height: 20px;
+      display: block;
+      background: white;
+      border-radius: 7px;
+      overflow: hidden; */
+    }
+    .list-column {
+      /* border: dotted 1px white; */
+      min-height: 40px;
+      display: flex;
+      /* background: rgb(102, 102, 102); */
+      padding: 2px;
+      /* -webkit-box-shadow: 1px 1px 3px 3px rgb(212, 209, 209); */
+      
+      overflow: hidden;
+     
+    }
+    .page-content {
+      overflow-y: scroll;
+      overflow-x: hidden !important;
+    }
+    
+    .example-box {
+      padding: 2px 2px;
+      border: solid 1px #ccc;
+      /* color: rgba(0, 0, 0, 0.87); */
+      width: 83px;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      cursor: move;
+      // background: white;
+      background-color:#72afec;
+      font-size: 12px;
+      margin: 9px;
+      border-radius: 10px;
+    }
+    .formFiled {
+      display: inline-block;
+      height: 150px;
+      background-color: rgb(154, 199, 212);
+      margin: 5px;
+      border:1px solid black;
+    }
+  
+  .section-heading {
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+   
+  .drag-container {
+    width: 300px;
+    max-width: 100%;
+    margin: 0 25px 25px 0;
+    display: inline-block;
+    vertical-align: top;
+    // background-color: #E9ECEF;
+    background-color:#72afec;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #E9ECEF;
+  }
+   
+  .item-list {
+    min-height: 20px;
+    border-radius: 4px;
+    display: block;
+    height: 20px;
+  }
+   
+  .item-box {
+    padding: 8px 10px;
+    border: solid 1px #ccc;
+    margin-bottom: 5px;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    cursor: move;
+    background: white !important;
+    font-size: 14px;
+    border-radius: 20px;
+    height: 20px;
+  }
+   
+  .cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+    height: 20px;
+  }
+   
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+   
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+   
+  .item-list.cdk-drop-list-dragging .item-box:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    height: 20px;
+  }
+  .section-selected {
+    background-color: #E9ECEF !important;
+  }
+  .section-unselected {
+    background-color: azure !important;
+  }
+  .button {
+    margin: 2px;
+  }
+  .icon {
+    padding-top: 15px;
+  }
+  /* .mat-mini-fab  {
+    height: 30px;
+    width: 30px;
+  }
+  
+  .mat-icon{
+      font-size: 16px;;
+  } */
+  
+  .example-full-width {
+    width: 100%;
+  }
+  
+  .bottom-sheet-container{
+    position: absolute;
+    max-width: 460px;
+    max-height: 600px;
+    overflow-x: hidden !important;
+    margin-top: 2%;
+    
+    }
+    
+    .dynamic-right-sheet-container{
+    position: absolute;
+    max-width: 600px;
+    max-height: 570px;
+    margin: 0;
+    right: 0%;
+    margin-top: 2%;
+    background-color: white;
+    }
+    
+    .grid-right-sheet-container{
+    position: absolute;
+    max-width: 1200px;
+    max-height: 570px;
+    margin: 0;
+    right: 0%;
+    margin-top: 2%;
+    overflow: hidden;
+    background-color: white;
+    }
+    
+    
+    
+    
+  
+  
