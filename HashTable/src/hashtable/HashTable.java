@@ -16,12 +16,20 @@ public class HashTable {
 		}
 	}
 
+	// new Node("gokul",100)
+
+	// Node = { ky = gokul ,value =100, next = null}
+
 	int size = 7;
 	Node[] dataMap;
 
 	public HashTable() {
 		dataMap = new Node[size];
 	}
+
+	// new HashTable();
+
+	// dataMap = {Node[7}
 
 	public void printHashTable() {
 		for (int i = 0; i < dataMap.length; i++) {
