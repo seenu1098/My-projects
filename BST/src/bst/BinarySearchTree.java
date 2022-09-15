@@ -1,5 +1,10 @@
 package bst;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 public class BinarySearchTree {
 	Node root;
 
@@ -56,6 +61,88 @@ public class BinarySearchTree {
 			}
 		}
 
+	}
+
+	public List<Integer> BFS() {
+		Node currentNode = root;
+		List<Integer> list = new ArrayList<>();
+		Queue<Node> queue = new LinkedList<>();
+		queue.add(currentNode);
+		while (queue.size() > 0) {
+			currentNode = queue.remove();
+			list.add(currentNode.value);
+			if (currentNode.left != null) {
+				queue.add(currentNode.left);
+			}
+
+			if (currentNode.right != null) {
+				queue.add(currentNode.right);
+			}
+
+		}
+		return list;
+
+	}
+
+	public List<Integer> DFSPreOrder() {
+		List<Integer> results = new ArrayList<>();
+		class Traverse {
+			public Traverse(Node currentNode) {
+				results.add(currentNode.value);
+				if (currentNode.left != null) {
+					new Traverse(currentNode.left);
+				}
+
+				if (currentNode.right != null) {
+					new Traverse(currentNode.right);
+				}
+
+			}
+		}
+		new Traverse(root);
+
+		return results;
+	}
+
+	public List<Integer> DFSPostOrder() {
+		List<Integer> results = new ArrayList<>();
+		class Traverse {
+			public Traverse(Node currentNode) {
+				if (currentNode.left != null) {
+					new Traverse(currentNode.left);
+				}
+
+				if (currentNode.right != null) {
+					new Traverse(currentNode.right);
+				}
+
+				results.add(currentNode.value);
+			}
+		}
+		new Traverse(root);
+
+		return results;
+	}
+
+	public List<Integer> DFSInOrder() {
+		List<Integer> results = new ArrayList<>();
+		class Traverse {
+			public Traverse(Node currentNode) {
+				if (currentNode.left != null) {
+					new Traverse(currentNode.left);
+				}
+
+				results.add(currentNode.value);
+
+				if (currentNode.right != null) {
+					new Traverse(currentNode.right);
+				}
+
+			}
+		}
+		new Traverse(root);
+
+		return results;
 	}
 
 	public boolean contains(int value) {
