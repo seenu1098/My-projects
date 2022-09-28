@@ -1,0 +1,1 @@
+Java thread pool manages the pool of worker threads and contains a queue that keep the tasks waiting to get executed![[IMG_20220928_143447.jpg]]
